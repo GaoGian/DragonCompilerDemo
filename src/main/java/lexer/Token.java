@@ -7,8 +7,6 @@ public class Token {
 
     public int tag;
 
-    public Token(){};
-
     public Token(int t){
         this.tag = t;
     }
