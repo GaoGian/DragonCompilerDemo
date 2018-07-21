@@ -1,10 +1,7 @@
 package parser;
 
 import inter.*;
-import inter.operator.And;
-import inter.operator.Not;
-import inter.operator.Or;
-import inter.operator.Rel;
+import inter.operator.*;
 import inter.statement.*;
 import lexer.*;
 import symbols.Array;

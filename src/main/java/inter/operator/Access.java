@@ -1,5 +1,8 @@
-package inter;
+package inter.operator;
 
+import inter.Expr;
+import inter.Id;
+import inter.Op;
 import lexer.Tag;
 import lexer.Word;
 import symbols.Type;
