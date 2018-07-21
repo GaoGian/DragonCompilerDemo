@@ -1,5 +1,7 @@
-package inter;
+package inter.statement;
 
+import inter.Expr;
+import inter.statement.Stmt;
 import symbols.Type;
 
 /**

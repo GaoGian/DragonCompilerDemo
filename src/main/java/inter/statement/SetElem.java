@@ -1,5 +1,9 @@
-package inter;
+package inter.statement;
 
+import inter.Access;
+import inter.Expr;
+import inter.Id;
+import inter.statement.Stmt;
 import symbols.Array;
 import symbols.Type;
 

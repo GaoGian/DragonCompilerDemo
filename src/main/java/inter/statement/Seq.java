@@ -1,4 +1,6 @@
-package inter;
+package inter.statement;
+
+import inter.statement.Stmt;
 
 /**
  * Created by tingyun on 2018/7/20.
