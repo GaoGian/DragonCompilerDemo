@@ -13,7 +13,7 @@ public class Temp extends Expr {
 
     public Temp(Type p){
         super(Word.temp, p);
-        number = ++ count;
+        number = ++count;
     }
 
     public String toString(){

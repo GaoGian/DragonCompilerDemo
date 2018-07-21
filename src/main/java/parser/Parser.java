@@ -110,8 +110,7 @@ public class Parser {
                 move();
                 return Stmt.Null;
             case Tag.IF:
-                match(Tag.IF); match('(');
-                x = bool(); match(')');
+                match(Tag.IF); match('('); x = bool(); match(')');
                 s1 = stmt();
                 if(look.tag != Tag.ELSE){
                     return new If(x, s1);
@@ -121,10 +120,8 @@ public class Parser {
                 return new Else(x, s1, s2);
             case Tag.WHILE:
                 While whilenode = new While();
-                savedStmt = Stmt.Enclosing;
-                Stmt.Enclosing = whilenode;
-                match(Tag.WHILE);match('(');
-                x = bool(); match(')');
+                savedStmt = Stmt.Enclosing; Stmt.Enclosing = whilenode;
+                match(Tag.WHILE); match('('); x = bool(); match(')');
                 s1 = stmt();
                 whilenode.init(x, s1);
                 Stmt.Enclosing = savedStmt;
@@ -134,7 +131,7 @@ public class Parser {
                 savedStmt = Stmt.Enclosing; Stmt.Enclosing = donode;
                 match(Tag.DO);
                 s1 = stmt();
-                match(Tag.WHILE);match('('); x = bool(); match(')'); match(';');
+                match(Tag.WHILE); match('('); x = bool(); match(')'); match(';');
                 donode.init(s1, x);
                 Stmt.Enclosing = savedStmt;
                 return donode;
@@ -201,10 +198,7 @@ public class Parser {
     Expr rel() throws IOException{
         Expr x = expr();
         switch (look.tag){
-            case '<':
-            case Tag.LE:
-            case Tag.GE:
-            case '>':
+            case '<': case Tag.LE: case Tag.GE: case '>':
                 Token tok = look;
                 move();
                 return new Rel(tok, x, expr());

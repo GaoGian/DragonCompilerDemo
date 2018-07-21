@@ -11,7 +11,7 @@ import java.util.Hashtable;
  */
 public class Env extends Node {
 
-    public Hashtable<Token, Id> table;
+    private Hashtable<Token, Id> table;
     protected Env prev;
 
     public Env(Env n){

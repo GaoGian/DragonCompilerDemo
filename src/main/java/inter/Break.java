@@ -11,6 +11,7 @@ public class Break extends Stmt {
         if(Stmt.Enclosing == Stmt.Null){
             error("unenclosed break");
         }
+        stmt = Stmt.Enclosing;
     }
 
     public void gen(int b, int a){
