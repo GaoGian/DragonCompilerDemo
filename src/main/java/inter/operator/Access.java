@@ -8,6 +8,7 @@ import lexer.Word;
 import symbols.Type;
 
 /**
+ * 数组节点
  * Created by tingyun on 2018/7/20.
  */
 public class Access extends Op {

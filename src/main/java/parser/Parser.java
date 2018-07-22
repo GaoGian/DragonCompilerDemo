@@ -42,20 +42,23 @@ public class Parser {
     }
 
     public void program() throws IOException{
+        // 解析语法树
         Stmt s = block();
+
+        // 输出三地址码
         int begin = s.newlabel();
         int after = s.newlabel();
         s.emitlabel(begin);
-        s.gen(begin, after);
+        s.gen(begin, after);    // 从根节点逐个遍历子节点，输出三地址码
         s.emitlabel(after);
     }
 
     Stmt block() throws IOException{
         match('{');
         Env savedEnv = top;
-        top = new Env(top);
-        decls();
-        Stmt s = stmts();
+        top = new Env(top);     // 当前标识符作用域
+        decls();        // 处理变量声明
+        Stmt s = stmts();   // 结构语句成分
         match('}');
         top = savedEnv;
         return s;
@@ -98,7 +101,7 @@ public class Parser {
         if(look.tag == '}'){
             return Stmt.Null;
         }else{
-            return new Seq(stmt(), stmts());
+            return new Seq(stmt(), stmts());    // 这里通过递归，逐个解析后续语句
         }
     }
 
@@ -147,6 +150,8 @@ public class Parser {
         }
     }
 
+/**-----------------------------下面是运算符优先级---------------------------------**/
+
     Stmt assign() throws IOException{
         Stmt stmt;
         Token t = look;
@@ -167,7 +172,7 @@ public class Parser {
         return stmt;
     }
 
-    Expr bool() throws IOException{
+    Expr bool() throws IOException{     // 判断布尔值表达式
         Expr x = join();
         while(look.tag == Tag.OR){
             Token tok = look;
@@ -282,7 +287,7 @@ public class Parser {
         }
     }
 
-    Access offset(Id a) throws IOException{
+    Access offset(Id a) throws IOException{     // 数组节点
         Expr i; Expr w; Expr t1, t2; Expr loc;
         Type type = a.type;
         match('[');
