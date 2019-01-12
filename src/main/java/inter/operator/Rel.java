@@ -1,6 +1,7 @@
 package inter.operator;
 
-import inter.Expr;
+import inter.expression.Expr;
+import inter.expression.Logical;
 import lexer.Token;
 import symbols.Array;
 import symbols.Type;

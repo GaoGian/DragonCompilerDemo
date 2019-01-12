@@ -1,5 +1,6 @@
 package inter;
 
+import inter.expression.Expr;
 import lexer.Num;
 import lexer.Token;
 import lexer.Word;

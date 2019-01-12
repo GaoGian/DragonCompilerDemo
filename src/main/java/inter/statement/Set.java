@@ -1,8 +1,7 @@
 package inter.statement;
 
-import inter.Expr;
-import inter.Id;
-import inter.statement.Stmt;
+import inter.expression.Expr;
+import inter.element.Id;
 import symbols.Type;
 
 /**

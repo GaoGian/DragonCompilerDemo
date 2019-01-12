@@ -1,6 +1,9 @@
 package parser;
 
 import inter.*;
+import inter.element.Id;
+import inter.expression.Expr;
+import inter.expression.Unary;
 import inter.operator.*;
 import inter.statement.*;
 import lexer.*;

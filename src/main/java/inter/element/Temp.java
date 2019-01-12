@@ -1,5 +1,6 @@
-package inter;
+package inter.element;
 
+import inter.expression.Expr;
 import lexer.Word;
 import symbols.Type;
 

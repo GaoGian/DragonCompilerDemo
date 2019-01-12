@@ -1,4 +1,4 @@
-package inter;
+package inter.expression;
 
 import lexer.Token;
 import symbols.Type;

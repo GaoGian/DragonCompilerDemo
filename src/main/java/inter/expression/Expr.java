@@ -1,5 +1,6 @@
-package inter;
+package inter.expression;
 
+import inter.Node;
 import lexer.Token;
 import symbols.Type;
 

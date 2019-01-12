@@ -1,8 +1,8 @@
 package inter.statement;
 
 import inter.operator.Access;
-import inter.Expr;
-import inter.Id;
+import inter.expression.Expr;
+import inter.element.Id;
 import symbols.Array;
 import symbols.Type;
 

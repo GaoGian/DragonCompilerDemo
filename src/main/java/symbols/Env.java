@@ -1,6 +1,6 @@
 package symbols;
 
-import inter.Id;
+import inter.element.Id;
 import inter.Node;
 import lexer.Token;
 
