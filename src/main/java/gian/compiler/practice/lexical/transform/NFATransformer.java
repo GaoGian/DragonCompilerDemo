@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Thompson算法，正则表达式转换成NFA
  * Created by gaojian on 2019/1/25.
  */
 public class NFATransformer {
