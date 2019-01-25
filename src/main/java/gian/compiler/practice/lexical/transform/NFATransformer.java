@@ -1,6 +1,8 @@
 package gian.compiler.practice.lexical.transform;
 
-import java.util.Stack;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by gaojian on 2019/1/25.
@@ -11,127 +13,214 @@ public class NFATransformer {
     int STATE_NUM = 0;
     int CELL_NUM = 0;
 
-    void input(String regularExpression){
-        System.out.println("请输入正则表达式");
-        char[] elements = regularExpression.toCharArray();
-        for(int i=0; i<elements.length; i++){
-            if(!checkLegal(elements[i])){
-                throw new RuntimeException("正则表达式不合法");
-            }
+    void input(String regularExpression) {
+        if (!checkLegal(regularExpression)) {
+            throw new RuntimeException("正则表达式不合法");
         }
     }
 
-    boolean checkLegal(String checkStr){
-        if(checkCharacter(checkStr)&&checkParentThesis(checkStr)){
+    boolean checkLegal(String checkStr) {
+        if (checkCharacter(checkStr) && checkParentThesis(checkStr)) {
             return true;
         }
         return false;
     }
 
     // 检查输入的字符是否合适 () * | a~z A~Z 
-    boolean checkCharacter(String checkStr){
+    boolean checkCharacter(String checkStr) {
         int length = checkStr.length();
-        for(int i=0; i<length; i++){
+        for (int i = 0; i < length; i++) {
             char check = checkStr.charAt(i);
-            if(isLetter(check)){
+            if (isLetter(check)) {
 //                System.out.println("");
-            }else if(check=='('||check==')'||check=='*'||check=='|'){
+            } else if (check == '(' || check == ')' || check == '*' || check == '|') {
 //                System.out.println("");
-            }else{
+            } else {
                 System.out.println("输入字符不合法");
-                return false;
+                throw new RuntimeException("输入字符不合法");
             }
         }
         return true;
     }
 
     // 先检查括号是否匹配
-    boolean checkParentThesis(String checkStr){
+    boolean checkParentThesis(String checkStr) {
         int length = checkStr.length();
         char[] check = checkStr.toCharArray();
 
         MyStack<Integer> stack = new MyStack<Integer>();
-        for(int i=0; i<length; i++){
-            if(check[i]=='('){
+        for (int i = 0; i < length; i++) {
+            if (check[i] == '(') {
                 stack.push(i);
-            }else if(check[i]==')'){
-                if(stack.empty()){
+            } else if (check[i] == ')') {
+                if (stack.empty()) {
                     // 暂时不记录位置信息
                     System.out.println("括号不匹配");
-                    return false;
-                }else{
+                    throw new RuntimeException("括号不匹配");
+                } else {
                     stack.pop();
                 }
             }
         }
-        if(!stack.isEmpty()){
+        if (!stack.isEmpty()) {
             // 暂时不记录位置信息
             System.out.println("括号不匹配");
-            return false;
+            throw new RuntimeException("括号不匹配");
         }
 
         return true;
     }
 
-    boolean isLetter(char check){
-        if(check>='a'&&check<='z'||check>='A'&&check<='Z'){
+    boolean isLetter(char check) {
+        if (check >= 'a' && check <= 'z' || check >= 'A' && check <= 'Z') {
             return true;
         }
         return false;
     }
 
     // 添加交操作符“+”，便于中缀转后缀表达式，例如 abb->a+b+b
-    String add_join_symbol(String addStr){
+    String add_join_symbol(String addStr) {
         int length = addStr.length();
         int return_string_length = 0;
-        char[] return_string = new char[2*length];
+        //转换后的表达式长度最多是原来的两倍
+        char[] return_string = new char[2 * length];
 
-        char first;
-        char second;
-        for(int i=0; i<length-1; i++){
+        Character first = null;
+        Character second = null;
+        for (int i = 0; i < length - 1; i++) {
             first = addStr.charAt(i);
-            second = addStr.charAt(i+1);
+            second = addStr.charAt(i + 1);
 
             return_string[return_string_length++] = first;
             // 若第二个是字母、第一个不是 '(' '|' 都要添加
-            if(first != '(' && first != '|' && isLetter(second)){
+            if (first != '(' && first != '|' && isLetter(second)) {
                 return_string[return_string_length++] = '+';
             }
             // 若第二个是'(', 第一个不是'|'、'(' 也要添加
-            else if(second == '(' && first != '|' && first != '('){
+            else if (second == '(' && first != '|' && first != '(') {
                 return_string[return_string_length++] = '+';
             }
-            
+
         }
 
         // 将最后一个字符写入
         return_string[return_string_length++] = second;
         return_string[return_string_length] = '\0';
 
-        return new String(return_string);
-        
+        return_string = Arrays.copyOf(return_string, return_string_length);
+
+        String dealStr = new String(return_string);
+        System.out.println("加'+'后的表达式：" + dealStr);
+        return dealStr;
+
     }
 
     // 中缀转后缀
-    String postfix(String str){}
+    String postfix(String expression) {
+        //设定e的最后一个符号式“#”，而其“#”一开始先放在栈s的栈底
+        expression = expression + "#";
 
+        MyStack<Character> stack = new MyStack<Character>();
+        char ch = '#', ch1, op;
+        stack.push(ch);
+        //读一个字符
+        String out_string = "";
+        int read_location = 0;
+        ch = expression.charAt(read_location++);
+        while (!stack.empty()) {
+            if (isLetter(ch)) {
+                out_string = out_string + ch;
+                //cout<<ch;
+                ch = expression.charAt(read_location++);
+            } else {
+                //cout<<"输出操作符："<<ch<<endl;
+                ch1 = stack.top();
+                if (isp(ch1) < icp(ch)) {
+                    stack.push(ch);
+                    //cout<<"压栈"<<ch<<"  读取下一个"<<endl;
+                    ch = expression.charAt(read_location++);
+                } else if (isp(ch1) > icp(ch)) {
+                    op = stack.top();
+                    stack.pop();
+                    //cout<<"退栈"<<op<<" 添加到输出字符串"<<endl;
+                    out_string = out_string + op;
+                    //cout<<op;
+                } else {
+                    op = stack.top();
+                    stack.pop();
+                    //cout<<"退栈"<<op<<"  但不添加到输入字符串"<<endl;
+
+                    if (op == '(')
+                        ch = expression.charAt(read_location++);
+                }
+            }
+        }
+        //cout<<endl;
+//        cout<<"后缀表达式："<<out_string<<endl;
+        System.out.println("转化后的后缀表达式：" + out_string);
+        return out_string;
+    }
+
+    /*
+     优先级表：
+          #	(	*	|	+	)
+     isp  0	1	7	5	3	8
+     icp  0	8	6	4	2	1
+    */
     // 优先级 in stack priority
-    int isp(char c){}
+    int isp(char c) {
+
+        switch (c) {
+            case '#':
+                return 0;
+            case '(':
+                return 1;
+            case '*':
+                return 7;
+            case '|':
+                return 5;
+            case '+':
+                return 3;
+            case ')':
+                return 8;
+        }
+        //若走到这一步，说明出错了
+        System.out.println("isp优先级匹配错误");
+        throw new RuntimeException("优先级匹配错误");
+    }
 
     // 优先级 in coming priority
-    int icp(char c){}
+    int icp(char c) {
+        switch (c) {
+            case '#':
+                return 0;
+            case '(':
+                return 8;
+            case '*':
+                return 6;
+            case '|':
+                return 4;
+            case '+':
+                return 2;
+            case ')':
+                return 1;
+        }
+        //若走到这一步，说明出错了
+        System.out.println("icp优先级匹配错误");
+        throw new RuntimeException("icp优先级匹配错误");
+    }
 
     // 表达式转NFA
-    Cell express_2_NFA(String express){
+    Cell express_2_NFA(String express) {
         int length = express.length();
         char element;
         Cell cell, left, right;
         MyStack<Cell> stack = new MyStack<Cell>();
 
-        for(int i=0; i<length; i++){
+        for (int i = 0; i < length; i++) {
             element = express.charAt(i);
-            switch(element){
-                case '|':{
+            switch (element) {
+                case '|': {
                     right = stack.top();
                     stack.pop();
                     left = stack.top();
@@ -140,14 +229,14 @@ public class NFATransformer {
                     stack.push(cell);
                     break;
                 }
-                case '*':{
+                case '*': {
                     left = stack.top();
                     stack.pop();
                     cell = do_Start(left);
                     stack.push(cell);
                     break;
                 }
-                case '+':{
+                case '+': {
                     right = stack.top();
                     stack.pop();
                     left = stack.top();
@@ -156,7 +245,7 @@ public class NFATransformer {
                     stack.push(cell);
                     break;
                 }
-                default:{
+                default: {
                     cell = do_Cell(element);
                     stack.push(cell);
                 }
@@ -173,7 +262,7 @@ public class NFATransformer {
     }
 
     // 处理 a|b
-    Cell do_Unite(Cell left, Cell right){
+    Cell do_Unite(Cell left, Cell right) {
         Cell newCell = new Cell();
         newCell.edgeCount = 0;
 
@@ -195,11 +284,11 @@ public class NFATransformer {
         edge2.endState = right.edgeSet[0].startState;
         edge2.transSymbol = '#';
 
-        edge3.startState = left.edgeSet[left.edgeCount-1].endState;
+        edge3.startState = left.edgeSet[left.edgeCount - 1].endState;
         edge3.endState = endState;
         edge3.transSymbol = '#';
 
-        edge4.startState = right.edgeSet[right.edgeCount-1].endState;
+        edge4.startState = right.edgeSet[right.edgeCount - 1].endState;
         edge4.endState = endState;
         edge4.transSymbol = '#';
 
@@ -223,15 +312,15 @@ public class NFATransformer {
     }
 
     // 处理 ab
-    Cell do_Join(Cell left, Cell right){
+    Cell do_Join(Cell left, Cell right) {
         // 将 left 的结束状态和 right 的开始状态合并，将 right 的边复制给 left，将 left 返回
         // 将 right 中所有以 startState 开头的边全部修改
-        for(int i=0; i<right.edgeCount; i++){
+        for (int i = 0; i < right.edgeCount; i++) {
             // FIXME 对入边和出边分开处理
-            if(right.edgeSet[i].startState.stateName.equals(right.startState.stateName)){
+            if (right.edgeSet[i].startState.stateName.equals(right.startState.stateName)) {
                 right.edgeSet[i].startState = left.endState;
                 STATE_NUM--;
-            }else if(right.edgeSet[i].endState.stateName.equals(right.startState.stateName)){
+            } else if (right.edgeSet[i].endState.stateName.equals(right.startState.stateName)) {
                 right.edgeSet[i].endState = left.endState;
                 STATE_NUM--;
             }
@@ -247,7 +336,7 @@ public class NFATransformer {
     }
 
     // 处理 a*
-    Cell do_Start(Cell cell){
+    Cell do_Start(Cell cell) {
         Cell newCell = new Cell();
         newCell.edgeCount = 0;
 
@@ -296,7 +385,7 @@ public class NFATransformer {
     }
 
     // 处理 a
-    Cell do_Cell(char element){
+    Cell do_Cell(char element) {
         Cell newCell = new Cell();
         newCell.edgeCount = 0;
 
@@ -319,12 +408,12 @@ public class NFATransformer {
     }
 
     // 将一个单元的边的集合复制到另一个单元
-    void cell_EdgeSet_copy(Cell destination, Cell source){
+    void cell_EdgeSet_copy(Cell destination, Cell source) {
         int d_count = destination.edgeCount;
         int s_count = source.edgeCount;
 
-        for(int i=0; i<s_count; i++){
-            destination.edgeSet[d_count+i] = source.edgeSet[i];
+        for (int i = 0; i < s_count; i++) {
+            destination.edgeSet[d_count + i] = source.edgeSet[i];
         }
 
         destination.edgeCount = d_count + s_count;
@@ -332,38 +421,45 @@ public class NFATransformer {
     }
 
     // 产生一个新的节点状态，便于管理
-    State new_StateNode(){
+    State new_StateNode() {
         State newState = new State();
-        newState.stateName = String.valueOf(STATE_NUM + 65);
+        newState.stateName = String.valueOf((char)(STATE_NUM + 65));
         STATE_NUM++;
         return newState;
     }
 
     // 显示
-    void display(Cell cell){
+    void display(Cell cell) {
+        System.out.println("NFA 的边数：" + cell.edgeCount);
+        System.out.println("NFA 的起始状态：" + cell.startState.stateName);
+        System.out.println("NFA 的结束状态：" + cell.endState.stateName);
 
+        for (int i = 0; i < cell.edgeCount; i++) {
+            System.out.println("第 " + i + 1 + " 条边的起始状态：" + cell.edgeSet[i].startState.stateName +
+                    "，结束状态：" + cell.edgeSet[i].endState.stateName +
+                    "，转换符：" + cell.edgeSet[i].transSymbol);
+        }
+
+        System.out.println("结束");
     }
 
 
-
-    public static void main(String[] args){
+    public static void main(String[] args) {
         String regular_expression = "(a|b)*abb";
-        Cell NFA_Cell = null;
 
+        NFATransformer transformer = new NFATransformer();
         // 接收输入
-        input(regular_expression);
+        transformer.input(regular_expression);
         // 添加“+”符号，方便转换成后缀表达式
-        regular_expression = add_join_symbol(regular_expression);
+        regular_expression = transformer.add_join_symbol(regular_expression);
         // 中缀转后缀        FIXME 方便计算机按照顺序识别正则表达式词法单元
-        regular_expression = postfix(regular_expression);
+        regular_expression = transformer.postfix(regular_expression);
         // 表达式转NFA
-        NFA_Cell = express_2_NFA(regular_expression);
+        Cell NFA_Cell = transformer.express_2_NFA(regular_expression);
         // 显示
-        display(NFA_Cell);
-
+        transformer.display(NFA_Cell);
 
     }
-
 
 
 }

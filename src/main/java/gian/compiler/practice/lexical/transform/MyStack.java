@@ -5,10 +5,14 @@ import java.util.Stack;
 /**
  * Created by gaojian on 2019/1/25.
  */
-public class MyStack<T> extends Stack {
+public class MyStack<T> extends Stack<T> {
 
     public T top(){
-        return (T) super.elementData[0];
+        if(super.size() > 0) {
+            return (T) super.elementData[super.size() - 1];
+        }else{
+            return (T) super.elementData[0];
+        }
     }
 
 }

@@ -6,7 +6,7 @@ package gian.compiler.practice.lexical.transform;
  */
 public class Cell {
 
-    public Edge[] edgeSet;
+    public Edge[] edgeSet = new Edge[100];  // 100的大小足够了
     public int edgeCount;
     public State startState;
     public State endState;
