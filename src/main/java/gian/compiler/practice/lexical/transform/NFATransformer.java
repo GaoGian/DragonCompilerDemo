@@ -119,10 +119,10 @@ public class NFATransformer {
     // 中缀转后缀
     String postfix(String expression) {
         //设定e的最后一个符号式“ε”，而其“ε”一开始先放在栈s的栈底
-        expression = expression + "ε";
+        expression = expression + LexConstants.EPSILON;
 
         MyStack<Character> stack = new MyStack<Character>();
-        char ch = 'ε', ch1, op;
+        char ch = LexConstants.EPSILON, ch1, op;
         stack.push(ch);
         //读一个字符
         String out_string = "";
@@ -172,7 +172,7 @@ public class NFATransformer {
     int isp(char c) {
 
         switch (c) {
-            case 'ε':
+            case LexConstants.EPSILON:
                 return 0;
             case '(':
                 return 1;
@@ -193,7 +193,7 @@ public class NFATransformer {
     // 优先级 in coming priority
     int icp(char c) {
         switch (c) {
-            case 'ε':
+            case LexConstants.EPSILON:
                 return 0;
             case '(':
                 return 8;
@@ -279,19 +279,19 @@ public class NFATransformer {
         // 构建边
         edge1.startState = startState;
         edge1.endState = left.edgeSet[0].startState;
-        edge1.transSymbol = 'ε';
+        edge1.transSymbol = LexConstants.EPSILON;
 
         edge2.startState = startState;
         edge2.endState = right.edgeSet[0].startState;
-        edge2.transSymbol = 'ε';
+        edge2.transSymbol = LexConstants.EPSILON;
 
         edge3.startState = left.edgeSet[left.edgeCount - 1].endState;
         edge3.endState = endState;
-        edge3.transSymbol = 'ε';
+        edge3.transSymbol = LexConstants.EPSILON;
 
         edge4.startState = right.edgeSet[right.edgeCount - 1].endState;
         edge4.endState = endState;
-        edge4.transSymbol = 'ε';
+        edge4.transSymbol = LexConstants.EPSILON;
 
         // 构建单元
         // 先将 left 和 right 的 edgeSet 复制到 newCell
@@ -353,19 +353,19 @@ public class NFATransformer {
         // 构建边
         edge1.startState = startState;
         edge1.endState = endState;
-        edge1.transSymbol = 'ε';
+        edge1.transSymbol = LexConstants.EPSILON;
 
         edge2.startState = cell.endState;
         edge2.endState = cell.startState;
-        edge2.transSymbol = 'ε';
+        edge2.transSymbol = LexConstants.EPSILON;
 
         edge3.startState = startState;
         edge3.endState = cell.startState;
-        edge3.transSymbol = 'ε';
+        edge3.transSymbol = LexConstants.EPSILON;
 
         edge4.startState = cell.endState;
         edge4.endState = endState;
-        edge4.transSymbol = 'ε';
+        edge4.transSymbol = LexConstants.EPSILON;
 
         // 构建单元
         // 先将 cell 的 edgeSet 复制到 newCell
@@ -446,8 +446,7 @@ public class NFATransformer {
     }
 
 
-    public static void main(String[] args) {
-        String regular_expression = "(a|b)*abb";
+    public static Cell transform(String regular_expression) {
 
         NFATransformer transformer = new NFATransformer();
         // 接收输入
@@ -460,6 +459,9 @@ public class NFATransformer {
         Cell NFA_Cell = transformer.express_2_NFA(regular_expression);
         // 显示
         transformer.display(NFA_Cell);
+
+        return NFA_Cell;
+
 
     }
 
