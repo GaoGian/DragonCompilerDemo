@@ -5,9 +5,32 @@ package gian.compiler.practice.lexical.transform;
  */
 public class DtranEdge {
 
-    public DtranState startDtranState;
-    public DtranState endDtranState;
+    private DtranState startDtranState;
+    private DtranState endDtranState;
     // 转换输入符
-    public char transSymbol;
+    private char transSymbol;
 
+    public DtranState getStartDtranState() {
+        return startDtranState;
+    }
+
+    public void setStartDtranState(DtranState startDtranState) {
+        this.startDtranState = startDtranState;
+    }
+
+    public DtranState getEndDtranState() {
+        return endDtranState;
+    }
+
+    public void setEndDtranState(DtranState endDtranState) {
+        this.endDtranState = endDtranState;
+    }
+
+    public char getTransSymbol() {
+        return transSymbol;
+    }
+
+    public void setTransSymbol(char transSymbol) {
+        this.transSymbol = transSymbol;
+    }
 }

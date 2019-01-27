@@ -1,8 +1,8 @@
 package gian.compiler.practice.lexical.transform;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import com.alibaba.fastjson.JSON;
+
+import java.util.*;
 
 /**
  * DFA节点
@@ -11,25 +11,33 @@ import java.util.Set;
 public class DtranState {
 
 
-    public String stateName;
+    private String stateName;
 
-    Set<State> stateSet = new HashSet<>();
-    Set<String> stateNames = new HashSet<>();
+    private Set<State> stateSet = new HashSet<>();
+    private Set<DtranEdge> dtranEdgeSet = new HashSet<>();
 
-    public DtranState(State startState, Edge[] edgeSet){
-        // TODO 需要优化算法，由State持有离开边
-        this.epsilonClosure(startState, edgeSet);
+    private Set<String> stateNames = new TreeSet<>(new Comparator<String>() {
+        @Override
+        public int compare(String o1, String o2) {
+            return o2.compareTo(o1);//降序排列
+        }
+    });
+
+    public DtranState(String stateName){
+        this.stateName = stateName;
     }
 
-    public void epsilonClosure(State startState, Edge[] edgeSet){
-        for(int i=0; i<edgeSet.length; i++){
-            Edge edge = edgeSet[i];
-            if(edge.startState.stateName == startState.stateName
-                    && LexConstants.EPSILON == edge.transSymbol){
-                stateSet.add(edge.endState);
+    public void addState(State state){
+        this.stateSet.add(state);
 
-                this.epsilonClosure(edge.endState, edgeSet);
-            }
+        this.stateNames.add(state.stateName);
+    }
+
+    public void addState(Set<State> stateSet){
+        this.stateSet.addAll(stateSet);
+
+        for(State state : stateSet){
+            this.stateNames.add(state.stateName);
         }
     }
 
@@ -54,4 +62,40 @@ public class DtranState {
 
     }
 
+    @Override
+    public String toString(){
+        return JSON.toJSONString(stateNames);
+    }
+
+    public String getStateName() {
+        return stateName;
+    }
+
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
+    }
+
+    public Set<State> getStateSet() {
+        return stateSet;
+    }
+
+    public void setStateSet(Set<State> stateSet) {
+        this.stateSet = stateSet;
+    }
+
+    public Set<DtranEdge> getDtranEdgeSet() {
+        return dtranEdgeSet;
+    }
+
+    public void setDtranEdgeSet(Set<DtranEdge> dtranEdgeSet) {
+        this.dtranEdgeSet = dtranEdgeSet;
+    }
+
+    public Set<String> getStateNames() {
+        return stateNames;
+    }
+
+    public void setStateNames(Set<String> stateNames) {
+        this.stateNames = stateNames;
+    }
 }
