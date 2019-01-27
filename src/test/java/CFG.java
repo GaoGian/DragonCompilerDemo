@@ -101,7 +101,8 @@ public class CFG {
         termRegex.put("INT", "[0-9]");
 
         CFG cfg = new CFG(BNF, "E", termRegex);
-        boolean b = cfg.recognize("(1 + 1)*2");
+//        boolean b = cfg.recognize("(1 + 1)*2");
+        boolean b = cfg.recognize("(1 + 1)*2 - 2*(3 + 2)/2");
         System.out.println(b);
     }
 

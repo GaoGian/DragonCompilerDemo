@@ -446,7 +446,7 @@ public class NFATransformer {
 
 
     public static void main(String[] args) {
-        String regular_expression = "(a|b)*abb";
+        String regular_expression = "(a|b)*a|bcd";
 
         NFATransformer transformer = new NFATransformer();
         // 接收输入
