@@ -118,11 +118,11 @@ public class NFATransformer {
 
     // 中缀转后缀
     String postfix(String expression) {
-        //设定e的最后一个符号式“#”，而其“#”一开始先放在栈s的栈底
-        expression = expression + "#";
+        //设定e的最后一个符号式“ε”，而其“ε”一开始先放在栈s的栈底
+        expression = expression + "ε";
 
         MyStack<Character> stack = new MyStack<Character>();
-        char ch = '#', ch1, op;
+        char ch = 'ε', ch1, op;
         stack.push(ch);
         //读一个字符
         String out_string = "";
@@ -164,7 +164,7 @@ public class NFATransformer {
 
     /*
      优先级表：
-          #	(	*	|	+	)
+          ε	(	*	|	+	)
      isp  0	1	7	5	3	8
      icp  0	8	6	4	2	1
     */
@@ -172,7 +172,7 @@ public class NFATransformer {
     int isp(char c) {
 
         switch (c) {
-            case '#':
+            case 'ε':
                 return 0;
             case '(':
                 return 1;
@@ -193,7 +193,7 @@ public class NFATransformer {
     // 优先级 in coming priority
     int icp(char c) {
         switch (c) {
-            case '#':
+            case 'ε':
                 return 0;
             case '(':
                 return 8;
@@ -279,19 +279,19 @@ public class NFATransformer {
         // 构建边
         edge1.startState = startState;
         edge1.endState = left.edgeSet[0].startState;
-        edge1.transSymbol = '#';
+        edge1.transSymbol = 'ε';
 
         edge2.startState = startState;
         edge2.endState = right.edgeSet[0].startState;
-        edge2.transSymbol = '#';
+        edge2.transSymbol = 'ε';
 
         edge3.startState = left.edgeSet[left.edgeCount - 1].endState;
         edge3.endState = endState;
-        edge3.transSymbol = '#';
+        edge3.transSymbol = 'ε';
 
         edge4.startState = right.edgeSet[right.edgeCount - 1].endState;
         edge4.endState = endState;
-        edge4.transSymbol = '#';
+        edge4.transSymbol = 'ε';
 
         // 构建单元
         // 先将 left 和 right 的 edgeSet 复制到 newCell
@@ -353,19 +353,19 @@ public class NFATransformer {
         // 构建边
         edge1.startState = startState;
         edge1.endState = endState;
-        edge1.transSymbol = '#';
+        edge1.transSymbol = 'ε';
 
         edge2.startState = cell.endState;
         edge2.endState = cell.startState;
-        edge2.transSymbol = '#';
+        edge2.transSymbol = 'ε';
 
         edge3.startState = startState;
         edge3.endState = cell.startState;
-        edge3.transSymbol = '#';
+        edge3.transSymbol = 'ε';
 
         edge4.startState = cell.endState;
         edge4.endState = endState;
-        edge4.transSymbol = '#';
+        edge4.transSymbol = 'ε';
 
         // 构建单元
         // 先将 cell 的 edgeSet 复制到 newCell
@@ -424,7 +424,8 @@ public class NFATransformer {
     // 产生一个新的节点状态，便于管理
     State new_StateNode() {
         State newState = new State();
-        newState.stateName = String.valueOf((char)(STATE_NUM + 65));
+//        newState.stateName = String.valueOf((char)(STATE_NUM + 65));
+        newState.stateName = String.valueOf(STATE_NUM);
         STATE_NUM++;
         return newState;
     }
@@ -446,12 +447,12 @@ public class NFATransformer {
 
 
     public static void main(String[] args) {
-        String regular_expression = "(a|b)*a|bcd";
+        String regular_expression = "(a|b)*abb";
 
         NFATransformer transformer = new NFATransformer();
         // 接收输入
         transformer.input(regular_expression);
-        // 添加“+”符号，方便转换成后缀表达式
+        // 添加“+”符号，方便转换成后缀表达式       // TODO 需要能够识别正则表达式元字符，例如：[^a-z]
         regular_expression = transformer.add_join_symbol(regular_expression);
         // 中缀转后缀        FIXME 方便计算机按照顺序识别正则表达式词法单元
         regular_expression = transformer.postfix(regular_expression);
