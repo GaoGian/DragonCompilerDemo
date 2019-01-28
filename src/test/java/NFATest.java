@@ -23,7 +23,7 @@ public class NFATest {
         System.out.println("---------------------------------------------------------------------------");
 
         // NFA 生成 DFA
-        DtranCell dtranCell = NFATransformer.nfa2Dfa(nfa);
+        DtranCell dtranCell = DFATransformer.nfa2Dfa(nfa);
     }
 
     @Test
