@@ -98,17 +98,140 @@ public class DFATransformer {
         return dtranCell;
     }
 
-    public static DtranCell regExp2Dfa(String regular_expression) {
+    public static Dcell regExp2Dfa(String regular_expression) {
         regular_expression = regular_expression + EOF;
         // 转换成后缀表达式
         String rnpExpression = LexUtils.RNP(regular_expression);
         // 先生成语法分析树
         LexNode root = buildLexNode(rnpExpression);
         // 计算各位置的nullAble、firstPos、lastPos
-
+        computeFirstAndLastPos(root);
         // 计算各位置的followPos
+        computeFollowPos(root);
+        // 输出结果
+        LexUtils.print(root);
+        // 生成 DFA
+        Dcell dcell = buildDFA(root);
 
-        return null;
+        return dcell;
+    }
+
+    public static Dcell buildDFA(LexNode root){
+        int stateNum = 0;
+
+        Map<Integer, LexNode> nodeMap = new HashMap<>();
+        getLeafLexNodeMap(root, nodeMap);
+
+        // 记录转换符
+        Set<Character> tranChars = new HashSet<>();
+        for(LexNode node : nodeMap.values()){
+            tranChars.add(node.getElement());
+        }
+
+        // 起始节点
+        Dstate startState = new Dstate(String.valueOf((char)(stateNum + 65)));
+        stateNum++;
+        Set<Integer> rootFirstPos = root.getFirstPos();
+        for(Integer pos : rootFirstPos){
+            startState.getStateSet().add(nodeMap.get(pos));
+        }
+
+        // 待处理的状态
+        List<Dstate> dstates = new ArrayList<>();
+        dstates.add(startState);
+
+        // 标记处理过的状态
+        Set<String> stateTags = new HashSet<>();
+
+        // 记录所有转换边
+        Set<Dedge> dedges = new HashSet<>();
+
+        for(int i=0; i<dstates.size(); i++){
+            Dstate state = dstates.get(i);
+            if(!stateTags.contains(state.toString())){
+                for(Character tranChar : tranChars){
+                    Dstate newState = new Dstate(String.valueOf((char)(stateNum + 65)));
+                    stateNum++;
+
+                    for(LexNode node : state.getStateSet()){
+                        // 只需要添加转换符为tranChar的位置（当前位置符即转换符）的后继节点
+                        if(tranChar.equals(node.getElement())) {
+                            Set<Integer> followPos = node.getFollowPos();
+                            for (Integer pos : followPos) {
+                                newState.addState(nodeMap.get(pos));
+                            }
+                        }
+                    }
+
+                    Dedge edge = new Dedge(state, newState, tranChar);
+                    newState.getDtranEdgeSet().add(edge);
+                    dstates.add(newState);
+                    dedges.add(edge);
+                }
+
+                // 标记已处理
+                stateTags.add(state.toString());
+            }
+        }
+
+        Dstate endState = null;
+        for(Dstate dtranState : dstates){
+            for(LexNode state : dtranState.getStateSet()){
+                if(state.getElement() == LexConstants.EOF){
+                    endState = dtranState;
+                    break;
+                }
+            }
+
+            if(endState != null){
+                break;
+            }
+        }
+
+        Dcell dcell = new Dcell();
+        dcell.setStartState(startState);
+        dcell.setEndState(endState);
+        dcell.getEdgeSet().addAll(dedges);
+
+
+        displayDfa(dcell);
+
+        return dcell;
+    }
+
+    public static void computeFollowPos(LexNode root){
+        Map<Integer, LexNode> nodeMap = new HashMap<>();
+        getLeafLexNodeMap(root, nodeMap);
+        followPos(root, nodeMap);
+    }
+
+    public static void getLeafLexNodeMap(LexNode node, Map<Integer, LexNode> nodeMap){
+        if(node.getType().equals(LexNodeType.LEAF)){
+            nodeMap.put(node.getPos(), node);
+        }else{
+            if(node.getLeft() != null){
+                getLeafLexNodeMap(node.getLeft(), nodeMap);
+            }
+            if(node.getRight() != null){
+                getLeafLexNodeMap(node.getRight(), nodeMap);
+            }
+        }
+    }
+
+
+    public static void computeFirstAndLastPos(LexNode node){
+        // firstPos
+        node.getFirstPos().addAll(firstPos(node));
+        // lastPos
+        node.getLastPos().addAll(lastPos(node));
+
+        // childNode
+        if(node.getLeft() != null){
+            computeFirstAndLastPos(node.getLeft());
+        }
+        if(node.getRight() != null){
+            computeFirstAndLastPos(node.getRight());
+        }
     }
 
     public static LexNode buildLexNode(String express){
@@ -153,8 +276,6 @@ public class DFATransformer {
 
         LexNode root = stack.pop();
 
-        LexUtils.print(root);
-
         return root;
     }
 
@@ -172,36 +293,104 @@ public class DFATransformer {
 
     // 语法分析书节点是否可以推导出ε
     public static boolean nullAble(LexNode node){
-        String expression = getChildNodeExpression(node);
-        Matcher matcher = pattern.matcher(expression);
-        return matcher.matches();
-    }
-
-    public static String getChildNodeExpression(LexNode node){
-        String expression = "";
-        if(node.getLeft() != null){
-            expression = getChildNodeExpression(node.getLeft());
+        boolean result = false;
+        if(node.type.equals(LexNodeType.EPSILON)){
+            result = true;
+        }else if(node.type.equals(LexNodeType.OR)){
+            result = nullAble(node.getLeft()) || nullAble(node.getRight());
+        }else if(node.type.equals(LexNodeType.CAT)){
+            result = nullAble(node.getLeft()) && nullAble(node.getRight());
+        }else if(node.type.equals(LexNodeType.START)){
+            result = true;
+        }else if(node.type.equals(LexNodeType.LEAF)){
+            result = false;
         }
-        expression += node.getLeft().element;
-        if(node.getRight() != null){
-            expression = getChildNodeExpression(node.getRight());
-        }
-        return expression;
+        return result;
     }
 
     // 计算当前节点为根的首字符集合
-    public void firstPos(){
+    public static Set<Integer> firstPos(LexNode node){
+        Set<Integer> pos = new HashSet<>();
+        if(node.type.equals(LexNodeType.EPSILON)){
 
+        }else if(node.type.equals(LexNodeType.OR)){
+            pos.addAll(firstPos(node.getLeft()));
+            pos.addAll(firstPos(node.getRight()));
+        }else if(node.type.equals(LexNodeType.CAT)){
+            if(nullAble(node.getLeft())){
+                pos.addAll(firstPos(node.getLeft()));
+                pos.addAll(firstPos(node.getRight()));
+            }else{
+                pos.addAll(firstPos(node.getLeft()));
+            }
+        }else if(node.type.equals(LexNodeType.START)){
+            pos.addAll(firstPos(node.getLeft()));
+        }else if(node.type.equals(LexNodeType.LEAF)){
+            pos.add(node.getPos());
+        }
+
+        return pos;
     }
 
     // 计算当前节点为根的最后字符集合
-    public void lastPos(){
+    public static Set<Integer> lastPos(LexNode node){
+        Set<Integer> pos = new HashSet<>();
+        if(node.type.equals(LexNodeType.EPSILON)){
 
+        }else if(node.type.equals(LexNodeType.OR)){
+            pos.addAll(lastPos(node.getLeft()));
+            pos.addAll(lastPos(node.getRight()));
+        }else if(node.type.equals(LexNodeType.CAT)){
+            if(nullAble(node.getRight())){
+                pos.addAll(lastPos(node.getLeft()));
+                pos.addAll(lastPos(node.getRight()));
+            }else{
+                pos.addAll(lastPos(node.getRight()));
+            }
+        }else if(node.type.equals(LexNodeType.START)){
+            pos.addAll(lastPos(node.getLeft()));
+        }else if(node.type.equals(LexNodeType.LEAF)){
+            pos.add(node.getPos());
+        }
+
+        return pos;
     }
 
     // 计算当前节点位置对应的正则表达式
-    public void followPos(){
+    public static void followPos(LexNode node, Map<Integer, LexNode> lexNodeMap){
+        if(node.getType().equals(LexNodeType.CAT)){
+            if(node.getRight() != null){
+                LexNode rightChild = node.getRight();
+                Set<Integer> rightFirstPos = rightChild.getFirstPos();
 
+                if(node.getLeft() != null){
+                    LexNode leftChild = node.getLeft();
+                    Set<Integer> leftLastPos = leftChild.getLastPos();
+
+                    for(Integer lastPos : leftLastPos){
+                        LexNode lastPosNode = lexNodeMap.get(lastPos);
+                        lastPosNode.getFollowPos().addAll(rightFirstPos);
+                    }
+                }
+            }
+        }else if(node.getType().equals(LexNodeType.START)){
+            Set<Integer> firstPos = node.getFirstPos();
+            Set<Integer> lastPos = node.getLastPos();
+            for(Integer pos : lastPos){
+                LexNode lastPosNode = lexNodeMap.get(pos);
+                lastPosNode.getFollowPos().addAll(firstPos);
+            }
+        }
+
+        // child
+        if(!node.getType().equals(LexNodeType.LEAF)){
+            if(node.getLeft() != null){
+                followPos(node.getLeft(), lexNodeMap);
+            }
+            if(node.getRight() != null){
+                followPos(node.getRight(), lexNodeMap);
+            }
+        }
     }
 
     /**
@@ -257,6 +446,23 @@ public class DFATransformer {
         System.out.println("结束");
     }
 
+    // 显示
+    static void displayDfa(Dcell dtranCell) {
+
+        System.out.println("DFA 的边数：" + dtranCell.getEdgeSet().size());
+        System.out.println("DFA 的起始状态：" + dtranCell.getStartState().toString());
+        System.out.println("DFA 的结束状态：" + dtranCell.getEndState().toString());
+
+        int i=0;
+        for(Dedge edge : dtranCell.getEdgeSet()){
+            System.out.println("第 " + i + 1 + " 条边的起始状态：" + edge.getStartState().toString() +
+                    "，结束状态：" + edge.getEndState().toString() +
+                    "，转换符：" + edge.getTransSymbol());
+            i++;
+        }
+
+        System.out.println("结束");
+    }
 
     static class LexNode{
 
@@ -338,9 +544,9 @@ public class DFATransformer {
         @Override
         public String toString(){
             if(pos != null) {
-                return pos + ": " + JSON.toJSONString(firstPos) + " " + element + " " + JSON.toJSONString(lastPos);
+                return pos + ":" + JSON.toJSONString(firstPos) + "'" + element+ "'" + JSON.toJSONString(lastPos) + ":" + JSON.toJSONString(followPos);
             }else{
-                return JSON.toJSONString(firstPos) + " " + element + " " + JSON.toJSONString(lastPos);
+                return JSON.toJSONString(firstPos) + "'" + element+ "'" + JSON.toJSONString(lastPos) + ":" + JSON.toJSONString(followPos);
             }
         }
 
@@ -352,6 +558,188 @@ public class DFATransformer {
         OR,     // or 节点
         CAT,    // | 节点
         START   // * 节点
+    }
+
+    static class Dstate{
+
+        private String stateName;
+
+        private Set<LexNode> stateSet = new HashSet<>();
+        private Set<Dedge> dtranEdgeSet = new HashSet<>();
+
+        private Set<Character> stateNames = new TreeSet<>(new Comparator<Character>() {
+            @Override
+            public int compare(Character o1, Character o2) {
+                return o2.compareTo(o1);//降序排列
+            }
+        });
+        private Set<Integer> statePos = new TreeSet<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1.compareTo(o2);//降序排列
+            }
+        });
+
+        public Dstate(String stateName){
+            this.stateName = stateName;
+        }
+
+        public void addState(LexNode state){
+            this.stateSet.add(state);
+
+            this.stateNames.add(state.getElement());
+            this.statePos.add(state.getPos());
+        }
+
+        public void addState(Set<LexNode> stateSet){
+            this.stateSet.addAll(stateSet);
+
+            for(LexNode state : stateSet){
+                this.stateNames.add(state.getElement());
+                this.statePos.add(state.getPos());
+            }
+        }
+
+        @Override
+        public boolean equals(Object other){
+            if(other == null){
+                return false;
+            }
+
+            Dstate otherState = (Dstate) other;
+            if(this.stateSet.size() != otherState.stateSet.size()){
+                return false;
+            }
+
+            for(LexNode state : otherState.stateSet){
+                if(!statePos.contains(state.getPos())){
+                    return false;
+                }
+            }
+
+            return true;
+
+        }
+
+        @Override
+        public String toString(){
+//            return JSON.toJSONString(stateNames);
+            return JSON.toJSONString(stateNames) + "|" + JSON.toJSONString(statePos);
+        }
+
+        public String getStateName() {
+            return stateName;
+        }
+
+        public void setStateName(String stateName) {
+            this.stateName = stateName;
+        }
+
+        public Set<LexNode> getStateSet() {
+            return stateSet;
+        }
+
+        public void setStateSet(Set<LexNode> stateSet) {
+            this.stateSet = stateSet;
+        }
+
+        public Set<Dedge> getDtranEdgeSet() {
+            return dtranEdgeSet;
+        }
+
+        public void setDtranEdgeSet(Set<Dedge> dtranEdgeSet) {
+            this.dtranEdgeSet = dtranEdgeSet;
+        }
+
+        public Set<Character> getStateNames() {
+            return stateNames;
+        }
+
+        public void setStateNames(Set<Character> stateNames) {
+            this.stateNames = stateNames;
+        }
+    }
+
+    static class Dedge{
+        private Dstate startState;
+        private Dstate endState;
+        private char transSymbol;
+
+        public Dedge(Dstate startState, Dstate endState, char transSymbol) {
+            this.startState = startState;
+            this.endState = endState;
+            this.transSymbol = transSymbol;
+        }
+
+        public Dstate getStartState() {
+            return startState;
+        }
+
+        public void setStartState(Dstate startState) {
+            this.startState = startState;
+        }
+
+        public Dstate getEndState() {
+            return endState;
+        }
+
+        public void setEndState(Dstate endState) {
+            this.endState = endState;
+        }
+
+        public char getTransSymbol() {
+            return transSymbol;
+        }
+
+        public void setTransSymbol(char transSymbol) {
+            this.transSymbol = transSymbol;
+        }
+
+        @Override
+        public boolean equals(Object other){
+            if(other == null){
+                return false;
+            }
+
+            Dedge otherEdge = (Dedge) other;
+
+            if(this.startState.equals(otherEdge.startState) && this.endState.equals(otherEdge.endState) && this.transSymbol == otherEdge.transSymbol){
+                return true;
+            }
+
+            return false;
+
+        }
+    }
+
+    static class Dcell{
+        private Set<Dedge> edgeSet = new HashSet<Dedge>();
+        private Dstate startState;
+        private Dstate endState;
+
+        public Set<Dedge> getEdgeSet() {
+            return edgeSet;
+        }
+
+        public void setEdgeSet(Set<Dedge> edgeSet) {
+            this.edgeSet = edgeSet;
+        }
+
+        public Dstate getStartState() {
+            return startState;
+        }
+
+        public void setStartState(Dstate startState) {
+            this.startState = startState;
+        }
+
+        public Dstate getEndState() {
+            return endState;
+        }
+
+        public void setEndState(Dstate endState) {
+            this.endState = endState;
+        }
     }
 
 }
