@@ -3,8 +3,6 @@ package gian.compiler.practice.lexical.transform;
 import com.alibaba.fastjson.JSON;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static gian.compiler.practice.lexical.transform.LexConstants.EOF;
 
@@ -13,7 +11,6 @@ import static gian.compiler.practice.lexical.transform.LexConstants.EOF;
  */
 public class DFATransformer {
 
-    public static final Pattern pattern = Pattern.compile("");
 
     public static DtranCell nfa2Dfa(Cell nfa){
         nfa.edgeSet = Arrays.copyOf(nfa.edgeSet, nfa.edgeCount);
@@ -29,7 +26,7 @@ public class DFATransformer {
         DtranState endDtranState = null;
 
         // 存储生成的DFA状态
-        Map<String, DtranState> allDtranStateSet = new HashMap<String, DtranState>();
+        Map<String, DtranState> allDtranStateSet = new HashMap<>();
         allDtranStateSet.put(startDtranState.toString(), startDtranState);
         // 存储需要遍历的DFA状态
         List<DtranState> dtranStateList = new ArrayList<>();
@@ -77,6 +74,7 @@ public class DFATransformer {
             }
         }
 
+        // 找出接收状态节点
         for(DtranState dtranState : allDtranStateSet.values()){
             for(State state : dtranState.getStateSet()){
                 if(state.stateName == nfa.endState.stateName){
@@ -113,6 +111,8 @@ public class DFATransformer {
         // 生成 DFA
         Dcell dcell = buildDFA(root);
 
+        displayDfa(dcell);
+
         return dcell;
     }
 
@@ -125,7 +125,9 @@ public class DFATransformer {
         // 记录转换符
         Set<Character> tranChars = new HashSet<>();
         for(LexNode node : nodeMap.values()){
-            tranChars.add(node.getElement());
+            if(node.getElement() != LexConstants.EOF) {
+                tranChars.add(node.getElement());
+            }
         }
 
         // 起始节点
@@ -133,8 +135,12 @@ public class DFATransformer {
         stateNum++;
         Set<Integer> rootFirstPos = root.getFirstPos();
         for(Integer pos : rootFirstPos){
-            startState.getStateSet().add(nodeMap.get(pos));
+            startState.addState(nodeMap.get(pos));
         }
+
+        // 已生成的状态
+        Map<String, Dstate> allDstateMap = new HashMap<>();
+        allDstateMap.put(startState.getTag(), startState);
 
         // 待处理的状态
         List<Dstate> dstates = new ArrayList<>();
@@ -148,7 +154,7 @@ public class DFATransformer {
 
         for(int i=0; i<dstates.size(); i++){
             Dstate state = dstates.get(i);
-            if(!stateTags.contains(state.toString())){
+            if(!stateTags.contains(state.getTag())){
                 for(Character tranChar : tranChars){
                     Dstate newState = new Dstate(String.valueOf((char)(stateNum + 65)));
                     stateNum++;
@@ -163,6 +169,12 @@ public class DFATransformer {
                         }
                     }
 
+                    if(allDstateMap.get(newState.getTag()) != null){
+                        newState = allDstateMap.get(newState.getTag());
+                    }else{
+                        allDstateMap.put(newState.getTag(), newState);
+                    }
+
                     Dedge edge = new Dedge(state, newState, tranChar);
                     newState.getDtranEdgeSet().add(edge);
                     dstates.add(newState);
@@ -170,10 +182,11 @@ public class DFATransformer {
                 }
 
                 // 标记已处理
-                stateTags.add(state.toString());
+                stateTags.add(state.getTag());
             }
         }
 
+        // 找出接收状态节点
         Dstate endState = null;
         for(Dstate dtranState : dstates){
             for(LexNode state : dtranState.getStateSet()){
@@ -192,9 +205,6 @@ public class DFATransformer {
         dcell.setStartState(startState);
         dcell.setEndState(endState);
         dcell.getEdgeSet().addAll(dedges);
-
-
-        displayDfa(dcell);
 
         return dcell;
     }
@@ -624,7 +634,11 @@ public class DFATransformer {
         @Override
         public String toString(){
 //            return JSON.toJSONString(stateNames);
-            return JSON.toJSONString(stateNames) + "|" + JSON.toJSONString(statePos);
+            return stateName + ":" + JSON.toJSONString(statePos);
+        }
+
+        public String getTag(){
+            return JSON.toJSONString(statePos);
         }
 
         public String getStateName() {
