@@ -1,12 +1,7 @@
 import gian.compiler.practice.lexical.transform.*;
-import gian.compiler.utils.BST;
-import gian.compiler.utils.TreePrintUtil;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import utils.BST;
+import utils.TreePrintUtil;
 
 /**
  * Created by Gian on 2019/1/27.
@@ -24,6 +19,12 @@ public class NFATest {
 
         // NFA 生成 DFA
         DtranCell dtranCell = DFATransformer.nfa2Dfa(nfa);
+    }
+
+    @Test
+    public void testLexNode(){
+        String regular_expression = "(a|b)*abb";
+        DFATransformer.regExp2Dfa(regular_expression);
     }
 
     @Test
