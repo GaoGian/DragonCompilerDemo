@@ -102,6 +102,8 @@ public class DFATransformer {
         // 转换成后缀表达式
         String rnpExpression = LexUtils.RNP(regular_expression);
 
+        System.out.println("----------------------------DFA-------------------------------");
+
         // 先生成语法分析树
         LexNode root = buildLexNode(rnpExpression);
         // 计算各位置的nullAble、firstPos、lastPos
@@ -119,14 +121,13 @@ public class DFATransformer {
 
         System.out.println("----------------------------minimizeDFA-------------------------------");
 
-        return dcell;
-
         // 最小化 DFA
-//        Dcell minDFA = minimizeDFA(dcell);
-//
-//        displayDfa(minDFA);
+        Dcell minDFA = minimizeDFA(dcell);
 
-//        return minDFA;
+        displayDfa(minDFA);
+
+        return minDFA;
+
     }
 
     public static Dcell minimizeDFA(Dcell originDcell){
@@ -136,8 +137,6 @@ public class DFATransformer {
         Map<String, Dstate> stateMap = originDcell.getStateMap();
 
         // 设置初始分组：接收状态组、非接收状态组
-        Set<Dstate> accStates = new HashSet<>();
-        accStates.add(originDcell.getEndState());
         Set<Dstate> unAccStates = new HashSet<>();
         unAccStates.addAll(states);
         unAccStates.remove(originDcell.getEndState());
@@ -147,8 +146,8 @@ public class DFATransformer {
         // 记录原来的边
         Map<String, Map<Character, String>> newEdgeTags = new HashMap<>();
 
-        // 测试不同输入符的情况下的转换是否相同
-        for(Dstate state : states){
+        // 测试不同输入符的情况下的转换是否相同，不包括接收态
+        for(Dstate state : unAccStates){
             // 记录DFA节点在不同输入符下的转换集合
             Set<String> tranStateTag = new TreeSet<>(new Comparator<String>() {
                 @Override
@@ -156,6 +155,7 @@ public class DFATransformer {
                     return o1.compareTo(o2);
                 }
             });
+
             // 记录原节点的转换关系
             Map<Character, String> newEdgeTag = new HashMap<>();
             for(Character tranChar : tranChars){
@@ -189,29 +189,29 @@ public class DFATransformer {
 
         // 最小化DFA
         Dcell minDcell = new Dcell();
+        Dstate newStartState = null;
+        Dstate newEndState = new Dstate(originDcell.getEndState());
 
         // 根据分组生成新的节点，key：newState.getTag(), value: newState
         Map<String, Dstate> newStateMap = new HashMap<>();
         // 记录新旧节点映射, key : originState.getTag(), value: newState
         Map<String, Dstate> stateTranMap = new HashMap<>();
+        stateTranMap.put(originDcell.getEndState().getTag(), newEndState);
+
         for(String tag : groups.keySet()){
             Set<Dstate> dstates = groups.get(tag);
             Dstate newState = new Dstate();
             for(Dstate originState : dstates) {
-                // 判断是否是原来的起始节点，增加接收节点
+                // 判断是否是原来的起始节点，增加起始节点
                 if(originState.getTag().equals(originDcell.getStartState().getTag())){
-                    minDcell.setStartState(newState);
-                }
-                // 判断是否是原来的接收节点，增加接收节点
-                if(originState.getTag().equals(originDcell.getEndState().getTag())){
-                    minDcell.setEndState(newState);
+                    newStartState = newState;
                 }
                 // 接收原来的所有pos集合
                 newState.addState(originState.getStateSet());
                 if(newState.getStateName() == null){
-                    newState.setStateName(originState.getStateName());
+                    newState.setStateName("'" + originState.getStateName() + "'");
                 }else{
-                    newState.setStateName(newState.getStateName() + ":" + originState.getStateName());
+                    newState.setStateName(newState.getStateName() + ":" + "'" + originState.getStateName() + "'");
                 }
                 // 记录新旧节点映射
                 stateTranMap.put(originState.getTag(), newState);
@@ -219,26 +219,36 @@ public class DFATransformer {
             newStateMap.put(tag, newState);
         }
 
-        // 生成新的边
+        // 生成新的边，不包括接收态
 //        Map<String, Map<Character, String>> newEdgeTags
         Set<Dedge> newDedges = new HashSet<>();
         for(String tag : newEdgeTags.keySet()){
-            Dstate newStartState = newStateMap.get(tag);
+            Dstate preState = newStateMap.get(tag);
             Map<Character, String> originEdgeMap = newEdgeTags.get(tag);
             for(Character tranChar : originEdgeMap.keySet()){
                 String originStateTag = originEdgeMap.get(tranChar);
-                Dstate newEndState = stateTranMap.get(originStateTag);
+                Dstate subState = stateTranMap.get(originStateTag);
 
                 // 生成新的边
-                Dedge newDedge = new Dedge(newStartState, newEndState, tranChar);
+                Dedge newDedge = new Dedge(preState, subState, tranChar);
 
                 // 绑定节点的out edge
-                newStartState.getDtranEdgeSet().add(newDedge);
+                preState.getDtranEdgeSet().add(newDedge);
                 // 记录所有边
-                newDedges.addAll(newStartState.getDtranEdgeSet());
+                newDedges.addAll(preState.getDtranEdgeSet());
             }
         }
 
+        Set<Dedge> originEndStateEdgeSet = originDcell.getEndState().getDtranEdgeSet();
+        Set<Dedge> newEndStateEdgeSet = new HashSet<>();
+        for(Dedge originDedge : originEndStateEdgeSet){
+            Dedge newEndStateEdge = new Dedge(newEndState, stateTranMap.get(originDedge.getEndState().getTag()), originDedge.getTransSymbol());
+            newEndStateEdgeSet.add(newEndStateEdge);
+        }
+        newDedges.addAll(newEndStateEdgeSet);
+
+        minDcell.setStartState(newStartState);
+        minDcell.setEndState(newEndState);
         minDcell.getEdgeSet().addAll(newDedges);
 
         return minDcell;
@@ -281,36 +291,36 @@ public class DFATransformer {
         Set<Dedge> dedges = new HashSet<>();
 
         for(int i=0; i<dstates.size(); i++){
-            Dstate state = dstates.get(i);
-            if(!stateTags.contains(state.getTag())){
+            Dstate preState = dstates.get(i);
+            if(!stateTags.contains(preState.getTag())){
                 for(Character tranChar : tranChars){
-                    Dstate newState = new Dstate(String.valueOf((char)(stateNum + 65)));
+                    Dstate subState = new Dstate(String.valueOf((char)(stateNum + 65)));
                     stateNum++;
 
-                    for(LexNode node : state.getStateSet()){
+                    for(LexNode node : preState.getStateSet()){
                         // 只需要添加转换符为tranChar的位置（当前位置符即转换符）的后继节点
                         if(tranChar.equals(node.getElement())) {
                             Set<Integer> followPos = node.getFollowPos();
                             for (Integer pos : followPos) {
-                                newState.addState(nodeMap.get(pos));
+                                subState.addState(nodeMap.get(pos));
                             }
                         }
                     }
 
-                    if(allDstateMap.get(newState.getTag()) != null){
-                        newState = allDstateMap.get(newState.getTag());
+                    if(allDstateMap.get(subState.getTag()) != null){
+                        subState = allDstateMap.get(subState.getTag());
                     }else{
-                        allDstateMap.put(newState.getTag(), newState);
+                        allDstateMap.put(subState.getTag(), subState);
                     }
 
-                    Dedge edge = new Dedge(state, newState, tranChar);
-                    newState.getDtranEdgeSet().add(edge);
-                    dstates.add(newState);
+                    Dedge edge = new Dedge(preState, subState, tranChar);
+                    preState.getDtranEdgeSet().add(edge);
+                    dstates.add(subState);
                     dedges.add(edge);
                 }
 
                 // 标记已处理
-                stateTags.add(state.getTag());
+                stateTags.add(preState.getTag());
             }
         }
 
@@ -730,6 +740,15 @@ public class DFATransformer {
             this.stateName = stateName;
         }
 
+        public Dstate(Dstate originDstate){
+            this.stateName = "'" + originDstate.getStateName() + "'";
+            this.stateSet = originDstate.getStateSet();
+            this.dtranEdgeSet = originDstate.getDtranEdgeSet();
+
+            this.stateNames = originDstate.getStateNames();
+            this.statePos = originDstate.getStatePos();
+        }
+
         public void addState(LexNode state){
             this.stateSet.add(state);
 
@@ -807,6 +826,14 @@ public class DFATransformer {
 
         public void setStateNames(Set<Character> stateNames) {
             this.stateNames = stateNames;
+        }
+
+        public Set<Integer> getStatePos() {
+            return statePos;
+        }
+
+        public void setStatePos(Set<Integer> statePos) {
+            this.statePos = statePos;
         }
     }
 
