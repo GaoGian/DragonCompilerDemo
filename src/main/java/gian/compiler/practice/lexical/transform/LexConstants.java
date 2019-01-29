@@ -8,4 +8,6 @@ public class LexConstants {
     public static final char EPSILON = 'ε';
     public static final char EOF = '#';
 
+    public static final String TRAN_UNABLE = "Φ";
+
 }

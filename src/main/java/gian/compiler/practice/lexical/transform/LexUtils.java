@@ -10,11 +10,15 @@ import java.util.Map;
  */
 public class LexUtils {
 
-    // 转化弄成后缀表达式
+    /**
+     * 将正则表达式进行逆波兰转化（转后缀）
+     * @param regular_expression
+     * @return
+     */
     public static String RNP(String regular_expression){
 
         // 添加“+”符号，方便转换成后缀表达式
-        // TODO 需要能够识别正则表达式元字符，例如：[^a-z]，使用类分装元字符，使用语法分析树存储位置信息
+        // TODO 需要能够识别正则表达式元字符，例如：[^a-z]，使用类分装元字符，使用分析树存储位置信息
         regular_expression = LexUtils.add_join_symbol(regular_expression);
         // 中缀转后缀        FIXME 方便计算机按照顺序识别正则表达式词法单元
         regular_expression = LexUtils.postfix(regular_expression);
