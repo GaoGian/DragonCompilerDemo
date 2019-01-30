@@ -1,4 +1,5 @@
 import gian.compiler.practice.lexical.transform.*;
+import gian.compiler.practice.lexical.transform.regex.LexMatcher;
 import gian.compiler.practice.lexical.transform.regex.LexPattern;
 import org.junit.Test;
 import utils.BST;
@@ -57,9 +58,25 @@ public class NFATest {
 
     @Test
     public void patternTest(){
-        String regular_expression = "\\d+(\\.\\d+)?";
+        String str = "112.211";
+        String regular_expression = "([A-Z]+)|(\\d+(\\.\\d+)?)";
         LexPattern pattern = LexPattern.compile(regular_expression);
-        System.out.println(pattern.pattern());
+//        LexMatcher matcher = pattern.matcher(str);
+//        boolean rs = matcher.matches();
+//        System.out.println(rs);
+
+        if(pattern.matchRoot != null) {
+            LexPattern.Node preNode = pattern.matchRoot;
+            while (true) {
+                System.out.println(preNode.getClass());
+
+                preNode = preNode.next;
+                if(preNode == null){
+                    break;
+                }
+            }
+        }
+
     }
 
     @Test

@@ -41,7 +41,7 @@ public class LexPattern {
     private transient String normalizedPattern;
 
     transient Node root;
-    transient Node matchRoot;
+    public transient Node matchRoot;
 
     transient int[] buffer;
 
@@ -2097,8 +2097,8 @@ public class LexPattern {
         return hasSupplementary ? new SliceS(tmp) : new Slice(tmp);
     }
 
-    static class Node extends Object {
-        Node next;
+    public static class Node extends Object {
+        public Node next;
 
         Node() {
             next = accept;
@@ -3292,9 +3292,7 @@ public class LexPattern {
 
     static final class BranchConn extends Node {
         BranchConn() {
-        }
-
-        ;
+        };
 
         boolean match(LexMatcher matcher, int i, CharSequence seq) {
             return next.match(matcher, i, seq);
