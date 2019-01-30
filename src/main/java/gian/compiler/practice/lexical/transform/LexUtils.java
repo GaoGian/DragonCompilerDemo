@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by gaojian on 2019/1/28.
@@ -12,6 +13,7 @@ public class LexUtils {
 
     /**
      * 将正则表达式进行逆波兰转化（转后缀）
+     * Reverse Polish Notation
      * @param regular_expression
      * @return
      */
@@ -24,6 +26,12 @@ public class LexUtils {
         regular_expression = LexUtils.postfix(regular_expression);
 
         return regular_expression;
+    }
+
+    public static String rnp2Node(String regular_expression){
+        Pattern pattern = Pattern.compile(regular_expression);
+
+        return null;
     }
 
     // 添加交操作符“+”，便于中缀转后缀表达式，例如 abb->a+b+b
@@ -334,6 +342,46 @@ public class LexUtils {
             return buffer.toString();
         }
 
+    }
+
+    public static class PatternNode{
+        private String pattern;
+        private PatternNode leftPattern;
+        private PatternNode rightPattern;
+
+        public PatternNode(){
+
+        }
+
+        public PatternNode(String pattern, PatternNode leftPattern, PatternNode rightPattern) {
+            this.pattern = pattern;
+            this.leftPattern = leftPattern;
+            this.rightPattern = rightPattern;
+        }
+
+        public String getPattern() {
+            return pattern;
+        }
+
+        public void setPattern(String pattern) {
+            this.pattern = pattern;
+        }
+
+        public PatternNode getLeftPattern() {
+            return leftPattern;
+        }
+
+        public void setLeftPattern(PatternNode leftPattern) {
+            this.leftPattern = leftPattern;
+        }
+
+        public PatternNode getRightPattern() {
+            return rightPattern;
+        }
+
+        public void setRightPattern(PatternNode rightPattern) {
+            this.rightPattern = rightPattern;
+        }
     }
 
 }

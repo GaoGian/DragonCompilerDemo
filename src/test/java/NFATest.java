@@ -3,6 +3,8 @@ import org.junit.Test;
 import utils.BST;
 import utils.TreePrintUtil;
 
+import java.util.regex.Pattern;
+
 /**
  * Created by Gian on 2019/1/27.
  */
@@ -24,7 +26,39 @@ public class NFATest {
     @Test
     public void testLexNode(){
         String regular_expression = "(a|b)*abb";
-        DFATransformer.regExp2Dfa(regular_expression);
+        DFATransformer.Dcell dcell = DFATransformer.regExp2Dfa(regular_expression);
+    }
+
+    @Test
+    public void testLexCompile(){
+        String regular_expression = "(a|b)*abb";
+        DFATransformer.Dcell dcell = DFATransformer.regExp2Dfa(regular_expression);
+
+        System.out.println("----------------------------DFA compile test-------------------------------");
+
+        String testStmt = "abababaaaaabbabb";
+        DFATransformer.Dstate preState = dcell.getStartState();
+        for(int index=0; index<testStmt.length(); index++){
+            char input = testStmt.charAt(index);
+            preState = preState.tranState(input);
+            if(preState == null){
+                throw new RuntimeException("DFA compile error");
+            }
+        }
+
+        if(dcell.getEndState() != preState){
+            throw new RuntimeException("DFA compile state error");
+        }else{
+            System.out.println("DFA compile success");
+        }
+
+    }
+
+    @Test
+    public void patternTest(){
+        String regular_expression = "(a|b)*abb";
+        Pattern pattern = Pattern.compile(regular_expression);
+        System.out.println(pattern.pattern());
     }
 
     @Test

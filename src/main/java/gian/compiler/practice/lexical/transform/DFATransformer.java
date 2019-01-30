@@ -684,7 +684,7 @@ public class DFATransformer {
         System.out.println("结束");
     }
 
-    static class LexNode{
+    public static class LexNode{
 
         private char element;
         private Integer pos;
@@ -783,7 +783,7 @@ public class DFATransformer {
     /**
      * 优化 DFA 状态数据结构
      */
-    static class Dstate{
+    public static class Dstate{
 
         private String stateName;
 
@@ -834,6 +834,15 @@ public class DFATransformer {
                 this.stateNames.add(state.getElement());
                 this.statePos.add(state.getPos());
             }
+        }
+
+        public Dstate tranState(char input){
+            for(Dedge dedge : this.getDtranEdgeSet()){
+                if(dedge.getTransSymbol() == input){
+                    return dedge.getEndState();
+                }
+            }
+            return null;
         }
 
         @Override
@@ -908,7 +917,7 @@ public class DFATransformer {
         }
     }
 
-    static class Dedge{
+    public static class Dedge{
         private Dstate startState;
         private Dstate endState;
         private char transSymbol;
@@ -960,7 +969,7 @@ public class DFATransformer {
         }
     }
 
-    static class Dcell{
+    public static class Dcell{
         private Set<Dedge> edgeSet = new HashSet<Dedge>();
         private Dstate startState;
         private Dstate endState;
