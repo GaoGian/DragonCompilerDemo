@@ -1,4 +1,5 @@
 import gian.compiler.practice.lexical.transform.*;
+import gian.compiler.practice.lexical.transform.regex.LexPattern;
 import org.junit.Test;
 import utils.BST;
 import utils.TreePrintUtil;
@@ -56,8 +57,8 @@ public class NFATest {
 
     @Test
     public void patternTest(){
-        String regular_expression = "(a|b)*abb";
-        Pattern pattern = Pattern.compile(regular_expression);
+        String regular_expression = "\\d+(\\.\\d+)?";
+        LexPattern pattern = LexPattern.compile(regular_expression);
         System.out.println(pattern.pattern());
     }
 

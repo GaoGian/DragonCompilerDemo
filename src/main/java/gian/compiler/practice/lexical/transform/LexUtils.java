@@ -28,8 +28,9 @@ public class LexUtils {
         return regular_expression;
     }
 
-    public static String rnp2Node(String regular_expression){
-        Pattern pattern = Pattern.compile(regular_expression);
+    public static String parseRegex(String regular_expression){
+        // TODO
+
 
         return null;
     }
