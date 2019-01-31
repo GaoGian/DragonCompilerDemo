@@ -200,14 +200,7 @@ public class LexSimplePattern {
 
     }
 
-
-    /*
-     优先级表：
-          \0	(	*	|	+   ?	)
-     priority  0	    1	7	5	7   7	8
-     icp  0	    8	6	4	6   6	1
-    */
-    // 优先级 in stack priority
+    // 优先级
     public static int priority(Metacharacter meta) {
         String pattern = meta.getMeta();
         switch (pattern) {
@@ -221,23 +214,7 @@ public class LexSimplePattern {
             case "|":
                 return 5;
             default:
-                return 100;
-        }
-    }
-    // 优先级 in coming priority
-    public static int icp(Metacharacter meta) {
-        String pattern = meta.getMeta();
-        switch (pattern) {
-            case LexConstants.EOF_STR:
-                return 0;
-            case "*":
-            case "+":
-            case "?":
-                return 6;
-            case "|":
-                return 4;
-            default:
-                return 100;
+                return 10;
         }
     }
 
