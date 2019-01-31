@@ -1,10 +1,13 @@
+import com.alibaba.fastjson.JSON;
 import gian.compiler.practice.lexical.transform.*;
 import gian.compiler.practice.lexical.transform.regex.LexMatcher;
 import gian.compiler.practice.lexical.transform.regex.LexPattern;
+import gian.compiler.practice.lexical.transform.regex.LexSimplePattern;
 import org.junit.Test;
 import utils.BST;
 import utils.TreePrintUtil;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -77,6 +80,19 @@ public class NFATest {
             }
         }
 
+    }
+
+    @Test
+    public void simplePatternTest(){
+        String pattern = "([A-Z]+)|(\\d+(\\.\\d+)?)";
+        List<LexSimplePattern.Metacharacter> metas = LexSimplePattern.compile(pattern);
+
+        System.out.println(JSON.toJSONString(metas));
+
+        //cout<<endl;
+        //cout<<"后缀表达式："<<out_string<<endl;
+        List<LexSimplePattern.Metacharacter> postfixMetas = LexSimplePattern.postfix(metas);
+        System.out.println("转化后的后缀表达式：" + JSON.toJSONString(postfixMetas));
     }
 
     @Test
