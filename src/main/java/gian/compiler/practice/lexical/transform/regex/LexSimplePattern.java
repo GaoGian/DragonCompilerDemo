@@ -3,15 +3,11 @@ package gian.compiler.practice.lexical.transform.regex;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.MyStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * TODO 测试使用，只用于简单语句
- * 将正则表达式拆分成不同的子部分，方便转换成逆波兰
+ * 将正则表达式拆分成不同的子部分( [] 级别)，方便转换成逆波兰
  * Created by gaojian on 2019/1/31.
  */
 public class LexSimplePattern {
@@ -24,11 +20,17 @@ public class LexSimplePattern {
         bracketsMap.put(']', '[');
     }
 
+    /**
+     * 拆分成子表达式树
+     * @param pattern
+     * @return
+     */
     public static List<Metacharacter> compile(String pattern){
 
-        List<Metacharacter> metaList = new ArrayList<>();
-
         MyStack<Character> inputStack = new MyStack<>();
+        MyStack<Metacharacter> metaStack = new MyStack<>();
+        // 是否是方括号元字符
+        MyStack<Character> bracketStack = new MyStack<>();
 
         char[] chars = pattern.toCharArray();
         for(int i=0; i<chars.length; i++){
@@ -38,32 +40,53 @@ public class LexSimplePattern {
                 case '*':
                 case '+':
                 case '?':{
-                    metaList.add(new Metacharacter(String.valueOf(input), false));
+                    metaStack.push(new Metacharacter(String.valueOf(input), false));
                     break;
                 }
                 case '(':{
-                    inputStack.push(input);
-                    metaList.add(new Metacharacter(String.valueOf(input), false));
+                    // 用来识别左边界
+                    metaStack.push(new Metacharacter(String.valueOf(input), false));
                     break;
                 }
                 case ')':{
-                    Metacharacter meta = matchBrackets(inputStack, bracketsMap.get(input), input, false);
-                    if(meta != null) {
-                        metaList.add(meta);
+                    Metacharacter parenthesisMeta = matchParenthesis(metaStack, bracketsMap.get(input));
+                    metaStack.pop();
+                    if(parenthesisMeta != null) {
+                        metaStack.push(parenthesisMeta);
                     }
-                    metaList.add(new Metacharacter(String.valueOf(input), false));
                     break;
                 }
                 case '[':{
                     inputStack.push(input);
+                    bracketStack.push(input);
                     break;
                 }
                 case ']':{
-                    metaList.add(matchBrackets(inputStack, bracketsMap.get(input), input, true));
+                    inputStack.push(input);
+                    Metacharacter bracketMeta = matchBracket(inputStack, bracketsMap.get(input));
+                    if(bracketMeta != null) {
+                        metaStack.push(bracketMeta);
+                    }
+                    bracketStack.pop();
+                    break;
+                }
+                case '\\':{
+                    inputStack.push(input);
                     break;
                 }
                 default:{
-                    inputStack.push(input);
+                    if(bracketStack.top() != null){
+                        // 说明是 [] 元字符
+                        inputStack.push(input);
+                    }else if(inputStack.top() == '\\'){
+                        // 识别转义字符
+                        Character pop = inputStack.pop();
+                        metaStack.push(new Metacharacter((String.valueOf(pop) + input), true));
+                    }else{
+                        // 识别单个字符
+                        Character pop = inputStack.pop();
+                        metaStack.push(new Metacharacter(String.valueOf(pop), true));
+                    }
                     break;
                 }
 
@@ -71,7 +94,53 @@ public class LexSimplePattern {
 
         }
 
+        List<Metacharacter> metaList = new ArrayList<>();
+        while(metaStack.top() != null){
+            metaList.add(metaStack.pop());
+        }
+        Collections.reverse(metaList);
+
         return metaList;
+    }
+
+    /**
+     * 将子表达式进行逆波兰转换
+     * @param originMetas
+     * @return
+     */
+    public static List<Metacharacter> postfix(List<Metacharacter> originMetas){
+        //设定表达式的最后一个符号式“ε”，而其“ε”一开始先放在栈s的栈底
+        originMetas.add(new Metacharacter(LexConstants.EOF_STR, false));
+
+        // 表达式拆分后，只需要对非标识符进行编排
+        MyStack<Metacharacter> metaStack = new MyStack<>();
+        for(Metacharacter meta : originMetas){
+            if(meta.getChildMetas().size() > 0){
+                meta.setChildMetas(postfix(meta.getChildMetas()));
+            }
+
+            if(metaStack.size() == 0){
+                metaStack.push(meta);
+            }else{
+                Metacharacter preMeta = metaStack.top();
+                if(priority(preMeta) < priority(meta)){
+                    preMeta = metaStack.pop();
+                    metaStack.push(meta);
+                    metaStack.push(preMeta);
+                }else{
+                    metaStack.push(meta);
+                }
+            }
+        }
+
+        List<Metacharacter> postfixMetas = new ArrayList<>();
+        while(metaStack.top() != null){
+            postfixMetas.add(metaStack.pop());
+        }
+        Collections.reverse(postfixMetas);
+
+        // 经过上述
+        return postfixMetas;
     }
 
     public static List<Metacharacter> postfix(String pattern){
@@ -80,61 +149,44 @@ public class LexSimplePattern {
         return postfixMetas;
     }
 
-    public static List<Metacharacter> postfix(List<Metacharacter> originMetas){
-        MyStack<Metacharacter> stack = new MyStack<>();
-        Metacharacter meta = new Metacharacter(String.valueOf(LexConstants.EOF), false), preMeta, op;
-        stack.push(meta);
+    /**
+     * 匹配圆括号，处理成集合
+     * @param metaStack
+     * @param left
+     * @return
+     */
+    private static Metacharacter matchParenthesis(MyStack<Metacharacter> metaStack, Character left){
 
-        //读一个字符
-        List<Metacharacter> postfixMetas = new ArrayList<>();
-        int read_location = 0;
-        meta = originMetas.get(read_location++);
-        while (!stack.empty()) {
-            if (meta.isLetter()) {
-                postfixMetas.add(meta);
-                //cout<<ch;
-                meta = originMetas.get(read_location++);
-            } else {
-                //cout<<"输出操作符："<<ch<<endl;
-                preMeta = stack.top();
-                if (isp(preMeta.getMeta().charAt(0)) < icp(meta.getMeta().charAt(0))) {
-                    stack.push(meta);
-                    //cout<<"压栈"<<ch<<"  读取下一个"<<endl;
-                    meta = originMetas.get(read_location++);
-                } else if (isp(preMeta.getMeta().charAt(0)) > icp(meta.getMeta().charAt(0))) {
-                    op = stack.top();
-                    stack.pop();
-                    //cout<<"退栈"<<op<<" 添加到输出字符串"<<endl;
-                    postfixMetas.add(op);
-                    //cout<<op;
-                } else {
-                    op = stack.top();
-                    stack.pop();
-                    //cout<<"退栈"<<op<<"  但不添加到输入字符串"<<endl;
-
-                    if (op.getMeta().charAt(0) == '(') {
-                        meta = originMetas.get(read_location++);
-                    }
-                }
-            }
+        MyStack<Metacharacter> temp = new MyStack<>();
+        while(metaStack.top() != null
+                && (metaStack.top().isMetaList() || !metaStack.top().getMeta().equals(String.valueOf(left)))){
+            temp.push(metaStack.pop());
         }
 
-        return postfixMetas;
+        if(temp.size() > 0) {
+            List<Metacharacter> childMetas = new ArrayList<>();
+            while (temp.top() != null) {
+                childMetas.add(temp.pop());
+            }
+            return new Metacharacter(LexConstants.METE_LIST, childMetas, true);
+        }else{
+            return null;
+        }
+
     }
 
-    private static Metacharacter matchBrackets(MyStack<Character> stack, Character left, Character right, boolean appendBrackets){
-        if(appendBrackets) {
-            stack.push(right);
-        }
-
+    /**
+     * 识别元字符，直接识别成字符串
+     * @param inputStack
+     * @param left
+     * @return
+     */
+    public static Metacharacter matchBracket(MyStack<Character> inputStack, Character left){
         MyStack<Character> temp = new MyStack<>();
-        while(stack.top() != left){
-            temp.push(stack.pop());
+        while(inputStack.top() != left){
+            temp.push(inputStack.pop());
         }
-
-        if(appendBrackets) {
-            temp.push(stack.pop());
-        }
+        temp.push(inputStack.pop());
 
         if(temp.size() > 0) {
             StringBuilder str = new StringBuilder();
@@ -148,63 +200,68 @@ public class LexSimplePattern {
 
     }
 
+
     /*
      优先级表：
           \0	(	*	|	+   ?	)
-     isp  0	    1	7	5	7   7	8
+     priority  0	    1	7	5	7   7	8
      icp  0	    8	6	4	6   6	1
     */
     // 优先级 in stack priority
-    public static int isp(char c) {
-
-        switch (c) {
-            case LexConstants.EOF:
-                return -1;
-            case '(':
-                return 1;
-            case '*':
-            case '+':
-            case '?':
+    public static int priority(Metacharacter meta) {
+        String pattern = meta.getMeta();
+        switch (pattern) {
+            case LexConstants.EOF_STR:
+                return 0;
+            case LexConstants.METE_LIST:
+            case "*":
+            case "+":
+            case "?":
                 return 7;
-            case '|':
+            case "|":
                 return 5;
-            case ')':
-                return 8;
+            default:
+                return 100;
         }
-        //若走到这一步，说明出错了
-        System.out.println("isp优先级匹配错误");
-        throw new RuntimeException("优先级匹配错误");
     }
-
     // 优先级 in coming priority
-    public static int icp(char c) {
-        switch (c) {
-            case LexConstants.EOF:
-                return -1;
-            case '(':
-                return 8;
-            case '*':
-            case '+':
-            case '?':
+    public static int icp(Metacharacter meta) {
+        String pattern = meta.getMeta();
+        switch (pattern) {
+            case LexConstants.EOF_STR:
+                return 0;
+            case "*":
+            case "+":
+            case "?":
                 return 6;
-            case '|':
+            case "|":
                 return 4;
-            case ')':
-                return 1;
+            default:
+                return 100;
         }
-        //若走到这一步，说明出错了
-        System.out.println("icp优先级匹配错误");
-        throw new RuntimeException("icp优先级匹配错误");
     }
 
     public static class Metacharacter{
 
         private String meta;
         private boolean isLetter;
+        private boolean isMetaList;
+        private List<Metacharacter> childMetas = new ArrayList<>();
+
+        public Metacharacter(){
+
+        }
 
         public Metacharacter(String pattern, boolean isLetter) {
             this.meta = pattern;
             this.isLetter = isLetter;
+        }
+
+        public Metacharacter(String pattern, List<Metacharacter> childMetas, boolean isLetter){
+            this.meta = pattern;
+            this.childMetas = childMetas;
+            this.isLetter = isLetter;
+            this.isMetaList = true;
         }
 
         public boolean match(String target){
@@ -225,6 +282,22 @@ public class LexSimplePattern {
 
         public void setLetter(boolean letter) {
             isLetter = letter;
+        }
+
+        public List<Metacharacter> getChildMetas() {
+            return childMetas;
+        }
+
+        public void setChildMetas(List<Metacharacter> childMetas) {
+            this.childMetas = childMetas;
+        }
+
+        public boolean isMetaList() {
+            return isMetaList;
+        }
+
+        public void setMetaList(boolean metaList) {
+            isMetaList = metaList;
         }
     }
 

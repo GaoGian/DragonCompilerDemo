@@ -89,10 +89,9 @@ public class NFATest {
 
         System.out.println(JSON.toJSONString(metas));
 
-        //cout<<endl;
-        //cout<<"后缀表达式："<<out_string<<endl;
         List<LexSimplePattern.Metacharacter> postfixMetas = LexSimplePattern.postfix(metas);
-        System.out.println("转化后的后缀表达式：" + JSON.toJSONString(postfixMetas));
+        System.out.println("-----------------------------转化后的后缀表达式-----------------------------");
+        System.out.println(JSON.toJSONString(postfixMetas));
     }
 
     @Test
