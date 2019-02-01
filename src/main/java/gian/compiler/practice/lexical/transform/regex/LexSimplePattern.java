@@ -36,10 +36,24 @@ public class LexSimplePattern {
         for(int i=0; i<chars.length; i++){
             char input = chars[i];
             switch (input) {
-                case '|':
                 case '*':
                 case '+':
                 case '?':{
+                    metaStack.push(new Metacharacter(String.valueOf(input), false));
+                    break;
+                }
+                case '|':{
+                    // 如果遇到 '|' 需要把左边的元字符都拼接起来，作为集合处理
+                    MyStack<Metacharacter> temp = new MyStack<>();
+                    while(metaStack.top() != null && !metaStack.top().getMeta().equals(String.valueOf('|'))){
+                        temp.push(metaStack.pop());
+                    }
+                    List<Metacharacter> leftMetaList = new ArrayList<>();
+                    while(temp.top() != null){
+                        leftMetaList.add(temp.pop());
+                    }
+                    metaStack.push(new Metacharacter(LexConstants.METE_LIST, leftMetaList, true));
+
                     metaStack.push(new Metacharacter(String.valueOf(input), false));
                     break;
                 }
@@ -78,14 +92,13 @@ public class LexSimplePattern {
                     if(bracketStack.top() != null){
                         // 说明是 [] 元字符
                         inputStack.push(input);
-                    }else if(inputStack.top() == '\\'){
+                    }else if(inputStack.top() != null && inputStack.top() == '\\'){
                         // 识别转义字符
                         Character pop = inputStack.pop();
                         metaStack.push(new Metacharacter((String.valueOf(pop) + input), true));
                     }else{
                         // 识别单个字符
-                        Character pop = inputStack.pop();
-                        metaStack.push(new Metacharacter(String.valueOf(pop), true));
+                        metaStack.push(new Metacharacter(String.valueOf(input), true));
                     }
                     break;
                 }

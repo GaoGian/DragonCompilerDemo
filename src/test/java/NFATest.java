@@ -1,5 +1,6 @@
 import com.alibaba.fastjson.JSON;
 import gian.compiler.practice.lexical.transform.*;
+import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
 import gian.compiler.practice.lexical.transform.regex.LexMatcher;
 import gian.compiler.practice.lexical.transform.regex.LexPattern;
 import gian.compiler.practice.lexical.transform.regex.LexSimplePattern;
@@ -84,7 +85,8 @@ public class NFATest {
 
     @Test
     public void simplePatternTest(){
-        String pattern = "([A-Z]+)|(\\d+(\\.\\d+)?)";
+//        String pattern = "([A-Z]+)|(\\d+(\\.\\d+)?)";
+        String pattern = "abc|([A-Z]+)|(\\d+(\\.\\d+)?)";
         List<LexSimplePattern.Metacharacter> metas = LexSimplePattern.compile(pattern);
 
         System.out.println(JSON.toJSONString(metas));
@@ -92,6 +94,27 @@ public class NFATest {
         List<LexSimplePattern.Metacharacter> postfixMetas = LexSimplePattern.postfix(metas);
         System.out.println("-----------------------------转化后的后缀表达式-----------------------------");
         System.out.println(JSON.toJSONString(postfixMetas));
+    }
+
+    @Test
+    public void pattern2NfaTest(){
+//        String pattern = "([A-Z]+)|(\\d+(\\.\\d+)?)";
+        String pattern = "(\\d+(\\.\\d+)?)";
+        LexAutomatonTransformer.LexCell lexCell = LexAutomatonTransformer.express2NFA(pattern);
+
+        System.out.println("DFA 的边数：" + lexCell.getEdgeSet().size());
+        System.out.println("DFA 的起始状态：" + lexCell.getStartState().getStateName());
+        System.out.println("DFA 的结束状态：" + lexCell.getEndState().getStateName());
+
+        int i=0;
+        for(LexAutomatonTransformer.LexEdge edge : lexCell.getEdgeSet()){
+            System.out.println("第 " + i + 1 + " 条边的起始状态：" + edge.getStartState().getStateName() +
+                    "，结束状态：" + edge.getEndState().getStateName() +
+                    "，转换符：" + edge.getTranPattern().getMeta());
+            i++;
+        }
+
+        System.out.println("结束");
     }
 
     @Test

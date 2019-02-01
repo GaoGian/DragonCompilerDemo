@@ -34,8 +34,7 @@ public class LexAutomatonTransformer {
         LexCell cell, left, right;
         MyStack<LexCell> stack = new MyStack<>();
 
-        for(int i=0; i<postfixMetas.size(); i++){
-            LexSimplePattern.Metacharacter element = postfixMetas.get(i);
+        for(LexSimplePattern.Metacharacter element : postfixMetas){
             if(!element.isLetter()) {
                 String meta = element.getMeta();
                 switch (meta) {
@@ -73,24 +72,16 @@ public class LexAutomatonTransformer {
                     cell = express2NFA(element.getChildMetas(), stateNum);
                     stack.push(cell);
                 }
-
-                // 栈内最多有两个 meta
-                if(stack.size() > 1 && postfixMetas.size() > 2 && i < (postfixMetas.size() - 2)){
-                    LexSimplePattern.Metacharacter nextMeta = postfixMetas.get(i+1);
-                    if(!nextMeta.getMeta().equals("|") && !nextMeta.getMeta().equals("*")
-                            && !nextMeta.getMeta().equals("+") && !nextMeta.getMeta().equals("?")){
-
-                        right = stack.pop();
-                        left = stack.pop();
-                        cell = doJoin(left, right);
-                        stack.push(cell);
-                    }
-                }
             }
 
         }
 
-        System.out.println("处理完毕");
+        while(stack.size() > 1){
+            right = stack.pop();
+            left = stack.pop();
+            cell = doJoin(left, right);
+            stack.push(cell);
+        }
 
         cell = stack.pop();
 
@@ -303,7 +294,7 @@ public class LexAutomatonTransformer {
     /**---------------------------------------------------------相关类--------------------------------------------------------**/
 
     public static LexState newLexState(Integer stateNum){
-        LexState newState = new LexState(String.valueOf(stateNum));
+        LexState newState = new LexState(String.valueOf((char)(stateNum + 65)));
         return newState;
     }
 
