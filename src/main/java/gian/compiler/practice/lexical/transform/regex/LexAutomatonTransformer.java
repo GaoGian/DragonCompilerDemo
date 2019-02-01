@@ -13,20 +13,14 @@ public class LexAutomatonTransformer {
 
     public static LexCell tranformNFA(List<LexExpression.Expression> expressions){
 
-            List<LexSimplePattern.Metacharacter> postfixMetas;
+        List<LexSimplePattern.Metacharacter> postfixMetas;
 
     }
 
     public static class LexState{
-        private String stateName;
-        private Map<LexState, LexEdge> edgeSet = new HashMap<>();
-        private Set<LexState> stateSet = new HashSet<>();
-        // TODO 需要设置 NFA、DFA 通用的标识符集合
-
-        // DFA 时使用
-        public String getTag(){
-            return JSON.toJSONString(stateSet);
-        }
+        protected String stateName;
+        // 当前节点的 out 转换边
+        protected Map<LexSimplePattern.Metacharacter, LexEdge> edgeSet = new HashMap<>();
 
         @Override
         public boolean equals(Object other){
@@ -35,13 +29,81 @@ public class LexAutomatonTransformer {
             }
 
             LexState otherState = (LexState) other;
-            if(this.stateSet.size() != otherState.stateSet.size()){
+            if(!this.stateName.equals(otherState.getStateName())){
                 return false;
             }
 
-            // TODO 需要设置 NFA、DFA 通用的标识符集合
-            for(LexState state : otherState.stateSet){
-                if(!this.stateSet.contains(state)){
+            return true;
+        }
+
+        /**
+         * 获取转换节点
+          */
+        public LexState tranState(LexSimplePattern.Metacharacter tranMeta){
+            LexEdge tranEdge = this.edgeSet.get(tranMeta);
+            if(tranEdge != null) {
+                return tranEdge.getEndState();
+            }else{
+                return null;
+            }
+        }
+
+        // 获取标识符
+        public String getTag(){
+            return this.stateName;
+        }
+
+        @Override
+        public String toString(){
+            return stateName;
+        }
+
+        public String getStateName() {
+            return stateName;
+        }
+
+        public void setStateName(String stateName) {
+            this.stateName = stateName;
+        }
+
+        public Map<LexSimplePattern.Metacharacter, LexEdge> getEdgeSet() {
+            return edgeSet;
+        }
+
+        public void setEdgeSet(Map<LexSimplePattern.Metacharacter, LexEdge> edgeSet) {
+            this.edgeSet = edgeSet;
+        }
+
+    }
+
+    // NFA --> DFA
+    public static class LexN2DState extends LexState {
+        // DFA节点所有的原聚合节点
+        protected Set<String> aggStateSet = new TreeSet<>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o2.compareTo(o1);//降序排列
+            }
+        });
+
+        @Override
+        public String getTag(){
+            return JSON.toJSONString(aggStateSet);
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if(other == null){
+                return false;
+            }
+
+            LexN2DState otherState = (LexN2DState) other;
+            if(this.aggStateSet.size() != otherState.aggStateSet.size()){
+                return false;
+            }
+
+            for(String nfaStateName : otherState.aggStateSet){
+                if(!this.aggStateSet.contains(nfaStateName)){
                     return false;
                 }
             }
@@ -51,35 +113,65 @@ public class LexAutomatonTransformer {
 
         @Override
         public String toString(){
-            return stateName + ":" + JSON.toJSONString(stateSet);
+            return this.getStateName() + ":" + JSON.toJSONString(aggStateSet);
         }
 
-        public void addState(LexNode state){
-            this.stateSet.add(state);
-
-            this.stateNames.add(state.getElement());
-            this.statePos.add(state.getPos());
+        public Set<String> getAggStateSet() {
+            return aggStateSet;
         }
 
-        public void addState(Set<LexNode> stateSet){
-            this.stateSet.addAll(stateSet);
+        public void setAggStateSet(Set<String> aggStateSet) {
+            this.aggStateSet = aggStateSet;
+        }
 
-            for(LexNode state : stateSet){
-                this.stateNames.add(state.getElement());
-                this.statePos.add(state.getPos());
+    }
+
+    // Regex --> DFA
+    public static class LexR2DState extends LexState {
+        protected Set<Integer> statePos = new TreeSet<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1.compareTo(o2);//降序排列
             }
+        });
+
+        @Override
+        public String getTag(){
+            return JSON.toJSONString(statePos);
         }
 
-        public Dstate tranState(char input){
-            for(Dedge dedge : this.getDtranEdgeSet()){
-                if(dedge.getTransSymbol() == input){
-                    return dedge.getEndState();
+        @Override
+        public boolean equals(Object other){
+            if(other == null){
+                return false;
+            }
+
+            LexR2DState otherState = (LexR2DState) other;
+            if(this.statePos.size() != otherState.statePos.size()){
+                return false;
+            }
+
+            for(Integer pos : otherState.statePos){
+                if(!this.statePos.contains(pos)){
+                    return false;
                 }
             }
-            return null;
+
+            return true;
         }
 
+        @Override
+        public String toString(){
+            return this.getStateName() + ":" + JSON.toJSONString(statePos);
+        }
 
+        public Set<Integer> getStatePos() {
+            return statePos;
+        }
+
+        public void setStatePos(Set<Integer> statePos) {
+            this.statePos = statePos;
+        }
     }
 
     public static class LexEdge{
@@ -101,7 +193,10 @@ public class LexAutomatonTransformer {
             }
 
             LexEdge otherState = (LexEdge) other;
-            if(otherState.getStartState().equals(this.startState) && otherState.getEndState().equals(this.endState) && otherState.getTranPattern() == this.tranPattern){
+            if(otherState.getStartState().equals(this.startState)
+                    && otherState.getEndState().equals(this.endState)
+                    && otherState.getTranPattern().equals(this.tranPattern)){
+
                 return true;
             }
 
@@ -137,64 +232,10 @@ public class LexAutomatonTransformer {
 
         private LexState startState;
         private Set<LexState> endStatesSet = new HashSet<>();
-        private Map<LexState, LexEdge> edgeSet = new HashMap<>();
-
-        private Set<LexState> states = new HashSet<>();
-        private Set<LexSimplePattern.Metacharacter> tranChar = new HashSet<>();
-        private Map<String, LexState> stateMap = new HashMap<>();
-
-        public LexState getStartState() {
-            return startState;
-        }
-
-        public void setStartState(LexState startState) {
-            this.startState = startState;
-        }
-
-        public Set<LexState> getEndStatesSet() {
-            return endStatesSet;
-        }
-
-        public void setEndStatesSet(Set<LexState> endStatesSet) {
-            this.endStatesSet = endStatesSet;
-        }
-
-        public Map<LexState, LexEdge> getEdgeSet() {
-            return edgeSet;
-        }
-
-        public void setEdgeSet(Map<LexState, LexEdge> edgeSet) {
-            this.edgeSet = edgeSet;
-        }
-
-        public Set<LexState> getStates() {
-            return states;
-        }
-
-        public void setStates(Set<LexState> states) {
-            this.states = states;
-        }
-
-        public Set<LexSimplePattern.Metacharacter> getTranChar() {
-            return tranChar;
-        }
-
-        public void setTranChar(Set<LexSimplePattern.Metacharacter> tranChar) {
-            this.tranChar = tranChar;
-        }
-
-        public Map<String, LexState> getStateMap() {
-            return stateMap;
-        }
-
-        public void setStateMap(Map<String, LexState> stateMap) {
-            this.stateMap = stateMap;
-        }
-    }
-
-    // 用于 DFA、NFA 通用的标识集合
-    public static class LexTagPos {
+        private Set<LexEdge> edgeSet = new HashSet<>();
 
     }
+
+
 
 }

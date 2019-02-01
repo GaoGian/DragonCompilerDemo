@@ -276,6 +276,31 @@ public class LexSimplePattern {
         public void setMetaList(boolean metaList) {
             isMetaList = metaList;
         }
+
+        @Override
+        public boolean equals(Object other){
+            if(other == null){
+                return false;
+            }
+
+            Metacharacter otherMetacharacter = (Metacharacter) other;
+            if(!this.meta.equals(otherMetacharacter.getMeta())){
+                return false;
+            }
+
+            if(this.childMetas.size() != otherMetacharacter.getChildMetas().size()){
+                return false;
+            }
+
+            for(Metacharacter childMeta : otherMetacharacter.getChildMetas()){
+                if(!childMetas.contains(childMeta)){
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
     }
 
 }
