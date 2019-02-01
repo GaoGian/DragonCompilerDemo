@@ -109,8 +109,6 @@ public class LexSimplePattern {
      * @return
      */
     public static List<Metacharacter> postfix(List<Metacharacter> originMetas){
-        //设定表达式的最后一个符号式“ε”，而其“ε”一开始先放在栈s的栈底
-        originMetas.add(new Metacharacter(LexConstants.EOF_STR, false));
 
         // 表达式拆分后，只需要对非标识符进行编排
         MyStack<Metacharacter> metaStack = new MyStack<>();
@@ -223,6 +221,7 @@ public class LexSimplePattern {
         private String meta;
         private boolean isLetter;
         private boolean isMetaList;
+        private boolean isEpsilon;
         private List<Metacharacter> childMetas = new ArrayList<>();
 
         public Metacharacter(){
@@ -232,6 +231,12 @@ public class LexSimplePattern {
         public Metacharacter(String pattern, boolean isLetter) {
             this.meta = pattern;
             this.isLetter = isLetter;
+        }
+
+        public Metacharacter(String pattern, boolean isLetter, boolean isEpsilon) {
+            this.meta = pattern;
+            this.isLetter = isLetter;
+            this.isEpsilon = isEpsilon;
         }
 
         public Metacharacter(String pattern, List<Metacharacter> childMetas, boolean isLetter){
@@ -275,6 +280,14 @@ public class LexSimplePattern {
 
         public void setMetaList(boolean metaList) {
             isMetaList = metaList;
+        }
+
+        public boolean isEpsilon() {
+            return isEpsilon;
+        }
+
+        public void setEpsilon(boolean epsilon) {
+            isEpsilon = epsilon;
         }
 
         @Override

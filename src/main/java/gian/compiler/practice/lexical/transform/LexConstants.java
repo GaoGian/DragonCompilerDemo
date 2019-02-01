@@ -11,6 +11,7 @@ public class LexConstants {
     public static final String TRAN_UNABLE = "Φ";
 
     public static final String EOF_STR = "\\0";
+    public static final String EPSILON_STR = "ε";
     public static final String METE_LIST = "∑";
 
 }

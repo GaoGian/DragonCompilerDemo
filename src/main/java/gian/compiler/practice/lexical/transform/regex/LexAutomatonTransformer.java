@@ -2,10 +2,12 @@ package gian.compiler.practice.lexical.transform.regex;
 
 import com.alibaba.fastjson.JSON;
 import gian.compiler.practice.lexical.parser.LexExpression;
+import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.LexUtils;
 import gian.compiler.practice.lexical.transform.MyStack;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 将正则表达式后缀树处理成状态机
@@ -20,10 +22,303 @@ public class LexAutomatonTransformer {
         return null;
     }
 
+    public static LexCell express2NFA(String expression){
+        List<LexSimplePattern.Metacharacter> metas = LexSimplePattern.compile(expression);
+        List<LexSimplePattern.Metacharacter> postfixMetas = LexSimplePattern.postfix(metas);
+        return express2NFA(postfixMetas, new AtomicInteger(0));
+    }
+
+    // 表达式转NFA
+    public static LexCell express2NFA(List<LexSimplePattern.Metacharacter> postfixMetas, AtomicInteger stateNum) {
+
+        LexCell cell, left, right;
+        MyStack<LexCell> stack = new MyStack<>();
+
+        for(int i=0; i<postfixMetas.size(); i++){
+            LexSimplePattern.Metacharacter element = postfixMetas.get(i);
+            if(!element.isLetter()) {
+                String meta = element.getMeta();
+                switch (meta) {
+                    case "|": {
+                        right = stack.pop();
+                        left = stack.pop();
+                        cell = doUnite(left, right, stateNum);
+                        stack.push(cell);
+                        break;
+                    }
+                    case "*": {
+                        left = stack.pop();
+                        cell = doStart(left, stateNum);
+                        stack.push(cell);
+                        break;
+                    }
+                    case "+": {
+                        left = stack.pop();
+                        cell = doOneMore(left, stateNum);
+                        stack.push(cell);
+                        break;
+                    }
+                    case "?": {
+                        left = stack.pop();
+                        cell = doOneLess(left, stateNum);
+                        stack.push(cell);
+                        break;
+                    }
+                }
+            }else{
+                if(!element.isMetaList()){
+                    cell = doCell(element, stateNum);
+                    stack.push(cell);
+                }else{
+                    cell = express2NFA(element.getChildMetas(), stateNum);
+                    stack.push(cell);
+                }
+
+                // 栈内最多有两个 meta
+                if(stack.size() > 1 && postfixMetas.size() > 2 && i < (postfixMetas.size() - 2)){
+                    LexSimplePattern.Metacharacter nextMeta = postfixMetas.get(i+1);
+                    if(!nextMeta.getMeta().equals("|") && !nextMeta.getMeta().equals("*")
+                            && !nextMeta.getMeta().equals("+") && !nextMeta.getMeta().equals("?")){
+
+                        right = stack.pop();
+                        left = stack.pop();
+                        cell = doJoin(left, right);
+                        stack.push(cell);
+                    }
+                }
+            }
+
+        }
+
+        System.out.println("处理完毕");
+
+        cell = stack.pop();
+
+        return cell;
+
+    }
+
+    /*
+    * 处理 a|b
+    *
+    *        a_start ----> a_end
+    *      ε/                  \ε
+    *  start                      end
+    *      ε\                  /ε
+     *       b_start ----> b_end
+     *
+    * */
+    public static LexCell doUnite(LexCell left, LexCell right, AtomicInteger stateNum) {
+        LexCell newCell = new LexCell();
+
+        // 获得新节点
+        LexState startState = newLexState(stateNum.getAndIncrement());
+        LexState endState = newLexState(stateNum.getAndIncrement());
+
+        // 构建边
+        List<LexEdge> newCellEdges = new ArrayList<>();
+        newCellEdges.add(new LexEdge(startState, left.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        newCellEdges.add(new LexEdge(startState, right.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        newCellEdges.add(new LexEdge(left.getEndState(), endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        newCellEdges.add(new LexEdge(right.getEndState(), endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+
+        // 将新构建的四条边加入 edgeSet
+        newCell.getEdgeSet().addAll(newCellEdges);
+
+        // 构建单元
+        // 先将 left 和 right 的 edgeSet 复制到 newCell
+        newCell.getEdgeSet().addAll(left.getEdgeSet());
+        newCell.getEdgeSet().addAll(right.getEdgeSet());
+
+        // 构建 newCell 的起始状态和结束状态（只有一个结束状态）
+        newCell.setStartState(startState);
+        newCell.setEndState(endState);
+
+        return newCell;
+
+    }
+
+    /*
+     * 处理 a*
+     *                      ε
+     *                 ------------
+     *          ε    ↓           |    ε
+     *   start ---> c_start ---> c_end ---> end
+     *     |                                 ↑
+     *      ----------------------------------
+     *                      ε
+     */
+    public static LexCell doStart(LexCell cell, AtomicInteger stateNum) {
+        LexCell newCell = new LexCell();
+
+        // 获得新节点
+        LexState startState = newLexState(stateNum.getAndIncrement());
+        LexState endState = newLexState(stateNum.getAndIncrement());
+
+        // 构建边
+        List<LexEdge> newCellEdges = new ArrayList<>();
+        newCellEdges.add(new LexEdge(startState, endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        newCellEdges.add(new LexEdge(startState, cell.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        newCellEdges.add(new LexEdge(cell.getEndState(), cell.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        newCellEdges.add(new LexEdge(cell.getEndState(), endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+
+        // 将新构建的四条边加入 edgeSet
+        newCell.getEdgeSet().addAll(newCellEdges);
+
+        // 先将 cell 的 edgeSet 复制到 newCell
+        newCell.getEdgeSet().addAll(cell.getEdgeSet());
+
+        // 构建 newCell 的起始状态和结束状态
+        newCell.setStartState(startState);
+        newCell.setEndState(endState);
+
+        return newCell;
+
+    }
+
+    /*
+     * 处理 a+
+     *                      ε
+     *                 -----------
+     *          ε    ↓          |     ε
+     *   start ---> c_start ---> c_end ---> end
+     *
+     */
+    public static LexCell doOneMore(LexCell cell, AtomicInteger stateNum) {
+        LexCell newCell = new LexCell();
+
+        // 获得新节点
+        LexState startState = newLexState(stateNum.getAndIncrement());
+        LexState endState = newLexState(stateNum.getAndIncrement());
+
+        // 构建边
+        List<LexEdge> newCellEdges = new ArrayList<>();
+        newCellEdges.add(new LexEdge(startState, cell.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        newCellEdges.add(new LexEdge(cell.getEndState(), endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        newCellEdges.add(new LexEdge(cell.getEndState(), cell.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+
+        // 将新构建的四条边加入 edgeSet
+        newCell.getEdgeSet().addAll(newCellEdges);
+
+        // 先将 cell 的 edgeSet 复制到 newCell
+        newCell.getEdgeSet().addAll(cell.getEdgeSet());
+
+        // 构建 newCell 的起始状态和结束状态
+        newCell.setStartState(startState);
+        newCell.setEndState(endState);
+
+        return newCell;
+
+    }
+
+    /*
+     * 处理 a?
+     *          ε                      ε
+     *   start ---> c_start ---> c_end ---> end
+     *     |                                 ↑
+     *      ----------------------------------
+     *                      ε
+     */
+    public static LexCell doOneLess(LexCell cell, AtomicInteger stateNum) {
+        LexCell newCell = new LexCell();
+
+        // 获得新节点
+        LexState startState = newLexState(stateNum.getAndIncrement());
+        LexState endState = newLexState(stateNum.getAndIncrement());
+
+        // 构建边
+        List<LexEdge> newCellEdges = new ArrayList<>();
+        newCellEdges.add(new LexEdge(startState, endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        newCellEdges.add(new LexEdge(startState, cell.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        newCellEdges.add(new LexEdge(cell.getEndState(), endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+
+        // 将新构建的四条边加入 edgeSet
+        newCell.getEdgeSet().addAll(newCellEdges);
+
+        // 先将 cell 的 edgeSet 复制到 newCell
+        newCell.getEdgeSet().addAll(cell.getEdgeSet());
+
+        // 构建 newCell 的起始状态和结束状态
+        newCell.setStartState(startState);
+        newCell.setEndState(endState);
+
+        return newCell;
+
+    }
+
+    /*
+     *  处理 ab
+     *
+     *      a_start ---> a_end(b_start) ---> b_end
+     *                     ↑                  |
+     *                      -------------------
+     */
+    public static LexCell doJoin(LexCell left, LexCell right) {
+        // 将 left 的结束状态和 right 的开始状态合并，将 right 的边复制给 left，将 left 返回
+        // 将 right 中所有以 startState 开头的边全部修改
+        for (LexEdge rightEdge : right.getEdgeSet()) {
+            // 处理出边和循环边
+            if (rightEdge.getStartState() == right.getStartState()) {
+                rightEdge.setStartState(left.getEndState());
+            } else if (rightEdge.getEndState() == right.getStartState()) {
+                rightEdge.setEndState(left.getEndState());
+            }
+        }
+
+        // 复制right边给left
+        left.getEdgeSet().addAll(right.getEdgeSet());
+
+        // 将 left 的结束状态更新为 right 的结束状态
+        left.setEndState(right.getEndState());
+
+        return left;
+
+    }
+
+    /*
+     *  处理 a
+     *
+     *  a_start ---> a_end
+     *
+     */
+    public static LexCell doCell(LexSimplePattern.Metacharacter meta, AtomicInteger stateNum) {
+        LexCell newCell = new LexCell();
+
+        // 获得新节点
+        LexState startState = newLexState(stateNum.getAndIncrement());
+        LexState endState = newLexState(stateNum.getAndIncrement());
+
+        LexEdge newEdge = new LexEdge(startState, endState, meta);
+
+        // 构建单元
+        newCell.setStartState(startState);
+        newCell.setEndState(endState);
+        newCell.getEdgeSet().add(newEdge);
+
+        return newCell;
+
+    }
+
+
+    /**---------------------------------------------------------相关类--------------------------------------------------------**/
+
+    public static LexState newLexState(Integer stateNum){
+        LexState newState = new LexState(String.valueOf(stateNum));
+        return newState;
+    }
+
     public static class LexState{
         protected String stateName;
         // 当前节点的 out 转换边
         protected Map<LexSimplePattern.Metacharacter, LexEdge> edgeSet = new HashMap<>();
+
+        public LexState(){
+
+        }
+
+        public LexState(String stateName) {
+            this.stateName = stateName;
+        }
 
         @Override
         public boolean equals(Object other){
@@ -183,6 +478,10 @@ public class LexAutomatonTransformer {
         private LexState endState;
         private LexSimplePattern.Metacharacter tranPattern;
 
+        public LexEdge(){
+
+        }
+
         public LexEdge(LexState startState, LexState endState, LexSimplePattern.Metacharacter tranPattern) {
             this.startState = startState;
             this.endState = endState;
@@ -234,9 +533,32 @@ public class LexAutomatonTransformer {
     public static class LexCell{
 
         private LexState startState;
-        private Set<LexState> endStatesSet = new HashSet<>();
+        private LexState endState;
         private Set<LexEdge> edgeSet = new HashSet<>();
 
+        public LexState getStartState() {
+            return startState;
+        }
+
+        public void setStartState(LexState startState) {
+            this.startState = startState;
+        }
+
+        public LexState getEndState() {
+            return endState;
+        }
+
+        public void setEndState(LexState endState) {
+            this.endState = endState;
+        }
+
+        public Set<LexEdge> getEdgeSet() {
+            return edgeSet;
+        }
+
+        public void setEdgeSet(Set<LexEdge> edgeSet) {
+            this.edgeSet = edgeSet;
+        }
     }
 
 
