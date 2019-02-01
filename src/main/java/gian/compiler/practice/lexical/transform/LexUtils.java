@@ -1,5 +1,7 @@
 package gian.compiler.practice.lexical.transform;
 
+import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -201,7 +203,7 @@ public class LexUtils {
 //--------------------------------------------------------------------------------------------------//
 //-------------------------------- 打印树结构 ------------------------------------------------------//
 
-    public static void print(DFATransformer.LexNode root) {
+    public static void print(LexAutomatonTransformer.LexNode root) {
         // 找到左边的最大偏移量
         int maxLeftOffset = findMaxOffset(root, 0, true);
         int maxRightOffset = findMaxOffset(root, 0, false);
@@ -226,7 +228,7 @@ public class LexUtils {
 
     }
 
-    private static void calculateLines(DFATransformer.LexNode parent, int offset, Map<Integer, LexPrintLine> lineMap, int level,
+    private static void calculateLines(LexAutomatonTransformer.LexNode parent, int offset, Map<Integer, LexPrintLine> lineMap, int level,
                                        boolean right) {
         if (parent == null) {
             return;
@@ -295,7 +297,7 @@ public class LexUtils {
 
     }
 
-    private static int findMaxOffset(DFATransformer.LexNode parent, int offset, boolean findLeft) {
+    private static int findMaxOffset(LexAutomatonTransformer.LexNode parent, int offset, boolean findLeft) {
         if (parent != null) {
             offset += parent.toString().length();
         }
