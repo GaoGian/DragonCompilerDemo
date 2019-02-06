@@ -35,6 +35,7 @@ public class LexSimplePattern {
         char[] chars = pattern.toCharArray();
         for(int i=0; i<chars.length; i++){
             char input = chars[i];
+            // TODO 需要加入拼接符
             switch (input) {
                 case '*':
                 case '+':
@@ -324,7 +325,7 @@ public class LexSimplePattern {
                 }
             }
 
-            return false;
+            return true;
         }
 
     }

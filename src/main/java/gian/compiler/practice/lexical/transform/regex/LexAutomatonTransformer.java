@@ -1,6 +1,8 @@
 package gian.compiler.practice.lexical.transform.regex;
 
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import gian.compiler.practice.lexical.parser.LexExpression;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.LexUtils;
@@ -25,6 +27,7 @@ public class LexAutomatonTransformer {
     public static LexCell express2NFA(String expression){
         List<LexSimplePattern.Metacharacter> metas = LexSimplePattern.compile(expression);
         List<LexSimplePattern.Metacharacter> postfixMetas = LexSimplePattern.postfix(metas);
+        // TODO 需要转换成 DFA
         return express2NFA(postfixMetas, new AtomicInteger(0));
     }
 
@@ -107,17 +110,27 @@ public class LexAutomatonTransformer {
         LexState endState = newLexState(stateNum.getAndIncrement());
 
         // 构建边
-        List<LexEdge> newCellEdges = new ArrayList<>();
-        newCellEdges.add(new LexEdge(startState, left.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
-        newCellEdges.add(new LexEdge(startState, right.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
-        newCellEdges.add(new LexEdge(left.getEndState(), endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
-        newCellEdges.add(new LexEdge(right.getEndState(), endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        LexSimplePattern.Metacharacter epsilonMeta = new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true);
+        LexEdge edge1 = new LexEdge(startState, left.getStartState(), epsilonMeta);
+        startState.getEdgeMap().put(epsilonMeta, edge1);
+        LexEdge edge2 = new LexEdge(startState, right.getStartState(), epsilonMeta);
+        startState.getEdgeMap().put(epsilonMeta, edge2);
+        LexEdge edge3 = new LexEdge(left.getEndState(), endState, epsilonMeta);
+        left.getEndState().getEdgeMap().put(epsilonMeta, edge3);
+        LexEdge edge4 = new LexEdge(right.getEndState(), endState, epsilonMeta);
+        right.getEndState().getEdgeMap().put(epsilonMeta, edge4);
 
-        // 将新构建的四条边加入 edgeSet
+        List<LexEdge> newCellEdges = new ArrayList<>();
+        newCellEdges.add(edge1);
+        newCellEdges.add(edge2);
+        newCellEdges.add(edge3);
+        newCellEdges.add(edge4);
+
+        // 将新构建的四条边加入 edgeMap
         newCell.getEdgeSet().addAll(newCellEdges);
 
         // 构建单元
-        // 先将 left 和 right 的 edgeSet 复制到 newCell
+        // 先将 left 和 right 的 edgeMap 复制到 newCell
         newCell.getEdgeSet().addAll(left.getEdgeSet());
         newCell.getEdgeSet().addAll(right.getEdgeSet());
 
@@ -147,16 +160,26 @@ public class LexAutomatonTransformer {
         LexState endState = newLexState(stateNum.getAndIncrement());
 
         // 构建边
-        List<LexEdge> newCellEdges = new ArrayList<>();
-        newCellEdges.add(new LexEdge(startState, endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
-        newCellEdges.add(new LexEdge(startState, cell.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
-        newCellEdges.add(new LexEdge(cell.getEndState(), cell.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
-        newCellEdges.add(new LexEdge(cell.getEndState(), endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        LexSimplePattern.Metacharacter epsilonMeta = new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true);
+        LexEdge edge1 = new LexEdge(startState, endState, epsilonMeta);
+        startState.getEdgeMap().put(epsilonMeta, edge1);
+        LexEdge edge2 = new LexEdge(startState, cell.getStartState(), epsilonMeta);
+        startState.getEdgeMap().put(epsilonMeta, edge2);
+        LexEdge edge3 = new LexEdge(cell.getEndState(), cell.getStartState(), epsilonMeta);
+        cell.getEndState().getEdgeMap().put(epsilonMeta, edge3);
+        LexEdge edge4 = new LexEdge(cell.getEndState(), endState, epsilonMeta);
+        cell.getEndState().getEdgeMap().put(epsilonMeta, edge4);
 
-        // 将新构建的四条边加入 edgeSet
+        List<LexEdge> newCellEdges = new ArrayList<>();
+        newCellEdges.add(edge1);
+        newCellEdges.add(edge2);
+        newCellEdges.add(edge3);
+        newCellEdges.add(edge4);
+
+        // 将新构建的四条边加入 edgeMap
         newCell.getEdgeSet().addAll(newCellEdges);
 
-        // 先将 cell 的 edgeSet 复制到 newCell
+        // 先将 cell 的 edgeMap 复制到 newCell
         newCell.getEdgeSet().addAll(cell.getEdgeSet());
 
         // 构建 newCell 的起始状态和结束状态
@@ -183,15 +206,23 @@ public class LexAutomatonTransformer {
         LexState endState = newLexState(stateNum.getAndIncrement());
 
         // 构建边
-        List<LexEdge> newCellEdges = new ArrayList<>();
-        newCellEdges.add(new LexEdge(startState, cell.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
-        newCellEdges.add(new LexEdge(cell.getEndState(), endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
-        newCellEdges.add(new LexEdge(cell.getEndState(), cell.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        LexSimplePattern.Metacharacter epsilonMeta = new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true);
+        LexEdge edge1 = new LexEdge(startState, cell.getStartState(), epsilonMeta);
+        startState.getEdgeMap().put(epsilonMeta, edge1);
+        LexEdge edge2 = new LexEdge(cell.getEndState(), endState, epsilonMeta);
+        cell.getEndState().getEdgeMap().put(epsilonMeta, edge2);
+        LexEdge edge3 = new LexEdge(cell.getEndState(), cell.getStartState(), epsilonMeta);
+        cell.getEndState().getEdgeMap().put(epsilonMeta, edge3);
 
-        // 将新构建的四条边加入 edgeSet
+        List<LexEdge> newCellEdges = new ArrayList<>();
+        newCellEdges.add(edge1);
+        newCellEdges.add(edge2);
+        newCellEdges.add(edge3);
+
+        // 将新构建的四条边加入 edgeMap
         newCell.getEdgeSet().addAll(newCellEdges);
 
-        // 先将 cell 的 edgeSet 复制到 newCell
+        // 先将 cell 的 edgeMap 复制到 newCell
         newCell.getEdgeSet().addAll(cell.getEdgeSet());
 
         // 构建 newCell 的起始状态和结束状态
@@ -218,15 +249,23 @@ public class LexAutomatonTransformer {
         LexState endState = newLexState(stateNum.getAndIncrement());
 
         // 构建边
-        List<LexEdge> newCellEdges = new ArrayList<>();
-        newCellEdges.add(new LexEdge(startState, endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
-        newCellEdges.add(new LexEdge(startState, cell.getStartState(), new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
-        newCellEdges.add(new LexEdge(cell.getEndState(), endState, new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true)));
+        LexSimplePattern.Metacharacter epsilonMeta = new LexSimplePattern.Metacharacter(LexConstants.EPSILON_STR, false, true);
+        LexEdge edge1 = new LexEdge(startState, endState, epsilonMeta);
+        startState.getEdgeMap().put(epsilonMeta, edge1);
+        LexEdge edge2 = new LexEdge(startState, cell.getStartState(), epsilonMeta);
+        startState.getEdgeMap().put(epsilonMeta, edge2);
+        LexEdge edge3 = new LexEdge(cell.getEndState(), endState, epsilonMeta);
+        cell.getEndState().getEdgeMap().put(epsilonMeta, edge3);
 
-        // 将新构建的四条边加入 edgeSet
+        List<LexEdge> newCellEdges = new ArrayList<>();
+        newCellEdges.add(edge1);
+        newCellEdges.add(edge2);
+        newCellEdges.add(edge3);
+
+        // 将新构建的四条边加入 edgeMap
         newCell.getEdgeSet().addAll(newCellEdges);
 
-        // 先将 cell 的 edgeSet 复制到 newCell
+        // 先将 cell 的 edgeMap 复制到 newCell
         newCell.getEdgeSet().addAll(cell.getEdgeSet());
 
         // 构建 newCell 的起始状态和结束状态
@@ -281,6 +320,8 @@ public class LexAutomatonTransformer {
 
         LexEdge newEdge = new LexEdge(startState, endState, meta);
 
+        startState.getEdgeMap().put(meta, newEdge);
+
         // 构建单元
         newCell.setStartState(startState);
         newCell.setEndState(endState);
@@ -301,7 +342,7 @@ public class LexAutomatonTransformer {
     public static class LexState{
         protected String stateName;
         // 当前节点的 out 转换边
-        protected Map<LexSimplePattern.Metacharacter, LexEdge> edgeSet = new HashMap<>();
+        protected Multimap<LexSimplePattern.Metacharacter, LexEdge> edgeMap = ArrayListMultimap.create();
 
         public LexState(){
 
@@ -318,7 +359,7 @@ public class LexAutomatonTransformer {
             }
 
             LexState otherState = (LexState) other;
-            if(!this.stateName.equals(otherState.getStateName())){
+            if(!this.getTag().equals(otherState.getTag())){
                 return false;
             }
 
@@ -328,13 +369,13 @@ public class LexAutomatonTransformer {
         /**
          * 获取转换节点
           */
-        public LexState tranState(LexSimplePattern.Metacharacter tranMeta){
-            LexEdge tranEdge = this.edgeSet.get(tranMeta);
-            if(tranEdge != null) {
-                return tranEdge.getEndState();
-            }else{
-                return null;
+        public List<LexState> tranState(LexSimplePattern.Metacharacter tranMeta){
+            List<LexState> tranStates = new ArrayList<>();
+            Collection<LexEdge> tranEdges = this.edgeMap.get(tranMeta);
+            for(LexEdge tranEdge : tranEdges) {
+                tranStates.add(tranEdge.getEndState());
             }
+            return tranStates;
         }
 
         // 获取标识符
@@ -355,23 +396,22 @@ public class LexAutomatonTransformer {
             this.stateName = stateName;
         }
 
-        public Map<LexSimplePattern.Metacharacter, LexEdge> getEdgeSet() {
-            return edgeSet;
+        public Multimap<LexSimplePattern.Metacharacter, LexEdge> getEdgeMap() {
+            return edgeMap;
         }
 
-        public void setEdgeSet(Map<LexSimplePattern.Metacharacter, LexEdge> edgeSet) {
-            this.edgeSet = edgeSet;
+        public void setEdgeMap(Multimap<LexSimplePattern.Metacharacter, LexEdge> edgeMap) {
+            this.edgeMap = edgeMap;
         }
-
     }
 
     // NFA --> DFA
     public static class LexN2DState extends LexState {
         // DFA节点所有的原聚合节点
-        protected Set<String> aggStateSet = new TreeSet<>(new Comparator<String>() {
+        protected Set<LexState> aggStateSet = new TreeSet<>(new Comparator<LexState>() {
             @Override
-            public int compare(String o1, String o2) {
-                return o2.compareTo(o1);//降序排列
+            public int compare(LexState o1, LexState o2) {
+                return o2.getTag().compareTo(o1.getTag());//降序排列
             }
         });
 
@@ -391,8 +431,8 @@ public class LexAutomatonTransformer {
                 return false;
             }
 
-            for(String nfaStateName : otherState.aggStateSet){
-                if(!this.aggStateSet.contains(nfaStateName)){
+            for(LexState nfaState : otherState.aggStateSet){
+                if(!this.aggStateSet.contains(nfaState)){
                     return false;
                 }
             }
@@ -405,11 +445,11 @@ public class LexAutomatonTransformer {
             return this.getStateName() + ":" + JSON.toJSONString(aggStateSet);
         }
 
-        public Set<String> getAggStateSet() {
+        public Set<LexState> getAggStateSet() {
             return aggStateSet;
         }
 
-        public void setAggStateSet(Set<String> aggStateSet) {
+        public void setAggStateSet(Set<LexState> aggStateSet) {
             this.aggStateSet = aggStateSet;
         }
 

@@ -1,15 +1,13 @@
 import com.alibaba.fastjson.JSON;
 import gian.compiler.practice.lexical.transform.*;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
-import gian.compiler.practice.lexical.transform.regex.LexMatcher;
 import gian.compiler.practice.lexical.transform.regex.LexPattern;
 import gian.compiler.practice.lexical.transform.regex.LexSimplePattern;
 import org.junit.Test;
 import utils.BST;
 import utils.TreePrintUtil;
 
-import java.util.List;
-import java.util.regex.Pattern;
+import java.util.*;
 
 /**
  * Created by Gian on 2019/1/27.
@@ -98,8 +96,8 @@ public class NFATest {
 
     @Test
     public void pattern2NfaTest(){
-//        String pattern = "([A-Z]+)|(\\d+(\\.\\d+)?)";
-        String pattern = "(\\d+(\\.\\d+)?)";
+        String pattern = "([A-Z]+)|(\\d+(\\.\\d+)?)";
+//        String pattern = "(\\d+(\\.\\d+)?)";
         LexAutomatonTransformer.LexCell lexCell = LexAutomatonTransformer.express2NFA(pattern);
 
         System.out.println("DFA 的边数：" + lexCell.getEdgeSet().size());
@@ -115,6 +113,49 @@ public class NFATest {
         }
 
         System.out.println("结束");
+
+        System.out.println("-------------------------使用Echarts显示-------------------------------------");
+
+        // 广度遍历
+        int x = 0, y =0;
+        Set<LexAutomatonTransformer.LexState> states = new HashSet<>();
+        List<LexUtils.EcharDemoPoint> pointList = new ArrayList<>();
+        LexAutomatonTransformer.LexState startState = lexCell.getStartState();
+
+        states.add(startState);
+        pointList.add(new LexUtils.EcharDemoPoint(startState.getStateName(), x, y));
+
+        Collection<LexAutomatonTransformer.LexEdge> edges = startState.getEdgeMap().values();
+        while(edges.size()>0) {
+            y = 0;
+            x += 300;
+            Set<LexAutomatonTransformer.LexEdge> newEdges = new HashSet<>();
+            for (LexAutomatonTransformer.LexEdge edge : edges) {
+                LexAutomatonTransformer.LexState endState = edge.getEndState();
+                if (!states.contains(endState)) {
+                    states.add(endState);
+                    pointList.add(new LexUtils.EcharDemoPoint(endState.getStateName(), x, y));
+                    newEdges.addAll(endState.getEdgeMap().values());
+                    y += 400;
+                }
+            }
+            edges = newEdges;
+        }
+
+        List<LexUtils.EchartDemoEdge> echarEdges = new ArrayList<>();
+        for(LexAutomatonTransformer.LexEdge edge : lexCell.getEdgeSet()){
+            echarEdges.add(new LexUtils.EchartDemoEdge(edge.getStartState().getStateName(), edge.getEndState().getStateName(), edge.getTranPattern().getMeta()));
+        }
+
+        // 输出
+        for(LexUtils.EcharDemoPoint point : pointList){
+            System.out.println(point.toString());
+        }
+        System.out.println("--------------------------------------------------------------------");
+        for(LexUtils.EchartDemoEdge echartEdge : echarEdges){
+            System.out.println(echartEdge.toString());
+        }
+
     }
 
     @Test

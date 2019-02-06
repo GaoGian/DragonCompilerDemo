@@ -387,4 +387,90 @@ public class LexUtils {
         }
     }
 
+
+    public static class EcharDemoPoint{
+        private String name;
+        private int x;
+        private int y;
+
+        public EcharDemoPoint(String name, int x, int y) {
+            this.name = name;
+            this.x = x;
+            this.y = y;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public void setX(int x) {
+            this.x = x;
+        }
+
+        public int getY() {
+            return y;
+        }
+
+        public void setY(int y) {
+            this.y = y;
+        }
+
+        @Override
+        public String toString(){
+            return "{name:'" + this.name + "',x:" + this.x + ",y:" + this.y + "},";
+        }
+
+    }
+
+    public static class EchartDemoEdge{
+        private String source;
+        private String target;
+        private String label;
+
+        public EchartDemoEdge(String source, String target, String label) {
+            this.source = source;
+            this.target = target;
+            this.label = label;
+        }
+
+        public String getSource() {
+            return source;
+        }
+
+        public void setSource(String source) {
+            this.source = source;
+        }
+
+        public String getTarget() {
+            return target;
+        }
+
+        public void setTarget(String target) {
+            this.target = target;
+        }
+
+        public String getLabel() {
+            return this.label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        @Override
+        public String toString(){
+            return "{source:'" + this.source + "',target:'" + this.target + "',label:{normal:{show:true,formatter: '" + this.label + "'}},lineStyle:{normal:{curveness:0.3}}},";
+        }
+
+    }
+
+
 }

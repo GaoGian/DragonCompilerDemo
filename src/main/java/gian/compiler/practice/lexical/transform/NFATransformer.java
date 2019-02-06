@@ -151,11 +151,11 @@ public class NFATransformer {
         edge4.transSymbol = LexConstants.EPSILON;
 
         // 构建单元
-        // 先将 left 和 right 的 edgeSet 复制到 newCell
+        // 先将 left 和 right 的 edgeMap 复制到 newCell
         cell_EdgeSet_copy(newCell, left);
         cell_EdgeSet_copy(newCell, right);
 
-        // 将新构建的四条边加入 edgeSet
+        // 将新构建的四条边加入 edgeMap
         newCell.edgeSet[newCell.edgeCount++] = edge1;
         newCell.edgeSet[newCell.edgeCount++] = edge2;
         newCell.edgeSet[newCell.edgeCount++] = edge3;
@@ -225,10 +225,10 @@ public class NFATransformer {
         edge4.transSymbol = LexConstants.EPSILON;
 
         // 构建单元
-        // 先将 cell 的 edgeSet 复制到 newCell
+        // 先将 cell 的 edgeMap 复制到 newCell
         cell_EdgeSet_copy(newCell, cell);
 
-        // 将新构建的四条边加入 edgeSet
+        // 将新构建的四条边加入 edgeMap
         newCell.edgeSet[newCell.edgeCount++] = edge1;
         newCell.edgeSet[newCell.edgeCount++] = edge2;
         newCell.edgeSet[newCell.edgeCount++] = edge3;
