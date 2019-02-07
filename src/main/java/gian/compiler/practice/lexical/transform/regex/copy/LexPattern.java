@@ -1,4 +1,4 @@
-package gian.compiler.practice.lexical.transform.regex;
+package gian.compiler.practice.lexical.transform.regex.copy;
 
 import java.text.Normalizer;
 import java.util.Locale;
@@ -13,8 +13,6 @@ import java.util.Spliterators;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.regex.PatternSyntaxException;
 
 /**

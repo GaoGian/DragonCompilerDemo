@@ -41,26 +41,26 @@ public class LexAutomatonTransformer {
             if(!element.isLetter()) {
                 String meta = element.getMeta();
                 switch (meta) {
-                    case "|": {
+                    case LexConstants.UNITE_STR: {
                         right = stack.pop();
                         left = stack.pop();
                         cell = doUnite(left, right, stateNum);
                         stack.push(cell);
                         break;
                     }
-                    case "*": {
+                    case LexConstants.START_STR: {
                         left = stack.pop();
                         cell = doStart(left, stateNum);
                         stack.push(cell);
                         break;
                     }
-                    case "+": {
+                    case LexConstants.ONE_MORE_STR: {
                         left = stack.pop();
                         cell = doOneMore(left, stateNum);
                         stack.push(cell);
                         break;
                     }
-                    case "?": {
+                    case LexConstants.ONE_LESS_STR: {
                         left = stack.pop();
                         cell = doOneLess(left, stateNum);
                         stack.push(cell);
@@ -79,6 +79,7 @@ public class LexAutomatonTransformer {
 
         }
 
+        // 如果长度大于1，则需要把所有单元首尾相接
         while(stack.size() > 1){
             right = stack.pop();
             left = stack.pop();

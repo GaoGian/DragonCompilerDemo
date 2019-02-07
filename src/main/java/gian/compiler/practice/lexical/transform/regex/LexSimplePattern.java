@@ -35,18 +35,17 @@ public class LexSimplePattern {
         char[] chars = pattern.toCharArray();
         for(int i=0; i<chars.length; i++){
             char input = chars[i];
-            // TODO 需要加入拼接符
             switch (input) {
-                case '*':
-                case '+':
-                case '?':{
+                case LexConstants.START:
+                case LexConstants.ONE_MORE:
+                case LexConstants.ONE_LESS:{
                     metaStack.push(new Metacharacter(String.valueOf(input), false));
                     break;
                 }
-                case '|':{
+                case LexConstants.UNITE:{
                     // 如果遇到 '|' 需要把左边的元字符都拼接起来，作为集合处理
                     MyStack<Metacharacter> temp = new MyStack<>();
-                    while(metaStack.top() != null && !metaStack.top().getMeta().equals(String.valueOf('|'))){
+                    while(metaStack.top() != null && !metaStack.top().getMeta().equals(LexConstants.UNITE_STR)){
                         temp.push(metaStack.pop());
                     }
                     List<Metacharacter> leftMetaList = new ArrayList<>();
@@ -108,6 +107,18 @@ public class LexSimplePattern {
 
         }
 
+        // 把最后一个 '|' 右边的元字符都拼接起来，作为集合处理
+        MyStack<Metacharacter> temp = new MyStack<>();
+        while(metaStack.top() != null && !metaStack.top().getMeta().equals(LexConstants.UNITE_STR)){
+            temp.add(metaStack.pop());
+        }
+        List<Metacharacter> leftMetaList = new ArrayList<>();
+        while(temp.top() != null){
+            leftMetaList.add(temp.pop());
+        }
+        metaStack.push(new Metacharacter(LexConstants.METE_LIST, leftMetaList, true));
+
+        // 输出最后的结果
         List<Metacharacter> metaList = new ArrayList<>();
         while(metaStack.top() != null){
             metaList.add(metaStack.pop());
@@ -218,13 +229,13 @@ public class LexSimplePattern {
         switch (pattern) {
             case LexConstants.EOF_STR:
                 return 0;
-            case LexConstants.METE_LIST:
-            case "*":
-            case "+":
-            case "?":
+            case LexConstants.START_STR:
+            case LexConstants.ONE_MORE_STR:
+            case LexConstants.ONE_LESS_STR:
                 return 7;
-            case "|":
+            case LexConstants.UNITE_STR:
                 return 5;
+            case LexConstants.METE_LIST:
             default:
                 return 10;
         }
@@ -326,6 +337,26 @@ public class LexSimplePattern {
             }
 
             return true;
+        }
+
+        @Override
+        public String toString(){
+            StringBuilder str = new StringBuilder();
+            str.append("{");
+            str.append(meta);
+            if(childMetas.size() > 0){
+                str.append(",{");
+                for(int i=0; i<childMetas.size(); i++){
+                    str.append(childMetas.get(i).toString());
+                    if(i < (childMetas.size()-1)){
+                        str.append(",");
+                    }
+                }
+                str.append("}");
+            }
+            str.append("}");
+
+            return str.toString();
         }
 
     }

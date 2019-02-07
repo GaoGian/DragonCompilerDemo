@@ -1,7 +1,7 @@
 import com.alibaba.fastjson.JSON;
 import gian.compiler.practice.lexical.transform.*;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
-import gian.compiler.practice.lexical.transform.regex.LexPattern;
+import gian.compiler.practice.lexical.transform.regex.copy.LexPattern;
 import gian.compiler.practice.lexical.transform.regex.LexSimplePattern;
 import org.junit.Test;
 import utils.BST;
@@ -17,6 +17,8 @@ public class NFATest {
     @Test
     public void test(){
 
+        // FIXME 这个表达式会有问题
+//        String regular_expression = "a|babb";
         String regular_expression = "(a|b)*abb";
         // 正则表达式生成 NFA
         Cell nfa = NFATransformer.regExp2Nfa(regular_expression);
@@ -83,6 +85,7 @@ public class NFATest {
 
     @Test
     public void simplePatternTest(){
+//        String pattern = "a|dddd";
 //        String pattern = "([A-Z]+)|(\\d+(\\.\\d+)?)";
         String pattern = "abc|([A-Z]+)|(\\d+(\\.\\d+)?)";
         List<LexSimplePattern.Metacharacter> metas = LexSimplePattern.compile(pattern);
@@ -96,6 +99,7 @@ public class NFATest {
 
     @Test
     public void pattern2NfaTest(){
+//        String pattern = "adv|bced";
         String pattern = "([A-Z]+)|(\\d*(\\.\\d+)?)";
 //        String pattern = "(\\d+(\\.\\d+)?)";
         LexAutomatonTransformer.LexCell lexCell = LexAutomatonTransformer.express2NFA(pattern);
@@ -107,8 +111,8 @@ public class NFATest {
         int i=0;
         for(LexAutomatonTransformer.LexEdge edge : lexCell.getEdgeSet()){
             System.out.println("第 " + i + 1 + " 条边的起始状态：" + edge.getStartState().getStateName() +
-                    "，结束状态：" + edge.getEndState().getStateName() +
-                    "，转换符：" + edge.getTranPattern().getMeta());
+                    "，结束状态：" + edge.getEndState().getStateName() + "，转换符：" + edge.getTranPattern().getMeta());
+
             i++;
         }
 
@@ -116,49 +120,7 @@ public class NFATest {
 
         System.out.println("-------------------------使用Echarts显示-------------------------------------");
 
-        // 广度遍历
-        int x = 0, y =0;
-        Set<LexAutomatonTransformer.LexState> states = new HashSet<>();
-        List<LexUtils.EcharDemoPoint> pointList = new ArrayList<>();
-        LexAutomatonTransformer.LexState startState = lexCell.getStartState();
-        LexAutomatonTransformer.LexState endState = lexCell.getEndState();
-
-        states.add(startState);
-        pointList.add(new LexUtils.EcharDemoPoint(startState.getStateName(), x, y));
-
-        Collection<LexAutomatonTransformer.LexEdge> edges = startState.getEdgeMap().values();
-        while(edges.size()>0) {
-            y = 0;
-            x += 300;
-            Set<LexAutomatonTransformer.LexEdge> newEdges = new HashSet<>();
-            for (LexAutomatonTransformer.LexEdge edge : edges) {
-                LexAutomatonTransformer.LexState targetState = edge.getEndState();
-                if (!targetState.equals(endState) && !states.contains(targetState)) {
-                    states.add(targetState);
-                    pointList.add(new LexUtils.EcharDemoPoint(targetState.getStateName(), x, y));
-                    newEdges.addAll(targetState.getEdgeMap().values());
-                    y += 300;
-                }
-            }
-            edges = newEdges;
-        }
-        states.add(endState);
-        pointList.add(new LexUtils.EcharDemoPoint(endState.getStateName(), x+300, y));
-
-        List<LexUtils.EchartDemoEdge> echarEdges = new ArrayList<>();
-        for(LexAutomatonTransformer.LexEdge edge : lexCell.getEdgeSet()){
-            echarEdges.add(new LexUtils.EchartDemoEdge(edge.getStartState().getStateName(), edge.getEndState().getStateName(), edge.getTranPattern().getMeta()));
-        }
-
-        // 输出
-        for(LexUtils.EcharDemoPoint point : pointList){
-            System.out.println(point.toString());
-        }
-        System.out.println("--------------------------------------------------------------------");
-        for(LexUtils.EchartDemoEdge echartEdge : echarEdges){
-            System.out.println(echartEdge.toString());
-        }
-
+        LexUtils.outputEchart(lexCell);
     }
 
     @Test

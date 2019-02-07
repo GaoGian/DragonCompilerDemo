@@ -1,4 +1,4 @@
-package gian.compiler.practice.lexical.transform.regex;
+package gian.compiler.practice.lexical.transform.regex.copy;
 
 import java.util.Objects;
 import java.util.regex.MatchResult;
@@ -428,7 +428,7 @@ public class LexMatcher implements MatchResult{
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("gian.compiler.practice.lexical.transform.regex.LexMatcher");
+        sb.append("gian.compiler.practice.lexical.transform.regex.copy.LexMatcher");
         sb.append("[pattern=" + pattern());
         sb.append(" region=");
         sb.append(regionStart() + "," + regionEnd());
