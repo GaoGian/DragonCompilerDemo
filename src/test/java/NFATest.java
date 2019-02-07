@@ -96,7 +96,7 @@ public class NFATest {
 
     @Test
     public void pattern2NfaTest(){
-        String pattern = "([A-Z]+)|(\\d+(\\.\\d+)?)";
+        String pattern = "([A-Z]+)|(\\d*(\\.\\d+)?)";
 //        String pattern = "(\\d+(\\.\\d+)?)";
         LexAutomatonTransformer.LexCell lexCell = LexAutomatonTransformer.express2NFA(pattern);
 
@@ -121,6 +121,7 @@ public class NFATest {
         Set<LexAutomatonTransformer.LexState> states = new HashSet<>();
         List<LexUtils.EcharDemoPoint> pointList = new ArrayList<>();
         LexAutomatonTransformer.LexState startState = lexCell.getStartState();
+        LexAutomatonTransformer.LexState endState = lexCell.getEndState();
 
         states.add(startState);
         pointList.add(new LexUtils.EcharDemoPoint(startState.getStateName(), x, y));
@@ -131,16 +132,18 @@ public class NFATest {
             x += 300;
             Set<LexAutomatonTransformer.LexEdge> newEdges = new HashSet<>();
             for (LexAutomatonTransformer.LexEdge edge : edges) {
-                LexAutomatonTransformer.LexState endState = edge.getEndState();
-                if (!states.contains(endState)) {
-                    states.add(endState);
-                    pointList.add(new LexUtils.EcharDemoPoint(endState.getStateName(), x, y));
-                    newEdges.addAll(endState.getEdgeMap().values());
-                    y += 400;
+                LexAutomatonTransformer.LexState targetState = edge.getEndState();
+                if (!targetState.equals(endState) && !states.contains(targetState)) {
+                    states.add(targetState);
+                    pointList.add(new LexUtils.EcharDemoPoint(targetState.getStateName(), x, y));
+                    newEdges.addAll(targetState.getEdgeMap().values());
+                    y += 300;
                 }
             }
             edges = newEdges;
         }
+        states.add(endState);
+        pointList.add(new LexUtils.EcharDemoPoint(endState.getStateName(), x+300, y));
 
         List<LexUtils.EchartDemoEdge> echarEdges = new ArrayList<>();
         for(LexAutomatonTransformer.LexEdge edge : lexCell.getEdgeSet()){

@@ -285,15 +285,19 @@ public class LexAutomatonTransformer {
      */
     public static LexCell doJoin(LexCell left, LexCell right) {
         // 将 left 的结束状态和 right 的开始状态合并，将 right 的边复制给 left，将 left 返回
-        // 将 right 中所有以 startState 开头的边全部修改
+        // 将 right 中所有包含 startState 的边全部修改
         for (LexEdge rightEdge : right.getEdgeSet()) {
-            // 处理出边和循环边
-            if (rightEdge.getStartState() == right.getStartState()) {
+            if (rightEdge.getStartState().equals(right.getStartState())) {
                 rightEdge.setStartState(left.getEndState());
-            } else if (rightEdge.getEndState() == right.getStartState()) {
+                // 给left的结束节点增加新的离开边
+                left.getEndState().getEdgeMap().put(rightEdge.getTranPattern(), rightEdge);
+            } else if (rightEdge.getEndState().equals(right.getStartState())) {
                 rightEdge.setEndState(left.getEndState());
             }
         }
+
+        // 将right的起始节点设置为left的结束节点
+        right.setStartState(left.getEndState());
 
         // 复制right边给left
         left.getEdgeSet().addAll(right.getEdgeSet());
@@ -335,7 +339,8 @@ public class LexAutomatonTransformer {
     /**---------------------------------------------------------相关类--------------------------------------------------------**/
 
     public static LexState newLexState(Integer stateNum){
-        LexState newState = new LexState(String.valueOf((char)(stateNum + 65)));
+        String stateName = String.valueOf((char)(stateNum + 65));
+        LexState newState = new LexState(stateName);
         return newState;
     }
 

@@ -467,7 +467,7 @@ public class LexUtils {
 
         @Override
         public String toString(){
-            return "{source:'" + this.source + "',target:'" + this.target + "',label:{normal:{show:true,formatter: '" + this.label + "'}},lineStyle:{normal:{curveness:0.3}}},";
+            return "{source:'" + this.source + "',target:'" + this.target + "',label:{normal:{show:true,formatter: '" + this.label.replace("\\", "\\\\") + "'}},lineStyle:{normal:{curveness:0.3}}},";
         }
 
     }
