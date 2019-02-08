@@ -1,4 +1,7 @@
-package gian.compiler.practice.lexical.transform;
+package lex.test;
+
+import gian.compiler.practice.lexical.transform.LexConstants;
+import gian.compiler.practice.lexical.transform.MyStack;
 
 /**
  * Thompson算法，正则表达式转换成NFA

@@ -1,4 +1,4 @@
-package gian.compiler.practice.lexical.transform;
+package lex.test;
 
 /**
  * 节点转换边

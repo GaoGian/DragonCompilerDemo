@@ -1,4 +1,4 @@
-package gian.compiler.practice.lexical.transform;
+package lex.test;
 
 import java.util.HashSet;
 import java.util.Set;

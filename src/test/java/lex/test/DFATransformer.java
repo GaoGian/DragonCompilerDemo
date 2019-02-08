@@ -1,14 +1,12 @@
-package gian.compiler.practice.lexical.transform;
+package lex.test;
 
 import com.alibaba.fastjson.JSON;
-import com.sun.deploy.util.StringUtils;
+import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
 
 import java.util.*;
 
 import static gian.compiler.practice.lexical.transform.LexConstants.EOF;
-import static gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer.buildLexNode;
-import static gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer.getLeafLexNodeMap;
 
 /**
  * Created by gaojian on 2019/1/28.
@@ -108,7 +106,10 @@ public class DFATransformer {
         System.out.println("----------------------------DFA-------------------------------");
 
         // 先生成语法分析树
-        LexAutomatonTransformer.LexNode root = buildLexNode(rnpExpression);
+        LexAutomatonTransformer.LexNode root = LexAutomatonTransformer.buildLexNode(rnpExpression);
+
+        // 输出语法分析树结果
+        LexUtils.print(root);
 
         // 生成 DFA
         Dcell dcell = buildDFA(root);
@@ -313,7 +314,7 @@ public class DFATransformer {
         int stateNum = 0;
 
         Map<Integer, LexAutomatonTransformer.LexNode> nodeMap = new HashMap<>();
-        getLeafLexNodeMap(root, nodeMap);
+        LexAutomatonTransformer.getLeafLexNodeMap(root, nodeMap);
 
         // 记录转换符
         Set<Character> tranChars = new HashSet<>();

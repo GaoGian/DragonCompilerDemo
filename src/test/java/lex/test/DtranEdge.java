@@ -1,4 +1,4 @@
-package gian.compiler.practice.lexical.transform;
+package lex.test;
 
 /**
  * Created by Gian on 2019/1/27.

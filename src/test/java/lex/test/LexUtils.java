@@ -1,9 +1,10 @@
-package gian.compiler.practice.lexical.transform;
+package lex.test;
 
+import gian.compiler.practice.lexical.transform.LexConstants;
+import gian.compiler.practice.lexical.transform.MyStack;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
 
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * Created by gaojian on 2019/1/28.

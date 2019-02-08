@@ -1,6 +1,8 @@
-package gian.compiler.practice.lexical.transform;
+package lex.test;
 
 import com.alibaba.fastjson.JSON;
+import lex.test.DtranEdge;
+import lex.test.State;
 
 import java.util.*;
 

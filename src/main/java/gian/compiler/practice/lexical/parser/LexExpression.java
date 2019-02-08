@@ -48,8 +48,8 @@ public class LexExpression {
         expressions.add(new Expression(",", ExpressionType.PUNCTUATION));
         expressions.add(new Expression(";", ExpressionType.PUNCTUATION));
 
-        // 分段符
-        expressions.add(new Expression("\\s", ExpressionType.SECTION));
+        // 分隔符
+        expressions.add(new Expression("\\s+", ExpressionType.SECTION));
 
     }
 

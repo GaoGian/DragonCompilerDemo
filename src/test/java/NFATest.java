@@ -1,8 +1,9 @@
 import com.alibaba.fastjson.JSON;
-import gian.compiler.practice.lexical.transform.*;
+import lex.test.LexUtils;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
 import gian.compiler.practice.lexical.transform.regex.copy.LexPattern;
 import gian.compiler.practice.lexical.transform.regex.LexSimplePattern;
+import lex.test.*;
 import org.junit.Test;
 import utils.BST;
 import utils.TreePrintUtil;
