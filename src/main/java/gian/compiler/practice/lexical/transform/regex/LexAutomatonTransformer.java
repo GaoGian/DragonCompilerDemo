@@ -46,19 +46,22 @@ public class LexAutomatonTransformer {
      */
     public static LexCell tranNFA2DFA(String expression){
         LexCell lexCell = LexAutomatonTransformer.express2NFA(expression);
+        return tranNFA2DFA(lexCell);
+    }
+    public static LexCell tranNFA2DFA(LexCell lexCell){
 
         // 使用子集构造法构造DFA
-        AtomicInteger stateNum = new AtomicInteger(65);
+        AtomicInteger stateNum = new AtomicInteger(0);
         // 起始节点
-        LexCell tranN2DCell = new LexCell();
-        LexAggState startN2DState = new LexAggState(String.valueOf((char)(stateNum.getAndIncrement())));
+        LexDFACell tranN2DCell = new LexDFACell();
+        LexAggState startN2DState = new LexAggState(String.valueOf(stateNum.getAndIncrement()));
         startN2DState.getAggStateSet().addAll(epsilonClosure(lexCell.getStartState()));
         // 接受节点
         LexAggState endN2DState = null;
 
         // 存储生成的DFA状态
         Map<String, LexAggState> allN2DStateMap = new HashMap<>();
-        allN2DStateMap.put(startN2DState.toString(), startN2DState);
+        allN2DStateMap.put(startN2DState.getTag(), startN2DState);
         // 存储需要遍历的DFA状态
         List<LexAggState<LexState>> tranStateList = new ArrayList<>();
         tranStateList.add(startN2DState);
@@ -68,43 +71,50 @@ public class LexAutomatonTransformer {
         // 记录转换符
         Set<LexSimplePattern.Metacharacter> tranMetas = new HashSet<>();
         for(LexEdge edge : lexCell.getEdgeSet()){
-            tranMetas.add(edge.getTranPattern());
+            // 排除ε转换符
+            if(!edge.getTranPattern().getMeta().equals(LexConstants.EPSILON_STR)) {
+                tranMetas.add(edge.getTranPattern());
+            }
         }
 
         // 聚集 ε-closure 集合为DFA节点
         for(int i=0; i<tranStateList.size(); i++){
             LexAggState preTranState = tranStateList.get(i);
             // 判断该状态是否已经处理过了
-            if(!tranStateTag.contains(preTranState.toString())) {
+            if(!tranStateTag.contains(preTranState.getTag())) {
                 for (LexSimplePattern.Metacharacter tranMeta : tranMetas) {
                     // 在当前输入符下转变的状态，集合为：ε-closure(move[A, a])
-                    LexAggState subTranState = new LexAggState(String.valueOf((char)(stateNum.getAndIncrement())));
+                    Set<LexState> moveStates = new HashSet<>();
                     for (Object state : preTranState.getAggStateSet()) {
-                        subTranState.getAggStateSet().addAll(move((LexState) state, tranMeta));
+                        moveStates.addAll(move((LexState) state, tranMeta));
                     }
 
-                    // 保存新生成的DFA状态
-                    if (allN2DStateMap.get(subTranState.getTag()) == null) {
-                        allN2DStateMap.put(subTranState.getTag(), subTranState);
-                    } else {
-                        subTranState = allN2DStateMap.get(subTranState.getTag());
+                    if(moveStates.size() > 0) {
+                        LexAggState subTranState = new LexAggState(String.valueOf(stateNum.getAndIncrement()));
+                        subTranState.getAggStateSet().addAll(moveStates);
+                        // 保存新生成的DFA状态  FIXME 由于这里是饱和新增，所以不能使用stateName作为标识符，需要使用getTag方法
+                        if (allN2DStateMap.get(subTranState.getTag()) == null) {
+                            allN2DStateMap.put(subTranState.getTag(), subTranState);
+                        } else {
+                            subTranState = allN2DStateMap.get(subTranState.getTag());
+                        }
+
+                        LexEdge tranEdge = new LexEdge();
+                        tranEdge.setStartState(preTranState);
+                        tranEdge.setEndState(subTranState);
+                        tranEdge.setTranPattern(tranMeta);
+
+                        preTranState.getEdgeMap().put(tranMeta, tranEdge);
+
+                        tranN2DCell.getEdgeSet().add(tranEdge);
+
+                        // 将新生成的 DFA 状态加入到遍历列表
+                        tranStateList.add(subTranState);
                     }
-
-                    LexEdge tranEdge = new LexEdge();
-                    tranEdge.setStartState(preTranState);
-                    tranEdge.setEndState(subTranState);
-                    tranEdge.setTranPattern(tranMeta);
-
-                    subTranState.getEdgeMap().put(tranMeta, tranEdge);
-
-                    tranN2DCell.getEdgeSet().add(tranEdge);
-
-                    // 将新生成的 DFA 状态加入到遍历列表
-                    tranStateList.add(subTranState);
                 }
 
                 // 添加已处理标记
-                tranStateTag.add(preTranState.toString());
+                tranStateTag.add(preTranState.getTag());
             }
         }
 
@@ -113,12 +123,8 @@ public class LexAutomatonTransformer {
             for(Object state : tranN2DState.getAggStateSet()){
                 if(lexCell.getEndState().equals(state)){
                     endN2DState = tranN2DState;
-                    break;
+                    tranN2DCell.getAccStateSet().add(tranN2DState);
                 }
-            }
-
-            if(endN2DState != null){
-                break;
             }
         }
 
@@ -140,8 +146,8 @@ public class LexAutomatonTransformer {
         stateSet.add(targetState);
 
         for(LexEdge edge : targetState.getEdgeMap().get(EPSILON_META)){
-            stateSet.add(edge.endState);
-            stateSet.addAll(epsilonClosure(edge.endState));
+            stateSet.add(edge.getEndState());
+            stateSet.addAll(epsilonClosure(edge.getEndState()));
         }
 
         return stateSet;
@@ -156,8 +162,8 @@ public class LexAutomatonTransformer {
         Set<LexState> stateSet = new HashSet<>();
 
         for(LexEdge edge : targetState.getEdgeMap().get(tranMeta)){
-            stateSet.add(edge.endState);
-            stateSet.addAll(epsilonClosure(edge.endState));
+            stateSet.add(edge.getEndState());
+            stateSet.addAll(epsilonClosure(edge.getEndState()));
         }
 
         return stateSet;
@@ -280,9 +286,9 @@ public class LexAutomatonTransformer {
             LexAggState newState = new LexAggState();
             for(LexAggState originState : group){
                 if(newState.getStateName() == null){
-                    newState.setStateName("'" + originState.getStateName() + "'");
+                    newState.setStateName(originState.getStateName());
                 }else{
-                    newState.setStateName(newState.getStateName() + "_" + "'" + originState.getStateName() + "'");
+                    newState.setStateName(newState.getStateName() + "_" + originState.getStateName());
                 }
 
                 // 最小化后需要加入所有原来节点的内部节点
@@ -687,6 +693,11 @@ public class LexAutomatonTransformer {
             return true;
         }
 
+        @Override
+        public int hashCode(){
+            return this.getTag().hashCode();
+        }
+
         /**
          * 获取转换节点
           */
@@ -730,7 +741,12 @@ public class LexAutomatonTransformer {
     // Regex --> DFA    Integer
     public static class LexAggState<T> extends LexState {
         // DFA节点所有的原聚合节点
-        protected Set<T> aggStateSet = new HashSet<>();
+        protected Set<T> aggStateSet = new TreeSet<T>(new Comparator<T>() {
+            @Override
+            public int compare(T o1, T o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
 
         public LexAggState(){}
 
@@ -764,8 +780,30 @@ public class LexAutomatonTransformer {
         }
 
         @Override
+        public int hashCode(){
+            return this.getTag().hashCode();
+        }
+
+        @Override
         public String toString(){
-            return this.getStateName() + ":" + JSON.toJSONString(aggStateSet);
+            StringBuilder str = new StringBuilder();
+            str.append("{");
+            str.append(this.getStateName());
+            if(this.aggStateSet.size() > 0){
+                str.append(",{");
+                List temp = new ArrayList(this.aggStateSet);
+                for(int i=0; i<temp.size(); i++){
+                    str.append(temp.get(i).toString());
+                    if(i < (temp.size()-1)){
+                        str.append(",");
+                    }
+                }
+                str.append("}");
+            }
+            str.append("}");
+
+            return str.toString();
+
         }
 
         public Set<T> getAggStateSet() {
@@ -808,6 +846,16 @@ public class LexAutomatonTransformer {
             }
 
             return false;
+        }
+
+        @Override
+        public int hashCode(){
+            return this.toString().hashCode();
+        }
+
+        @Override
+        public String toString(){
+            return this.startState.toString() + ":" + this.endState.toString() + ":" + this.tranPattern.toString();
         }
 
         public LexState getStartState() {
@@ -885,6 +933,17 @@ public class LexAutomatonTransformer {
         }
     }
 
+    public static class LexDFACell extends LexCell{
+        private Set<LexAggState> accStateSet = new HashSet<>();
+
+        public Set<LexAggState> getAccStateSet() {
+            return accStateSet;
+        }
+
+        public void setAccStateSet(Set<LexAggState> accStateSet) {
+            this.accStateSet = accStateSet;
+        }
+    }
 
     public static class LexNode{
 
@@ -972,6 +1031,11 @@ public class LexAutomatonTransformer {
             }
         }
 
+        @Override
+        public int hashCode(){
+            return this.toString().hashCode();
+        }
+
     }
 
     public static enum LexNodeType{
@@ -1034,14 +1098,14 @@ public class LexAutomatonTransformer {
                     stack.pop();
                     LexNode left = stack.top();
                     stack.pop();
-                    LexNode cell = do_LexNode(element, LexNodeType.OR, null, left, right);
+                    LexNode cell = doLexNode(element, LexNodeType.OR, null, left, right);
                     stack.push(cell);
                     break;
                 }
                 case '*': {
                     LexNode left = stack.top();
                     stack.pop();
-                    LexNode cell = do_LexNode(element, LexNodeType.START, null, left, null);
+                    LexNode cell = doLexNode(element, LexNodeType.START, null, left, null);
                     stack.push(cell);
                     break;
                 }
@@ -1050,12 +1114,12 @@ public class LexAutomatonTransformer {
                     stack.pop();
                     LexNode left = stack.top();
                     stack.pop();
-                    LexNode cell = do_LexNode(element, LexNodeType.CAT, null, left, right);
+                    LexNode cell = doLexNode(element, LexNodeType.CAT, null, left, right);
                     stack.push(cell);
                     break;
                 }
                 default: {
-                    LexNode node = do_LexNode(element, LexNodeType.LEAF, lexNodeNum++, null, null);
+                    LexNode node = doLexNode(element, LexNodeType.LEAF, lexNodeNum++, null, null);
                     stack.push(node);
                 }
             }
@@ -1073,7 +1137,7 @@ public class LexAutomatonTransformer {
         return root;
     }
 
-    public static LexNode do_LexNode(char element, LexNodeType type, Integer pos, LexNode left, LexNode right){
+    public static LexNode doLexNode(char element, LexNodeType type, Integer pos, LexNode left, LexNode right){
         LexNode node = new LexNode();
         node.setElement(element);
         node.setPos(pos);

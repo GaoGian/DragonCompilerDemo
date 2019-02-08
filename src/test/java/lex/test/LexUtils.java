@@ -384,6 +384,25 @@ public class LexUtils {
         }
     }
 
+
+    public static void displayLexCell(LexAutomatonTransformer.LexCell lexCell){
+
+        System.out.println("DFA 的边数：" + lexCell.getEdgeSet().size());
+        System.out.println("DFA 的起始状态：" + lexCell.getStartState().getStateName());
+        System.out.println("DFA 的结束状态：" + lexCell.getEndState().getStateName());
+
+        int i=0;
+        for(LexAutomatonTransformer.LexEdge edge : lexCell.getEdgeSet()){
+            System.out.println("第 " + i + 1 + " 条边的起始状态：" + edge.getStartState().getStateName() +
+                    "，结束状态：" + edge.getEndState().getStateName() + "，转换符：" + edge.getTranPattern().getMeta());
+
+            i++;
+        }
+
+        System.out.println("结束");
+
+    }
+
     public static void outputEchart(LexAutomatonTransformer.LexCell lexCell){
 
         // 广度遍历
@@ -394,18 +413,18 @@ public class LexUtils {
         LexAutomatonTransformer.LexState endState = lexCell.getEndState();
 
         states.add(startState);
-        pointList.add(new LexUtils.EcharDemoPoint(startState.getStateName(), x, y));
+        pointList.add(new LexUtils.EcharDemoPoint(startState.toString(), x, y));
 
         Collection<LexAutomatonTransformer.LexEdge> edges = startState.getEdgeMap().values();
         while(edges.size()>0) {
             y = 0;
-            x += 300;
+            x += 400;
             Set<LexAutomatonTransformer.LexEdge> newEdges = new HashSet<>();
             for (LexAutomatonTransformer.LexEdge edge : edges) {
                 LexAutomatonTransformer.LexState targetState = edge.getEndState();
                 if (!targetState.equals(endState) && !states.contains(targetState)) {
                     states.add(targetState);
-                    pointList.add(new LexUtils.EcharDemoPoint(targetState.getStateName(), x, y));
+                    pointList.add(new LexUtils.EcharDemoPoint(targetState.toString(), x, y));
                     newEdges.addAll(targetState.getEdgeMap().values());
                     y += 300;
                 }
@@ -413,11 +432,11 @@ public class LexUtils {
             edges = newEdges;
         }
         states.add(endState);
-        pointList.add(new LexUtils.EcharDemoPoint(endState.getStateName(), x+300, y));
+        pointList.add(new LexUtils.EcharDemoPoint(endState.toString(), x+400, y));
 
         List<LexUtils.EchartDemoEdge> echarEdges = new ArrayList<>();
         for(LexAutomatonTransformer.LexEdge edge : lexCell.getEdgeSet()){
-            echarEdges.add(new LexUtils.EchartDemoEdge(edge.getStartState().getStateName(), edge.getEndState().getStateName(), edge.getTranPattern().getMeta()));
+            echarEdges.add(new LexUtils.EchartDemoEdge(edge.getStartState().toString(), edge.getEndState().toString(), edge.getTranPattern().getMeta()));
         }
 
         // 输出

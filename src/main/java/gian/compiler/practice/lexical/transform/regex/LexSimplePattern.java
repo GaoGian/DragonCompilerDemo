@@ -229,13 +229,13 @@ public class LexSimplePattern {
         switch (pattern) {
             case LexConstants.EOF_STR:
                 return 0;
+            case LexConstants.METE_LIST:
             case LexConstants.START_STR:
             case LexConstants.ONE_MORE_STR:
             case LexConstants.ONE_LESS_STR:
                 return 7;
             case LexConstants.UNITE_STR:
                 return 5;
-            case LexConstants.METE_LIST:
             default:
                 return 10;
         }
@@ -337,6 +337,11 @@ public class LexSimplePattern {
             }
 
             return true;
+        }
+
+        @Override
+        public int hashCode(){
+            return this.toString().hashCode();
         }
 
         @Override
