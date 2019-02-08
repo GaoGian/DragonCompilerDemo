@@ -48,7 +48,7 @@ public class LexAutomatonTransformer {
         LexCell lexCell = LexAutomatonTransformer.express2NFA(expression);
         return tranNFA2DFA(lexCell);
     }
-    public static LexCell tranNFA2DFA(LexCell lexCell){
+    public static LexDFACell tranNFA2DFA(LexCell lexCell){
 
         // 使用子集构造法构造DFA
         AtomicInteger stateNum = new AtomicInteger(0);
@@ -56,8 +56,6 @@ public class LexAutomatonTransformer {
         LexDFACell tranN2DCell = new LexDFACell();
         LexAggState startN2DState = new LexAggState(String.valueOf(stateNum.getAndIncrement()));
         startN2DState.getAggStateSet().addAll(epsilonClosure(lexCell.getStartState()));
-        // 接受节点
-        LexAggState endN2DState = null;
 
         // 存储生成的DFA状态
         Map<String, LexAggState> allN2DStateMap = new HashMap<>();
@@ -122,14 +120,12 @@ public class LexAutomatonTransformer {
         for(LexAggState tranN2DState : allN2DStateMap.values()){
             for(Object state : tranN2DState.getAggStateSet()){
                 if(lexCell.getEndState().equals(state)){
-                    endN2DState = tranN2DState;
                     tranN2DCell.getAccStateSet().add(tranN2DState);
                 }
             }
         }
 
         tranN2DCell.setStartState(startN2DState);
-        tranN2DCell.setEndState(endN2DState);
         tranN2DCell.getTranMetas().addAll(tranMetas);
         tranN2DCell.getAllStates().addAll(allN2DStateMap.values());
 
@@ -170,27 +166,23 @@ public class LexAutomatonTransformer {
     }
 
     /**
+     * FIXME 解决BUG
      * 最小化DFA
      * @param originCell
      * @return
      */
-    public static LexCell minimizeDFA(LexCell originCell){
+    public static LexDFACell minimizeDFA(LexDFACell originCell){
         Set<LexSimplePattern.Metacharacter> tranMetas = originCell.getTranMetas();
         Set<LexAggState> states = new HashSet<>();
         for(LexState state : originCell.getAllStates()){
             states.add((LexAggState) state);
         }
 
-        // 设置初始分组：接收状态组、非接收状态组
-        Set<LexAggState> unAccStates = new HashSet<>();
-        unAccStates.addAll(states);
-        unAccStates.remove(originCell.getEndState());
-        Set<LexAggState> accStates = new HashSet<>();
-        accStates.add((LexAggState) originCell.getEndState());
-
         // 记录分组情况
+        // TODO NFA 转 DFA：经过子集构造法处理后的 DFA 已经对ε做了处理，所以不会出现首尾节点聚合的情况
+        // TODO 如果直接通过正则表达式转 DFA，可能会出现首尾节点聚合的情况，例如：(a|b)*abb
         List<Set<LexAggState>> groups = new ArrayList<>();
-        groups.add(unAccStates);
+        groups.add(states);
 
         // 判断是否被拆分过
         boolean isSplit = false;
@@ -233,7 +225,7 @@ public class LexAutomatonTransformer {
                                 newGroup.add(state);
                                 newGroupMap.put(LexConstants.TRAN_UNABLE, newGroup);
                             }else{
-                                newGroupMap.get(tranMeta).add(state);
+                                newGroupMap.get(LexConstants.TRAN_UNABLE).add(state);
                             }
                         }
 
@@ -270,18 +262,15 @@ public class LexAutomatonTransformer {
 
         }
 
-        // 加入接收状态组
-        groups.add(accStates);
-
         // 记录新旧节点的映射关系，key：originState.getTag()，value：newState
         Map<String, LexAggState> tranMinMap = new HashMap<>();
         // 记录原节点的转换关系, key：originState.getTag()，二级key：tranChar，value：originEndState
         Map<String, Map<LexSimplePattern.Metacharacter, LexAggState>> originTranMap = new HashMap<>();
 
         // 根据分组构造新的 DFA 节点
-        Set<LexState> newStates = new HashSet<>();
+        Set<LexAggState> newStates = new HashSet<>();
         LexState newStartState = null;
-        LexState newEndState = null;
+        Set<LexAggState> newEndState = new HashSet<>();
         for(Set<LexAggState> group : groups){
             LexAggState newState = new LexAggState();
             for(LexAggState originState : group){
@@ -295,12 +284,12 @@ public class LexAutomatonTransformer {
                 newState.getAggStateSet().addAll(originState.getAggStateSet());
 
                 // 判断是否是起始节点
-                if(originCell.getStartState().getTag().equals(originState.getTag())){
+                if(originCell.getStartState().equals(originState)){
                     newStartState = newState;
                 }
                 // 判断是否是接收节点
-                if(originCell.getEndState().getTag().equals(originState.getTag())){
-                    newEndState = newState;
+                if(originCell.getAccStateSet().contains(originState)){
+                    newEndState.add(newState);
                 }
 
                 // 记录原节点的转换关系
@@ -340,9 +329,9 @@ public class LexAutomatonTransformer {
         }
 
         // 构造新的Cell
-        LexCell minCell = new LexCell();
+        LexDFACell minCell = new LexDFACell();
         minCell.setStartState(newStartState);
-        minCell.setEndState(newEndState);
+        minCell.getAccStateSet().addAll(newEndState);
         minCell.getEdgeSet().addAll(newEdages);
 
         return minCell;
@@ -790,7 +779,7 @@ public class LexAutomatonTransformer {
             str.append("{");
             str.append(this.getStateName());
             if(this.aggStateSet.size() > 0){
-                str.append(",{");
+                str.append("#{");
                 List temp = new ArrayList(this.aggStateSet);
                 for(int i=0; i<temp.size(); i++){
                     str.append(temp.get(i).toString());

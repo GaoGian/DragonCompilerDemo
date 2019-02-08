@@ -116,20 +116,29 @@ public class NFATest {
     @Test
     public void testN2DTest(){
 //        String pattern = "adv|bced";
-        String pattern = "(\\d*(\\.\\d+)?)";
-//        String pattern = "([A-Z]+)|(\\d*(\\.\\d+)?)";
+//        String pattern = "(\\d*(\\.\\d+)?)";
+        String pattern = "([A-Z]+)|(\\d*(\\.\\d+)?)";
 
         System.out.println("-------------------------originCell  NFA-------------------------------------");
         LexAutomatonTransformer.LexCell originCell = LexAutomatonTransformer.express2NFA(pattern);
         LexUtils.outputEchart(originCell);
 
-        System.out.println("-------------------------lexCell  DFA-------------------------------------");
-        LexAutomatonTransformer.LexCell lexCell = LexAutomatonTransformer.tranNFA2DFA(originCell);
+        System.out.println("-------------------------NFA 2 DFA-------------------------------------");
+        LexAutomatonTransformer.LexDFACell lexCell = LexAutomatonTransformer.tranNFA2DFA(originCell);
         LexUtils.outputEchart(lexCell);
 
-        System.out.println("-------------------------最小化 DFA 显示-------------------------------------");
-        LexAutomatonTransformer.LexCell lexMinCell = LexAutomatonTransformer.minimizeDFA(lexCell);
-        LexUtils.outputEchart(lexMinCell);
+        // FIXME 解决BUG
+//        System.out.println("-------------------------最小化 DFA 显示-------------------------------------");
+//        LexAutomatonTransformer.LexCell lexMinCell = LexAutomatonTransformer.minimizeDFA(lexCell);
+//        LexUtils.outputEchart(lexMinCell);
+
+    }
+
+    @Test
+    public void express2DFA(){
+//        String pattern = "adv|bced";
+        String pattern = "(\\d*(\\.\\d+)?)";
+//        String pattern = "([A-Z]+)|(\\d*(\\.\\d+)?)";
 
     }
 

@@ -408,9 +408,17 @@ public class LexUtils {
         // 广度遍历
         int x = 0, y =0;
         Set<LexAutomatonTransformer.LexState> states = new HashSet<>();
-        List<LexUtils.EcharDemoPoint> pointList = new ArrayList<>();
+        Set<LexUtils.EcharDemoPoint> pointList = new HashSet<>();
         LexAutomatonTransformer.LexState startState = lexCell.getStartState();
-        LexAutomatonTransformer.LexState endState = lexCell.getEndState();
+
+        Set<LexAutomatonTransformer.LexState> endStateSet = new HashSet<>();
+        if(lexCell.getEndState() != null) {
+            // NFA
+            endStateSet.add(lexCell.getEndState());
+        }else{
+            // DFA
+            endStateSet.addAll(((LexAutomatonTransformer.LexDFACell) lexCell).getAccStateSet());
+        }
 
         states.add(startState);
         pointList.add(new LexUtils.EcharDemoPoint(startState.toString(), x, y));
@@ -422,7 +430,7 @@ public class LexUtils {
             Set<LexAutomatonTransformer.LexEdge> newEdges = new HashSet<>();
             for (LexAutomatonTransformer.LexEdge edge : edges) {
                 LexAutomatonTransformer.LexState targetState = edge.getEndState();
-                if (!targetState.equals(endState) && !states.contains(targetState)) {
+                if (!endStateSet.contains(targetState) && !states.contains(targetState)) {
                     states.add(targetState);
                     pointList.add(new LexUtils.EcharDemoPoint(targetState.toString(), x, y));
                     newEdges.addAll(targetState.getEdgeMap().values());
@@ -431,8 +439,12 @@ public class LexUtils {
             }
             edges = newEdges;
         }
-        states.add(endState);
-        pointList.add(new LexUtils.EcharDemoPoint(endState.toString(), x+400, y));
+        states.addAll(endStateSet);
+        x += 400;
+        for(LexAutomatonTransformer.LexState endState : endStateSet) {
+            pointList.add(new LexUtils.EcharDemoPoint(endState.toString(), x, y));
+            y += 300;
+        }
 
         List<LexUtils.EchartDemoEdge> echarEdges = new ArrayList<>();
         for(LexAutomatonTransformer.LexEdge edge : lexCell.getEdgeSet()){
@@ -488,6 +500,24 @@ public class LexUtils {
         @Override
         public String toString(){
             return "{name:'" + this.name + "',x:" + this.x + ",y:" + this.y + "},";
+        }
+
+        @Override
+        public int hashCode(){
+            return this.name.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object other){
+            if(other == null){
+                return false;
+            }
+
+            if(!this.name.equals(((EcharDemoPoint) other).getName())){
+                return false;
+            }
+
+            return true;
         }
 
     }
