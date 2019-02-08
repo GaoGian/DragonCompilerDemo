@@ -181,16 +181,21 @@ public class LexAutomatonTransformer {
         Set<LexSimplePattern.Metacharacter> tranMetas = originCell.getTranMetas();
         Set<LexAggState> states = new HashSet(originCell.getAllStates());
 
+        // 记录分组情况
         // 设置初始分组：接收状态组、非接收状态组
+        List<Set<LexAggState>> groups = new ArrayList<>();
+        // 非接收状态组
         Set<LexAggState> unAccStates = new HashSet<>();
         unAccStates.addAll(states);
         unAccStates.removeAll(originCell.getAccStateSet());
-        Set<LexAggState> accStates = new HashSet<>();
-        accStates.addAll(originCell.getAccStateSet());
-
-        // 记录分组情况
-        List<Set<LexAggState>> groups = new ArrayList<>();
         groups.add(unAccStates);
+        // 接收状态组
+        for(LexAggState originAccState : originCell.getAccStateSet()) {
+            // 每个接受态对应一个分组
+            Set<LexAggState> accStates = new HashSet<>();
+            accStates.add(originAccState);
+            groups.add(accStates);
+        }
 
         // 判断是否被拆分过
         boolean isSplit = false;
@@ -269,9 +274,6 @@ public class LexAutomatonTransformer {
             }
 
         }
-
-        // 加入接收状态组
-        groups.add(accStates);
 
         // 记录新旧节点的映射关系，key：originState.getTag()，value：newState
         Map<String, LexAggState> tranMinMap = new HashMap<>();
