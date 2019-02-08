@@ -1,5 +1,6 @@
 package gian.compiler.practice.lexical.transform.regex;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.MyStack;
 
@@ -244,8 +245,11 @@ public class LexSimplePattern {
     public static class Metacharacter{
 
         private String meta;
+        @JSONField(serialize=false)
         private boolean isLetter;
+        @JSONField(serialize=false)
         private boolean isMetaList;
+        @JSONField(serialize=false)
         private boolean isEpsilon;
         private List<Metacharacter> childMetas = new ArrayList<>();
 

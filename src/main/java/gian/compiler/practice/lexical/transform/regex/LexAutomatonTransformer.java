@@ -1,6 +1,7 @@
 package gian.compiler.practice.lexical.transform.regex;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import gian.compiler.practice.lexical.parser.LexExpression;
@@ -181,21 +182,15 @@ public class LexAutomatonTransformer {
         Set<LexSimplePattern.Metacharacter> tranMetas = originCell.getTranMetas();
         Set<LexAggState> states = new HashSet(originCell.getAllStates());
 
-        // 记录分组情况
         // 设置初始分组：接收状态组、非接收状态组
-        List<Set<LexAggState>> groups = new ArrayList<>();
         // 非接收状态组
         Set<LexAggState> unAccStates = new HashSet<>();
         unAccStates.addAll(states);
         unAccStates.removeAll(originCell.getAccStateSet());
+
+        // 记录分组情况
+        List<Set<LexAggState>> groups = new ArrayList<>();
         groups.add(unAccStates);
-        // 接收状态组
-        for(LexAggState originAccState : originCell.getAccStateSet()) {
-            // 每个接受态对应一个分组
-            Set<LexAggState> accStates = new HashSet<>();
-            accStates.add(originAccState);
-            groups.add(accStates);
-        }
 
         // 判断是否被拆分过
         boolean isSplit = false;
@@ -275,8 +270,16 @@ public class LexAutomatonTransformer {
 
         }
 
+        // 接收状态组
+        for(LexAggState originAccState : originCell.getAccStateSet()) {
+            // 每个接受态对应一个分组
+            Set<LexAggState> accStates = new HashSet<>();
+            accStates.add(originAccState);
+            groups.add(accStates);
+        }
+
         // 记录新旧节点的映射关系，key：originState.getTag()，value：newState
-        Map<String, LexAggState> tranMinMap = new HashMap<>();
+        Map<String, LexAggState> tranStateMap = new HashMap<>();
         // 记录原节点的转换关系, key：originState.getTag()，二级key：tranChar，value：originEndState
         Map<String, Map<LexSimplePattern.Metacharacter, LexAggState>> originTranMap = new HashMap<>();
 
@@ -319,25 +322,28 @@ public class LexAutomatonTransformer {
                 }
 
                 // 记录新旧节点的映射关系
-                tranMinMap.put(originState.getTag(), newState);
+                tranStateMap.put(originState.getTag(), newState);
             }
 
             newStateSet.add(newState);
         }
 
-        // 生成新的转换边
+        // 生成新的转换边，原来的指向并到新节点中：根据原节点的转换关系找到原转换节点，再根据新旧节点的映射关系，将新的节点连接起来
         Set<LexEdge> newEdages = new HashSet<>();
-        for(String originStateTag : tranMinMap.keySet()){
-            LexAggState newState = tranMinMap.get(originStateTag);
+        for(String originStateTag : tranStateMap.keySet()){
+            LexAggState newState = tranStateMap.get(originStateTag);
             Map<LexSimplePattern.Metacharacter, LexAggState> originTran = originTranMap.get(originStateTag);
-            for(LexSimplePattern.Metacharacter tranMeta : originTran.keySet()){
-                LexAggState originTranState = originTran.get(tranMeta);
-                LexAggState newTranState = tranMinMap.get(originTranState.getTag());
-                LexEdge newEdge = new LexEdge(newState, newTranState, tranMeta);
+            // 没有转换边的接受节点不会有转换节点
+            if(originTran != null) {
+                for (LexSimplePattern.Metacharacter tranMeta : originTran.keySet()) {
+                    LexAggState originTranState = originTran.get(tranMeta);
+                    LexAggState newTranState = tranStateMap.get(originTranState.getTag());
+                    LexEdge newEdge = new LexEdge(newState, newTranState, tranMeta);
 
-                // 记录新的转换边
-                newEdages.add(newEdge);
-                newState.getEdgeMap().put(tranMeta, newEdge);
+                    // 记录新的转换边
+                    newEdages.add(newEdge);
+                    newState.getEdgeMap().put(tranMeta, newEdge);
+                }
             }
         }
 
@@ -671,6 +677,7 @@ public class LexAutomatonTransformer {
     public static class LexState{
         protected String stateName;
         // 当前节点的 out 转换边
+        @JSONField(serialize=false)
         protected Multimap<LexSimplePattern.Metacharacter, LexEdge> edgeMap = ArrayListMultimap.create();
 
         public LexState(){
