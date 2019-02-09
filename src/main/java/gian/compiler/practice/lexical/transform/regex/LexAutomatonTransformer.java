@@ -695,7 +695,7 @@ public class LexAutomatonTransformer {
         // 记录转换符
         Set<LexSimplePattern.Metacharacter> tranMetas = new HashSet<>();
         for(LexDFANode node : nodeMap.values()){
-            if(!node.equals(EOF_META)) {
+            if(!node.getMeta().equals(EOF_META)) {
                 tranMetas.add(node.getMeta());
             }
         }
@@ -708,35 +708,53 @@ public class LexAutomatonTransformer {
         }
 
         // 已生成的状态
-        Map<String, LexAggState> allDstateMap = new HashMap<>();
-        allDstateMap.put(startState.getTag(), startState);
+        Map<String, LexAggState<Integer>> allNewStateMap = new HashMap<>();
+        allNewStateMap.put(startState.getTag(), startState);
 
         // 待处理的状态
-        List<LexAggState> dstates = new ArrayList<>();
-        dstates.add(startState);
+        List<LexAggState<Integer>> originStates = new ArrayList<>();
+        originStates.add(startState);
 
         // 标记处理过的状态
         Set<String> stateTags = new HashSet<>();
 
         // 记录所有转换边
-        Set<LexEdge> dedges = new HashSet<>();
+        Set<LexEdge> originEdges = new HashSet<>();
 
-        for(int i=0; i<dstates.size(); i++){
-            LexAggState preState = dstates.get(i);
+        for(int i=0; i<originStates.size(); i++){
+            LexAggState<Integer> preState = originStates.get(i);
             if(!stateTags.contains(preState.getTag())){
                 for(LexSimplePattern.Metacharacter tranMeta : tranMetas){
-                    LexAggState<Integer> subState = new LexAggState(String.valueOf((char)((stateNum++) + 65)));
+                    Set<Integer> aggPosSet = new HashSet<>();
 
-                    if(allDstateMap.get(subState.getTag()) != null){
-                        subState = allDstateMap.get(subState.getTag());
-                    }else{
-                        allDstateMap.put(subState.getTag(), subState);
+                    for(Integer subPos : preState.getAggStateSet()){
+                        LexDFANode node = nodeMap.get(subPos);
+                        // 只需要添加转换符为tranChar的位置（当前位置符即转换符）的后继节点
+                        if(tranMeta.equals(node.getMeta())) {
+                            Set<Integer> followPos = node.getFollowPos();
+                            for (Integer pos : followPos) {
+                                aggPosSet.add(pos);
+                            }
+                        }
                     }
 
-                    LexEdge edge = new LexEdge(preState, subState, tranMeta);
-                    preState.getEdgeMap().put(tranMeta, edge);
-                    dstates.add(subState);
-                    dedges.add(edge);
+                    if(aggPosSet.size() > 0) {
+                        LexAggState<Integer> subState = new LexAggState(String.valueOf((char)((stateNum++) + 65)));
+                        subState.getAggStateSet().addAll(aggPosSet);
+
+                        if (allNewStateMap.get(subState.getTag()) != null) {
+                            subState = allNewStateMap.get(subState.getTag());
+                        } else {
+                            allNewStateMap.put(subState.getTag(), subState);
+                        }
+
+                        LexEdge edge = new LexEdge(preState, subState, tranMeta);
+                        preState.getEdgeMap().put(tranMeta, edge);
+                        originStates.add(subState);
+                        originEdges.add(edge);
+
+                        preState.getEdgeMap().put(tranMeta, edge);
+                    }
                 }
 
                 // 标记已处理
@@ -745,29 +763,29 @@ public class LexAutomatonTransformer {
         }
 
         // 找出接收状态节点（没有指向其他节点的边）
-        Set<LexAggState> accStateSet = new HashSet<>();
-        for(LexAggState dtranState : allDstateMap.values()){
+        Set<LexAggState<Integer>> accStateSet = new HashSet<>();
+        for(LexAggState<Integer> tranState : allNewStateMap.values()){
             boolean isAccState = true;
-            for(LexEdge edge : dtranState.getEdgeMap().values()){
-                if(!edge.getEndState().equals(dtranState)){
+            for(LexEdge edge : tranState.getEdgeMap().values()){
+                if(!edge.getEndState().equals(tranState)){
                     isAccState = false;
                     break;
                 }
             }
             if(isAccState){
-                accStateSet.add(dtranState);
+                accStateSet.add(tranState);
             }
         }
 
-        LexDFACell dcell = new LexDFACell();
-        dcell.setStartState(startState);
-        dcell.getAccStateSet().addAll(accStateSet);
-        dcell.getEdgeSet().addAll(dedges);
+        LexDFACell cell = new LexDFACell();
+        cell.setStartState(startState);
+        cell.getAccStateSet().addAll(accStateSet);
+        cell.getEdgeSet().addAll(originEdges);
 
-        dcell.getTranMetas().addAll(tranMetas);
-        dcell.getAllStates().addAll(allDstateMap.values());
+        cell.getTranMetas().addAll(tranMetas);
+        cell.getAllStates().addAll(allNewStateMap.values());
 
-        return dcell;
+        return cell;
     }
 
     public static LexDFANode buildLexDFANode(List<LexSimplePattern.Metacharacter> postfixMetas, AtomicInteger stateNum){

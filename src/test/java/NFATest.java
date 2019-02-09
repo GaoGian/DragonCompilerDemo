@@ -157,6 +157,9 @@ public class NFATest {
 
         // 输出语法分析树结果
         LexUtils.print(root);
+
+        LexAutomatonTransformer.LexDFACell cell = LexAutomatonTransformer.buildDFA(root);
+        LexUtils.outputEchart(cell);
     }
 
     @Test
