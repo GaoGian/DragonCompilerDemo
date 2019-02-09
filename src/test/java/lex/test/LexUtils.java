@@ -200,7 +200,7 @@ public class LexUtils {
 //--------------------------------------------------------------------------------------------------//
 //-------------------------------- 打印树结构 ------------------------------------------------------//
 
-    public static void print(LexAutomatonTransformer.LexNode root) {
+    public static void print(LexAutomatonTransformer.Node root) {
         // 找到左边的最大偏移量
         int maxLeftOffset = findMaxOffset(root, 0, true);
         int maxRightOffset = findMaxOffset(root, 0, false);
@@ -225,8 +225,9 @@ public class LexUtils {
 
     }
 
-    private static void calculateLines(LexAutomatonTransformer.LexNode parent, int offset, Map<Integer, LexPrintLine> lineMap, int level,
-                                       boolean right) {
+    // TODO 优化行距输出逻辑，解决覆盖问题
+    private static void calculateLines(LexAutomatonTransformer.Node parent, int offset,
+                                       Map<Integer, LexPrintLine> lineMap, int level, boolean right) {
         if (parent == null) {
             return;
         }
@@ -294,7 +295,7 @@ public class LexUtils {
 
     }
 
-    private static int findMaxOffset(LexAutomatonTransformer.LexNode parent, int offset, boolean findLeft) {
+    private static int findMaxOffset(LexAutomatonTransformer.Node parent, int offset, boolean findLeft) {
         if (parent != null) {
             offset += parent.toString().length();
         }

@@ -2,6 +2,7 @@ package lex.test;
 
 import com.alibaba.fastjson.JSON;
 import gian.compiler.practice.lexical.transform.LexConstants;
+import gian.compiler.practice.lexical.transform.MyStack;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
 
 import java.util.*;
@@ -106,7 +107,7 @@ public class DFATransformer {
         System.out.println("----------------------------DFA-------------------------------");
 
         // 先生成语法分析树
-        LexAutomatonTransformer.LexNode root = LexAutomatonTransformer.buildLexNode(rnpExpression);
+        LexNode root = buildLexNode(rnpExpression);
 
         // 输出语法分析树结果
         LexUtils.print(root);
@@ -310,15 +311,15 @@ public class DFATransformer {
      * @param root
      * @return
      */
-    public static Dcell buildDFA(LexAutomatonTransformer.LexNode root){
+    public static Dcell buildDFA(LexNode root){
         int stateNum = 0;
 
-        Map<Integer, LexAutomatonTransformer.LexNode> nodeMap = new HashMap<>();
-        LexAutomatonTransformer.getLeafLexNodeMap(root, nodeMap);
+        Map<Integer, LexNode> nodeMap = new HashMap<>();
+        getLeafLexNodeMap(root, nodeMap);
 
         // 记录转换符
         Set<Character> tranChars = new HashSet<>();
-        for(LexAutomatonTransformer.LexNode node : nodeMap.values()){
+        for(LexNode node : nodeMap.values()){
             if(node.getElement() != LexConstants.EOF) {
                 tranChars.add(node.getElement());
             }
@@ -353,7 +354,7 @@ public class DFATransformer {
                     Dstate subState = new Dstate(String.valueOf((char)(stateNum + 65)));
                     stateNum++;
 
-                    for(LexAutomatonTransformer.LexNode node : preState.getStateSet()){
+                    for(LexNode node : preState.getStateSet()){
                         // 只需要添加转换符为tranChar的位置（当前位置符即转换符）的后继节点
                         if(tranChar.equals(node.getElement())) {
                             Set<Integer> followPos = node.getFollowPos();
@@ -383,7 +384,7 @@ public class DFATransformer {
         // 找出接收状态节点
         Dstate endState = null;
         for(Dstate dtranState : allDstateMap.values()){
-            for(LexAutomatonTransformer.LexNode state : dtranState.getStateSet()){
+            for(LexNode state : dtranState.getStateSet()){
                 if(state.getElement() == LexConstants.EOF){
                     endState = dtranState;
                     break;
@@ -488,7 +489,7 @@ public class DFATransformer {
 
         private String stateName;
 
-        private Set<LexAutomatonTransformer.LexNode> stateSet = new HashSet<>();
+        private Set<LexNode> stateSet = new HashSet<>();
         private Set<Dedge> dtranEdgeSet = new HashSet<>();
 
         private Set<Character> stateNames = new TreeSet<>(new Comparator<Character>() {
@@ -521,17 +522,17 @@ public class DFATransformer {
             this.statePos = originDstate.getStatePos();
         }
 
-        public void addState(LexAutomatonTransformer.LexNode state){
+        public void addState(LexNode state){
             this.stateSet.add(state);
 
             this.stateNames.add(state.getElement());
             this.statePos.add(state.getPos());
         }
 
-        public void addState(Set<LexAutomatonTransformer.LexNode> stateSet){
+        public void addState(Set<LexNode> stateSet){
             this.stateSet.addAll(stateSet);
 
-            for(LexAutomatonTransformer.LexNode state : stateSet){
+            for(LexNode state : stateSet){
                 this.stateNames.add(state.getElement());
                 this.statePos.add(state.getPos());
             }
@@ -557,7 +558,7 @@ public class DFATransformer {
                 return false;
             }
 
-            for(LexAutomatonTransformer.LexNode state : otherState.stateSet){
+            for(LexNode state : otherState.stateSet){
                 if(!statePos.contains(state.getPos())){
                     return false;
                 }
@@ -585,11 +586,11 @@ public class DFATransformer {
             this.stateName = stateName;
         }
 
-        public Set<LexAutomatonTransformer.LexNode> getStateSet() {
+        public Set<LexNode> getStateSet() {
             return stateSet;
         }
 
-        public void setStateSet(Set<LexAutomatonTransformer.LexNode> stateSet) {
+        public void setStateSet(Set<LexNode> stateSet) {
             this.stateSet = stateSet;
         }
 
@@ -725,6 +726,303 @@ public class DFATransformer {
 
         public void setStateMap(Map<String, Dstate> stateMap) {
             this.stateMap = stateMap;
+        }
+    }
+
+    public static class LexNode extends LexAutomatonTransformer.Node{
+
+        private char element;
+        private Integer pos;
+        private LexAutomatonTransformer.LexNodeType type;
+
+        private LexNode left;
+        private LexNode right;
+
+        private Set<Integer> firstPos = new HashSet<>();
+        private Set<Integer> lastPos = new HashSet<>();
+        private Set<Integer> followPos = new HashSet<>();
+
+        public char getElement() {
+            return element;
+        }
+
+        public void setElement(char element) {
+            this.element = element;
+        }
+
+        public Integer getPos() {
+            return pos;
+        }
+
+        public void setPos(Integer pos) {
+            this.pos = pos;
+        }
+
+        public LexNode getLeft() {
+            return left;
+        }
+
+        public void setLeft(LexNode left) {
+            this.left = left;
+        }
+
+        public LexNode getRight() {
+            return right;
+        }
+
+        public void setRight(LexNode right) {
+            this.right = right;
+        }
+
+        public LexAutomatonTransformer.LexNodeType getType() {
+            return type;
+        }
+
+        public void setType(LexAutomatonTransformer.LexNodeType type) {
+            this.type = type;
+        }
+
+        public Set<Integer> getFirstPos() {
+            return firstPos;
+        }
+
+        public void setFirstPos(Set<Integer> firstPos) {
+            this.firstPos = firstPos;
+        }
+
+        public Set<Integer> getLastPos() {
+            return lastPos;
+        }
+
+        public void setLastPos(Set<Integer> lastPos) {
+            this.lastPos = lastPos;
+        }
+
+        public Set<Integer> getFollowPos() {
+            return followPos;
+        }
+
+        public void setFollowPos(Set<Integer> followPos) {
+            this.followPos = followPos;
+        }
+
+        @Override
+        public String toString(){
+            if(pos != null) {
+                return pos + ":" + JSON.toJSONString(firstPos) + "'" + element+ "'" + JSON.toJSONString(lastPos) + ":" + JSON.toJSONString(followPos);
+            }else{
+                return JSON.toJSONString(firstPos) + "'" + element+ "'" + JSON.toJSONString(lastPos) + ":" + JSON.toJSONString(followPos);
+            }
+        }
+
+        @Override
+        public int hashCode(){
+            return this.toString().hashCode();
+        }
+
+    }
+
+    public static void computeFollowPos(LexNode root){
+        Map<Integer, LexNode> nodeMap = new HashMap<>();
+        getLeafLexNodeMap(root, nodeMap);
+        followPos(root, nodeMap);
+    }
+
+    public static void getLeafLexNodeMap(LexNode node, Map<Integer, LexNode> nodeMap){
+        if(node.getType().equals(LexAutomatonTransformer.LexNodeType.LEAF)){
+            nodeMap.put(node.getPos(), node);
+        }else{
+            if(node.getLeft() != null){
+                getLeafLexNodeMap(node.getLeft(), nodeMap);
+            }
+            if(node.getRight() != null){
+                getLeafLexNodeMap(node.getRight(), nodeMap);
+            }
+        }
+    }
+
+
+    public static void computeFirstAndLastPos(LexNode node){
+        // firstPos
+        node.getFirstPos().addAll(firstPos(node));
+        // lastPos
+        node.getLastPos().addAll(lastPos(node));
+
+        // childNode
+        if(node.getLeft() != null){
+            computeFirstAndLastPos(node.getLeft());
+        }
+        if(node.getRight() != null){
+            computeFirstAndLastPos(node.getRight());
+        }
+    }
+
+    /**
+     * 构造词法分析树
+     * @param express
+     * @return
+     */
+    public static LexNode buildLexNode(String express){
+        int lexNodeNum = 1;
+        MyStack<LexNode> stack = new MyStack<>();
+        for (int i = 0; i < express.length(); i++) {
+            char element = express.charAt(i);
+            switch (element) {
+                case '|': {
+                    LexNode right = stack.top();
+                    stack.pop();
+                    LexNode left = stack.top();
+                    stack.pop();
+                    LexNode cell = doLexNode(element, LexAutomatonTransformer.LexNodeType.OR, null, left, right);
+                    stack.push(cell);
+                    break;
+                }
+                case '*': {
+                    LexNode left = stack.top();
+                    stack.pop();
+                    LexNode cell = doLexNode(element, LexAutomatonTransformer.LexNodeType.START, null, left, null);
+                    stack.push(cell);
+                    break;
+                }
+                case '+': {
+                    LexNode right = stack.top();
+                    stack.pop();
+                    LexNode left = stack.top();
+                    stack.pop();
+                    LexNode cell = doLexNode(element, LexAutomatonTransformer.LexNodeType.CAT, null, left, right);
+                    stack.push(cell);
+                    break;
+                }
+                default: {
+                    LexNode node = doLexNode(element, LexAutomatonTransformer.LexNodeType.LEAF, lexNodeNum++, null, null);
+                    stack.push(node);
+                }
+            }
+        }
+
+        System.out.println("语法分析树构造完毕");
+
+        LexNode root = stack.pop();
+
+        // 计算各位置的nullAble、firstPos、lastPos
+        computeFirstAndLastPos(root);
+        // 计算各位置的followPos
+        computeFollowPos(root);
+
+        return root;
+    }
+
+    public static LexNode doLexNode(char element, LexAutomatonTransformer.LexNodeType type, Integer pos, LexNode left, LexNode right){
+        LexNode node = new LexNode();
+        node.setElement(element);
+        node.setPos(pos);
+        node.setType(type);
+
+        node.setLeft(left);
+        node.setRight(right);
+
+        return node;
+    }
+
+    // 语法分析书节点是否可以推导出ε
+    public static boolean nullAble(LexNode node){
+        boolean result = false;
+        if(node.type.equals(LexAutomatonTransformer.LexNodeType.EPSILON)){
+            result = true;
+        }else if(node.type.equals(LexAutomatonTransformer.LexNodeType.OR)){
+            result = nullAble(node.getLeft()) || nullAble(node.getRight());
+        }else if(node.type.equals(LexAutomatonTransformer.LexNodeType.CAT)){
+            result = nullAble(node.getLeft()) && nullAble(node.getRight());
+        }else if(node.type.equals(LexAutomatonTransformer.LexNodeType.START)){
+            result = true;
+        }else if(node.type.equals(LexAutomatonTransformer.LexNodeType.LEAF)){
+            result = false;
+        }
+        return result;
+    }
+
+    // 计算当前节点为根的首字符集合
+    public static Set<Integer> firstPos(LexNode node){
+        Set<Integer> pos = new HashSet<>();
+        if(node.type.equals(LexAutomatonTransformer.LexNodeType.EPSILON)){
+
+        }else if(node.type.equals(LexAutomatonTransformer.LexNodeType.OR)){
+            pos.addAll(firstPos(node.getLeft()));
+            pos.addAll(firstPos(node.getRight()));
+        }else if(node.type.equals(LexAutomatonTransformer.LexNodeType.CAT)){
+            if(nullAble(node.getLeft())){
+                pos.addAll(firstPos(node.getLeft()));
+                pos.addAll(firstPos(node.getRight()));
+            }else{
+                pos.addAll(firstPos(node.getLeft()));
+            }
+        }else if(node.type.equals(LexAutomatonTransformer.LexNodeType.START)){
+            pos.addAll(firstPos(node.getLeft()));
+        }else if(node.type.equals(LexAutomatonTransformer.LexNodeType.LEAF)){
+            pos.add(node.getPos());
+        }
+
+        return pos;
+    }
+
+    // 计算当前节点为根的最后字符集合
+    public static Set<Integer> lastPos(LexNode node){
+        Set<Integer> pos = new HashSet<>();
+        if(node.type.equals(LexAutomatonTransformer.LexNodeType.EPSILON)){
+
+        }else if(node.type.equals(LexAutomatonTransformer.LexNodeType.OR)){
+            pos.addAll(lastPos(node.getLeft()));
+            pos.addAll(lastPos(node.getRight()));
+        }else if(node.type.equals(LexAutomatonTransformer.LexNodeType.CAT)){
+            if(nullAble(node.getRight())){
+                pos.addAll(lastPos(node.getLeft()));
+                pos.addAll(lastPos(node.getRight()));
+            }else{
+                pos.addAll(lastPos(node.getRight()));
+            }
+        }else if(node.type.equals(LexAutomatonTransformer.LexNodeType.START)){
+            pos.addAll(lastPos(node.getLeft()));
+        }else if(node.type.equals(LexAutomatonTransformer.LexNodeType.LEAF)){
+            pos.add(node.getPos());
+        }
+
+        return pos;
+    }
+
+    // 计算当前节点位置对应的正则表达式
+    public static void followPos(LexNode node, Map<Integer, LexNode> lexNodeMap){
+        if(node.getType().equals(LexAutomatonTransformer.LexNodeType.CAT)){
+            if(node.getRight() != null){
+                LexNode rightChild = node.getRight();
+                Set<Integer> rightFirstPos = rightChild.getFirstPos();
+
+                if(node.getLeft() != null){
+                    LexNode leftChild = node.getLeft();
+                    Set<Integer> leftLastPos = leftChild.getLastPos();
+
+                    for(Integer lastPos : leftLastPos){
+                        LexNode lastPosNode = lexNodeMap.get(lastPos);
+                        lastPosNode.getFollowPos().addAll(rightFirstPos);
+                    }
+                }
+            }
+        }else if(node.getType().equals(LexAutomatonTransformer.LexNodeType.START)){
+            Set<Integer> firstPos = node.getFirstPos();
+            Set<Integer> lastPos = node.getLastPos();
+            for(Integer pos : lastPos){
+                LexNode lastPosNode = lexNodeMap.get(pos);
+                lastPosNode.getFollowPos().addAll(firstPos);
+            }
+        }
+
+        // child
+        if(!node.getType().equals(LexAutomatonTransformer.LexNodeType.LEAF)){
+            if(node.getLeft() != null){
+                followPos(node.getLeft(), lexNodeMap);
+            }
+            if(node.getRight() != null){
+                followPos(node.getRight(), lexNodeMap);
+            }
         }
     }
 

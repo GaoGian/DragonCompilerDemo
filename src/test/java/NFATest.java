@@ -1,4 +1,5 @@
 import com.alibaba.fastjson.JSON;
+import gian.compiler.practice.lexical.transform.LexConstants;
 import lex.test.LexUtils;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
 import gian.compiler.practice.lexical.transform.regex.copy.LexPattern;
@@ -9,6 +10,10 @@ import utils.BST;
 import utils.TreePrintUtil;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer.EOF_META;
+import static gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer.buildLexDFANode;
 
 /**
  * Created by Gian on 2019/1/27.
@@ -136,10 +141,22 @@ public class NFATest {
 
     @Test
     public void express2DFA(){
-//        String pattern = "adv|bced";
-        String pattern = "(\\d*(\\.\\d+)?)";
+        String pattern = "adv|bced";
+//        String pattern = "(\\d*(\\.\\d+)?)";
 //        String pattern = "([A-Z]+)|(\\d*(\\.\\d+)?)";
 
+        // 转换成后缀表达式
+        List<LexSimplePattern.Metacharacter> metas = LexSimplePattern.compile(pattern);
+        List<LexSimplePattern.Metacharacter> postfixMetas = LexSimplePattern.postfix(metas);
+
+        // 加上结尾符'\0'
+        postfixMetas.add(EOF_META);
+
+        // 先生成语法分析树
+        LexAutomatonTransformer.LexDFANode root = buildLexDFANode(postfixMetas, new AtomicInteger(0));
+
+        // 输出语法分析树结果
+        LexUtils.print(root);
     }
 
     @Test

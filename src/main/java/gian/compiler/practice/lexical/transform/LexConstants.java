@@ -14,6 +14,8 @@ public class LexConstants {
     public static final String EPSILON_STR = "ε";
     public static final String METE_LIST = "∑";
 
+    public static final String APPEND = "ο";
+
     // 正则表达式常用位置符
     public static final char UNITE = '|';
     public static final char START = '*';
