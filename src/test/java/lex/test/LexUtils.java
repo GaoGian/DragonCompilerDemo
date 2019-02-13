@@ -424,6 +424,7 @@ public class LexUtils {
         states.add(startState);
         pointList.add(new LexUtils.EcharDemoPoint(startState.toString(), x, y));
 
+        Set<LexAutomatonTransformer.LexEdge> recordEdges = new HashSet<>();
         Collection<LexAutomatonTransformer.LexEdge> edges = startState.getEdgeMap().values();
         while(edges.size()>0) {
             y = 0;
@@ -434,8 +435,12 @@ public class LexUtils {
                 if (!endStateSet.contains(targetState) && !states.contains(targetState)) {
                     states.add(targetState);
                     pointList.add(new LexUtils.EcharDemoPoint(targetState.toString(), x, y));
+                    y -= 300;
+                }
+
+                if(!recordEdges.contains(edge)){
+                    recordEdges.add(edge);
                     newEdges.addAll(targetState.getEdgeMap().values());
-                    y += 300;
                 }
             }
             edges = newEdges;
@@ -444,7 +449,7 @@ public class LexUtils {
         x += 400;
         for(LexAutomatonTransformer.LexState endState : endStateSet) {
             pointList.add(new LexUtils.EcharDemoPoint(endState.toString(), x, y));
-            y += 300;
+            y -= 300;
         }
 
         List<LexUtils.EchartDemoEdge> echarEdges = new ArrayList<>();

@@ -44,11 +44,16 @@ public class LexSimplePattern {
                     break;
                 }
                 case LexConstants.UNITE:{
-                    // 如果遇到 '|' 需要把左边的元字符都拼接起来，作为集合处理
+                    // 如果遇到 '|' 需要把左边的元字符都拼接起来（只到达左圆括号边界），作为集合处理
                     MyStack<Metacharacter> temp = new MyStack<>();
                     while(metaStack.top() != null && !metaStack.top().getMeta().equals(LexConstants.UNITE_STR)){
+                        if(metaStack.top().getMeta().equals(String.valueOf('('))){
+                            break;
+                        }
+
                         temp.push(metaStack.pop());
                     }
+
                     List<Metacharacter> leftMetaList = new ArrayList<>();
                     while(temp.top() != null){
                         leftMetaList.add(temp.pop());
@@ -236,9 +241,9 @@ public class LexSimplePattern {
             case LexConstants.ONE_LESS_STR:
                 return 7;
             case LexConstants.UNITE_STR:
-                return 5;
+                return 3;
             default:
-                return 10;
+                return 7;
         }
     }
 

@@ -120,9 +120,10 @@ public class NFATest {
 
     @Test
     public void testN2DTest(){
-//        String pattern = "adv|bced";
-//        String pattern = "(\\d*(\\.\\d+)?)";
-//        String pattern = "([A-Z]+)|(\\d*(\\.\\d+)?)";
+//        String pattern = "(a|b)*abb";
+////        String pattern = "adv|bced";
+////        String pattern = "(\\d*(\\.\\d+)?)";
+////        String pattern = "([A-Z]+)|(\\d*(\\.\\d+)?)";
         String pattern = "abc|([A-Z]+)|(\\d+(\\.\\d+)?)";
 
         System.out.println("-------------------------originCell  NFA-------------------------------------");
@@ -130,10 +131,12 @@ public class NFATest {
         LexUtils.outputEchart(originCell);
 
         System.out.println("-------------------------NFA 2 DFA-------------------------------------");
+        // FIXME 生成的DFA单元需要表示出接受态，方便DFA最小化使用
         LexAutomatonTransformer.LexDFACell lexCell = LexAutomatonTransformer.tranNFA2DFA(originCell);
         LexUtils.outputEchart(lexCell);
 
         System.out.println("-------------------------最小化 DFA 显示-------------------------------------");
+        // FIXME DFA 最小化需要处理多个接受态的情况
         LexAutomatonTransformer.LexCell lexMinCell = LexAutomatonTransformer.minimizeDFA(lexCell);
         LexUtils.outputEchart(lexMinCell);
 
@@ -158,6 +161,7 @@ public class NFATest {
         // 输出语法分析树结果
         LexUtils.print(root);
 
+        // FIXME 正则表达式直接生成DFA还有问题，需要解决
         LexAutomatonTransformer.LexDFACell cell = LexAutomatonTransformer.buildDFA(root);
         LexUtils.outputEchart(cell);
     }

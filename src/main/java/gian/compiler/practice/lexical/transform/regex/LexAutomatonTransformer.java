@@ -108,7 +108,7 @@ public class LexAutomatonTransformer {
                     if(moveStates.size() > 0) {
                         LexAggState subTranState = new LexAggState(String.valueOf(stateNum.getAndIncrement()));
                         subTranState.getAggStateSet().addAll(moveStates);
-                        // 保存新生成的DFA状态  FIXME 由于这里是饱和新增，所以不能使用stateName作为标识符，需要使用getTag方法
+                        // 保存新生成的DFA状态, 由于这里是饱和新增，所以不能使用stateName作为标识符，需要使用getTag方法
                         if (allN2DStateMap.get(subTranState.getTag()) == null) {
                             allN2DStateMap.put(subTranState.getTag(), subTranState);
                         } else {
@@ -134,18 +134,12 @@ public class LexAutomatonTransformer {
             }
         }
 
-        // 找出接收状态节点(没有指向其他节点的边就是接受节点)
+        // 找出接收状态节点(包含原来的接受节点)
         for(LexAggState tranN2DState : allN2DStateMap.values()){
-            boolean isAccState = true;
-            if(tranN2DState.getEdgeMap().size() != 0){
-                for(LexEdge edge : tranN2DState.getEdgeMap().values()){
-                    if(!edge.getEndState().equals(tranN2DState)){
-                        isAccState = false;
-                    }
+            for(Object state : tranN2DState.getAggStateSet()){
+                if(lexCell.getEndState().equals(state)){
+                    tranN2DCell.getAccStateSet().add(tranN2DState);
                 }
-            }
-            if(isAccState){
-                tranN2DCell.getAccStateSet().add(tranN2DState);
             }
         }
 
