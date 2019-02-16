@@ -36,79 +36,82 @@ public class LexSimplePattern {
         char[] chars = pattern.toCharArray();
         for(int i=0; i<chars.length; i++){
             char input = chars[i];
-            switch (input) {
-                case LexConstants.START:
-                case LexConstants.ONE_MORE:
-                case LexConstants.ONE_LESS:{
-                    metaStack.push(new Metacharacter(String.valueOf(input), false));
-                    break;
-                }
-                case LexConstants.UNITE:{
-                    // 如果遇到 '|' 需要把左边的元字符都拼接起来（只到达左圆括号边界），作为集合处理
-                    MyStack<Metacharacter> temp = new MyStack<>();
-                    while(metaStack.top() != null && !metaStack.top().getMeta().equals(LexConstants.UNITE_STR)){
-                        if(metaStack.top().getMeta().equals(String.valueOf('('))){
-                            break;
+            // 识别转义字符
+            if(inputStack.top() != null && inputStack.top() == '\\'){
+                // 识别转义字符
+                Character pop = inputStack.pop();
+                metaStack.push(new Metacharacter((String.valueOf(pop) + input), true));
+            }else {
+                switch (input) {
+                    case LexConstants.START:
+                    case LexConstants.ONE_MORE:
+                    case LexConstants.ONE_LESS: {
+                        metaStack.push(new Metacharacter(String.valueOf(input), false));
+                        break;
+                    }
+                    case LexConstants.UNITE: {
+                        // 如果遇到 '|' 需要把左边的元字符都拼接起来（只到达左圆括号边界），作为集合处理
+                        MyStack<Metacharacter> temp = new MyStack<>();
+                        while (metaStack.top() != null && !metaStack.top().getMeta().equals(LexConstants.UNITE_STR)) {
+                            if (metaStack.top().getMeta().equals(String.valueOf('('))) {
+                                break;
+                            }
+
+                            temp.push(metaStack.pop());
                         }
 
-                        temp.push(metaStack.pop());
-                    }
+                        List<Metacharacter> leftMetaList = new ArrayList<>();
+                        while (temp.top() != null) {
+                            leftMetaList.add(temp.pop());
+                        }
+                        metaStack.push(new Metacharacter(LexConstants.METE_LIST, leftMetaList, true));
 
-                    List<Metacharacter> leftMetaList = new ArrayList<>();
-                    while(temp.top() != null){
-                        leftMetaList.add(temp.pop());
+                        metaStack.push(new Metacharacter(String.valueOf(input), false));
+                        break;
                     }
-                    metaStack.push(new Metacharacter(LexConstants.METE_LIST, leftMetaList, true));
-
-                    metaStack.push(new Metacharacter(String.valueOf(input), false));
-                    break;
-                }
-                case '(':{
-                    // 用来识别左边界
-                    metaStack.push(new Metacharacter(String.valueOf(input), false));
-                    break;
-                }
-                case ')':{
-                    Metacharacter parenthesisMeta = matchParenthesis(metaStack, bracketsMap.get(input));
-                    metaStack.pop();
-                    if(parenthesisMeta != null) {
-                        metaStack.push(parenthesisMeta);
+                    case '(': {
+                        // 用来识别左边界
+                        metaStack.push(new Metacharacter(String.valueOf(input), false));
+                        break;
                     }
-                    break;
-                }
-                case '[':{
-                    inputStack.push(input);
-                    bracketStack.push(input);
-                    break;
-                }
-                case ']':{
-                    inputStack.push(input);
-                    Metacharacter bracketMeta = matchBracket(inputStack, bracketsMap.get(input));
-                    if(bracketMeta != null) {
-                        metaStack.push(bracketMeta);
+                    case ')': {
+                        Metacharacter parenthesisMeta = matchParenthesis(metaStack, bracketsMap.get(input));
+                        metaStack.pop();
+                        if (parenthesisMeta != null) {
+                            metaStack.push(parenthesisMeta);
+                        }
+                        break;
                     }
-                    bracketStack.pop();
-                    break;
-                }
-                case '\\':{
-                    inputStack.push(input);
-                    break;
-                }
-                default:{
-                    if(bracketStack.top() != null){
-                        // 说明是 [] 元字符
+                    case '[': {
                         inputStack.push(input);
-                    }else if(inputStack.top() != null && inputStack.top() == '\\'){
-                        // 识别转义字符
-                        Character pop = inputStack.pop();
-                        metaStack.push(new Metacharacter((String.valueOf(pop) + input), true));
-                    }else{
-                        // 识别单个字符
-                        metaStack.push(new Metacharacter(String.valueOf(input), true));
+                        bracketStack.push(input);
+                        break;
                     }
-                    break;
-                }
+                    case ']': {
+                        inputStack.push(input);
+                        Metacharacter bracketMeta = matchBracket(inputStack, bracketsMap.get(input));
+                        if (bracketMeta != null) {
+                            metaStack.push(bracketMeta);
+                        }
+                        bracketStack.pop();
+                        break;
+                    }
+                    case '\\': {
+                        inputStack.push(input);
+                        break;
+                    }
+                    default: {
+                        if (bracketStack.top() != null) {
+                            // 说明是 [] 元字符
+                            inputStack.push(input);
+                        } else {
+                            // 识别单个字符
+                            metaStack.push(new Metacharacter(String.valueOf(input), true));
+                        }
+                        break;
+                    }
 
+                }
             }
 
         }

@@ -12,66 +12,96 @@ public class LexExpression {
 
     static {
         // 关键词
-        expressions.add(new Expression("if", ExpressionType.KEYWORD, false));
-        expressions.add(new Expression("while", ExpressionType.KEYWORD, false));
-        expressions.add(new Expression("do", ExpressionType.KEYWORD, false));
-        expressions.add(new Expression("break", ExpressionType.KEYWORD, false));
-        expressions.add(new Expression("true", ExpressionType.KEYWORD, false));
-        expressions.add(new Expression("false", ExpressionType.KEYWORD, false));
+        expressions.add(new Expression("if", TokenType.KEYWORD, false));
+        expressions.add(new Expression("while", TokenType.KEYWORD, false));
+        expressions.add(new Expression("do", TokenType.KEYWORD, false));
+        expressions.add(new Expression("break", TokenType.KEYWORD, false));
+        expressions.add(new Expression("true", TokenType.KEYWORD, false));
+        expressions.add(new Expression("false", TokenType.KEYWORD, false));
 
         // 标识符
-        expressions.add(new Expression("[A-Za-z]\\w*", ExpressionType.ID, false));
+        expressions.add(new Expression("[A-Za-z]\\w*", TokenType.ID, false));
 
         // 数字
-        expressions.add(new Expression("\\d+(\\.\\d+)?", ExpressionType.NUMBER, false));
+        expressions.add(new Expression("\\d+(\\.\\d+)?", TokenType.NUMBER, false));
 
         // 操作符
-        expressions.add(new Expression(">", ExpressionType.OPERATOR, false));
-        expressions.add(new Expression("<", ExpressionType.OPERATOR, false));
-        expressions.add(new Expression("=", ExpressionType.OPERATOR, false));
-        expressions.add(new Expression(">=", ExpressionType.OPERATOR, false));
-        expressions.add(new Expression(">=", ExpressionType.OPERATOR, false));
-        expressions.add(new Expression("==", ExpressionType.OPERATOR, false));
-        expressions.add(new Expression("!=", ExpressionType.OPERATOR, false));
-        expressions.add(new Expression("&&", ExpressionType.OPERATOR, false));
-        expressions.add(new Expression("||", ExpressionType.OPERATOR, false));
+        expressions.add(new Expression(">", TokenType.OPERATOR, false));
+        expressions.add(new Expression("<", TokenType.OPERATOR, false));
+        expressions.add(new Expression("=", TokenType.OPERATOR, false));
+        expressions.add(new Expression(">=", TokenType.OPERATOR, false));
+        expressions.add(new Expression(">=", TokenType.OPERATOR, false));
+        expressions.add(new Expression("==", TokenType.OPERATOR, false));
+        expressions.add(new Expression("!=", TokenType.OPERATOR, false));
+        expressions.add(new Expression("&&", TokenType.OPERATOR, false));
+        expressions.add(new Expression("\\|\\|", TokenType.OPERATOR, false));
+        expressions.add(new Expression("\\+", TokenType.OPERATOR, false));
+        expressions.add(new Expression("-", TokenType.OPERATOR, false));
+        expressions.add(new Expression("\\*", TokenType.OPERATOR, false));
+        expressions.add(new Expression("/", TokenType.OPERATOR, false));
+        expressions.add(new Expression("\\+\\+", TokenType.OPERATOR, false));
+        expressions.add(new Expression("--", TokenType.OPERATOR, false));
 
         // 分隔符
-        expressions.add(new Expression("{", ExpressionType.SEPARATOR, false));
-        expressions.add(new Expression("}", ExpressionType.SEPARATOR, false));
-        expressions.add(new Expression("(", ExpressionType.SEPARATOR, false));
-        expressions.add(new Expression(")", ExpressionType.SEPARATOR, false));
-        expressions.add(new Expression("[", ExpressionType.SEPARATOR, false));
-        expressions.add(new Expression("]", ExpressionType.SEPARATOR, false));
+        expressions.add(new Expression("\\{", TokenType.SEPARATOR, false));
+        expressions.add(new Expression("\\}", TokenType.SEPARATOR, false));
+        expressions.add(new Expression("\\(", TokenType.SEPARATOR, false));
+        expressions.add(new Expression("\\)", TokenType.SEPARATOR, false));
+        expressions.add(new Expression("\\[", TokenType.SEPARATOR, false));
+        expressions.add(new Expression("\\]", TokenType.SEPARATOR, false));
 
         // 标点符号
-        expressions.add(new Expression(",", ExpressionType.PUNCTUATION, false));
-        expressions.add(new Expression(";", ExpressionType.PUNCTUATION, false));
+        expressions.add(new Expression(",", TokenType.PUNCTUATION, false));
+        expressions.add(new Expression(";", TokenType.PUNCTUATION, false));
 
         // 分隔符
-        expressions.add(new Expression("\\s+", ExpressionType.SECTION, true));
+        expressions.add(new Expression("\\s+", TokenType.SECTION, true));
 
     }
 
-    public static enum ExpressionType{
-        ID, KEYWORD, NUMBER, OPERATOR, SEPARATOR, PUNCTUATION, SECTION
+    public static enum TokenType {
+        KEYWORD("keyword"), ID("id"), NUMBER("number"),
+        OPERATOR("operator"), SEPARATOR("separator"),
+        PUNCTUATION("punctuation"), SECTION("section");
+
+        private String type;
+
+        private TokenType(String type){
+            this.type = type;
+        }
+
+        public String getType(){
+            return this.type;
+        }
+
     }
 
     // 词法单元匹配的正则表达式
     public static class Expression {
 
         private String expression;
-        private ExpressionType type;
-        //
+        private TokenType type;
+
+        // 准许后面跟着的字符表达式
+        private String behindExpression;
+
+        // 这里把识别出token后的action动作用布尔值代替，只需要判断出是否是分隔符就行
         private boolean isEmpty;
 
         public Expression() {
 
         }
 
-        public Expression(String expression, ExpressionType type, boolean isEmpty) {
+        public Expression(String expression, TokenType type, boolean isEmpty) {
             this.expression = expression;
             this.type = type;
+            this.isEmpty = isEmpty;
+        }
+
+        public Expression(String expression, TokenType type, String behindExpression, boolean isEmpty) {
+            this.expression = expression;
+            this.type = type;
+            this.behindExpression = behindExpression;
             this.isEmpty = isEmpty;
         }
 
@@ -83,11 +113,11 @@ public class LexExpression {
             this.expression = expression;
         }
 
-        public ExpressionType getType() {
+        public TokenType getType() {
             return type;
         }
 
-        public void setType(ExpressionType type) {
+        public void setType(TokenType type) {
             this.type = type;
         }
 

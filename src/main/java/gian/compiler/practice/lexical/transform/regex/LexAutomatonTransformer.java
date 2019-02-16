@@ -22,7 +22,7 @@ public class LexAutomatonTransformer {
     public static final LexSimplePattern.Metacharacter APPEND_META = new LexSimplePattern.Metacharacter(LexConstants.APPEND, false);
 
     /**
-     * 根据设定的词法扫描token
+     * 根据设定的词法扫描token，合并状态转换图
      * @param expressions
      * @return
      */
@@ -31,6 +31,15 @@ public class LexAutomatonTransformer {
         List<LexSimplePattern.Metacharacter> postfixMetas;
 
         return null;
+    }
+
+    public static LexCell getNFA2MinDFA(String expression){
+
+        LexCell originCell = express2NFA(expression);
+        LexDFACell lexCell = tranNFA2DFA(originCell);
+        LexCell lexMinCell = minimizeDFA(lexCell);
+
+        return lexMinCell;
     }
 
     /**
@@ -1037,11 +1046,15 @@ public class LexAutomatonTransformer {
         /**
          * 获取转换节点
           */
-        public List<LexState> tranState(LexSimplePattern.Metacharacter tranMeta){
-            List<LexState> tranStates = new ArrayList<>();
-            Collection<LexEdge> tranEdges = this.edgeMap.get(tranMeta);
-            for(LexEdge tranEdge : tranEdges) {
-                tranStates.add(tranEdge.getEndState());
+        public Set<LexState> tranState(String tranMeta){
+            Set<LexState> tranStates = new HashSet<>();
+            for(LexSimplePattern.Metacharacter meta : this.edgeMap.keySet()){
+                if(tranMeta.matches(meta.getMeta())){
+                    Collection<LexEdge> tranEdges = this.edgeMap.get(meta);
+                    for(LexEdge tranEdge : tranEdges) {
+                        tranStates.add(tranEdge.getEndState());
+                    }
+                }
             }
             return tranStates;
         }

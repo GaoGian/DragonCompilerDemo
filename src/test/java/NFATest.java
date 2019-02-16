@@ -1,4 +1,6 @@
 import com.alibaba.fastjson.JSON;
+import gian.compiler.practice.lexical.parser.LexicalParser;
+import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import lex.test.LexUtils;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
@@ -164,6 +166,19 @@ public class NFATest {
         // FIXME 正则表达式直接生成DFA还有问题，需要解决
         LexAutomatonTransformer.LexDFACell cell = LexAutomatonTransformer.buildDFA(root);
         LexUtils.outputEchart(cell);
+    }
+
+    @Test
+    public void testLexParser(){
+        List<Token> parseRs = LexicalParser.parser("C:\\Users\\Gian\\Desktop\\Temp\\compilerCode.txt");
+        for(Token token : parseRs){
+            System.out.println(token);
+        }
+    }
+
+    @Test
+    public void patternTest2(){
+        System.out.println("{".matches("\\{"));
     }
 
     @Test
