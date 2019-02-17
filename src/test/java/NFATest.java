@@ -171,9 +171,18 @@ public class NFATest {
     @Test
     public void testLexParser(){
         List<Token> parseRs = LexicalParser.parser("C:\\Users\\Gian\\Desktop\\Temp\\compilerCode.txt");
+        System.out.println("---------------------------------------------------------------------------");
+        System.out.println("");
+        int line = 0;
         for(Token token : parseRs){
-            System.out.println(token);
+            if(token.getLine() > line){
+                line = token.getLine();
+                System.out.println("");
+            }
+            System.out.print(token.toString());
         }
+        System.out.println("");
+        System.out.println("---------------------------------------------------------------------------");
     }
 
     @Test

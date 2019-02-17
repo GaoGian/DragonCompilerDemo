@@ -26,11 +26,11 @@ public class LexicalParser {
         // 2、采用并行匹配方式，输出最长匹配序列  TODO 暂时采用该方法
         // 3、合并状态转换图    TODO 稍微有点麻烦，暂时不采用
 
-        Map<TranCell, Set<LexAutomatonTransformer.LexState>> allMatchTranCells = new HashMap<>();
+        Map<TranCell, Set<LexAutomatonTransformer.LexState>> originMatchTranCells = new LinkedHashMap<>();
         for(TranCell tranCell : tranCells){
             Set<LexAutomatonTransformer.LexState> tranState = new HashSet<>();
             tranState.add(tranCell.getLexCell().getStartState());
-            allMatchTranCells.put(tranCell, tranState);
+            originMatchTranCells.put(tranCell, tranState);
         }
 
         List<Token> parseResult = new ArrayList<>();
@@ -38,24 +38,30 @@ public class LexicalParser {
         try{
             br = new BufferedReader(new FileReader(new File(path)));//构造一个BufferedReader类来读取文件
             String line = null;
+            int lineIndex = 0;
             while((line = br.readLine())!=null){//使用readLine方法，一次读一行
+                // FIXME 尾部不全空格符，方便转换解析
+                line += " ";
                 // 上一次完成识别的字符位置
                 int startIndex = 0;
                 // 当前正在识别的字符位置
                 int endIndex = startIndex;
-                Token token = null;
 
-                Map<TranCell, Set<LexAutomatonTransformer.LexState>> matchTranCells = new HashMap<>();
-                matchTranCells.putAll(allMatchTranCells);
-                Iterator<Map.Entry<TranCell, Set<LexAutomatonTransformer.LexState>>> iterator = matchTranCells.entrySet().iterator();
+                Map<TranCell, Set<LexAutomatonTransformer.LexState>> matchTranCells = new LinkedHashMap<>();
+                matchTranCells.putAll(originMatchTranCells);
+                List<TranCell> matchKeyList = new ArrayList<>();
+                matchKeyList.addAll(originMatchTranCells.keySet());
+
+                // 输入字符
                 while(endIndex < line.length()){
                     String input = String.valueOf(line.charAt(endIndex));
-                    Map<TranCell, Integer> accTranAbleCell = new HashMap<>();
+                    Map<TranCell, Integer> accTranAbleCell = new LinkedHashMap<>();
 
-                    while(iterator.hasNext()){
-                        Map.Entry<TranCell, Set<LexAutomatonTransformer.LexState>> entry = iterator.next();
-                        TranCell matchCell = entry.getKey();
-                        Set<LexAutomatonTransformer.LexState> tranStates = entry.getValue();
+                    for(int i=0; i<matchKeyList.size(); i++){
+                        TranCell matchCell = matchKeyList.get(i);
+                        // 当前状态
+                        Set<LexAutomatonTransformer.LexState> tranStates = matchTranCells.get(matchCell);
+                        // 转换后的状态
                         Set<LexAutomatonTransformer.LexState> tranAbleStates = new HashSet<>();
 
                         // 逐个转换，返回转换集合
@@ -72,12 +78,13 @@ public class LexicalParser {
                             for(LexAutomatonTransformer.LexState tranAbleState : tranStates){
                                 if(!accStateSet.contains(tranAbleState)){
                                     // 说明不能转换，去除该匹配单元
-                                    iterator.remove();
                                 }else{
                                     // 说明已经接受，去除该匹配单元
-                                    iterator.remove();
                                     accTranAbleCell.put(matchCell, endIndex - startIndex);
                                 }
+                                matchKeyList.remove(i);
+                                // 修正下个转换的位置
+                                i--;
                             }
                         }else{
                             // 说明还能继续转换，更新下次的转换集合
@@ -86,7 +93,7 @@ public class LexicalParser {
 
                     }
 
-                    if(matchTranCells.size() == 0){
+                    if(matchKeyList.size() == 0){
                         // 说明已经匹配结束，输出接受集合最大长度
                         TranCell maxMatchCell = null;
                         Integer maxMatchLength = null;
@@ -101,31 +108,39 @@ public class LexicalParser {
                                     maxMatchLength = matchLength;
                                 }
                                 if(matchLength == maxMatchLength){
-                                    throw new RuntimeException("maxMatchLength error");
+                                    // 如果匹配长度一样，那么按照顺序匹配，TODO 也可以设置优先级
+//                                    throw new RuntimeException("maxMatchLength error");
                                 }
                             }
                         }
 
                         // 返回最长匹配字符
                         Integer accIndex = startIndex + maxMatchLength;
-                        token = new Token(line.substring(startIndex, accIndex), maxMatchCell.getExpression().getType());
-                        parseResult.add(token);
+                        if(!maxMatchCell.getExpression().isEmpty()) {
+//                            Token token = new Token(line.substring(startIndex, accIndex), maxMatchCell.getExpression().getType());
+                            Token token = new Token(line.substring(startIndex, accIndex), maxMatchCell.getExpression().getType(), startIndex, lineIndex);
+                            parseResult.add(token);
+                        }
+
+                        // 重置匹配集合
+                        matchTranCells.clear();
+                        matchTranCells.putAll(originMatchTranCells);
+                        matchKeyList.clear();
+                        matchKeyList.addAll(originMatchTranCells.keySet());
 
                         // 刷新读取位置
                         startIndex = accIndex;
                         endIndex = accIndex;
 
-                        // 重置匹配集合
-                        matchTranCells.clear();
-                        matchTranCells.putAll(allMatchTranCells);
-                        iterator = matchTranCells.entrySet().iterator();
-
-                        break;
+                        if(endIndex == line.length()) {
+                            break;
+                        }
+                    }else{
+                        endIndex++;
                     }
-
-                    endIndex++;
                 }
 
+                lineIndex++;
             }
 
         }catch(Exception e){

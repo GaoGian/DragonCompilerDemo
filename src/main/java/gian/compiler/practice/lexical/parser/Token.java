@@ -8,9 +8,20 @@ public class Token {
     private String token;
     private LexExpression.TokenType type;
 
+    // 文本位置信息
+    private int index;
+    private int line;
+
     public Token(String token, LexExpression.TokenType type) {
         this.token = token;
         this.type = type;
+    }
+
+    public Token(String token, LexExpression.TokenType type, int index, int line) {
+        this.token = token;
+        this.type = type;
+        this.index = index;
+        this.line = line;
     }
 
     public String getToken() {
@@ -29,9 +40,26 @@ public class Token {
         this.type = type;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setLine(int line) {
+        this.line = line;
+    }
+
     @Override
     public String toString(){
-        return token + "|" + type.getType();
+        return "<'" + token + "', " + type.getType() + ", " + index + ">;";
+//        return "'" + token + "'";
     }
 
 }

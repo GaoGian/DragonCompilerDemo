@@ -11,6 +11,12 @@ public class LexExpression {
     public static List<Expression> expressions = new ArrayList<>();
 
     static {
+
+        // 数据类型
+        expressions.add(new Expression("int", TokenType.TYPE, false));
+        expressions.add(new Expression("float", TokenType.TYPE, false));
+        expressions.add(new Expression("String", TokenType.TYPE, false));
+
         // 关键词
         expressions.add(new Expression("if", TokenType.KEYWORD, false));
         expressions.add(new Expression("while", TokenType.KEYWORD, false));
@@ -60,7 +66,7 @@ public class LexExpression {
     }
 
     public static enum TokenType {
-        KEYWORD("keyword"), ID("id"), NUMBER("number"),
+        KEYWORD("keyword"), ID("id"), TYPE("type"), NUMBER("number"),
         OPERATOR("operator"), SEPARATOR("separator"),
         PUNCTUATION("punctuation"), SECTION("section");
 
