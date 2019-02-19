@@ -15,15 +15,23 @@ public class LexExpression {
         // 数据类型
         expressions.add(new Expression("int", TokenType.TYPE, false));
         expressions.add(new Expression("float", TokenType.TYPE, false));
-        expressions.add(new Expression("String", TokenType.TYPE, false));
+        expressions.add(new Expression("string", TokenType.TYPE, false));
+        expressions.add(new Expression("boolean", TokenType.TYPE, false));
 
         // 关键词
         expressions.add(new Expression("if", TokenType.KEYWORD, false));
+        expressions.add(new Expression("else", TokenType.KEYWORD, false));
         expressions.add(new Expression("while", TokenType.KEYWORD, false));
         expressions.add(new Expression("do", TokenType.KEYWORD, false));
         expressions.add(new Expression("break", TokenType.KEYWORD, false));
         expressions.add(new Expression("true", TokenType.KEYWORD, false));
         expressions.add(new Expression("false", TokenType.KEYWORD, false));
+
+        expressions.add(new Expression("package", TokenType.KEYWORD, false));
+        expressions.add(new Expression("import", TokenType.KEYWORD, false));
+        expressions.add(new Expression("public", TokenType.KEYWORD, false));
+        expressions.add(new Expression("class", TokenType.KEYWORD, false));
+        expressions.add(new Expression("void", TokenType.KEYWORD, false));
 
         // 标识符
         expressions.add(new Expression("[A-Za-z]\\w*", TokenType.ID, false));
