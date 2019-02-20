@@ -19,8 +19,36 @@ public class SyntaxTest {
 
         List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
 
-        System.out.println(syntaxSymbols);
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
 
+    }
+
+    @Test
+    public void testEliminateLeftRecursion(){
+
+        List<String> syntaxs = new ArrayList<>();
+
+        syntaxs.add("E → E + T ");
+        syntaxs.add("T → T * F ");
+        syntaxs.add("F → ( E ) | id ");
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+
+        // 消除前
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
+
+        System.out.println("----------------------------------------------------------------------");
+
+        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+
+        // 消除后
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
     }
 
 }

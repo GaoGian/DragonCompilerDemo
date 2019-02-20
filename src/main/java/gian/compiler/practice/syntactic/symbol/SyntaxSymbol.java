@@ -53,12 +53,18 @@ public class SyntaxSymbol {
     public String toString() {
         StringBuilder str = new StringBuilder();
         str.append(symbol);
+
         str.append(" → ");
         for(int i=0; i<body.size(); i++){
             List<SyntaxSymbol> symbols = body.get(i);
 
             for(int j=0; j<symbols.size(); j++){
-                str.append(symbols.get(j).getSymbol());
+                String bodySymbol = symbols.get(j).getSymbol();
+                if("".equals(bodySymbol)){
+                    str.append("ε");
+                }else {
+                    str.append(bodySymbol);
+                }
                 str.append(" ");
             }
 
@@ -68,5 +74,21 @@ public class SyntaxSymbol {
 
         }
         return str.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SyntaxSymbol that = (SyntaxSymbol) o;
+
+        return symbol != null ? symbol.equals(that.symbol) : that.symbol == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return symbol != null ? symbol.hashCode() : 0;
     }
 }
