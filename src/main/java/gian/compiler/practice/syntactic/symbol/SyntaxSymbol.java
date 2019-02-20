@@ -19,6 +19,12 @@ public class SyntaxSymbol {
         this.isTerminal = isTerminal;
     }
 
+    public SyntaxSymbol(String symbol, boolean isTerminal, List<List<SyntaxSymbol>> body) {
+        this.symbol = symbol;
+        this.isTerminal = isTerminal;
+        this.body = body;
+    }
+
     public String getSymbol() {
         return symbol;
     }
@@ -41,5 +47,26 @@ public class SyntaxSymbol {
 
     public void setBody(List<List<SyntaxSymbol>> body) {
         this.body = body;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append(symbol);
+        str.append(" → ");
+        for(int i=0; i<body.size(); i++){
+            List<SyntaxSymbol> symbols = body.get(i);
+
+            for(int j=0; j<symbols.size(); j++){
+                str.append(symbols.get(j));
+                str.append(" ");
+            }
+
+            if(i <= body.size()-2){
+                str.append("| ");
+            }
+
+        }
+        return "'" + symbol + "'";
     }
 }
