@@ -58,7 +58,7 @@ public class SyntaxSymbol {
             List<SyntaxSymbol> symbols = body.get(i);
 
             for(int j=0; j<symbols.size(); j++){
-                str.append(symbols.get(j));
+                str.append(symbols.get(j).getSymbol());
                 str.append(" ");
             }
 
@@ -67,6 +67,6 @@ public class SyntaxSymbol {
             }
 
         }
-        return "'" + symbol + "'";
+        return str.toString();
     }
 }

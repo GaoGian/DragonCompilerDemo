@@ -60,31 +60,37 @@ public class SyntacticParser {
 
     // 如果产生体中有非终结符并且未解析过，优先解析子非终结符
     public static SyntaxSymbol getSymbol(String head, Map<String, List<List<String>>> syntaxMap, Map<String, SyntaxSymbol> exitSymbolMap){
-        List<List<String>> bodyList = syntaxMap.get(head);
-        List<List<SyntaxSymbol>> bodySymbolList = new ArrayList<>();
-        for(List<String> symbols : bodyList){
-            List<SyntaxSymbol> bodySymbols = new ArrayList<>();
+        List<List<SyntaxSymbol>> productList = new ArrayList<>();
+        List<List<String>> productExpressionList = syntaxMap.get(head);
+        for(List<String> symbols : productExpressionList){
+            List<SyntaxSymbol> productSymbols = new ArrayList<>();
             for(String symbol : symbols) {
-                // FIXME 解决自循环依赖
                 if(exitSymbolMap.get(symbol) == null) {
                     SyntaxSymbol bodySymbol = null;
                     if (syntaxMap.keySet().contains(symbol)) {
                         // 说明是非终结符
-                        bodySymbol = getSymbol(symbol, syntaxMap, exitSymbolMap);
+                        bodySymbol = new SyntaxSymbol(symbol, true);
                     } else {
                         // 说明是终结符
                         bodySymbol = new SyntaxSymbol(symbol, false);
                     }
                     exitSymbolMap.put(symbol, bodySymbol);
-                    bodySymbols.add(bodySymbol);
+                    productSymbols.add(bodySymbol);
                 }else{
-                    bodySymbols.add(exitSymbolMap.get(symbol));
+                    productSymbols.add(exitSymbolMap.get(symbol));
                 }
             }
-            bodySymbolList.add(bodySymbols);
+            productList.add(productSymbols);
         }
 
-        SyntaxSymbol headSymbol = new SyntaxSymbol(head, true, bodySymbolList);
+        SyntaxSymbol headSymbol = null;
+        if(exitSymbolMap.get(head) == null){
+            headSymbol = new SyntaxSymbol(head, true);
+        }else{
+            headSymbol = exitSymbolMap.get(head);
+        }
+        headSymbol.setBody(productList);
+
         return headSymbol;
     }
 
