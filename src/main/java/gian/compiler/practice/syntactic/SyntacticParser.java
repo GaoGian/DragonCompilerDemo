@@ -114,7 +114,7 @@ public class SyntacticParser {
                 for(int k=0; k<currProductBodys.size(); k++){
                     List<SyntaxSymbol> currProductBody = currProductBodys.get(k);
                     // 不处理ε产生体
-                    // TODO 确认空产生体是什么样的，是长度为1，并且symbol为""
+                    // TODO 确认ε产生体是什么样的，是长度为1，并且symbol为""
                     if(currProductBody.size() >= 1 && !currProductBody.get(0).getSymbol().equals("")) {
                         // 判断产生体首位是否和上级相同
                         if (currProductBody.get(0).getSymbol().equals(preSyntaxSymbol.getSymbol())) {
@@ -129,7 +129,7 @@ public class SyntacticParser {
                             List<List<SyntaxSymbol>> preProductBodys = preSyntaxSymbol.getBody();
                             for (int l = 0; l < preProductBodys.size(); l++) {
                                 List<SyntaxSymbol> preProductBody = preProductBodys.get(l);
-                                // TODO 确认空产生体是什么样的，是长度为1，并且symbol为""
+                                // TODO 确认ε产生体是什么样的，是长度为1，并且symbol为""
                                 if (preProductBody.size() >= 1 && !preProductBody.get(0).getSymbol().equals("")) {
                                     List<SyntaxSymbol> newCurrProductBody = new ArrayList<>();
                                     // 将产生体首位替换成所有上级的所有产生体
@@ -198,6 +198,10 @@ public class SyntacticParser {
 
                 // 转化原来的左递归文法
                 for(List<SyntaxSymbol> unLeftRecursionBody : unLeftRecursionList){
+                    // 判断是否是ε产生体，先清空ε产生式
+                    if(unLeftRecursionBody.get(0).getSymbol().equals("")){
+                        unLeftRecursionBody.clear();
+                    }
                     // 在原来没有左递归的产生体后面加上消除左递归的文法符号
                     unLeftRecursionBody.add(eliminateSyntaxSymbol);
                 }
