@@ -212,5 +212,135 @@ public class SyntacticParser {
 
     }
 
+    /**
+     * 提取左公因式       TODO
+     * @param originSyntaxSymbolList
+     */
+    public static void mergeCommonFactor(List<SyntaxSymbol> originSyntaxSymbolList){
+
+        for(int i=0; i<originSyntaxSymbolList.size(); i++){
+
+            SyntaxSymbol syntaxSymbol = originSyntaxSymbolList.get(i);
+            List<List<SyntaxSymbol>> originProductBodys = syntaxSymbol.getBody();
+
+            // 记录相同左公因式的产生式，key：公因式，value：产生式
+            Map<List<SyntaxSymbol>, List<List<SyntaxSymbol>>> group = new LinkedHashMap<>();
+            // 初始分组
+            boolean hasCommonFactor = false;
+            for (int j = 0; j < originProductBodys.size(); j++) {
+                List<SyntaxSymbol> productBody = originProductBodys.get(j);
+                List<SyntaxSymbol> groupKey = new ArrayList<>();
+                groupKey.add(productBody.get(0));
+                if(group.get(groupKey) == null){
+                    List<List<SyntaxSymbol>> groupElement = new ArrayList<>();
+                    groupElement.add(productBody);
+                    group.put(groupKey, groupElement);
+                }else{
+                    group.get(groupKey).add(productBody);
+                    hasCommonFactor = true;
+                }
+            }
+
+            // 如果本来就没有公因式则直接返回
+            if(!hasCommonFactor){
+                break;
+            }
+
+            // TODO 需要考虑多个产生式递增公因式的情况，例如：abc | abdd | abde      暂时不处理
+            // 继续分组
+            Map<List<SyntaxSymbol>, List<List<SyntaxSymbol>>> result = new LinkedHashMap<>();
+            while (group.size() > 0) {
+                Map<List<SyntaxSymbol>, List<List<SyntaxSymbol>>> tranGroup = new LinkedHashMap<>();
+                Iterator<List<SyntaxSymbol>> iterator = group.keySet().iterator();
+                while(iterator.hasNext()){
+                    List<SyntaxSymbol> groupKey = iterator.next();
+                    List<List<SyntaxSymbol>> groupElement = group.get(groupKey);
+                    // 判断之前同一组的元素是否有后继公因式
+                    Map<SyntaxSymbol, List<List<SyntaxSymbol>>> tempGroup = new LinkedHashMap<>();
+                    // FIXME 暂时这样处理公因式长度超过产生式长度
+                    SyntaxSymbol nullSymbol = new SyntaxSymbol("null", true);
+                    for(List<SyntaxSymbol> product : groupElement){
+
+                        if(product.size() > groupKey.size()){
+                            SyntaxSymbol tempGroupKey = product.get(groupKey.size());
+                            if(tempGroup.get(tempGroupKey) == null){
+                                List<List<SyntaxSymbol>> tempGroupElement = new ArrayList<>();
+                                tempGroupElement.add(product);
+                                tempGroup.put(tempGroupKey, tempGroupElement);
+                            }else{
+                                tempGroup.get(tempGroupKey).add(product);
+                            }
+
+                        }else{
+                            // FIXME 暂时这样处理公因式长度超过产生式长度
+                            List<List<SyntaxSymbol>> tempGroupElement = new ArrayList<>();
+                            tempGroupElement.add(product);
+                            tempGroup.put(nullSymbol, tempGroupElement);
+                        }
+                    }
+
+                    // 判断是否还有相同的公因式
+                    if(tempGroup.size() == 1){
+                        // 还有相同的公因式，更新公因式
+                        groupKey.addAll(tempGroup.keySet());
+                        tranGroup.put(groupKey, groupElement);
+                    }else{
+                        // TODO 需要考虑多个产生式递增公因式的情况，例如：abc | abdd | abde      暂时不处理
+                        // 没有后续的公因子，返回最长公因式
+                        result.put(groupKey, groupElement);
+                        iterator.remove();
+                    }
+                }
+
+                group = tranGroup;
+            }
+
+            // 根据左公因式转换文法
+            originProductBodys.clear();
+            for(List<SyntaxSymbol> groupKey : result.keySet()){
+
+                // 处理非公共部分
+                List<List<SyntaxSymbol>> groupElement = result.get(groupKey);
+                if(groupElement.size() > 1){
+                    SyntaxSymbol commonFactorSymbol = new SyntaxSymbol(syntaxSymbol.getSymbol() + "~", false);
+                    for(List<SyntaxSymbol> originSyntaxSymbol : groupElement){
+                        originSyntaxSymbol.removeAll(groupKey);
+                        if(originSyntaxSymbol.size() > 0){
+                            originSyntaxSymbol.add(syntaxSymbol);
+                            commonFactorSymbol.getBody().add(originSyntaxSymbol);
+                        }
+                    }
+                    // 加上空表达式
+                    List<SyntaxSymbol> emptyBody = new ArrayList<>();
+                    emptyBody.add(new SyntaxSymbol("", true));
+                    commonFactorSymbol.getBody().add(emptyBody);
+
+                    // 先加上公因式表达式
+                    List<SyntaxSymbol> newCommonProduct = new ArrayList<>(groupKey);
+                    newCommonProduct.add(commonFactorSymbol);
+                    originProductBodys.add(newCommonProduct);
+
+                    // 将提取的左公因式文法符号加入文法列表
+                    if(i < (originSyntaxSymbolList.size()-1)) {
+                        List<SyntaxSymbol> newPreSyntaxSymbolList = new ArrayList<>(originSyntaxSymbolList.subList(0, i + 1));
+                        List<SyntaxSymbol> newSubSyntaxSymbolList = new ArrayList<>(originSyntaxSymbolList.subList(i + 1, originSyntaxSymbolList.size()));
+                        originSyntaxSymbolList.clear();
+                        originSyntaxSymbolList.addAll(newPreSyntaxSymbolList);
+                        originSyntaxSymbolList.add(commonFactorSymbol);
+                        originSyntaxSymbolList.addAll(newSubSyntaxSymbolList);
+                    }else{
+                        originSyntaxSymbolList.add(commonFactorSymbol);
+                    }
+
+                }else{
+                    originProductBodys.add(groupKey);
+                }
+
+            }
+
+
+        }
+
+    }
 
 }

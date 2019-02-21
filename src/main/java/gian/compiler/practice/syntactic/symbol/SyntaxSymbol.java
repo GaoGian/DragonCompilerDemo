@@ -77,14 +77,20 @@ public class SyntaxSymbol {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object other) {
+        if(other == null){
+            return false;
+        }
 
-        SyntaxSymbol that = (SyntaxSymbol) o;
+        if(this == other){
+            return true;
+        }
 
-        return symbol != null ? symbol.equals(that.symbol) : that.symbol == null;
+        if(this.getSymbol().equals(((SyntaxSymbol) other).getSymbol())){
+            return true;
+        }
 
+        return false;
     }
 
     @Override

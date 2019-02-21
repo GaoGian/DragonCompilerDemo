@@ -51,4 +51,28 @@ public class SyntaxTest {
         }
     }
 
+    @Test
+    public void testMergeCommonFactor(){
+
+        List<String> syntaxs = new ArrayList<>();
+
+        syntaxs.add("stmt → if expr then stmt else stmt | if expr then stmt");
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+
+        // 提取前
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
+
+        System.out.println("----------------------------------------------------------------------");
+
+        SyntacticParser.mergeCommonFactor(syntaxSymbols);
+
+        // 提取后
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
+    }
+
 }
