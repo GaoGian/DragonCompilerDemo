@@ -30,8 +30,8 @@ public class SyntaxTest {
 
         List<String> syntaxs = new ArrayList<>();
 
-        syntaxs.add("E → E + T ");
-        syntaxs.add("T → T * F ");
+        syntaxs.add("E → E + T | T ");
+        syntaxs.add("T → T + F | F ");
         syntaxs.add("F → ( E ) | id ");
 
         List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);

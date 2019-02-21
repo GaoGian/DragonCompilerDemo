@@ -20,7 +20,7 @@ public class SyntacticParser {
      */
     public static List<SyntaxSymbol> parseSyntaxSymbol(List<String> syntaxs){
         // 解析成终结符/非终结符
-        Map<String, List<List<String>>> syntaxMap = new HashMap<>();
+        Map<String, List<List<String>>> syntaxMap = new LinkedHashMap<>();
         for(String syntax : syntaxs){
             String head = syntax.split("→")[0];
             String bodys = syntax.split("→")[1];
@@ -48,7 +48,7 @@ public class SyntacticParser {
         }
 
         // 如果在syntaxMap中，则是非终结符号
-        Map<String, SyntaxSymbol> exitSymbolMap = new HashMap<>();
+        Map<String, SyntaxSymbol> exitSymbolMap = new LinkedHashMap<>();
         List<SyntaxSymbol> syntaxSymbolList = new ArrayList<>();
         for(String head : syntaxMap.keySet()){
             SyntaxSymbol headSymbol = getSymbol(head, syntaxMap, exitSymbolMap);
@@ -69,10 +69,10 @@ public class SyntacticParser {
                     SyntaxSymbol bodySymbol = null;
                     if (syntaxMap.keySet().contains(symbol)) {
                         // 说明是非终结符
-                        bodySymbol = new SyntaxSymbol(symbol, true);
+                        bodySymbol = new SyntaxSymbol(symbol, false);
                     } else {
                         // 说明是终结符
-                        bodySymbol = new SyntaxSymbol(symbol, false);
+                        bodySymbol = new SyntaxSymbol(symbol, true);
                     }
                     exitSymbolMap.put(symbol, bodySymbol);
                     productSymbols.add(bodySymbol);
@@ -85,7 +85,7 @@ public class SyntacticParser {
 
         SyntaxSymbol headSymbol = null;
         if(exitSymbolMap.get(head) == null){
-            headSymbol = new SyntaxSymbol(head, true);
+            headSymbol = new SyntaxSymbol(head, false);
         }else{
             headSymbol = exitSymbolMap.get(head);
         }
@@ -114,8 +114,8 @@ public class SyntacticParser {
                 for(int k=0; k<currProductBodys.size(); k++){
                     List<SyntaxSymbol> currProductBody = currProductBodys.get(k);
                     // 不处理ε产生体
-                    // FIXME 确认空产生体是什么样的，是长度为0，还是symbol为""
-                    if(currProductBody.size() > 0) {
+                    // TODO 确认空产生体是什么样的，是长度为1，并且symbol为""
+                    if(currProductBody.size() >= 1 && !currProductBody.get(0).getSymbol().equals("")) {
                         // 判断产生体首位是否和上级相同
                         if (currProductBody.get(0).getSymbol().equals(preSyntaxSymbol.getSymbol())) {
                             // 清除该产生式，后面需要进行替换
@@ -129,14 +129,13 @@ public class SyntacticParser {
                             List<List<SyntaxSymbol>> preProductBodys = preSyntaxSymbol.getBody();
                             for (int l = 0; l < preProductBodys.size(); l++) {
                                 List<SyntaxSymbol> preProductBody = preProductBodys.get(l);
-                                // TODO 暂时这样处理ε产生体
-                                if (preProductBody.size() > 0) {
+                                // TODO 确认空产生体是什么样的，是长度为1，并且symbol为""
+                                if (preProductBody.size() >= 1 && !preProductBody.get(0).getSymbol().equals("")) {
                                     List<SyntaxSymbol> newCurrProductBody = new ArrayList<>();
                                     // 将产生体首位替换成所有上级的所有产生体
                                     newCurrProductBody.addAll(preProductBody);
                                     newCurrProductBody.addAll(tempProductBody);
 
-                                    // TODO 每次替换似乎都需要重新遍历一遍
                                     // 将替换的产生式加入到产生式列表
                                     currProductBodys.add(newCurrProductBody);
                                 }
@@ -169,7 +168,7 @@ public class SyntacticParser {
             // 消除左递归
             if(isLeftRecursion){
                 // 生成消除左递归的文法
-                SyntaxSymbol eliminateSyntaxSymbol = new SyntaxSymbol(currSyntaxSymbol.getSymbol() + "'", true);
+                SyntaxSymbol eliminateSyntaxSymbol = new SyntaxSymbol(currSyntaxSymbol.getSymbol() + "'", false);
                 List<List<SyntaxSymbol>> eliminateProductBodys = new ArrayList<>();
                 for(List<SyntaxSymbol> leftRecursionBody : leftRecursionList){
                     // 消除左递归首位
@@ -180,12 +179,22 @@ public class SyntacticParser {
                 }
                 // 加上空表达式
                 List<SyntaxSymbol> emptyBody = new ArrayList<>();
+                emptyBody.add(new SyntaxSymbol("", true));
                 eliminateProductBodys.add(emptyBody);
                 // 设置消除左递归文法的产生体
                 eliminateSyntaxSymbol.setBody(eliminateProductBodys);
 
                 // 将消除的左递归文法符号加入文法列表
-                originSyntaxSymbolList.add(eliminateSyntaxSymbol);
+                if(i < (originSyntaxSymbolList.size()-1)) {
+                    List<SyntaxSymbol> newPreSyntaxSymbolList = new ArrayList<>(originSyntaxSymbolList.subList(0, i + 1));
+                    List<SyntaxSymbol> newSubSyntaxSymbolList = new ArrayList<>(originSyntaxSymbolList.subList(i + 1, originSyntaxSymbolList.size()));
+                    originSyntaxSymbolList.clear();
+                    originSyntaxSymbolList.addAll(newPreSyntaxSymbolList);
+                    originSyntaxSymbolList.add(eliminateSyntaxSymbol);
+                    originSyntaxSymbolList.addAll(newSubSyntaxSymbolList);
+                }else{
+                    originSyntaxSymbolList.add(eliminateSyntaxSymbol);
+                }
 
                 // 转化原来的左递归文法
                 for(List<SyntaxSymbol> unLeftRecursionBody : unLeftRecursionList){
