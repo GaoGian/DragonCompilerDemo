@@ -26,7 +26,7 @@ public class LexConstants {
     public static final String ONE_MORE_STR = "+";
     public static final String ONE_LESS_STR = "?";
 
-    public static final String SYNTAX_EMPTY = "";
+    public static final String SYNTAX_EMPTY = "ε";
     public static final String SYNTAX_END = "$";
 
 }

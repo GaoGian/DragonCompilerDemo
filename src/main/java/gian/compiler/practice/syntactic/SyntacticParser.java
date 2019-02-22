@@ -347,6 +347,8 @@ public class SyntacticParser {
     /**
      * 计算文法符号 FIRST 集合
      *
+     * TODO FIRST 集合是根据文法符号计算，跟产生式和位置无关
+     *
      * 1、如果是非终结符，则加入产生体首个文法符号的 FIRST 集合
      * 2、如果该文法符号能够推导出ε，则加入下一个文法符号的 FIRST 集合，以此类推知道末尾
      * 3、如果文法符号本身能够推导出ε，则加入ε
@@ -383,34 +385,115 @@ public class SyntacticParser {
     /**
      * 计算文法符号 FOLLOW 集合
      *
+     * TODO FOLLOW 集合应该是根据某个文法在某个产生式的某个位置计算
+     * TODO 按照提取过公因式处理
+     *
      * 1、起始文法符号 S 的 $ ∈ FOLLOW(S)
      * 2、产生式 A→αBβ，(FIRST(β)-ε) ∈ FOLLOW(B)
-     * 3、产生式 A→αB 或 A→αBβ（其中ε∈ FIRST(β)），那么 FOLLOW(A) ∈ FOLLOW(B)
+     * 3、产生式 A→αB (B在产生式尾部) 或 A→αBβ（其中ε∈ FIRST(β)），那么 FOLLOW(A) ∈ FOLLOW(B)
      */
-    public static Map<SyntaxSymbol, Set<String>> syntaxFollow(SyntaxSymbol startSyntaxSymbol){
-        Map<SyntaxSymbol, Set<String>> followCollectionMap = new HashMap<>();
+    public static Map<String, Set<String>> syntaxFollow(SyntaxSymbol startSyntaxSymbol){
+        // 记录所有符号在不同产生式的不同位置的 FOLLOW 集合
+        // key: head|body + symbol + product(body) + index(body), value: FOLLOW
+        Map<String, Set<String>> followCollectionMap = new HashMap<>();
+        // 记录产生式头部和尾部的映射关系
+        // key: head, value: body + symbol + product(body) + index(body)
+        Map<SyntaxSymbol, Set<String>> headAndTailMap = new HashMap<>();
+
         // 1、起始文法符号 S 的 FOLLOW 加入 $
         Set<String> startSyntaxSymbolFollow = new HashSet<>();
         startSyntaxSymbolFollow.add(LexConstants.SYNTAX_EMPTY);
-        followCollectionMap.put(startSyntaxSymbol, startSyntaxSymbolFollow);
+        followCollectionMap.put(getHeadTag(startSyntaxSymbol), startSyntaxSymbolFollow);
 
+        for(List<SyntaxSymbol> product : startSyntaxSymbol.getBody()) {
+            setProductFollow(startSyntaxSymbol, product, followCollectionMap, headAndTailMap);
+        }
 
         return followCollectionMap;
     }
 
-    private static Set<String> getProductFollow(List<SyntaxSymbol> product){
-        Set<String> productFollow = new HashSet<>();
+    private static void setProductFollow(SyntaxSymbol headSyntaxSymbol, List<SyntaxSymbol> product,
+                                                Map<String, Set<String>> followCollectionMap, Map<SyntaxSymbol, Set<String>> headAndTailMap){
 
-        if(product.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
-            return productFollow;
+        if(!product.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
+            if(product.size() > 1) {
+                for (int i = 0; i < product.size(); i++) {
+                    SyntaxSymbol symbol = product.get(i);
+                    String symbolTag = getProductSymbolTag(product, symbol, i);
+                    if (i < product.size() - 1) {
+                        // 2、产生式 A→αBβ，(FIRST(β)-ε) ∈ FOLLOW(B)
+                        Set<String> nextSymbolFirst = syntaxFirst(product.get(i + 1));
+                        recordSymbolFollowMap(followCollectionMap, nextSymbolFirst, symbolTag);
+                    } else {
+                        // 3、产生式 A→αB (B在产生式尾部) 或 A→αBβ（其中ε∈ FIRST(β)），那么 FOLLOW(A) ∈ FOLLOW(B)
+                        Set<String> headFollow = followCollectionMap.get(getHeadTag(headSyntaxSymbol));
+                        recordSymbolFollowMap(followCollectionMap, headFollow, symbolTag);
+                        // 3、A→αBβ（其中ε∈ FIRST(β)），那么 FOLLOW(A) ∈ FOLLOW(B)
+                        if(syntaxFirst(symbol).contains(LexConstants.SYNTAX_EMPTY)){
+                            SyntaxSymbol preSymbol = product.get(i-1);
+                            String preSymbolTag = getProductSymbolTag(product, preSymbol, i);
+                            recordSymbolFollowMap(followCollectionMap, followCollectionMap.get(getHeadTag(headSyntaxSymbol)), preSymbolTag);
+                        }
+                    }
+
+                    // 记录头尾映射
+                    recordHeadAndTailMap(headAndTailMap, headSyntaxSymbol, symbolTag);
+                }
+            }else{
+                // 2、产生式 A→αBβ，(FIRST(β)-ε) ∈ FOLLOW(B)
+                Set<String> headFollow = followCollectionMap.get(getHeadTag(headSyntaxSymbol));
+                String symbolTag = getProductSymbolTag(product, product.get(0), 0);
+                recordSymbolFollowMap(followCollectionMap, headFollow, symbolTag);
+
+                // 记录头尾映射
+                recordHeadAndTailMap(headAndTailMap, headSyntaxSymbol, symbolTag);
+            }
         }
+    }
+
+    // 记录头尾映射
+    private static void recordHeadAndTailMap(Map<SyntaxSymbol, Set<String>> headAndTailMap, SyntaxSymbol head, String tailTag){
+        if (headAndTailMap.get(head) == null) {
+            Set<String> tempMap = new HashSet<>();
+            tempMap.add(tailTag);
+            headAndTailMap.put(head, tempMap);
+        } else {
+            headAndTailMap.get(head).add(tailTag);
+        }
+    }
+
+    // 更新FOLLOW集合
+    private static void recordSymbolFollowMap(Map<String, Set<String>> followCollectionMap, Set<String> symbolFollow, String symbolTag){
+        if(followCollectionMap.get(symbolTag) == null){
+            Set<String> follow = new HashSet<>();
+            follow.addAll(symbolFollow);
+            followCollectionMap.put(symbolTag, follow);
+        }else{
+            followCollectionMap.get(symbolTag).addAll(symbolFollow);
+        }
+    }
+
+    private static String getHeadTag(SyntaxSymbol headSymbol){
+        return "head|" + headSymbol.getSymbol();
+    }
+
+    private static String getProductSymbolTag(List<SyntaxSymbol> product, SyntaxSymbol targetSymbol, int index){
+        StringBuilder str = new StringBuilder();
+        str.append("body|");
+        str.append(targetSymbol.getSymbol() + "|");
 
         for(int i=0; i<product.size(); i++){
-            SyntaxSymbol preSyntaxSymbol = product.get(i);
-            SyntaxSymbol subSyntaxSymbol = product.get(i+1);
+            str.append(product.get(i).getSymbol());
+            if(i<product.size()-1){
+                str.append(":");
+            }else{
+                str.append("|");
+            }
         }
 
-        return productFollow;
+        str.append(index);
+
+        return str.toString();
     }
 
 }

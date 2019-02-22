@@ -16,9 +16,6 @@ public class SyntaxSymbol {
     protected boolean isTerminal;
     protected List<List<SyntaxSymbol>> body = new ArrayList<>();
 
-    protected Set<String> first = new HashSet<>();
-    protected Set<String> follow = new HashSet<>();
-
     public SyntaxSymbol(){}
 
     public SyntaxSymbol(String symbol, boolean isTerminal) {
@@ -54,22 +51,6 @@ public class SyntaxSymbol {
 
     public void setBody(List<List<SyntaxSymbol>> body) {
         this.body = body;
-    }
-
-    public Set<String> getFirst() {
-        return first;
-    }
-
-    public void setFirst(Set<String> first) {
-        this.first = first;
-    }
-
-    public Set<String> getFollow() {
-        return follow;
-    }
-
-    public void setFollow(Set<String> follow) {
-        this.follow = follow;
     }
 
     @Override
