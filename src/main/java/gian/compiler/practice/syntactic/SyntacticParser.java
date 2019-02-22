@@ -1,5 +1,6 @@
 package gian.compiler.practice.syntactic;
 
+import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
 
 import java.util.*;
@@ -33,7 +34,7 @@ public class SyntacticParser {
                     symbolList.addAll(Arrays.asList(symbols));
                 }else{
                     // 如果是空转换则加入空字符串
-                    symbolList.add("");
+                    symbolList.add(LexConstants.SYNTAX_EMPTY);
                 }
 
                 if(syntaxMap.get(head.trim()) == null){
@@ -115,7 +116,7 @@ public class SyntacticParser {
                     List<SyntaxSymbol> currProductBody = currProductBodys.get(k);
                     // 不处理ε产生体
                     // TODO 确认ε产生体是什么样的，是长度为1，并且symbol为""
-                    if(currProductBody.size() >= 1 && !currProductBody.get(0).getSymbol().equals("")) {
+                    if(currProductBody.size() >= 1 && !currProductBody.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
                         // 判断产生体首位是否和上级相同
                         if (currProductBody.get(0).getSymbol().equals(preSyntaxSymbol.getSymbol())) {
                             // 清除该产生式，后面需要进行替换
@@ -130,7 +131,7 @@ public class SyntacticParser {
                             for (int l = 0; l < preProductBodys.size(); l++) {
                                 List<SyntaxSymbol> preProductBody = preProductBodys.get(l);
                                 // TODO 确认ε产生体是什么样的，是长度为1，并且symbol为""
-                                if (preProductBody.size() >= 1 && !preProductBody.get(0).getSymbol().equals("")) {
+                                if (preProductBody.size() >= 1 && !preProductBody.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
                                     List<SyntaxSymbol> newCurrProductBody = new ArrayList<>();
                                     // 将产生体首位替换成所有上级的所有产生体
                                     newCurrProductBody.addAll(preProductBody);
@@ -179,7 +180,7 @@ public class SyntacticParser {
                 }
                 // 加上空表达式
                 List<SyntaxSymbol> emptyBody = new ArrayList<>();
-                emptyBody.add(new SyntaxSymbol("", true));
+                emptyBody.add(new SyntaxSymbol(LexConstants.SYNTAX_EMPTY, true));
                 eliminateProductBodys.add(emptyBody);
                 // 设置消除左递归文法的产生体
                 eliminateSyntaxSymbol.setBody(eliminateProductBodys);
@@ -199,7 +200,7 @@ public class SyntacticParser {
                 // 转化原来的左递归文法
                 for(List<SyntaxSymbol> unLeftRecursionBody : unLeftRecursionList){
                     // 判断是否是ε产生体，先清空ε产生式
-                    if(unLeftRecursionBody.get(0).getSymbol().equals("")){
+                    if(unLeftRecursionBody.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
                         unLeftRecursionBody.clear();
                     }
                     // 在原来没有左递归的产生体后面加上消除左递归的文法符号
@@ -213,7 +214,7 @@ public class SyntacticParser {
     }
 
     /**
-     * 提取左公因式       TODO
+     * 提取左公因式       TODO 需要优化
      * @param originSyntaxSymbolList
      */
     public static void mergeCommonFactor(List<SyntaxSymbol> originSyntaxSymbolList){
@@ -312,7 +313,7 @@ public class SyntacticParser {
                     }
                     // 加上空表达式
                     List<SyntaxSymbol> emptyBody = new ArrayList<>();
-                    emptyBody.add(new SyntaxSymbol("", true));
+                    emptyBody.add(new SyntaxSymbol(LexConstants.SYNTAX_EMPTY, true));
                     commonFactorSymbol.getBody().add(emptyBody);
 
                     // 先加上公因式表达式
@@ -341,6 +342,69 @@ public class SyntacticParser {
 
         }
 
+    }
+
+    /**
+     * 计算文法符号 FIRST 集合
+     */
+    public static Set<String> syntaxFirst(SyntaxSymbol syntaxSymbol){
+
+        Set<String> firstCollection = new HashSet<>();
+        if(syntaxSymbol.isTerminal()){
+            // 如果是终结符，则直接返回对应的字符串
+            firstCollection.add(syntaxSymbol.getSymbol());
+        }else{
+            // 1、如果是非终结符，则加入产生体首个文法符号的 FIRST 集合
+            // 2、如果该文法符号能够推导出ε，则加入下一个文法符号的 FIRST 集合，以此类推知道末尾
+            // 3、如果文法符号本身能够推导出ε，则加入ε
+            List<List<SyntaxSymbol>> productList = syntaxSymbol.getBody();
+            for(List<SyntaxSymbol> product : productList){
+                if(!product.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
+                    // 1、加入产生式文法符号的 FIRST 集合
+                    for(SyntaxSymbol symbol : product){
+                        Set<String> symbolFirst = syntaxFirst(symbol);
+                        firstCollection.addAll(symbolFirst);
+                        // 2、如果该文法符号能够推导出ε，则加入下一个文法符号的 FIRST 集合
+                        if(!symbolFirst.contains(LexConstants.SYNTAX_EMPTY)){
+                            break;
+                        }
+                    }
+                }else{
+                    // 3、说明是ε产生式，直接加入
+                    firstCollection.add(LexConstants.SYNTAX_EMPTY);
+                }
+            }
+        }
+
+        return firstCollection;
+    }
+
+    /**
+     * 计算文法符号 FOLLOW 集合
+     */
+    public static Map<SyntaxSymbol, Set<String>> syntaxFollow(SyntaxSymbol startSyntaxSymbol){
+        Map<SyntaxSymbol, Set<String>> followCollectionMap = new HashMap<>();
+        Set<String> startSyntaxSymbolFollow = new HashSet<>();
+        startSyntaxSymbolFollow.add(LexConstants.SYNTAX_EMPTY);
+        followCollectionMap.put(startSyntaxSymbol, startSyntaxSymbolFollow);
+
+
+        return followCollectionMap;
+    }
+
+    private static Set<String> getProductFollow(List<SyntaxSymbol> product){
+        Set<String> productFollow = new HashSet<>();
+
+        if(product.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
+            return productFollow;
+        }
+
+        for(int i=0; i<product.size(); i++){
+            SyntaxSymbol preSyntaxSymbol = product.get(i);
+            SyntaxSymbol subSyntaxSymbol = product.get(i+1);
+        }
+
+        return productFollow;
     }
 
 }

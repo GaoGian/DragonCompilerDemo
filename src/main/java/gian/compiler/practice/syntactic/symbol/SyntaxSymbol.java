@@ -1,7 +1,11 @@
 package gian.compiler.practice.syntactic.symbol;
 
+import gian.compiler.practice.lexical.transform.LexConstants;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Gian on 2019/2/19.
@@ -11,6 +15,9 @@ public class SyntaxSymbol {
     protected String symbol;
     protected boolean isTerminal;
     protected List<List<SyntaxSymbol>> body = new ArrayList<>();
+
+    protected Set<String> first = new HashSet<>();
+    protected Set<String> follow = new HashSet<>();
 
     public SyntaxSymbol(){}
 
@@ -49,6 +56,22 @@ public class SyntaxSymbol {
         this.body = body;
     }
 
+    public Set<String> getFirst() {
+        return first;
+    }
+
+    public void setFirst(Set<String> first) {
+        this.first = first;
+    }
+
+    public Set<String> getFollow() {
+        return follow;
+    }
+
+    public void setFollow(Set<String> follow) {
+        this.follow = follow;
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
@@ -60,7 +83,7 @@ public class SyntaxSymbol {
 
             for(int j=0; j<symbols.size(); j++){
                 String bodySymbol = symbols.get(j).getSymbol();
-                if("".equals(bodySymbol)){
+                if(LexConstants.SYNTAX_EMPTY.equals(bodySymbol)){
                     str.append("ε");
                 }else {
                     str.append(bodySymbol);

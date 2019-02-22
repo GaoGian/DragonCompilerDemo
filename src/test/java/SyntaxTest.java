@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Gian on 2019/2/19.
@@ -74,5 +75,40 @@ public class SyntaxTest {
             System.out.println(syntaxSymbol);
         }
     }
+
+    @Test
+    public void testSyntaxFirstAndFolloew(){
+
+        List<String> syntaxs = new ArrayList<>();
+
+        syntaxs.add("E → E + T | T ");
+        syntaxs.add("T → T + F | F ");
+        syntaxs.add("F → ( E ) | id ");
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+
+        // 消除前
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
+
+        System.out.println("----------------------------------------------------------------------");
+
+        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+
+        // 提取后
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
+
+        System.out.println("-------------------------------FIRST-----------------------------------");
+
+        for(SyntaxSymbol symbol : syntaxSymbols) {
+            Set<String> first = SyntacticParser.syntaxFirst(symbol);
+            System.out.println(symbol.getSymbol() + " : " +first);
+        }
+
+    }
+
 
 }
