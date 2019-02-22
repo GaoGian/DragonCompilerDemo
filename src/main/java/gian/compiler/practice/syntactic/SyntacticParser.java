@@ -346,6 +346,10 @@ public class SyntacticParser {
 
     /**
      * 计算文法符号 FIRST 集合
+     *
+     * 1、如果是非终结符，则加入产生体首个文法符号的 FIRST 集合
+     * 2、如果该文法符号能够推导出ε，则加入下一个文法符号的 FIRST 集合，以此类推知道末尾
+     * 3、如果文法符号本身能够推导出ε，则加入ε
      */
     public static Set<String> syntaxFirst(SyntaxSymbol syntaxSymbol){
 
@@ -354,9 +358,6 @@ public class SyntacticParser {
             // 如果是终结符，则直接返回对应的字符串
             firstCollection.add(syntaxSymbol.getSymbol());
         }else{
-            // 1、如果是非终结符，则加入产生体首个文法符号的 FIRST 集合
-            // 2、如果该文法符号能够推导出ε，则加入下一个文法符号的 FIRST 集合，以此类推知道末尾
-            // 3、如果文法符号本身能够推导出ε，则加入ε
             List<List<SyntaxSymbol>> productList = syntaxSymbol.getBody();
             for(List<SyntaxSymbol> product : productList){
                 if(!product.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
@@ -381,9 +382,14 @@ public class SyntacticParser {
 
     /**
      * 计算文法符号 FOLLOW 集合
+     *
+     * 1、起始文法符号 S 的 $ ∈ FOLLOW(S)
+     * 2、产生式 A→αBβ，(FIRST(β)-ε) ∈ FOLLOW(B)
+     * 3、产生式 A→αB 或 A→αBβ（其中ε∈ FIRST(β)），那么 FOLLOW(A) ∈ FOLLOW(B)
      */
     public static Map<SyntaxSymbol, Set<String>> syntaxFollow(SyntaxSymbol startSyntaxSymbol){
         Map<SyntaxSymbol, Set<String>> followCollectionMap = new HashMap<>();
+        // 1、起始文法符号 S 的 FOLLOW 加入 $
         Set<String> startSyntaxSymbolFollow = new HashSet<>();
         startSyntaxSymbolFollow.add(LexConstants.SYNTAX_EMPTY);
         followCollectionMap.put(startSyntaxSymbol, startSyntaxSymbolFollow);
