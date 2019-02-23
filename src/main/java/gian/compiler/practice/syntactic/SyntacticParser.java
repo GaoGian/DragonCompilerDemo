@@ -364,11 +364,20 @@ public class SyntacticParser {
             for(List<SyntaxSymbol> product : productList){
                 if(!product.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
                     // 1、加入产生式文法符号的 FIRST 集合
-                    for(SyntaxSymbol symbol : product){
+                    for(int i=0; i<product.size(); i++){
+                        SyntaxSymbol symbol = product.get(i);
                         Set<String> symbolFirst = syntaxFirst(symbol);
-                        firstCollection.addAll(symbolFirst);
+
                         // 2、如果该文法符号能够推导出ε，则加入下一个文法符号的 FIRST 集合
-                        if(!symbolFirst.contains(LexConstants.SYNTAX_EMPTY)){
+                        boolean hasEmpty = symbolFirst.contains(LexConstants.SYNTAX_EMPTY);
+                        if(hasEmpty) {
+                            // 如果产生式最后一个符号还能够推导出ε，则加入ε
+                            if (i < product.size() - 1) {
+                                symbolFirst.remove(LexConstants.SYNTAX_EMPTY);
+                            }
+                            firstCollection.addAll(symbolFirst);
+                        }else{
+                            firstCollection.addAll(symbolFirst);
                             break;
                         }
                     }
@@ -385,8 +394,9 @@ public class SyntacticParser {
     /**
      * 计算文法符号 FOLLOW 集合
      *
-     * TODO FOLLOW 集合应该是根据某个文法在某个产生式的某个位置计算
-     * TODO 按照提取过公因式处理
+     * TODO FOLLOW 集合应该是根据某个文法在某个产生式的某个位置计算，但是由于以下原因不需要考虑
+     *      A、提取过公因式，同一文法符号的不同产生式的 FIRST 集合不相交
+     *      B、
      *
      * 1、起始文法符号 S 的 $ ∈ FOLLOW(S)
      * 2、产生式 A→αBβ，(FIRST(β)-ε) ∈ FOLLOW(B)
@@ -394,104 +404,105 @@ public class SyntacticParser {
      */
     public static Map<String, Set<String>> syntaxFollow(SyntaxSymbol startSyntaxSymbol){
         // 记录所有符号在不同产生式的不同位置的 FOLLOW 集合
-        // key: head|body + symbol + product(body) + index(body), value: FOLLOW
+        // key: head + symbol + product(body) + index(body), value: FOLLOW
         Map<String, Set<String>> followCollectionMap = new HashMap<>();
-        // 记录产生式头部和尾部的映射关系
-        // key: head, value: body + symbol + product(body) + index(body)
-        Map<SyntaxSymbol, Set<String>> headAndTailMap = new HashMap<>();
 
         // 1、起始文法符号 S 的 FOLLOW 加入 $
         Set<String> startSyntaxSymbolFollow = new HashSet<>();
         startSyntaxSymbolFollow.add(LexConstants.SYNTAX_EMPTY);
-        followCollectionMap.put(getHeadTag(startSyntaxSymbol), startSyntaxSymbolFollow);
+        recordSymbolFollowMap(followCollectionMap, startSyntaxSymbolFollow, getHeadTag(startSyntaxSymbol));
 
-        for(List<SyntaxSymbol> product : startSyntaxSymbol.getBody()) {
-            setProductFollow(startSyntaxSymbol, product, followCollectionMap, headAndTailMap);
-        }
+        // 生成所有文法符号在不同产生式的不同位置的 FOLLOW 集
+        setProductFollow(startSyntaxSymbol, startSyntaxSymbol.getBody(), followCollectionMap);
 
         return followCollectionMap;
     }
 
-    private static void setProductFollow(SyntaxSymbol headSyntaxSymbol, List<SyntaxSymbol> product,
-                                                Map<String, Set<String>> followCollectionMap, Map<SyntaxSymbol, Set<String>> headAndTailMap){
+    private static void setProductFollow(SyntaxSymbol headSyntaxSymbol, List<List<SyntaxSymbol>> productList,
+                                                Map<String, Set<String>> followCollectionMap){
 
-        if(!product.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
-            if(product.size() > 1) {
+        String headSymbolTag = getHeadTag(headSyntaxSymbol);
+        for(List<SyntaxSymbol> product : productList) {
+            if (!product.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
+
+                // 先计算一级产生式的FOLLOW
                 for (int i = 0; i < product.size(); i++) {
                     SyntaxSymbol symbol = product.get(i);
-                    String symbolTag = getProductSymbolTag(product, symbol, i);
+                    String symbolTag = getProductSymbolTag(product, headSyntaxSymbol, symbol, i);
+
                     if (i < product.size() - 1) {
                         // 2、产生式 A→αBβ，(FIRST(β)-ε) ∈ FOLLOW(B)
                         Set<String> nextSymbolFirst = syntaxFirst(product.get(i + 1));
                         recordSymbolFollowMap(followCollectionMap, nextSymbolFirst, symbolTag);
                     } else {
                         // 3、产生式 A→αB (B在产生式尾部) 或 A→αBβ（其中ε∈ FIRST(β)），那么 FOLLOW(A) ∈ FOLLOW(B)
-                        Set<String> headFollow = followCollectionMap.get(getHeadTag(headSyntaxSymbol));
+                        Set<String> headFollow = followCollectionMap.get(headSymbolTag);
                         recordSymbolFollowMap(followCollectionMap, headFollow, symbolTag);
-                        // 3、A→αBβ（其中ε∈ FIRST(β)），那么 FOLLOW(A) ∈ FOLLOW(B)
-                        if(syntaxFirst(symbol).contains(LexConstants.SYNTAX_EMPTY)){
-                            SyntaxSymbol preSymbol = product.get(i-1);
-                            String preSymbolTag = getProductSymbolTag(product, preSymbol, i);
-                            recordSymbolFollowMap(followCollectionMap, followCollectionMap.get(getHeadTag(headSyntaxSymbol)), preSymbolTag);
+                        // 3、A→αBβ（其中ε∈ FIRST(β)），那么 FOLLOW(A) ∈ FOLLOW(B)，（从后往前递推）
+                        int j = i;
+                        SyntaxSymbol subSymbol = symbol;
+                        while(j>0) {
+                            j--;
+                            if (syntaxFirst(subSymbol).contains(LexConstants.SYNTAX_EMPTY)) {
+                                SyntaxSymbol preSymbol = product.get(j);
+                                String preSymbolTag = getProductSymbolTag(product, headSyntaxSymbol, preSymbol, j);
+                                recordSymbolFollowMap(followCollectionMap, followCollectionMap.get(headSymbolTag), preSymbolTag);
+
+                                subSymbol = preSymbol;
+                            }else{
+                                break;
+                            }
                         }
                     }
-
-                    // 记录头尾映射
-                    recordHeadAndTailMap(headAndTailMap, headSyntaxSymbol, symbolTag);
                 }
-            }else{
-                // 2、产生式 A→αBβ，(FIRST(β)-ε) ∈ FOLLOW(B)
-                Set<String> headFollow = followCollectionMap.get(getHeadTag(headSyntaxSymbol));
-                String symbolTag = getProductSymbolTag(product, product.get(0), 0);
-                recordSymbolFollowMap(followCollectionMap, headFollow, symbolTag);
 
-                // 记录头尾映射
-                recordHeadAndTailMap(headAndTailMap, headSyntaxSymbol, symbolTag);
+                // FIXME 计算二级产生式的FOLLOW
+                for (int i = 0; i < product.size(); i++) {
+                    SyntaxSymbol symbol = product.get(i);
+                    if(!symbol.isTerminal()){
+                        if(followCollectionMap.get(getHeadTag(symbol)) == null) {
+                            setProductFollow(symbol, symbol.getBody(), followCollectionMap);
+                        }
+                    }
+                }
+
             }
         }
     }
 
-    // 记录头尾映射
-    private static void recordHeadAndTailMap(Map<SyntaxSymbol, Set<String>> headAndTailMap, SyntaxSymbol head, String tailTag){
-        if (headAndTailMap.get(head) == null) {
-            Set<String> tempMap = new HashSet<>();
-            tempMap.add(tailTag);
-            headAndTailMap.put(head, tempMap);
-        } else {
-            headAndTailMap.get(head).add(tailTag);
-        }
-    }
-
     // 更新FOLLOW集合
-    private static void recordSymbolFollowMap(Map<String, Set<String>> followCollectionMap, Set<String> symbolFollow, String symbolTag){
+    private static boolean recordSymbolFollowMap(Map<String, Set<String>> followCollectionMap, Set<String> symbolFollow, String symbolTag){
+        boolean hasNewFollow = true;
         if(followCollectionMap.get(symbolTag) == null){
             Set<String> follow = new HashSet<>();
             follow.addAll(symbolFollow);
             followCollectionMap.put(symbolTag, follow);
         }else{
-            followCollectionMap.get(symbolTag).addAll(symbolFollow);
+            if(followCollectionMap.get(symbolTag).containsAll(symbolFollow)){
+                hasNewFollow = false;
+            }else{
+                followCollectionMap.get(symbolTag).addAll(symbolFollow);
+            }
         }
+        return hasNewFollow;
     }
 
     private static String getHeadTag(SyntaxSymbol headSymbol){
         return "head|" + headSymbol.getSymbol();
     }
 
-    private static String getProductSymbolTag(List<SyntaxSymbol> product, SyntaxSymbol targetSymbol, int index){
+    private static String getProductSymbolTag(List<SyntaxSymbol> product, SyntaxSymbol headSymbol, SyntaxSymbol tailSymbol, int index){
         StringBuilder str = new StringBuilder();
-        str.append("body|");
-        str.append(targetSymbol.getSymbol() + "|");
+        str.append("body|" + headSymbol.getSymbol() + "→");
 
         for(int i=0; i<product.size(); i++){
             str.append(product.get(i).getSymbol());
             if(i<product.size()-1){
                 str.append(":");
-            }else{
-                str.append("|");
             }
         }
 
-        str.append(index);
+        str.append("|" + tailSymbol.getSymbol() + "|" + index);
 
         return str.toString();
     }

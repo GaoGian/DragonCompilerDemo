@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -82,7 +83,7 @@ public class SyntaxTest {
         List<String> syntaxs = new ArrayList<>();
 
         syntaxs.add("E → E + T | T ");
-        syntaxs.add("T → T + F | F ");
+        syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
         List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
@@ -106,6 +107,14 @@ public class SyntaxTest {
         for(SyntaxSymbol symbol : syntaxSymbols) {
             Set<String> first = SyntacticParser.syntaxFirst(symbol);
             System.out.println(symbol.getSymbol() + " : " +first);
+        }
+
+        System.out.println("-------------------------------FOLLOW----------------------------------");
+
+        Map<String, Set<String>> followMap = SyntacticParser.syntaxFollow(syntaxSymbols.get(0));
+
+        for(String syntaxSymbolTag : followMap.keySet()){
+            System.out.println(syntaxSymbolTag + " -------- " + followMap.get(syntaxSymbolTag));
         }
 
     }
