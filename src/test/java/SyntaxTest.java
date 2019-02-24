@@ -103,19 +103,35 @@ public class SyntaxTest {
         }
 
         System.out.println("-------------------------------FIRST-----------------------------------");
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
 
-        for(SyntaxSymbol symbol : syntaxSymbols) {
-            Set<String> first = SyntacticParser.syntaxFirst(symbol);
-            System.out.println(symbol.getSymbol() + " : " +first);
+        for(SyntaxSymbol symbol : syntaxFirstMap.keySet()) {
+            Map<List<SyntaxSymbol>, Set<String>> productFirstMap = syntaxFirstMap.get(symbol);
+            for(List<SyntaxSymbol> product : productFirstMap.keySet()) {
+                Set<String> productFirst = productFirstMap.get(product);
+                StringBuilder productStr = new StringBuilder();
+                productStr.append(symbol.getSymbol());
+                productStr.append(" → ");
+                for(int i=0; i<product.size(); i++){
+                    productStr.append(product.get(i).getSymbol());
+                    if(i<product.size()-1){
+                        productStr.append(" ");
+                    }else{
+                        productStr.append(";");
+                    }
+                }
+
+                System.out.println(productStr.toString() + ", " + productFirst.toString());
+            }
         }
 
-        System.out.println("-------------------------------FOLLOW----------------------------------");
-
-        Map<String, Set<String>> followMap = SyntacticParser.syntaxFollow(syntaxSymbols.get(0));
-
-        for(String syntaxSymbolTag : followMap.keySet()){
-            System.out.println(syntaxSymbolTag + " -------- " + followMap.get(syntaxSymbolTag));
-        }
+//        System.out.println("-------------------------------FOLLOW----------------------------------");
+//
+//        Map<String, Set<String>> followMap = SyntacticParser.syntaxFollow(syntaxSymbols.get(0));
+//
+//        for(String syntaxSymbolTag : followMap.keySet()){
+//            System.out.println(syntaxSymbolTag + " -------- " + followMap.get(syntaxSymbolTag));
+//        }
 
     }
 
