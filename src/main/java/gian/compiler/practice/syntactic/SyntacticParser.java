@@ -214,7 +214,9 @@ public class SyntacticParser {
     }
 
     /**
-     * 提取左公因式       TODO 需要优化
+     * 提取左公因式
+     * TODO 需要优化
+     * FIXME 不能正确处理提取公因式后的文法
      * @param originSyntaxSymbolList
      */
     public static void mergeCommonFactor(List<SyntaxSymbol> originSyntaxSymbolList){

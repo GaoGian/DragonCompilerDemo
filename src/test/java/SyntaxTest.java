@@ -58,7 +58,8 @@ public class SyntaxTest {
 
         List<String> syntaxs = new ArrayList<>();
 
-        syntaxs.add("stmt → if expr then stmt else stmt | if expr then stmt");
+//        syntaxs.add("stmt → if expr then stmt else stmt | if expr then stmt");
+        syntaxs.add("T → a * F | a * F - F");
 
         List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
 
@@ -78,6 +79,44 @@ public class SyntaxTest {
     }
 
     @Test
+    public void testMergeCommonFactor2(){
+
+        List<String> syntaxs = new ArrayList<>();
+
+        syntaxs.add("E → E + T | T ");
+        syntaxs.add("T → T * F | T * F - F | F ");
+        syntaxs.add("F → ( E ) | id ");
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+
+        // 消除前
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
+
+        System.out.println("-----------------------------左递归-------------------------------------");
+
+        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+
+        // 消除后
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
+
+        System.out.println("-----------------------------公因式-------------------------------------");
+
+        // TODO 不能正确处理提取公因式后的文法
+        SyntacticParser.mergeCommonFactor(syntaxSymbols);
+
+        // 提取公因式
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
+
+    }
+
+
+        @Test
     public void testSyntaxFirstAndFolloew(){
 
         List<String> syntaxs = new ArrayList<>();
