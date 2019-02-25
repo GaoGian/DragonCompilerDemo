@@ -145,32 +145,16 @@ public class SyntaxTest {
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
 
         for(SyntaxSymbol symbol : syntaxFirstMap.keySet()) {
-            Map<List<SyntaxSymbol>, Set<String>> productFirstMap = syntaxFirstMap.get(symbol);
-            for(List<SyntaxSymbol> product : productFirstMap.keySet()) {
-                Set<String> productFirst = productFirstMap.get(product);
-                StringBuilder productStr = new StringBuilder();
-                productStr.append(symbol.getSymbol());
-                productStr.append(" → ");
-                for(int i=0; i<product.size(); i++){
-                    productStr.append(product.get(i).getSymbol());
-                    if(i<product.size()-1){
-                        productStr.append(" ");
-                    }else{
-                        productStr.append(";");
-                    }
-                }
-
-                System.out.println(productStr.toString() + ", " + productFirst.toString());
-            }
+            System.out.println(symbol.getSymbol() + " -------- " + SyntacticParser.getSyntaxFirst(symbol, syntaxFirstMap));
         }
 
-//        System.out.println("-------------------------------FOLLOW----------------------------------");
-//
-//        Map<String, Set<String>> followMap = SyntacticParser.syntaxFollow(syntaxSymbols.get(0));
-//
-//        for(String syntaxSymbolTag : followMap.keySet()){
-//            System.out.println(syntaxSymbolTag + " -------- " + followMap.get(syntaxSymbolTag));
-//        }
+        System.out.println("-------------------------------FOLLOW----------------------------------");
+
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> followMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols){
+            System.out.println(syntaxSymbol.getSymbol() + " -------- " + SyntacticParser.getSyntaxFollow(syntaxSymbol, followMap));
+        }
 
     }
 
