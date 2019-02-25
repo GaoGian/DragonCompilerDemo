@@ -109,36 +109,38 @@ public class SyntacticParser {
             List<List<SyntaxSymbol>> currProductBodys = currSyntaxSymbol.getBody();
 
             // 消除对上级的左递归
-            for(int j=0; j<i-1; j++){
-                // 判断当前文法是否依赖上级（所有上级）
-                SyntaxSymbol preSyntaxSymbol = originSyntaxSymbolList.get(j);
-                for(int k=0; k<currProductBodys.size(); k++){
-                    List<SyntaxSymbol> currProductBody = currProductBodys.get(k);
-                    // 不处理ε产生体
-                    // TODO 确认ε产生体是什么样的，是长度为1，并且symbol为""
-                    if(currProductBody.size() >= 1 && !currProductBody.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
-                        // 判断产生体首位是否和上级相同
-                        if (currProductBody.get(0).getSymbol().equals(preSyntaxSymbol.getSymbol())) {
-                            // 清除该产生式，后面需要进行替换
-                            currProductBodys.remove(k);
-                            // 修正遍历位置
-                            k--;
+            if(i>0) {
+                for (int j = 0; j < i - 1; j++) {
+                    // 判断当前文法是否依赖上级（所有上级）
+                    SyntaxSymbol preSyntaxSymbol = originSyntaxSymbolList.get(j);
+                    for (int k = 0; k < currProductBodys.size(); k++) {
+                        List<SyntaxSymbol> currProductBody = currProductBodys.get(k);
+                        // 不处理ε产生体
+                        // TODO 确认ε产生体是什么样的，是长度为1，并且symbol为""
+                        if (currProductBody.size() >= 1 && !currProductBody.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
+                            // 判断产生体首位是否和上级相同
+                            if (currProductBody.get(0).getSymbol().equals(preSyntaxSymbol.getSymbol())) {
+                                // 清除该产生式，后面需要进行替换
+                                currProductBodys.remove(k);
+                                // 修正遍历位置
+                                k--;
 
-                            // 将产生体首位替换成所有上级的所有产生体  TODO 需要处理环和ε产生体
-                            // 去掉依赖的上级头部
-                            List<SyntaxSymbol> tempProductBody = currProductBody.subList(1, currProductBody.size());
-                            List<List<SyntaxSymbol>> preProductBodys = preSyntaxSymbol.getBody();
-                            for (int l = 0; l < preProductBodys.size(); l++) {
-                                List<SyntaxSymbol> preProductBody = preProductBodys.get(l);
-                                // TODO 确认ε产生体是什么样的，是长度为1，并且symbol为""
-                                if (preProductBody.size() >= 1 && !preProductBody.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
-                                    List<SyntaxSymbol> newCurrProductBody = new ArrayList<>();
-                                    // 将产生体首位替换成所有上级的所有产生体
-                                    newCurrProductBody.addAll(preProductBody);
-                                    newCurrProductBody.addAll(tempProductBody);
+                                // 将产生体首位替换成所有上级的所有产生体  TODO 需要处理环和ε产生体
+                                // 去掉依赖的上级头部
+                                List<SyntaxSymbol> tempProductBody = currProductBody.subList(1, currProductBody.size());
+                                List<List<SyntaxSymbol>> preProductBodys = preSyntaxSymbol.getBody();
+                                for (int l = 0; l < preProductBodys.size(); l++) {
+                                    List<SyntaxSymbol> preProductBody = preProductBodys.get(l);
+                                    // TODO 确认ε产生体是什么样的，是长度为1，并且symbol为""
+                                    if (preProductBody.size() >= 1 && !preProductBody.get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
+                                        List<SyntaxSymbol> newCurrProductBody = new ArrayList<>();
+                                        // 将产生体首位替换成所有上级的所有产生体
+                                        newCurrProductBody.addAll(preProductBody);
+                                        newCurrProductBody.addAll(tempProductBody);
 
-                                    // 将替换的产生式加入到产生式列表
-                                    currProductBodys.add(newCurrProductBody);
+                                        // 将替换的产生式加入到产生式列表
+                                        currProductBodys.add(newCurrProductBody);
+                                    }
                                 }
                             }
                         }
@@ -206,6 +208,14 @@ public class SyntacticParser {
                     // 在原来没有左递归的产生体后面加上消除左递归的文法符号
                     unLeftRecursionBody.add(eliminateSyntaxSymbol);
                 }
+
+                // 说明所有产生体都是左递归，加入转换后的文法符号
+                if(unLeftRecursionList.size() == 0){
+                    List<SyntaxSymbol> tempProduct = new ArrayList<>();
+                    tempProduct.add(eliminateSyntaxSymbol);
+                    unLeftRecursionList.add(tempProduct);
+                }
+
                 // 替换原来的左递归产生体
                 currSyntaxSymbol.setBody(unLeftRecursionList);
             }

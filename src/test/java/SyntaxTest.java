@@ -83,9 +83,8 @@ public class SyntaxTest {
 
         List<String> syntaxs = new ArrayList<>();
 
-        syntaxs.add("E → E + T | T ");
-        syntaxs.add("T → T * F | T * F - F | F ");
-        syntaxs.add("F → ( E ) | id ");
+        syntaxs.add("T → T * F | T * F - F ");
+        syntaxs.add("F → id ");
 
         List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
 
