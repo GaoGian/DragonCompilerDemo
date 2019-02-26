@@ -404,6 +404,8 @@ public class LexUtils {
 
     }
 
+    // 使用ECharts路径图显示
+    // https://echarts.baidu.com/examples/editor.html?c=graph-simple
     public static void outputEchart(LexAutomatonTransformer.LexCell lexCell){
 
         // 广度遍历

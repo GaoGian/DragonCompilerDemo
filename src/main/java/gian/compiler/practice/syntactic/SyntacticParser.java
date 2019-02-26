@@ -1,6 +1,7 @@
 package gian.compiler.practice.syntactic;
 
 import gian.compiler.practice.lexical.transform.LexConstants;
+import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
 import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
 
 import java.util.*;
@@ -666,5 +667,85 @@ public class SyntacticParser {
         return hasNewFollow;
     }
 
+
+    /**
+     * 构造预测分析表
+     *
+     * SELECT集合：（注意这是针对产生式而言）
+     * 1、选择一个产生式，只有当下一个输入符号a在FIRST(α)中时才选择产生式A→α。
+     * 2、如果α=ε或者α=>ε时，如果当前输入符号在FOLLOW(A)中，或者已经到达输入的末尾符号 $，且 $ 结束符在FOLLOW(A)中，则任然可以选择产生式A→α（那么可以认为A已经被跳过）
+     *
+     * 预测分析表
+     * 对于 文法G 中的每个产生式 A→α进行如下处理
+     * 1、对于 FIRST(α) 中的每个终结符号a，将 A→α加入到 M[A,a]中
+     * 2、如果 ε∈ FIRST(α)，那么对于 FOLLOW(A)中的每个终结符号 b，将 A→α加入到 M[A,b]中，如果 ε∈ FIRST(α)，且 $ ∈ FOLLOW(A)，那么也将 A→α加入到 M[A,$]中
+     * 3、所有没有记录的 M[A,o] 的空目录都设置为 error
+     *
+     * TODO 必须是LL(1)文法，文法 A→α|β中，FIRST(α)| FIRST(β) 不相交，如果 ε∈ FIRST(β)，则 FIRST(α) 和 FOLLOW(A) 不相交
+     *
+     */
+    public static Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap(Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap, Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap){
+        Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxProductSelect = new LinkedHashMap();
+
+        for(SyntaxSymbol syntaxSymbol : syntaxFirstMap.keySet()){
+            for(List<SyntaxSymbol> product : syntaxFirstMap.get(syntaxSymbol).keySet()) {
+                SyntaxProduct syntaxProduct = new SyntaxProduct(syntaxSymbol, product);
+                // 1、对于 FIRST(α) 中的每个终结符号a，将 A→α加入到 M[A,a]中
+                Set<String> productFirst = syntaxFirstMap.get(syntaxSymbol).get(product);
+                for(String firstSymbol : productFirst) {
+                    if(!firstSymbol.equals(LexConstants.SYNTAX_EMPTY)) {
+                        setSyntaxProductSelect(syntaxProductSelect, syntaxSymbol, firstSymbol, syntaxProduct);
+                    }
+                }
+                if(productFirst.contains(LexConstants.SYNTAX_EMPTY)) {
+                    // 2、如果 ε∈ FIRST(α)，那么对于 FOLLOW(A)中的每个终结符号 b，将 A→α加入到 M[A,b]中，如果 ε∈ FIRST(α)，且 $ ∈ FOLLOW(A)，那么也将 A→α加入到 M[A,$]中
+                    Set<String> syntaxFollow = getSyntaxFollow(syntaxSymbol, syntaxFollowMap);
+                    for (String followSymbol : syntaxFollow) {
+                        if (!followSymbol.equals(LexConstants.SYNTAX_EMPTY)) {
+                            setSyntaxProductSelect(syntaxProductSelect, syntaxSymbol, followSymbol, syntaxProduct);
+                        }
+                    }
+                }
+            }
+        }
+
+        return syntaxProductSelect;
+    }
+
+    public static void setSyntaxProductSelect(Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxProductSelect,
+                                              SyntaxSymbol head, String firstSymbol, SyntaxProduct product){
+
+        if(syntaxProductSelect.get(head) == null){
+            Map<String, Set<SyntaxProduct>> productSelectMap = new LinkedHashMap<>();
+            syntaxProductSelect.put(head, productSelectMap);
+        }
+        if(syntaxProductSelect.get(head).get(firstSymbol) == null){
+            Set<SyntaxProduct> selectProduct = new LinkedHashSet<>();
+            syntaxProductSelect.get(head).put(firstSymbol, selectProduct);
+        }
+
+        syntaxProductSelect.get(head).get(firstSymbol).add(product);
+
+    }
+
+    public static Set<SyntaxSymbol> getAllNonTerminalSymbol(Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap){
+        Set<SyntaxSymbol> allSyntaxSymbol = new LinkedHashSet<>();
+        allSyntaxSymbol.addAll(syntaxFirstMap.keySet());
+        return allSyntaxSymbol;
+    }
+
+    public static Set<String> getAllTerminalSymbol(Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap, Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap){
+        Set<String> allTerminalSymbol = new LinkedHashSet<>();
+
+        for(SyntaxSymbol symbol : syntaxFirstMap.keySet()) {
+            allTerminalSymbol.addAll(SyntacticParser.getSyntaxFirst(symbol, syntaxFirstMap));
+        }
+
+        for(SyntaxSymbol syntaxSymbol : syntaxFirstMap.keySet()){
+            allTerminalSymbol.addAll(SyntacticParser.getSyntaxFollow(syntaxSymbol, syntaxFollowMap));
+        }
+
+        return allTerminalSymbol;
+    }
 
 }
