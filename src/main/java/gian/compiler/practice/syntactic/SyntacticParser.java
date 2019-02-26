@@ -1,6 +1,8 @@
 package gian.compiler.practice.syntactic;
 
+import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
+import gian.compiler.practice.lexical.transform.MyStack;
 import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
 import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
 
@@ -690,6 +692,7 @@ public class SyntacticParser {
         for(SyntaxSymbol syntaxSymbol : syntaxFirstMap.keySet()){
             for(List<SyntaxSymbol> product : syntaxFirstMap.get(syntaxSymbol).keySet()) {
                 SyntaxProduct syntaxProduct = new SyntaxProduct(syntaxSymbol, product);
+                // 以下是SELECT集合：（注意这是针对产生式而言）
                 // 1、对于 FIRST(α) 中的每个终结符号a，将 A→α加入到 M[A,a]中
                 Set<String> productFirst = syntaxFirstMap.get(syntaxSymbol).get(product);
                 for(String firstSymbol : productFirst) {
@@ -746,6 +749,65 @@ public class SyntacticParser {
         }
 
         return allTerminalSymbol;
+    }
+
+    /**
+     * 给予预测分析表的语法分析
+     *
+     * 1、初始时刻文法符号栈中加入结束符号 $
+     * 2、根据预测分析表及当前输入符a选择合适的产生式压入栈中（原来的符号展开成产生式）
+     * 3、如果当前输入符号a 与栈顶的文法符号X（终结符）匹配，则判定为识别成功，对应的终结符出栈
+     *
+     */
+    public static void syntaxParse(List<Token> lexTokens, Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> predictMap){
+        MyStack<SyntaxSymbol> symbolStack = new MyStack<>();
+        int index = 0;
+        Token input = lexTokens.get(index);
+        SyntaxSymbol syntaxSymbol = symbolStack.top();
+        while(!syntaxSymbol.getSymbol().equals(LexConstants.SYNTAX_END)){
+            if(syntaxSymbol.getSymbol().equals(input.getToken())){
+                // 说明输入识别成功
+                System.out.println("匹配：" + syntaxSymbol.getSymbol());
+                symbolStack.pop();
+                // 指向下一个输入符
+                input = lexTokens.get(++index);
+            }else if(syntaxSymbol.isTerminal()){
+                throw new RuntimeException("当前文法符号是终结符，但是没有匹配成功，说明文法符号扩展错误");
+            }else{
+                Set<SyntaxProduct> selectProducts = movePredictSyntax(predictMap, syntaxSymbol, input.getToken());
+                if(selectProducts == null){
+                    throw new RuntimeException(" M[" + syntaxSymbol.getSymbol() + ", " + input.getToken() + "] 是一个报错目录");
+                }else if(selectProducts.size() > 1){
+                    throw new RuntimeException("该文法不是LL(1)文法");
+                }else{
+                    for(SyntaxProduct product : selectProducts){
+                        // TODO 这里需不需要改造成ACTION动作
+                        System.out.println("输出：" + product.toString());
+                        // 现将原来的文法符号弹出栈，再将扩展的产生式压入栈中
+                        symbolStack.pop();
+                        for(int i=(product.getProduct().size()-1); i>=0; i--){
+                            symbolStack.push(product.getProduct().get(i));
+                        }
+                    }
+                }
+            }
+            syntaxSymbol = symbolStack.top();
+        }
+
+    }
+
+    /**
+     * 根据预测分析表返回选择的产生式，如果是LL(1)文法则只会返回一个产生式
+     *
+     */
+    public static Set<SyntaxProduct> movePredictSyntax(Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> predictMap,
+                                                  SyntaxSymbol syntaxSymbol, String input){
+        if(predictMap.get(syntaxSymbol) == null){
+            return null;
+        }
+
+        return predictMap.get(syntaxSymbol).get(input);
+
     }
 
 }
