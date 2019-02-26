@@ -164,6 +164,11 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
+        // TODO 不适用二义性文法
+//        syntaxs.add("S → i E t S S' | a ");
+//        syntaxs.add("S' → e S | ε ");
+//        syntaxs.add("E → b ");
+
         List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
 
         SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
