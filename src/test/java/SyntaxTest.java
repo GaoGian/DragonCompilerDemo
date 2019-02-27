@@ -235,20 +235,37 @@ public class SyntaxTest {
         // TODO 构造文法
         List<String> syntaxs = new ArrayList<>();
 
-        syntaxs.add("E → E + T | T ");
-        syntaxs.add("T → T * F | F ");
-        syntaxs.add("F → ( E ) | id ");
+        syntaxs.add("stmt → { declared stmts }");
+        syntaxs.add("declared → type id ; declared | ε");
+        syntaxs.add("type → base component");
+        syntaxs.add("base → int | float");
+        syntaxs.add("component → [ number ] component | ε");
+        syntaxs.add("stmts → whilecycle | docycle | expression ; stmts | ε");
+        syntaxs.add("whilecycle → while ( bexpr ) { stmts }");
+        syntaxs.add("docycle → do stmts ; while ( bexpr ) ;");
+        syntaxs.add("bexpr → factor > factor | factor < factor | factor >= factor | factor <= factor | factor == factor | factor != factor | true | false");
+        syntaxs.add("expression → expression + term | expression - term");
+        syntaxs.add("term → term * factor | term / factor | factor");
+        syntaxs.add("factor → id | factor [ number ]");
 
-        System.out.println("----------------------------消除左递归------------------------------");
+        System.out.println("----------------------------文法解析------------------------------");
         List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
         // 消除前
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
             System.out.println(syntaxSymbol);
         }
 
-        System.out.println("----------------------------提取公因式------------------------------");
+        System.out.println("----------------------------消除左递归------------------------------");
         SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
         // 提取后
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
+
+        System.out.println("-----------------------------提取公因式-------------------------------------");
+        SyntacticParser.mergeCommonFactor(syntaxSymbols);
+
+        // 提取公因式
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
             System.out.println(syntaxSymbol);
         }
@@ -261,11 +278,11 @@ public class SyntaxTest {
         Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
 
         LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
-
-        System.out.println("-------------------------------LL(1)语法分析----------------------------------");
-
-        List<Token> tokens = LexicalParser.parser("C:\\Users\\Gian\\Desktop\\Temp\\compilerCode.txt");
-        SyntacticParser.syntaxParse(tokens, syntaxSymbols.get(0), syntaxPredictMap);
+//
+//        System.out.println("-------------------------------LL(1)语法分析----------------------------------");
+//
+//        List<Token> tokens = LexicalParser.parser("C:\\Users\\Gian\\Desktop\\Temp\\compilerCode.txt");
+//        SyntacticParser.syntaxParse(tokens, syntaxSymbols.get(0), syntaxPredictMap);
 
     }
 

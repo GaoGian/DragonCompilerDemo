@@ -12,6 +12,20 @@
 	}
 }
 
+#示例文法
+stmt → { declared stmts }
+declared → type id ; declared | ε
+type → base component
+base → int | float
+component → [ number ] component | ε
+stmts → whilecycle | docycle | expression ; stmts | ε
+whilecycle → while ( bexpr ) { stmts }
+docycle → do stmts ; while ( bexpr ) ;
+bexpr → factor > factor | factor < factor | factor >= factor | factor <= factor | factor == factor | factor != factor | true | false
+expression → expression + term | expression - term
+term → term * factor | term / factor | factor
+factor → id | factor [ number ]
+
 
 // TODO 下一步计划
 1、输出词法分析结果 Token
@@ -22,7 +36,7 @@
     计算对应的FIRST、FOLLOW集
 
 
-#示例文法
+#完整文法
 funcdef → type id ( parastate ) { funcblock }
 type → int | float | char | void
 factor → ( exp ) | id | number | ch
