@@ -603,7 +603,8 @@ public class LexUtils {
             for(String terminalSymbol : allTerminalSymbol){
                 if(!terminalSymbol.equals(LexConstants.SYNTAX_EMPTY)) {
                     if(syntaxPredictMap.get(nonTerminalSymbol).get(terminalSymbol) != null) {
-                        str.append("    <th>" + syntaxPredictMap.get(nonTerminalSymbol).get(terminalSymbol) + "</th>\n");
+                        String productStr = syntaxPredictMap.get(nonTerminalSymbol).get(terminalSymbol).toString();
+                        str.append("    <th>" + productStr.toString().substring(1, productStr.length()-1) + "</th>\n");
                     }else{
                         str.append("    <th></th>\n");
                     }

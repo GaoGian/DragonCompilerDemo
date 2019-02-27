@@ -424,22 +424,29 @@ public class SyntacticParser {
                             // 2、加入产生式体首个文法符号的FIRST，如果产生式前面的文法符号能够推导出ε，则加入后面文法符号的 FIRST 集合
                             for(int j=0; j<product.size(); j++) {
                                 SyntaxSymbol productSymbol = product.get(j);
-                                Set<String> targetSyntaxFirst = getSyntaxFirst(productSymbol, syntaxFirstMap);
-                                // 2、如果该文法符号能够推导出ε，则加入下一个文法符号的 FIRST 集合
-                                boolean hasEmpty = targetSyntaxFirst.contains(LexConstants.SYNTAX_EMPTY);
-                                if(hasEmpty) {
-                                    // 如果产生式最后一个符号还能够推导出ε，则加入ε
-                                    if (j < product.size() - 1) {
-                                        targetSyntaxFirst.remove(LexConstants.SYNTAX_EMPTY);
-                                    }
-                                    if (addSourceSyntaxFirst(syntaxSymbol, product, targetSyntaxFirst, syntaxFirstMap)) {
-                                        newTag = true;
+                                if(!productSymbol.isTerminal()) {
+                                    Set<String> targetSyntaxFirst = getSyntaxFirst(productSymbol, syntaxFirstMap);
+                                    // 2、如果该文法符号能够推导出ε，则加入下一个文法符号的 FIRST 集合
+                                    boolean hasEmpty = targetSyntaxFirst.contains(LexConstants.SYNTAX_EMPTY);
+                                    if (hasEmpty) {
+                                        // 如果产生式最后一个符号还能够推导出ε，则加入ε
+                                        if (j < product.size() - 1) {
+                                            targetSyntaxFirst.remove(LexConstants.SYNTAX_EMPTY);
+                                        }
+                                        if (addSourceSyntaxFirst(syntaxSymbol, product, targetSyntaxFirst, syntaxFirstMap)) {
+                                            newTag = true;
+                                        }
+                                    } else {
+                                        if (addSourceSyntaxFirst(syntaxSymbol, product, targetSyntaxFirst, syntaxFirstMap)) {
+                                            newTag = true;
+                                        }
+                                        break;
                                     }
                                 }else{
-                                    if (addSourceSyntaxFirst(syntaxSymbol, product, targetSyntaxFirst, syntaxFirstMap)) {
+                                    // 1、如果是终结符，则直接返回对应的字符串
+                                    if(addSyntaxProductFirst(syntaxSymbol, product, productSymbol.getSymbol(), syntaxFirstMap)){
                                         newTag = true;
                                     }
-                                    break;
                                 }
                             }
                         }

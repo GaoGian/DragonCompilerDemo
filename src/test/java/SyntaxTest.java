@@ -278,11 +278,12 @@ public class SyntaxTest {
         Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
 
         LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
-//
-//        System.out.println("-------------------------------LL(1)语法分析----------------------------------");
-//
-//        List<Token> tokens = LexicalParser.parser("C:\\Users\\Gian\\Desktop\\Temp\\compilerCode.txt");
-//        SyntacticParser.syntaxParse(tokens, syntaxSymbols.get(0), syntaxPredictMap);
+
+        System.out.println("-------------------------------LL(1)语法分析----------------------------------");
+
+        // TODO 需要将预测分析表的终结符替换成元字符，识别成类似Token的封装类
+        List<Token> tokens = LexicalParser.parser("C:\\Users\\Gian\\Desktop\\Temp\\compilerCode.txt");
+        SyntacticParser.syntaxParse(tokens, syntaxSymbols.get(0), syntaxPredictMap);
 
     }
 
