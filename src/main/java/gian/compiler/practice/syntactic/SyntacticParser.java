@@ -759,8 +759,12 @@ public class SyntacticParser {
      * 3、如果当前输入符号a 与栈顶的文法符号X（终结符）匹配，则判定为识别成功，对应的终结符出栈
      *
      */
-    public static void syntaxParse(List<Token> lexTokens, Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> predictMap){
+    public static void syntaxParse(List<Token> lexTokens, SyntaxSymbol startSyntaxSymbol, Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> predictMap){
         MyStack<SyntaxSymbol> symbolStack = new MyStack<>();
+        // 1、初始时刻文法符号栈中加入结束符号 $
+        symbolStack.push(new SyntaxSymbol(LexConstants.SYNTAX_END, true));
+        // 1、将开始文法符号压入栈中，从开始文法符号进行扩展
+        symbolStack.push(startSyntaxSymbol);
         int index = 0;
         Token input = lexTokens.get(index);
         SyntaxSymbol syntaxSymbol = symbolStack.top();
@@ -785,8 +789,11 @@ public class SyntacticParser {
                         System.out.println("输出：" + product.toString());
                         // 现将原来的文法符号弹出栈，再将扩展的产生式压入栈中
                         symbolStack.pop();
-                        for(int i=(product.getProduct().size()-1); i>=0; i--){
-                            symbolStack.push(product.getProduct().get(i));
+                        if(!product.getProduct().get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
+                            // 如果不是空产生式，就将扩展的产生式压入栈中
+                            for (int i = (product.getProduct().size() - 1); i >= 0; i--) {
+                                symbolStack.push(product.getProduct().get(i));
+                            }
                         }
                     }
                 }

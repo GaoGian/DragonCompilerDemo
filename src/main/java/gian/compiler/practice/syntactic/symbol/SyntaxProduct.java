@@ -1,5 +1,7 @@
 package gian.compiler.practice.syntactic.symbol;
 
+import gian.compiler.practice.lexical.transform.LexConstants;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +38,24 @@ public class SyntaxProduct {
 
     @Override
     public String toString(){
-        return this.head.getSymbol() + "→" + this.product.toString();
+
+        StringBuilder str = new StringBuilder();
+        str.append(this.head.getSymbol());
+
+        str.append("→");
+        for(int i=0; i<product.size(); i++){
+            String bodySymbol = product.get(i).getSymbol();
+            if(LexConstants.SYNTAX_EMPTY.equals(bodySymbol)){
+                str.append(LexConstants.SYNTAX_EMPTY);
+            }else {
+                str.append(bodySymbol);
+            }
+
+            if(i<product.size()-1) {
+                str.append(" ");
+            }
+        }
+        return str.toString();
     }
 
     @Override

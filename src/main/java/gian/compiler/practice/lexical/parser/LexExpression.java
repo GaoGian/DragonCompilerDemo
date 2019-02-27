@@ -1,5 +1,7 @@
 package gian.compiler.practice.lexical.parser;
 
+import gian.compiler.practice.lexical.transform.LexConstants;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,12 +73,15 @@ public class LexExpression {
         // 分隔符
         expressions.add(new Expression("\\s+", TokenType.SECTION, true));
 
+        // 结束符
+        expressions.add(new Expression(LexConstants.SYNTAX_END, TokenType.END, true));
+
     }
 
     public static enum TokenType {
         KEYWORD("keyword"), ID("id"), TYPE("type"), NUMBER("number"),
         OPERATOR("operator"), SEPARATOR("separator"),
-        PUNCTUATION("punctuation"), SECTION("section");
+        PUNCTUATION("punctuation"), SECTION("section"), END(LexConstants.SYNTAX_END);
 
         private String type;
 

@@ -1,3 +1,5 @@
+import gian.compiler.practice.lexical.parser.LexExpression;
+import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.syntactic.SyntacticParser;
 import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
@@ -214,6 +216,45 @@ public class SyntaxTest {
         str.append("</table>\n");
 
         System.out.println(str.toString());
+    }
+
+    @Test
+    public void testSyntaxPredict2(){
+
+        List<Token> tokens = new ArrayList<>();
+        tokens.add(new Token("id", LexExpression.TokenType.KEYWORD));
+        tokens.add(new Token("+", LexExpression.TokenType.OPERATOR));
+        tokens.add(new Token("id", LexExpression.TokenType.KEYWORD));
+        tokens.add(new Token("*", LexExpression.TokenType.OPERATOR));
+        tokens.add(new Token("id", LexExpression.TokenType.KEYWORD));
+        tokens.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
+
+        System.out.println("-------------------------------预测分析表----------------------------------");
+
+        List<String> syntaxs = new ArrayList<>();
+
+        syntaxs.add("E → E + T | T ");
+        syntaxs.add("T → T * F | F ");
+        syntaxs.add("F → ( E ) | id ");
+
+        System.out.println("----------------------------消除左递归，提取公因式------------------------------");
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+        // 提取后
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
+
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+
+        Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
+
+        System.out.println("-------------------------------LL(1)语法分析----------------------------------");
+
+        SyntacticParser.syntaxParse(tokens, syntaxSymbols.get(0), syntaxPredictMap);
+
     }
 
 

@@ -1,5 +1,6 @@
 package gian.compiler.practice.lexical.parser;
 
+import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
 import gian.compiler.practice.lexical.transform.regex.LexSimplePattern;
 
@@ -154,6 +155,8 @@ public class LexicalParser {
                 }
             }
         }
+
+        parseResult.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
 
         return parseResult;
     }

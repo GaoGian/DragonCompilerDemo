@@ -58,25 +58,28 @@ public class SyntaxSymbol {
         StringBuilder str = new StringBuilder();
         str.append(symbol);
 
-//        str.append(" → ");
-//        for(int i=0; i<body.size(); i++){
-//            List<SyntaxSymbol> symbols = body.get(i);
-//
-//            for(int j=0; j<symbols.size(); j++){
-//                String bodySymbol = symbols.get(j).getSymbol();
-//                if(LexConstants.SYNTAX_EMPTY.equals(bodySymbol)){
-//                    str.append("ε");
-//                }else {
-//                    str.append(bodySymbol);
-//                }
-//                str.append(" ");
-//            }
-//
-//            if(i <= body.size()-2){
-//                str.append("| ");
-//            }
-//
-//        }
+        str.append("→");
+        for(int i=0; i<body.size(); i++){
+            List<SyntaxSymbol> symbols = body.get(i);
+
+            for(int j=0; j<symbols.size(); j++){
+                String bodySymbol = symbols.get(j).getSymbol();
+                if(LexConstants.SYNTAX_EMPTY.equals(bodySymbol)){
+                    str.append(LexConstants.SYNTAX_EMPTY);
+                }else {
+                    str.append(bodySymbol);
+                }
+
+                if(j<symbols.size()-1) {
+                    str.append(" ");
+                }
+            }
+
+            if(i <= body.size()-2){
+                str.append(" | ");
+            }
+
+        }
         return str.toString();
     }
 
