@@ -3,6 +3,9 @@ package lex.test;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.MyStack;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
+import gian.compiler.practice.syntactic.SyntacticParser;
+import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
+import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
 
 import java.util.*;
 
@@ -572,5 +575,46 @@ public class LexUtils {
 
     }
 
+    /**
+     * 输出LL(1)预测分析表
+     */
+    public static void outputLL1SyntaxPredict(Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap,
+                                              Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap,
+                                              Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap){
+
+        Set<String> allTerminalSymbol = SyntacticParser.getAllTerminalSymbol(syntaxFirstMap, syntaxFollowMap);
+        Set<SyntaxSymbol> allNonTerminalSymbol = SyntacticParser.getAllNonTerminalSymbol(syntaxFirstMap);
+
+        // 使用bootstrap表格显示, http://www.runoob.com/try/try.php?filename=bootstrap3-table-basic
+        StringBuilder str = new StringBuilder();
+        str.append("<table class=\"table\">\n");
+        str.append("<thead>\n");
+        str.append("    <th>非终结符号</th>\n");
+        for(String terminalSymbol : allTerminalSymbol){
+            if(!terminalSymbol.equals(LexConstants.SYNTAX_EMPTY)){
+                str.append("<th>" + terminalSymbol + "</th>\n");
+            }
+        }
+        str.append("</thead>\n");
+        str.append("<tbody>\n");
+        for(SyntaxSymbol nonTerminalSymbol : allNonTerminalSymbol){
+            str.append("<tr>\n");
+            str.append("    <th>" + nonTerminalSymbol.getSymbol() + "</th>\n");
+            for(String terminalSymbol : allTerminalSymbol){
+                if(!terminalSymbol.equals(LexConstants.SYNTAX_EMPTY)) {
+                    if(syntaxPredictMap.get(nonTerminalSymbol).get(terminalSymbol) != null) {
+                        str.append("    <th>" + syntaxPredictMap.get(nonTerminalSymbol).get(terminalSymbol) + "</th>\n");
+                    }else{
+                        str.append("    <th></th>\n");
+                    }
+                }
+            }
+            str.append("</tr>\n");
+        }
+        str.append("</tbody>\n");
+        str.append("</table>\n");
+
+        System.out.println(str.toString());
+    }
 
 }

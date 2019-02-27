@@ -1,9 +1,11 @@
 import gian.compiler.practice.lexical.parser.LexExpression;
+import gian.compiler.practice.lexical.parser.LexicalParser;
 import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.syntactic.SyntacticParser;
 import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
 import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
+import lex.test.LexUtils;
 import org.junit.Test;
 
 import java.util.*;
@@ -183,39 +185,7 @@ public class SyntaxTest {
 
         Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
 
-        Set<String> allTerminalSymbol = SyntacticParser.getAllTerminalSymbol(syntaxFirstMap, syntaxFollowMap);
-        Set<SyntaxSymbol> allNonTerminalSymbol = SyntacticParser.getAllNonTerminalSymbol(syntaxFirstMap);
-
-        // 使用bootstrap表格显示, http://www.runoob.com/try/try.php?filename=bootstrap3-table-basic
-        StringBuilder str = new StringBuilder();
-        str.append("<table class=\"table\">\n");
-        str.append("<thead>\n");
-        str.append("    <th>非终结符号</th>\n");
-        for(String terminalSymbol : allTerminalSymbol){
-            if(!terminalSymbol.equals(LexConstants.SYNTAX_EMPTY)){
-                str.append("<th>" + terminalSymbol + "</th>\n");
-            }
-        }
-        str.append("</thead>\n");
-        str.append("<tbody>\n");
-        for(SyntaxSymbol nonTerminalSymbol : allNonTerminalSymbol){
-            str.append("<tr>\n");
-            str.append("    <th>" + nonTerminalSymbol.getSymbol() + "</th>\n");
-            for(String terminalSymbol : allTerminalSymbol){
-                if(!terminalSymbol.equals(LexConstants.SYNTAX_EMPTY)) {
-                    if(syntaxPredictMap.get(nonTerminalSymbol).get(terminalSymbol) != null) {
-                        str.append("    <th>" + syntaxPredictMap.get(nonTerminalSymbol).get(terminalSymbol) + "</th>\n");
-                    }else{
-                        str.append("    <th></th>\n");
-                    }
-                }
-            }
-            str.append("</tr>\n");
-        }
-        str.append("</tbody>\n");
-        str.append("</table>\n");
-
-        System.out.println(str.toString());
+        LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
     }
 
     @Test
@@ -253,6 +223,48 @@ public class SyntaxTest {
 
         System.out.println("-------------------------------LL(1)语法分析----------------------------------");
 
+        SyntacticParser.syntaxParse(tokens, syntaxSymbols.get(0), syntaxPredictMap);
+
+    }
+
+    @Test
+    public void testSyntaxPredict3(){
+
+        System.out.println("-------------------------------构造文法----------------------------------");
+
+        // TODO 构造文法
+        List<String> syntaxs = new ArrayList<>();
+
+        syntaxs.add("E → E + T | T ");
+        syntaxs.add("T → T * F | F ");
+        syntaxs.add("F → ( E ) | id ");
+
+        System.out.println("----------------------------消除左递归------------------------------");
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        // 消除前
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
+
+        System.out.println("----------------------------提取公因式------------------------------");
+        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+        // 提取后
+        for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
+            System.out.println(syntaxSymbol);
+        }
+
+        System.out.println("-------------------------------预测分析表----------------------------------");
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+
+        Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
+
+        LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
+
+        System.out.println("-------------------------------LL(1)语法分析----------------------------------");
+
+        List<Token> tokens = LexicalParser.parser("C:\\Users\\Gian\\Desktop\\Temp\\compilerCode.txt");
         SyntacticParser.syntaxParse(tokens, syntaxSymbols.get(0), syntaxPredictMap);
 
     }
