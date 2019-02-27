@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"> 
+	<title>Bootstrap 实例 - 基本的表格</title>
+	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">  
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<style type="text/css">
+		th{
+			text-align:center;
+            border-left: 1px solid #ddd;
+            vertical-align: inherit !important;
+		}
+	</style>
+
+</head>
+<body>
+
+<table class="table">
+<thead>
+    <th>非终结符号</th>
+<th>[</th>
+<th>id</th>
+<th>*</th>
+<th>/</th>
+<th>+</th>
+<th>-</th>
+<th>==</th>
+<th><=</th>
+<th><</th>
+<th>!=</th>
+<th>></th>
+<th>>=</th>
+<th>do</th>
+<th>while</th>
+<th>;</th>
+<th>float</th>
+<th>int</th>
+<th>{</th>
+<th>)</th>
+<th>}</th>
+<th>$</th>
+</thead>
+<tbody>
+<tr>
+    <th>factor'</th>
+    <th>factor'→[ number ] factor'</th>
+    <th></th>
+    <th>factor'→ε</th>
+    <th>factor'→ε</th>
+    <th>factor'→ε</th>
+    <th>factor'→ε</th>
+    <th>factor'→ε</th>
+    <th>factor'→ε</th>
+    <th>factor'→ε</th>
+    <th>factor'→ε</th>
+    <th>factor'→ε</th>
+    <th>factor'→ε</th>
+    <th></th>
+    <th></th>
+    <th>factor'→ε</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>factor'→ε</th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>factor</th>
+    <th></th>
+    <th>factor→id factor'</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>term'</th>
+    <th></th>
+    <th></th>
+    <th>term'→* factor term'</th>
+    <th>term'→/ factor term'</th>
+    <th>term'→ε</th>
+    <th>term'→ε</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>term'→ε</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>term</th>
+    <th></th>
+    <th>term→factor term'</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>expression'</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>expression'→+ term expression'</th>
+    <th>expression'→- term expression'</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>expression'→ε</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>expression</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>expression→expression'</th>
+    <th>expression→expression'</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>expression→expression'</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>bexpr~</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>bexpr~→== factor</th>
+    <th>bexpr~→<= factor</th>
+    <th>bexpr~→< factor</th>
+    <th>bexpr~→!= factor</th>
+    <th>bexpr~→> factor</th>
+    <th>bexpr~→>= factor</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>bexpr~→ε</th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>bexpr</th>
+    <th></th>
+    <th>bexpr→factor bexpr~</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>docycle</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>docycle→do stmts ; while ( bexpr ) ;</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>whilecycle</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>whilecycle→while ( bexpr ) { stmts }</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>stmts</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>stmts→expression ; stmts</th>
+    <th>stmts→expression ; stmts</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>stmts→docycle, stmts→expression ; stmts</th>
+    <th>stmts→whilecycle, stmts→expression ; stmts</th>
+    <th>stmts→expression ; stmts, stmts→ε</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>stmts→expression ; stmts, stmts→ε</th>
+    <th></th>
+</tr>
+<tr>
+    <th>component</th>
+    <th>component→[ number ] component</th>
+    <th>component→ε</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>base</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>base→float</th>
+    <th>base→int</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>type</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>type→base component</th>
+    <th>type→base component</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>declared</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>declared→ε</th>
+    <th>declared→ε</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>declared→ε</th>
+    <th>declared→ε</th>
+    <th>declared→ε</th>
+    <th>declared→type id ; declared</th>
+    <th>declared→type id ; declared</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr>
+    <th>stmt</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th>stmt→{ declared stmts }</th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>
