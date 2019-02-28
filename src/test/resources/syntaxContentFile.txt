@@ -1,0 +1,11 @@
+stmt → { declared stmts }
+declared → type factor ; declared | ε
+type → int | float
+stmts → whilecycle | docycle | assign ; stmts | ε
+whilecycle → while ( bexpr ) { stmts }
+docycle → do stmts ; while ( bexpr ) ;
+bexpr → factor > factor | factor < factor | factor >= factor | factor <= factor | factor == factor | factor != factor | true | false
+assign → factor = expression
+expression → expression + term | expression - term | term
+term → term * factor | term / factor | factor | ◀number▶
+factor → ◀id▶ | factor [ ◀digit▶ ]

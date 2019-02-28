@@ -29,4 +29,7 @@ public class LexConstants {
     public static final String SYNTAX_EMPTY = "ε";
     public static final String SYNTAX_END = "$";
 
+    // 终结符：正则表达式词法单元标志
+    public static final String REGEX_TOKEN_TAG_START = "◀";
+    public static final String REGEX_TOKEN_TAG_END = "▶";
 }

@@ -1,5 +1,6 @@
 package gian.compiler.practice.syntactic.symbol;
 
+import gian.compiler.practice.lexical.parser.LexExpression;
 import gian.compiler.practice.lexical.transform.LexConstants;
 
 import java.util.ArrayList;
@@ -16,11 +17,20 @@ public class SyntaxSymbol {
     protected boolean isTerminal;
     protected List<List<SyntaxSymbol>> body = new ArrayList<>();
 
+    // 是否是正则表达式单元
+    protected boolean isRegexTerminal;
+
     public SyntaxSymbol(){}
 
     public SyntaxSymbol(String symbol, boolean isTerminal) {
         this.symbol = symbol;
         this.isTerminal = isTerminal;
+    }
+
+    public SyntaxSymbol(String symbol, boolean isTerminal, boolean isRegexTerminal) {
+        this.symbol = symbol;
+        this.isTerminal = isTerminal;
+        this.isRegexTerminal = isRegexTerminal;
     }
 
     public SyntaxSymbol(String symbol, boolean isTerminal, List<List<SyntaxSymbol>> body) {
@@ -43,6 +53,14 @@ public class SyntaxSymbol {
 
     public void setTerminal(boolean terminal) {
         isTerminal = terminal;
+    }
+
+    public boolean isRegexTerminal() {
+        return isRegexTerminal;
+    }
+
+    public void setRegexTerminal(boolean regexTerminal) {
+        isRegexTerminal = regexTerminal;
     }
 
     public List<List<SyntaxSymbol>> getBody() {

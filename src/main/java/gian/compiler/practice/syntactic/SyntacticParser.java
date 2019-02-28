@@ -76,7 +76,13 @@ public class SyntacticParser {
                         bodySymbol = new SyntaxSymbol(symbol, false);
                     } else {
                         // 说明是终结符
-                        bodySymbol = new SyntaxSymbol(symbol, true);
+                        if(symbol.startsWith(LexConstants.REGEX_TOKEN_TAG_START)){
+                            // 说明匹配的是正则表达式词法单元
+                            bodySymbol = new SyntaxSymbol(symbol.substring(1, symbol.length()-1), true, true);
+                        }else{
+                            // 说明可以直接根据字面量匹配
+                            bodySymbol = new SyntaxSymbol(symbol, true);
+                        }
                     }
                     exitSymbolMap.put(symbol, bodySymbol);
                     productSymbols.add(bodySymbol);
@@ -776,18 +782,32 @@ public class SyntacticParser {
         Token input = lexTokens.get(index);
         SyntaxSymbol syntaxSymbol = symbolStack.top();
         while(!syntaxSymbol.getSymbol().equals(LexConstants.SYNTAX_END)){
-            if(syntaxSymbol.getSymbol().equals(input.getToken())){
-                // 说明输入识别成功
-                System.out.println("匹配：" + syntaxSymbol.getSymbol());
-                symbolStack.pop();
-                // 指向下一个输入符
-                input = lexTokens.get(++index);
-            }else if(syntaxSymbol.isTerminal()){
-                throw new RuntimeException("当前文法符号是终结符，但是没有匹配成功，说明文法符号扩展错误");
+            if(syntaxSymbol.isTerminal()){
+                boolean isMatch = false;
+                if(!syntaxSymbol.isRegexTerminal()){
+                    // 说明是直接终结符
+                    if(syntaxSymbol.getSymbol().equals(input.getToken())){
+                        isMatch = true;
+                    }
+                }else{
+                    // 说明是正则表达式终结符，需要根据词法单元类型进行匹配
+                    if(syntaxSymbol.getSymbol().equals(input.getType().getType())){
+                        isMatch = true;
+                    }
+                }
+                if(isMatch){
+                    // 说明输入识别成功
+                    System.out.println("匹配：" + syntaxSymbol.getSymbol());
+                    symbolStack.pop();
+                    // 指向下一个输入符
+                    input = lexTokens.get(++index);
+                }else{
+                    throw new RuntimeException("当前文法符号是终结符：" + input + "，但是没有匹配成功，说明文法符号扩展错误");
+                }
             }else{
-                Set<SyntaxProduct> selectProducts = movePredictSyntax(predictMap, syntaxSymbol, input.getToken());
+                Set<SyntaxProduct> selectProducts = movePredictSyntax(predictMap, syntaxSymbol, input);
                 if(selectProducts == null){
-                    throw new RuntimeException(" M[" + syntaxSymbol.getSymbol() + ", " + input.getToken() + "] 是一个报错目录");
+                    throw new RuntimeException(" M[" + syntaxSymbol.getSymbol() + ", " + input + "] 是一个报错目录");
                 }else if(selectProducts.size() > 1){
                     throw new RuntimeException("该文法不是LL(1)文法");
                 }else{
@@ -815,12 +835,19 @@ public class SyntacticParser {
      *
      */
     public static Set<SyntaxProduct> movePredictSyntax(Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> predictMap,
-                                                  SyntaxSymbol syntaxSymbol, String input){
+                                                  SyntaxSymbol syntaxSymbol, Token input){
         if(predictMap.get(syntaxSymbol) == null){
             return null;
         }
 
-        return predictMap.get(syntaxSymbol).get(input);
+        // 判断是否是正则表达式词法单元
+        if(!input.getType().isRexgexToken()) {
+            // 是直接词法单元，按照字面量选择产生式
+            return predictMap.get(syntaxSymbol).get(input.getToken());
+        }else{
+            // 是正则表达式词法单元，按照词法单元类型选择产生式
+            return predictMap.get(syntaxSymbol).get(input.getType().getType());
+        }
 
     }
 

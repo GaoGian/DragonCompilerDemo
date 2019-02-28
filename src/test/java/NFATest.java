@@ -1,7 +1,9 @@
 import com.alibaba.fastjson.JSON;
+import gian.compiler.practice.lexical.parser.LexExpression;
 import gian.compiler.practice.lexical.parser.LexicalParser;
 import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
+import gian.compiler.utils.ParseUtils;
 import lex.test.LexUtils;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
 import gian.compiler.practice.lexical.transform.regex.copy.LexPattern;
@@ -170,9 +172,8 @@ public class NFATest {
 
     @Test
     public void testLexParser(){
-        List<Token> parseRs = LexicalParser.parser("C:\\Users\\Gian\\Desktop\\Temp\\compilerCode.txt");
+        List<Token> parseRs = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
         System.out.println("---------------------------------------------------------------------------");
-        System.out.println("");
         int line = 0;
         for(Token token : parseRs){
             if(token.getLine() > line){

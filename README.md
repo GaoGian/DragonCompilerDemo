@@ -12,19 +12,22 @@
 	}
 }
 
+#实例词法
+##查看类：LexExpression
+
 #示例文法
+##如果终结符使用“◀▶”包裹，则说明是正则表达式词法单元，需要根据词法单元类型匹配
 stmt → { declared stmts }
-declared → type id ; declared | ε
-type → base component
-base → int | float
-component → [ number ] component | ε
-stmts → whilecycle | docycle | expression ; stmts | ε
+declared → type factor ; declared | ε
+type → int | float
+stmts → whilecycle | docycle | assign ; stmts | ε
 whilecycle → while ( bexpr ) { stmts }
 docycle → do stmts ; while ( bexpr ) ;
 bexpr → factor > factor | factor < factor | factor >= factor | factor <= factor | factor == factor | factor != factor | true | false
-expression → expression + term | expression - term
-term → term * factor | term / factor | factor
-factor → id | factor [ number ]
+assign → factor = expression
+expression → expression + term | expression - term | term
+term → term * factor | term / factor | factor | ◀number▶
+factor → ◀id▶ | factor [ ◀digit▶ ]
 
 
 // TODO 下一步计划

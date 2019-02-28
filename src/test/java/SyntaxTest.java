@@ -5,6 +5,7 @@ import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.syntactic.SyntacticParser;
 import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
 import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
+import gian.compiler.utils.ParseUtils;
 import lex.test.LexUtils;
 import org.junit.Test;
 
@@ -230,25 +231,17 @@ public class SyntaxTest {
     @Test
     public void testSyntaxPredict3(){
 
-        System.out.println("-------------------------------构造文法----------------------------------");
-
+        System.out.println("-------------------------------读取文法----------------------------------");
         // TODO 构造文法
-        List<String> syntaxs = new ArrayList<>();
-
-        syntaxs.add("stmt → { declared stmts }");
-        syntaxs.add("declared → type id ; declared | ε");
-        syntaxs.add("type → base component");
-        syntaxs.add("base → int | float");
-        syntaxs.add("component → [ number ] component | ε");
-        syntaxs.add("stmts → whilecycle | docycle | expression ; stmts | ε");
-        syntaxs.add("whilecycle → while ( bexpr ) { stmts }");
-        syntaxs.add("docycle → do stmts ; while ( bexpr ) ;");
-        syntaxs.add("bexpr → factor > factor | factor < factor | factor >= factor | factor <= factor | factor == factor | factor != factor | true | false");
-        syntaxs.add("expression → expression + term | expression - term");
-        syntaxs.add("term → term * factor | term / factor | factor");
-        syntaxs.add("factor → id | factor [ number ]");
+        List<String> syntaxs = ParseUtils.getFile("syntaxContentFile.txt", true);
+        // 消除前
+        for(String line : syntaxs) {
+            System.out.println(line);
+        }
 
         System.out.println("----------------------------文法解析------------------------------");
+        // TODO 修改终结符的识别方式，需要和词法规则联系起来
+        // TODO 终结符有几类：关键字、符号、变量、值
         List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
         // 消除前
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -279,11 +272,12 @@ public class SyntaxTest {
 
         LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
 
-        System.out.println("------------------------------解析字符串------------------------------------");
+        System.out.println("------------------------------解析测试代码----------------------------------");
+        System.out.println("------------------------------原样显示----------------------------------");
         // TODO 文法中的终结符需要和 LexExpression 元字符进行匹配，然后在判断输入符是否是对应的LexExpression的符号（验证正则表达式是否匹配，已经TokenType是否一致）
         // TODO 需要区分关键字和ID类别的终结符
         /** 一般情况下词法分析是在文法分析过程中进行的，根据语义返回识别的符号，这里由于分开处理，所以需要进行额外的关联映射 **/
-        List<Token> tokens = LexicalParser.parser("C:\\Users\\Gian\\Desktop\\Temp\\compilerCode.txt");
+        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
         int line = 0;
         for(Token token : tokens){
             if(token.getLine() > line){
@@ -291,6 +285,16 @@ public class SyntaxTest {
                 System.out.println("");
             }
             System.out.print(token.toString());
+        }
+        System.out.println("------------------------------显示详细信息----------------------------------");
+        System.out.println("");
+        line = 0;
+        for(Token token : tokens){
+            if(token.getLine() > line){
+                line = token.getLine();
+                System.out.println("");
+            }
+            System.out.print(token.getToken() + " ");
         }
         System.out.println("");
 
