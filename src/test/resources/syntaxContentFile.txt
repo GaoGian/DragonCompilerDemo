@@ -1,12 +1,11 @@
-program → { declared stmtList }
+program → { declared stmt }
 declared → typeD factor ; declared | ε
 typeD → type component
 type → int | float
 component → [ ◀digit▶ ] component | ε
 
-stmtList → stmt stmtList | ε
-stmt → whilecycle | docycle | ifcycle | assign stmt
-whilecycle → while ( bexpr ) { stmtList }
+stmt → whilecycle stmt | docycle stmt | ifcycle stmt | assign stmt | ε
+whilecycle → while ( bexpr ) { stmt }
 docycle → do assign while ( bexpr ) ;
 ifcycle → if ( bexpr ) assign
 
