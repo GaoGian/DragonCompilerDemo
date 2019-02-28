@@ -282,6 +282,7 @@ public class SyntacticParser {
                     Map<List<SyntaxSymbol>, List<List<SyntaxSymbol>>> tranGroup = new LinkedHashMap<>();
                     Iterator<List<SyntaxSymbol>> iterator = group.keySet().iterator();
                     while (iterator.hasNext()) {
+                        // 对每个分组再进行分组
                         List<SyntaxSymbol> groupKey = iterator.next();
                         List<List<SyntaxSymbol>> groupElement = group.get(groupKey);
                         if (groupElement.size() > 1) {
@@ -326,6 +327,10 @@ public class SyntacticParser {
                                 result.put(groupKey, groupElement);
                                 iterator.remove();
                             }
+                        }else{
+                            // 说明只有一个产生式，不需要在进行分组，直接加入到结果
+                            result.put(groupKey, groupElement);
+                            iterator.remove();
                         }
                     }
 
@@ -798,19 +803,19 @@ public class SyntacticParser {
                 }
                 if(isMatch){
                     // 说明输入识别成功
-                    System.out.println("匹配：" + syntaxSymbol.getSymbol());
+                    System.out.println("匹配：" + syntaxSymbol.getSymbol() + ", 输入符: " + input);
                     symbolStack.pop();
                     // 指向下一个输入符
                     input = lexTokens.get(++index);
                 }else{
-                    throw new ParseException("当前文法符号是终结符：" + input + "，但是没有匹配成功，说明文法符号扩展错误");
+                    throw new ParseException("当前文法符号：" + syntaxSymbol.getSymbol() + ", 输入符:" + input + " 没有匹配成功，文法符号扩展错误");
                 }
             }else{
                 Set<SyntaxProduct> selectProducts = movePredictSyntax(predictMap, syntaxSymbol, input);
                 if(selectProducts == null){
                     throw new ParseException(" M[" + syntaxSymbol.getSymbol() + ", " + input + "] 是一个报错目录");
                 }else if(selectProducts.size() > 1){
-                    throw new ParseException("该文法不是LL(1)文法");
+                    throw new ParseException("该文法不是LL(1)文法, 文法符号：" + syntaxSymbol.getSymbol() + ", 输入符：" + input);
                 }else{
                     for(SyntaxProduct product : selectProducts){
                         // TODO 这里需不需要改造成ACTION动作

@@ -42,7 +42,7 @@ public class SyntaxProduct {
         StringBuilder str = new StringBuilder();
         str.append(this.head.getSymbol());
 
-        str.append("→");
+        str.append(" → ");
         for(int i=0; i<product.size(); i++){
             String bodySymbol = product.get(i).getSymbol();
             if(LexConstants.SYNTAX_EMPTY.equals(bodySymbol)){

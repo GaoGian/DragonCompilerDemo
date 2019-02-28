@@ -1,11 +1,18 @@
-stmt → { declared stmts }
-declared → type factor ; declared | ε
+program → { declared stmtList }
+declared → typeD factor ; declared | ε
+typeD → type component
 type → int | float
-stmts → whilecycle | docycle | assign ; stmts | ε
-whilecycle → while ( bexpr ) { stmts }
-docycle → do stmts ; while ( bexpr ) ;
+component → [ ◀digit▶ ] component | ε
+
+stmtList → stmt ; stmtList | ε
+stmt → whilecycle | docycle | ifcycle | assign ; stmtList | break ; | ε
+whilecycle → while ( bexpr ) { stmtList }
+docycle → do assignList while ( bexpr )
+ifcycle → if ( bexpr ) assignList
+
 bexpr → factor > factor | factor < factor | factor >= factor | factor <= factor | factor == factor | factor != factor | true | false
+assignList → assign ; assignList | ε
 assign → factor = expression
 expression → expression + term | expression - term | term
-term → term * factor | term / factor | factor | ◀number▶
-factor → ◀id▶ | factor [ ◀digit▶ ]
+term → term * factor | term / factor | factor | ◀number▶ | ◀digit▶
+factor → ◀id▶ | factor [ ◀digit▶ ] | factor [ ◀id▶ ]

@@ -76,7 +76,7 @@ public class SyntaxSymbol {
         StringBuilder str = new StringBuilder();
         str.append(symbol);
 
-        str.append("→");
+        str.append(" → ");
         for(int i=0; i<body.size(); i++){
             List<SyntaxSymbol> symbols = body.get(i);
 

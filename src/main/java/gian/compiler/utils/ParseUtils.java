@@ -31,7 +31,9 @@ public class ParseUtils {
             br = new BufferedReader(new FileReader(file));//构造一个BufferedReader类来读取文件
             String line = null;
             while ((line = br.readLine()) != null) {//使用readLine方法，一次读一行
-                fileContent.add(line);
+                if(!line.equals("")) {
+                    fileContent.add(line);
+                }
             }
         }catch(Exception e){
             e.printStackTrace();
