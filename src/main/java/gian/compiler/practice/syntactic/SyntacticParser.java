@@ -1,5 +1,6 @@
 package gian.compiler.practice.syntactic;
 
+import gian.compiler.practice.exception.ParseException;
 import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.MyStack;
@@ -802,14 +803,14 @@ public class SyntacticParser {
                     // 指向下一个输入符
                     input = lexTokens.get(++index);
                 }else{
-                    throw new RuntimeException("当前文法符号是终结符：" + input + "，但是没有匹配成功，说明文法符号扩展错误");
+                    throw new ParseException("当前文法符号是终结符：" + input + "，但是没有匹配成功，说明文法符号扩展错误");
                 }
             }else{
                 Set<SyntaxProduct> selectProducts = movePredictSyntax(predictMap, syntaxSymbol, input);
                 if(selectProducts == null){
-                    throw new RuntimeException(" M[" + syntaxSymbol.getSymbol() + ", " + input + "] 是一个报错目录");
+                    throw new ParseException(" M[" + syntaxSymbol.getSymbol() + ", " + input + "] 是一个报错目录");
                 }else if(selectProducts.size() > 1){
-                    throw new RuntimeException("该文法不是LL(1)文法");
+                    throw new ParseException("该文法不是LL(1)文法");
                 }else{
                     for(SyntaxProduct product : selectProducts){
                         // TODO 这里需不需要改造成ACTION动作

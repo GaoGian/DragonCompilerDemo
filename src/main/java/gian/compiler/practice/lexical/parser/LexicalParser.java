@@ -116,7 +116,7 @@ public class LexicalParser {
                     Integer accIndex = startIndex + maxMatchLength;
                     if(!maxMatchCell.getExpression().isEmpty()) {
 //                            Token token = new Token(line.substring(startIndex, accIndex), maxMatchCell.getExpression().getType());
-                        Token token = new Token(line.substring(startIndex, accIndex), maxMatchCell.getExpression().getType(), startIndex, lineIndex);
+                        Token token = new Token(line.substring(startIndex, accIndex), maxMatchCell.getExpression().getType(), startIndex + 1, lineIndex + 1);
                         parseResult.add(token);
                     }
 
@@ -142,7 +142,7 @@ public class LexicalParser {
         }
 
         // 在末尾添加上结束符
-        parseResult.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END, 0, parseResult.get(parseResult.size()-1).getLine() + 1));
+        parseResult.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END, 1, parseResult.get(parseResult.size()-1).getLine() + 1));
 
         return parseResult;
     }

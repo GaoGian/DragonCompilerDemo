@@ -273,7 +273,7 @@ public class SyntaxTest {
         LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
 
         System.out.println("------------------------------解析测试代码----------------------------------");
-        System.out.println("------------------------------原样显示----------------------------------");
+        System.out.println("------------------------------原样显示代码----------------------------------");
         // TODO 文法中的终结符需要和 LexExpression 元字符进行匹配，然后在判断输入符是否是对应的LexExpression的符号（验证正则表达式是否匹配，已经TokenType是否一致）
         // TODO 需要区分关键字和ID类别的终结符
         /** 一般情况下词法分析是在文法分析过程中进行的，根据语义返回识别的符号，这里由于分开处理，所以需要进行额外的关联映射 **/
@@ -286,8 +286,8 @@ public class SyntaxTest {
             }
             System.out.print(token.toString());
         }
-        System.out.println("------------------------------显示详细信息----------------------------------");
         System.out.println("");
+        System.out.println("------------------------------显示详细信息----------------------------------");
         line = 0;
         for(Token token : tokens){
             if(token.getLine() > line){
