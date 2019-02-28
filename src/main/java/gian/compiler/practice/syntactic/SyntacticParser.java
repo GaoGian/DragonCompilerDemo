@@ -387,7 +387,9 @@ public class SyntacticParser {
                 if(hasEmpty){
                     List<SyntaxSymbol> emptyProduct = new ArrayList<>();
                     emptyProduct.add(new SyntaxSymbol(LexConstants.SYNTAX_EMPTY, true));
-                    originProductBodys.add(emptyProduct);
+                    if(!originProductBodys.contains(emptyProduct)) {
+                        originProductBodys.add(emptyProduct);
+                    }
                 }
 
             }

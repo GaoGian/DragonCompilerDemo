@@ -4,15 +4,15 @@ typeD → type component
 type → int | float
 component → [ ◀digit▶ ] component | ε
 
-stmtList → stmt ; stmtList | ε
-stmt → whilecycle | docycle | ifcycle | assign ; stmtList
-whilecycle → while ( bexpr ) { stmtList assignList }
-docycle → do assignList while ( bexpr )
-ifcycle → if ( bexpr ) assignList
+stmtList → stmt stmtList | ε
+stmt → whilecycle | docycle | ifcycle | assign stmt
+whilecycle → while ( bexpr ) { stmtList }
+docycle → do assign while ( bexpr ) ;
+ifcycle → if ( bexpr ) assign
 
 bexpr → factor > factor | factor < factor | factor >= factor | factor <= factor | factor == factor | factor != factor | true | false
-assignList → assign ; assignList | ε
-assign → factor = expression | break
+assignList → assign assignList | ε
+assign → factor = expression ; | break ;
 expression → expression + term | expression - term | term
 term → term * factor | term / factor | factor | ◀number▶ | ◀digit▶
 factor → ◀id▶ | factor [ ◀digit▶ ] | factor [ ◀id▶ ]
