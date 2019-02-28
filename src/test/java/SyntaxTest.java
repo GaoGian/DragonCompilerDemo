@@ -222,6 +222,8 @@ public class SyntaxTest {
 
         Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
 
+        LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
+
         System.out.println("-------------------------------LL(1)语法分析----------------------------------");
 
         SyntacticParser.syntaxParse(tokens, syntaxSymbols.get(0), syntaxPredictMap);

@@ -5,14 +5,14 @@ type → int | float
 component → [ ◀digit▶ ] component | ε
 
 stmtList → stmt ; stmtList | ε
-stmt → whilecycle | docycle | ifcycle | assign ; stmtList | break ; | ε
-whilecycle → while ( bexpr ) { stmtList }
+stmt → whilecycle | docycle | ifcycle | assign ; stmtList
+whilecycle → while ( bexpr ) { stmtList assignList }
 docycle → do assignList while ( bexpr )
 ifcycle → if ( bexpr ) assignList
 
 bexpr → factor > factor | factor < factor | factor >= factor | factor <= factor | factor == factor | factor != factor | true | false
 assignList → assign ; assignList | ε
-assign → factor = expression
+assign → factor = expression | break
 expression → expression + term | expression - term | term
 term → term * factor | term / factor | factor | ◀number▶ | ◀digit▶
 factor → ◀id▶ | factor [ ◀digit▶ ] | factor [ ◀id▶ ]
