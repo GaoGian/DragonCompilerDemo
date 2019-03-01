@@ -10,6 +10,7 @@ import java.util.List;
  */
 public class SyntaxProduct {
 
+    protected Integer number;
     protected SyntaxSymbol head;
     protected List<SyntaxSymbol> product = new ArrayList<>();
 
@@ -18,6 +19,20 @@ public class SyntaxProduct {
     public SyntaxProduct(SyntaxSymbol symbol, List<SyntaxSymbol> product) {
         this.head = symbol;
         this.product = product;
+    }
+
+    public SyntaxProduct(Integer number, SyntaxSymbol head, List<SyntaxSymbol> product) {
+        this.number = number;
+        this.head = head;
+        this.product = product;
+    }
+
+    public Integer getNumber() {
+        return number;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
     }
 
     public SyntaxSymbol getHead() {
