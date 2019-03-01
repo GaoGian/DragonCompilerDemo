@@ -1,11 +1,14 @@
 package gian.compiler.practice.syntactic;
 
 import gian.compiler.practice.exception.ParseException;
+import gian.compiler.practice.lexical.parser.LexExpression;
+import gian.compiler.practice.lexical.parser.LexicalParser;
 import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.MyStack;
 import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
 import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
+import gian.compiler.utils.ParseUtils;
 
 import java.util.*;
 
@@ -773,14 +776,14 @@ public class SyntacticParser {
     }
 
     /**
-     * 给予预测分析表的语法分析
+     * 给予预测分析表的语法分析 LL(1) 分析
      *
      * 1、初始时刻文法符号栈中加入结束符号 $
      * 2、根据预测分析表及当前输入符a选择合适的产生式压入栈中（原来的符号展开成产生式）
      * 3、如果当前输入符号a 与栈顶的文法符号X（终结符）匹配，则判定为识别成功，对应的终结符出栈
      *
      */
-    public static void syntaxParse(List<Token> lexTokens, SyntaxSymbol startSyntaxSymbol, Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> predictMap){
+    public static void syntaxParseByLL(List<Token> lexTokens, SyntaxSymbol startSyntaxSymbol, Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> predictMap){
         MyStack<SyntaxSymbol> symbolStack = new MyStack<>();
         // 1、初始时刻文法符号栈中加入结束符号 $
         symbolStack.push(new SyntaxSymbol(LexConstants.SYNTAX_END, true));
@@ -836,6 +839,35 @@ public class SyntacticParser {
             syntaxSymbol = symbolStack.top();
         }
 
+    }
+
+    /**
+     * 完整的 LL(1) 解析器
+     * @param syntaxFile   文法文件
+     * @param targetProgarmFile     目标程序文件
+     * @param expressions   词法规则
+     * @param isClassPath
+     */
+    public static void syntaxParseByLL(String syntaxFile, String targetProgarmFile, List<LexExpression.Expression> expressions, boolean isClassPath){
+        // 读取文法文件
+        List<String> syntaxs = ParseUtils.getFile(syntaxFile, isClassPath);
+        // 解析词法文件
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        // 消除左递归
+        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+        // 提供公因式
+        SyntacticParser.mergeCommonFactor(syntaxSymbols);
+        // 生成 FIRST 集合
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+        // 生成 FOLOOW 集合
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        // 生成预测分析表
+        Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
+
+        // 解析目标语言文件生成词法单元数据
+        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile(targetProgarmFile, isClassPath), expressions);
+        // 根据预测分析表解析云烟
+        SyntacticParser.syntaxParseByLL(tokens, syntaxSymbols.get(0), syntaxPredictMap);
     }
 
     /**

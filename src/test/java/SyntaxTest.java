@@ -226,7 +226,7 @@ public class SyntaxTest {
 
         System.out.println("-------------------------------LL(1)语法分析----------------------------------");
 
-        SyntacticParser.syntaxParse(tokens, syntaxSymbols.get(0), syntaxPredictMap);
+        SyntacticParser.syntaxParseByLL(tokens, syntaxSymbols.get(0), syntaxPredictMap);
 
     }
 
@@ -301,9 +301,13 @@ public class SyntaxTest {
         System.out.println("");
 
         System.out.println("-------------------------------LL(1)语法分析----------------------------------");
-        SyntacticParser.syntaxParse(tokens, syntaxSymbols.get(0), syntaxPredictMap);
+        SyntacticParser.syntaxParseByLL(tokens, syntaxSymbols.get(0), syntaxPredictMap);
 
     }
 
+    @Test
+    public void testSyntaxPredict4(){
+        SyntacticParser.syntaxParseByLL("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
+    }
 
 }
