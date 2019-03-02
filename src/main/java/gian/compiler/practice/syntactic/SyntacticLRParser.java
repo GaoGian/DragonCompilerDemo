@@ -8,6 +8,7 @@ import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
 import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * LR 分析器
@@ -110,7 +111,9 @@ public class SyntacticLRParser {
      * 1、GOTO(A,X)定义为将项集I中所有形如[A→α·Xβ]的项所对应的项[A→αX·β]集合的CLOSURE闭包
      *
      */
-    public static ItemCollection moveItem(List<Item> items, SyntaxSymbol moveSymbol, int itemCollectionNo, Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap){
+    public static ItemCollection moveItem(List<Item> items, SyntaxSymbol moveSymbol, int itemCollectionNo,
+                                          Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap){
+
         List<Item> moveItemList = new ArrayList<>();
         for(Item item : items){
             // 如果位置符大于产生式长度说明已经是规约项，goto函数只对非规约项进行处理
@@ -126,10 +129,14 @@ public class SyntacticLRParser {
             }
         }
 
-        // 计算新项集的 CLOSURE 闭包
-        ItemCollection moveItemCollection = closure(moveItemList, itemCollectionNo, symbolProductMap);
+        if(moveItemList.size() > 0) {
+            // 计算新项集的 CLOSURE 闭包
+            ItemCollection moveItemCollection = closure(moveItemList, itemCollectionNo, symbolProductMap);
 
-        return moveItemCollection;
+            return moveItemCollection;
+        }else{
+            return null;
+        }
     }
 
     public static ItemCollection moveItem(ItemCollection itemCollection, SyntaxSymbol moveSymbol, int itemCollectionNo, Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap){
@@ -160,9 +167,7 @@ public class SyntacticLRParser {
             }
 
             for(SyntaxSymbol syntaxSymbol : syntaxProduct.getProduct()){
-                if(!syntaxSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)
-                        && !syntaxSymbol.getSymbol().equals(LexConstants.SYNTAX_END)){
-
+                if(!syntaxSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
                     if (!gotoSyntaxSymbol.contains(syntaxSymbol)) {
                         gotoSyntaxSymbol.add(syntaxSymbol);
                     }
@@ -170,7 +175,41 @@ public class SyntacticLRParser {
             }
         }
 
+        // 加入终结符，用来转换成接收状态
+        gotoSyntaxSymbol.add(new SyntaxSymbol(LexConstants.SYNTAX_END, true));
+
         return gotoSyntaxSymbol;
+    }
+
+    /**
+     * 生成 LR0 自动机
+     * @return
+     */
+    public static void getLR0ItemCollectionNodes(ItemCollection itemCollection, Set<SyntaxSymbol> allGotoSymtaxSymbol,
+                                                        Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap, AtomicInteger number,
+                                                        Map<ItemCollection, ItemCollection> allItemCollectionMap){
+
+        allItemCollectionMap.put(itemCollection, itemCollection);
+
+        // TODO 需要特别处理 $ 终结符，判断是否可以转换成接收状态
+        for(SyntaxSymbol syntaxSymbol : allGotoSymtaxSymbol){
+            ItemCollection moveItemCollection = moveItem(itemCollection, syntaxSymbol, number.getAndIncrement(), symbolProductMap);
+            if(moveItemCollection != null){
+                if(allItemCollectionMap.get(moveItemCollection) != null) {
+                    itemCollection.getMoveItemCollectionMap().put(syntaxSymbol, allItemCollectionMap.get(moveItemCollection));
+                }else{
+                    itemCollection.getMoveItemCollectionMap().put(syntaxSymbol, moveItemCollection);
+                    allItemCollectionMap.put(moveItemCollection, moveItemCollection);
+
+                    getLR0ItemCollectionNodes(moveItemCollection, allGotoSymtaxSymbol, symbolProductMap, number, allItemCollectionMap);
+                }
+            }
+        }
+
+    }
+
+    public static void syntaxParseLR0(ItemCollection startItemCollection){
+
     }
 
 }
