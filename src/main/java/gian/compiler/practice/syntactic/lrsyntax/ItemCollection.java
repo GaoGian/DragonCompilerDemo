@@ -12,6 +12,8 @@ public class ItemCollection {
     protected Integer number;
     protected List<Item> itemList = new ArrayList<>();
 
+    public ItemCollection(){}
+
     public ItemCollection(Integer number, List<Item> itemList) {
         this.number = number;
         this.itemList = itemList;

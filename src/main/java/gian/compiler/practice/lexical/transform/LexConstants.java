@@ -32,4 +32,9 @@ public class LexConstants {
     // 终结符：正则表达式词法单元标志
     public static final String REGEX_TOKEN_TAG_START = "◀";
     public static final String REGEX_TOKEN_TAG_END = "▶";
+
+    // 增广文法起始符号
+    public static final String AUGMENT_SYNTAX_TAG = "^";
+    public static final String AUGMENT_SYNTAX_INDEX_TAG = "·";
+
 }

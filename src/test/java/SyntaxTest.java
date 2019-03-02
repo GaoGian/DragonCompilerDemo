@@ -2,7 +2,10 @@ import gian.compiler.practice.lexical.parser.LexExpression;
 import gian.compiler.practice.lexical.parser.LexicalParser;
 import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
+import gian.compiler.practice.syntactic.SyntacticLRParser;
 import gian.compiler.practice.syntactic.SyntacticParser;
+import gian.compiler.practice.syntactic.lrsyntax.Item;
+import gian.compiler.practice.syntactic.lrsyntax.ItemCollection;
 import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
 import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
 import gian.compiler.utils.ParseUtils;
@@ -309,5 +312,29 @@ public class SyntaxTest {
     public void testSyntaxPredict4(){
         SyntacticParser.syntaxParseByLL("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
     }
+
+    @Test
+    public void testSyntaxClosure(){
+        List<String> syntaxs = new ArrayList<>();
+        syntaxs.add("E → E + T | T ");
+        syntaxs.add("T → T * F | F ");
+        syntaxs.add("F → ( E ) | id ");
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+
+        System.out.println("-------------------------------startItemCollection----------------------------------");
+        ItemCollection startItemCollection = SyntacticLRParser.getStartItemCollection(syntaxSymbols, 0);
+        for(Item item : startItemCollection.getItemList()){
+            System.out.println(item.toString());
+        }
+
+        System.out.println("-------------------------------startItemCollection CLOSURE----------------------------------");
+        startItemCollection = SyntacticLRParser.closure(startItemCollection, 1);
+        for(Item item : startItemCollection.getItemList()){
+               System.out.println(item.toString());
+        }
+
+    }
+
 
 }

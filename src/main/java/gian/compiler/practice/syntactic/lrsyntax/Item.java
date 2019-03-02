@@ -1,5 +1,6 @@
 package gian.compiler.practice.syntactic.lrsyntax;
 
+import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
 
 /**
@@ -8,32 +9,22 @@ import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
  */
 public class Item {
 
-    protected Integer productNo;
-    protected SyntaxProduct product;
+    protected SyntaxProduct syntaxProduct;
     protected int index;
 
     public Item(){}
 
-    public Item(Integer productNo, SyntaxProduct product, int index) {
-        this.productNo = productNo;
-        this.product = product;
+    public Item(SyntaxProduct syntaxProduct, int index) {
+        this.syntaxProduct = syntaxProduct;
         this.index = index;
     }
 
-    public Integer getProductNo() {
-        return productNo;
+    public SyntaxProduct getSyntaxProduct() {
+        return syntaxProduct;
     }
 
-    public void setProductNo(Integer productNo) {
-        this.productNo = productNo;
-    }
-
-    public SyntaxProduct getProduct() {
-        return product;
-    }
-
-    public void setProduct(SyntaxProduct product) {
-        this.product = product;
+    public void setSyntaxProduct(SyntaxProduct syntaxProduct) {
+        this.syntaxProduct = syntaxProduct;
     }
 
     public int getIndex() {
@@ -43,4 +34,61 @@ public class Item {
     public void setIndex(int index) {
         this.index = index;
     }
+
+    @Override
+    public String toString(){
+
+        StringBuilder str = new StringBuilder();
+        str.append(this.syntaxProduct.getHead().getSymbol());
+
+        str.append(" → ");
+        for(int i = 0; i< syntaxProduct.getProduct().size(); i++){
+            if(this.index == i){
+                str.append(LexConstants.AUGMENT_SYNTAX_INDEX_TAG);
+                str.append(" ");
+            }
+
+            String bodySymbol = syntaxProduct.getProduct().get(i).getSymbol();
+            if(LexConstants.SYNTAX_EMPTY.equals(bodySymbol)){
+                str.append(LexConstants.SYNTAX_EMPTY);
+            }else {
+                str.append(bodySymbol);
+            }
+
+            if(i< syntaxProduct.getProduct().size()-1) {
+                str.append(" ");
+            }
+        }
+
+        if(this.index == syntaxProduct.getProduct().size()){
+            str.append(LexConstants.AUGMENT_SYNTAX_INDEX_TAG);
+        }
+
+        return str.toString();
+    }
+
+    @Override
+    public boolean equals(Object other){
+        if(other == null){
+            return false;
+        }
+
+        if(this == other){
+            return true;
+        }
+
+        Item otherItem = (Item) other;
+        if(this.index != otherItem.getIndex() || !this.syntaxProduct.equals(otherItem.getSyntaxProduct())){
+            return false;
+        }
+
+        return true;
+
+    }
+
+    @Override
+    public int hashCode(){
+        return this.toString().hashCode();
+    }
+
 }
