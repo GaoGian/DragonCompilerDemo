@@ -314,7 +314,7 @@ public class SyntaxTest {
     }
 
     @Test
-    public void testSyntaxClosure(){
+    public void testSyntaxCLOSURE(){
         List<String> syntaxs = new ArrayList<>();
         syntaxs.add("E → E + T | T ");
         syntaxs.add("T → T * F | F ");
@@ -329,12 +329,42 @@ public class SyntaxTest {
         }
 
         System.out.println("-------------------------------startItemCollection CLOSURE----------------------------------");
-        startItemCollection = SyntacticLRParser.closure(startItemCollection, 1);
+        startItemCollection = SyntacticLRParser.closure(startItemCollection, 1, SyntacticLRParser.getSymbolProductMap(SyntacticLRParser.getSyntaxProducts(syntaxSymbols)));
         for(Item item : startItemCollection.getItemList()){
                System.out.println(item.toString());
         }
 
     }
 
+    @Test
+    public void testSyntaxGOTO(){
+
+        List<String> syntaxs = new ArrayList<>();
+        syntaxs.add("E → E + T | T ");
+        syntaxs.add("T → T * F | F ");
+        syntaxs.add("F → ( E ) | id ");
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+
+        System.out.println("-------------------------------startItemCollection----------------------------------");
+        ItemCollection startItemCollection = SyntacticLRParser.getStartItemCollection(syntaxSymbols, 0);
+        for(Item item : startItemCollection.getItemList()){
+            System.out.println(item.toString());
+        }
+
+        System.out.println("-------------------------------ItemCollection GOTO 'E'----------------------------------");
+        Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap = SyntacticLRParser.getSymbolProductMap(SyntacticLRParser.getSyntaxProducts(syntaxSymbols));
+        ItemCollection tempItemCollection = SyntacticLRParser.moveItem(startItemCollection, new SyntaxSymbol("E", false), 1, symbolProductMap);
+        for(Item item : tempItemCollection.getItemList()){
+            System.out.println(item.toString());
+        }
+        System.out.println("-------------------------------ItemCollection GOTO '+'----------------------------------");
+        tempItemCollection = SyntacticLRParser.moveItem(tempItemCollection, new SyntaxSymbol("+", true), 2, symbolProductMap);
+        for(Item item : tempItemCollection.getItemList()){
+            System.out.println(item.toString());
+        }
+
+
+    }
 
 }
