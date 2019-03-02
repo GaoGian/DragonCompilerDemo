@@ -4,6 +4,8 @@ import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.MyStack;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
 import gian.compiler.practice.syntactic.SyntacticParser;
+import gian.compiler.practice.syntactic.lrsyntax.Item;
+import gian.compiler.practice.syntactic.lrsyntax.ItemCollection;
 import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
 import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
 
@@ -473,6 +475,105 @@ public class LexUtils {
 
     }
 
+    // 使用ECharts路径图显示
+    // https://echarts.baidu.com/examples/editor.html?c=graph-simple
+    public static void outputSyntaxEchart(ItemCollection startItemCollection){
+
+        // 广度遍历
+        Set<LexUtils.EcharDemoPoint> pointSet = new HashSet<>();
+        Set<LexUtils.EchartDemoEdge> echarEdgeSet = new HashSet<>();
+
+        int x = 0;
+        int y = 0;
+        pointSet.add(new LexUtils.EcharDemoPoint(getCoreItemTag(startItemCollection), x, y));
+
+        List<Map<String, Object>> moveItemCollectionList = new ArrayList<>();
+        for(SyntaxSymbol moveSymbol : startItemCollection.getMoveItemCollectionMap().keySet()) {
+            ItemCollection moveItemCollection = startItemCollection.getMoveItemCollectionMap().get(moveSymbol);
+            Map<String, Object> map = new HashMap<>();
+            map.put("preIC", startItemCollection);
+            map.put("symbol", moveSymbol);
+            map.put("subIC", moveItemCollection);
+            moveItemCollectionList.add(map);
+        }
+        Set<ItemCollection> allItemCollection = new HashSet<>();
+        allItemCollection.add(startItemCollection);
+        allItemCollection.addAll(startItemCollection.getMoveItemCollectionMap().values());
+        int index = 0;
+        boolean hasNew = true;
+        while(hasNew) {
+            hasNew = false;
+            x += 600;
+            y = 0;
+            int end = moveItemCollectionList.size();
+            for (; index<end; index++) {
+                Map<String, Object> map = moveItemCollectionList.get(index);
+                ItemCollection preItemCollection = (ItemCollection) map.get("preIC");
+                SyntaxSymbol moveSymbol = (SyntaxSymbol) map.get("symbol");
+                ItemCollection moveItemCollection = (ItemCollection) map.get("subIC");
+
+                LexUtils.EcharDemoPoint newPoiont = new LexUtils.EcharDemoPoint(getCoreItemTag(moveItemCollection), x, y);
+                if (!pointSet.contains(newPoiont)) {
+                    pointSet.add(newPoiont);
+                }
+                LexUtils.EchartDemoEdge newEdge = new LexUtils.EchartDemoEdge(getCoreItemTag(preItemCollection), getCoreItemTag(moveItemCollection), moveSymbol.getSymbol());
+                if (!echarEdgeSet.contains(newEdge)) {
+                    echarEdgeSet.add(newEdge);
+                }
+
+                for(SyntaxSymbol subMoveSymbol : moveItemCollection.getMoveItemCollectionMap().keySet()){
+                    ItemCollection subItemCollection = moveItemCollection.getMoveItemCollectionMap().get(subMoveSymbol);
+                    if(!allItemCollection.contains(subItemCollection)) {
+                        Map<String, Object> subMap = new HashMap<>();
+                        subMap.put("preIC", moveItemCollection);
+                        subMap.put("symbol", subMoveSymbol);
+                        subMap.put("subIC", subItemCollection);
+                        moveItemCollectionList.add(subMap);
+
+                        allItemCollection.add(subItemCollection);
+                        hasNew = true;
+                    }
+
+                    LexUtils.EchartDemoEdge subNewEdge = new LexUtils.EchartDemoEdge(getCoreItemTag(moveItemCollection), getCoreItemTag(subItemCollection), subMoveSymbol.getSymbol());
+                    if (!echarEdgeSet.contains(subNewEdge)) {
+                        echarEdgeSet.add(subNewEdge);
+                    }
+                }
+
+                y -= 300;
+            }
+
+        }
+
+
+        // 输出
+        System.out.println("-----------------------------pointList-------------------------------");
+        for(LexUtils.EcharDemoPoint point : pointSet){
+            System.out.println(point.toString());
+        }
+        System.out.println("-----------------------------edgeList--------------------------------");
+        for(LexUtils.EchartDemoEdge echartEdge : echarEdgeSet){
+            System.out.println(echartEdge.toString());
+        }
+
+    }
+
+    public static String getCoreItemTag(ItemCollection startItemCollection){
+        List<Item> tempItemList = new ArrayList<>();
+        for(Item tempItem : startItemCollection.getItemList()){
+            if(tempItem.getIndex() > 0){
+                tempItemList.add(tempItem);
+            }
+        }
+
+        if(tempItemList.size() == 0){
+            // 说明是初始项集
+            tempItemList.add(startItemCollection.getItemList().get(0));
+        }
+
+        return startItemCollection.getNumber() + ":" + tempItemList.toString();
+    }
+
     public static class EcharDemoPoint{
         private String name;
         private int x;
@@ -573,6 +674,26 @@ public class LexUtils {
             return "{source:'" + this.source + "',target:'" + this.target + "',label:{normal:{show:true,formatter: '" + this.label.replace("\\", "\\\\") + "'}},lineStyle:{normal:{curveness:0.3}}},";
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            EchartDemoEdge that = (EchartDemoEdge) o;
+
+            if (!source.equals(that.source)) return false;
+            if (!target.equals(that.target)) return false;
+            return label.equals(that.label);
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = source.hashCode();
+            result = 31 * result + target.hashCode();
+            result = 31 * result + label.hashCode();
+            return result;
+        }
     }
 
     /**

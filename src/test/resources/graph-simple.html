@@ -46,63 +46,46 @@ option = {
                     }
                 }
             },
-            data: [{
-                name: '节点1',
-                x: 300,
-                y: 300
-            }, {
-                name: '节点2',
-                x: 800,
-                y: 300
-            }, {
-                name: '节点3',
-                x: 550,
-                y: 100
-            }, {
-                name: '节点4',
-                x: 550,
-                y: 500
-            }],
+            data: [
+                {name:'25:[F → ( · E )]',x:600,y:-900},
+                {name:'15:[T → T * F·]',x:1800,y:0},
+                {name:'69:[F → id·]',x:600,y:-1200},
+                {name:'10:[T → T * · F]',x:1200,y:0},
+                {name:'46:[E → T·, T → T · * F]',x:600,y:0},
+                {name:'3:[E → E + · T]',x:1200,y:-300},
+                {name:'57:[T → F·]',x:600,y:-600},
+                {name:'26:[F → ( E · ), E → E · + T]',x:1200,y:-600},
+                {name:'0:[^E → · E]',x:0,y:0},
+                {name:'33:[F → ( E )·]',x:1800,y:-600},
+                {name:'1:[^E → E·, E → E · + T]',x:600,y:-1500},
+                {name:'6:[E → E + T·, T → T · * F]',x:1800,y:-300}
+            ],
             // links: [],
-            links: [{
-                source: 0,
-                target: 1,
-                symbolSize: [5, 20],
-                label: {
-                    normal: {
-                        show: true
-                    }
-                },
-                lineStyle: {
-                    normal: {
-                        width: 5,
-                        curveness: 0.2
-                    }
-                }
-            }, {
-                source: '节点2',
-                target: '节点1',
-                label: {
-                    normal: {
-                        show: true
-                    }
-                },
-                lineStyle: {
-                    normal: { curveness: 0.2 }
-                }
-            }, {
-                source: '节点1',
-                target: '节点3'
-            }, {
-                source: '节点2',
-                target: '节点3'
-            }, {
-                source: '节点2',
-                target: '节点4'
-            }, {
-                source: '节点1',
-                target: '节点4'
-            }],
+            links: [
+                {source:'25:[F → ( · E )]',target:'69:[F → id·]',label:{normal:{show:true,formatter: 'id'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'0:[^E → · E]',target:'25:[F → ( · E )]',label:{normal:{show:true,formatter: '('}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'25:[F → ( · E )]',target:'25:[F → ( · E )]',label:{normal:{show:true,formatter: '('}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'0:[^E → · E]',target:'69:[F → id·]',label:{normal:{show:true,formatter: 'id'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'25:[F → ( · E )]',target:'26:[F → ( E · ), E → E · + T]',label:{normal:{show:true,formatter: 'E'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'3:[E → E + · T]',target:'6:[E → E + T·, T → T · * F]',label:{normal:{show:true,formatter: 'T'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'0:[^E → · E]',target:'57:[T → F·]',label:{normal:{show:true,formatter: 'F'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'1:[^E → E·, E → E · + T]',target:'3:[E → E + · T]',label:{normal:{show:true,formatter: '+'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'3:[E → E + · T]',target:'25:[F → ( · E )]',label:{normal:{show:true,formatter: '('}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'3:[E → E + · T]',target:'69:[F → id·]',label:{normal:{show:true,formatter: 'id'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'10:[T → T * · F]',target:'15:[T → T * F·]',label:{normal:{show:true,formatter: 'F'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'10:[T → T * · F]',target:'25:[F → ( · E )]',label:{normal:{show:true,formatter: '('}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'3:[E → E + · T]',target:'57:[T → F·]',label:{normal:{show:true,formatter: 'F'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'25:[F → ( · E )]',target:'46:[E → T·, T → T · * F]',label:{normal:{show:true,formatter: 'T'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'26:[F → ( E · ), E → E · + T]',target:'3:[E → E + · T]',label:{normal:{show:true,formatter: '+'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'0:[^E → · E]',target:'46:[E → T·, T → T · * F]',label:{normal:{show:true,formatter: 'T'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'46:[E → T·, T → T · * F]',target:'10:[T → T * · F]',label:{normal:{show:true,formatter: '*'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'0:[^E → · E]',target:'1:[^E → E·, E → E · + T]',label:{normal:{show:true,formatter: 'E'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'6:[E → E + T·, T → T · * F]',target:'10:[T → T * · F]',label:{normal:{show:true,formatter: '*'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'10:[T → T * · F]',target:'69:[F → id·]',label:{normal:{show:true,formatter: 'id'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'25:[F → ( · E )]',target:'57:[T → F·]',label:{normal:{show:true,formatter: 'F'}},lineStyle:{normal:{curveness:0.3}}},
+                {source:'26:[F → ( E · ), E → E · + T]',target:'33:[F → ( E )·]',label:{normal:{show:true,formatter: ')'}},lineStyle:{normal:{curveness:0.3}}}
+
+            ],
             lineStyle: {
                 normal: {
                     opacity: 0.9,
