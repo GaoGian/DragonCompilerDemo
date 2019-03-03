@@ -223,7 +223,9 @@ public class SyntacticLRParser {
     /**
      * LR(0) 语法分析
      */
-    public static void syntaxParseLR0(ItemCollection startItemCollection, List<Token> tokenList){
+    public static boolean syntaxParseLR0(ItemCollection startItemCollection, List<Token> tokenList){
+        // 是否成功接收文法
+        boolean acceptSuccess = true;
 
         // 记录当前推导的位置（推导链路）
         MyStack<ItemCollection> itemCollectionStack = new MyStack<>();
@@ -252,10 +254,10 @@ public class SyntacticLRParser {
             if(nextItemCollection != null){
                 // 判断是否是接收状态
                 if(nextItemCollection instanceof ItemCollection.AcceptItemCollection){
-                    if(i == tokenList.size() - 1){
+                    if(i == (tokenList.size() - 1)){
                         // 如果下一状态是接收状态，并且已经是字符流末尾，则说明LR(0)解析成功
                         System.out.println("LR(0) parse success");
-                        break;
+                        return acceptSuccess;
                     }else{
                         throw new ParseException("LR(0)解析错误，还未到输入流末尾");
                     }
@@ -264,33 +266,89 @@ public class SyntacticLRParser {
                 // 判断是移入还是归约操作
                 if(nextItemCollection.getItemList().size() == 1) {
                     // 有后继状态，并且项集只有一个项，推导位置处于末尾，说明是归约操作     // TODO 归约状态判定条件是否正确
-                    Item temItem = nextItemCollection.getItemList().get(0);
-                    if(temItem.getIndex() == temItem.getSyntaxProduct().getProduct().size()){
-                        List<SyntaxSymbol> reduceProduct = temItem.getSyntaxProduct().getProduct();
-                        // 将产生式体对应的项集探针（按照产生式的长度）
-                        for(int rd=0; rd<reduceProduct.size(); i++){
-                            itemCollectionStack.pop();
-                        }
-
-                        // TODO 调用 reduce 函数
-                        // TODO 需要输出归约信息、移入信息
-                        ItemCollection tempItemCollection = itemCollectionStack.top();
-                        SyntaxSymbol reduceSymbol = temItem.getSyntaxProduct().getHead();
-
-                    }else{
-                        throw new ParseException("项集状态错误：" + temItem.toString());
-                    }
+                    syntaxReduceLR(nextItemCollection, itemCollectionStack, syntaxSymbolStack);
                 }else{
-                    // TODO 不是归约态，则先将符号和项集压入栈中，待后续输入符号进行一下不操作
-                    itemCollectionStack.push(nextItemCollection);
-                    syntaxSymbolStack.push(moveSymbol);
+                    // 不表示直接规约项，先将符号和项集压入栈中，根据后续输入符号进行一下不操作
+                    syntaxShiftLR(nextItemCollection, moveSymbol, itemCollectionStack, syntaxSymbolStack);
                 }
             }else{
                 // TODO 如果没有后继状态，则判断是否有归约项，如果有则先归约再根据归约后的符号进行移入操作，如果没有则报错
-
+                // TODO 可能会有 规约/规约 冲突
+                syntaxReduceLR(currentItemCollection, itemCollectionStack, syntaxSymbolStack);
             }
 
         }
+
+        return acceptSuccess;
+    }
+
+    /**执行规约动作**/
+    public static void syntaxReduceLR(ItemCollection reduceItemCollection,
+                                      MyStack<ItemCollection> itemCollectionStack,
+                                      MyStack<SyntaxSymbol> syntaxSymbolStack){
+
+        // TODO 按照项集的生成方式，规约项只会在首位
+        Set<Item> reduceItemSet = new HashSet<>();
+        for(Item item : reduceItemCollection.getItemList()){
+            if(item.getIndex() == item.getSyntaxProduct().getProduct().size()){
+                reduceItemSet.add(item);
+            }
+        }
+
+        if(reduceItemSet.size() > 1){
+            throw new ParseException("存在 规约/规约 冲突，项集：" + reduceItemCollection.getNumber());
+        }else {
+            // 正常情况时只有一个规约项
+            for (Item reduceItem : reduceItemSet) {
+                if(reduceItem.getIndex() == reduceItem.getSyntaxProduct().getProduct().size()){
+                    // 规约产生式
+                    SyntaxProduct reduceProduct = reduceItem.getSyntaxProduct();
+                    List<SyntaxSymbol> reduceProductBody = reduceProduct.getProduct();
+                    // 输出规约信息
+                    System.out.println("按照 " + reduceProduct.toString() + " 规约");
+                    // 将产生式体对应的项集探针（按照产生式的长度）
+                    for(int i=0; i<reduceProductBody.size(); i++){
+                        itemCollectionStack.pop();
+                        syntaxSymbolStack.pop();
+                    }
+
+                    // 规约后回退到的项集
+                    ItemCollection currentItemCollection = itemCollectionStack.top();
+                    // 规约后的文法符号
+                    SyntaxSymbol moveSymbol = reduceItem.getSyntaxProduct().getHead();
+
+                    // 根据输入符获取离开后的项集
+                    ItemCollection nextItemCollection = currentItemCollection.getMoveItemCollectionMap().get(moveSymbol);
+
+                    // 根据项集判断是移入还是归约操作
+                    if(nextItemCollection != null){
+                        // 判断是移入还是归约操作
+                        if(nextItemCollection.getItemList().size() == 1) {
+                            // 有后继状态，并且项集只有一个项，推导位置处于末尾，说明是归约操作
+                            // TODO 归约状态判定条件是否正确
+                            syntaxReduceLR(reduceItemCollection, itemCollectionStack, syntaxSymbolStack);
+                        }else{
+                            // 不表示直接规约项，先将符号和项集压入栈中，根据后续输入符号进行一下不操作
+                            syntaxShiftLR(nextItemCollection, moveSymbol, itemCollectionStack, syntaxSymbolStack);
+                        }
+                    }else{
+                        throw new ParseException("规约后发生错误, 规约项集：" + currentItemCollection.getNumber() + ", 规约符号：" + moveSymbol.getSymbol());
+                    }
+                }else{
+                    throw new ParseException("项集状态错误：" + reduceItem.toString());
+                }
+            }
+        }
+
+    }
+
+    /**执行移入动作**/
+    public static void syntaxShiftLR(ItemCollection shiftItemCollection, SyntaxSymbol shiftSyntaxSymbol,
+                                     MyStack<ItemCollection> itemCollectionStack, MyStack<SyntaxSymbol> syntaxSymbolStack){
+
+        System.out.println("移入：" + shiftSyntaxSymbol.getSymbol());
+        itemCollectionStack.push(shiftItemCollection);
+        syntaxSymbolStack.push(shiftSyntaxSymbol);
 
     }
 
