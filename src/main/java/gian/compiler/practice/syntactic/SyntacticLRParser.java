@@ -278,9 +278,11 @@ public class SyntacticLRParser {
 
                 }
             }else{
-                // TODO 如果没有后继状态，则判断是否有归约项，如果有则先归约再根据归约后的符号进行移入操作，如果没有则报错
+                // TODO 如果没有后继状态，但是未到输入流末尾，则需要进行规约操作，需要将输入流位置回退一位，保证停留在当前输入符号
                 // TODO 可能会有 规约/规约 冲突
                 syntaxReduceLR(currentItemCollection, itemCollectionStack, syntaxSymbolStack);
+                // 需要回退一位输入，保证停留在当前输入符号
+                i--;
             }
 
         }
@@ -332,7 +334,7 @@ public class SyntacticLRParser {
 
         if(reduceItemSet.size() == 0) {
             // 没有规约项，直接返回
-            return;
+            throw new ParseException("当前项集没有规约项，项集：" + reduceItemCollection.getNumber());
         }else if(reduceItemSet.size() > 1){
             throw new ParseException("存在 规约/规约 冲突，项集：" + reduceItemCollection.getNumber());
         }else {
