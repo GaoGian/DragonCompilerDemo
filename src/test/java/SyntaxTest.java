@@ -398,4 +398,40 @@ public class SyntaxTest {
 
     }
 
+    @Test
+    public void testLR0parse(){
+        List<Token> tokens = new ArrayList<>();
+        tokens.add(new Token("id", LexExpression.TokenType.ID));
+        tokens.add(new Token("*", LexExpression.TokenType.OPERATOR));
+        tokens.add(new Token("id", LexExpression.TokenType.ID));
+        tokens.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
+
+
+        List<String> syntaxs = new ArrayList<>();
+        syntaxs.add("E → E + T | T ");
+        syntaxs.add("T → T * F | F ");
+        syntaxs.add("F → ( E ) | id ");
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+
+        System.out.println("-------------------------------startItemCollection----------------------------------");
+        AtomicInteger itemCollectionNo = new AtomicInteger(0);
+        ItemCollection startItemCollection = SyntacticLRParser.getStartItemCollection(syntaxSymbols, itemCollectionNo.getAndIncrement());
+        for(Item item : startItemCollection.getItemList()){
+            System.out.println(item.toString());
+        }
+
+        System.out.println("-------------------------------ItemCollectionNode----------------------------------");
+        List<SyntaxProduct> syntaxProducts = SyntacticLRParser.getSyntaxProducts(syntaxSymbols);
+        Set<SyntaxSymbol> allGotoSymtaxSymbol = SyntacticLRParser.getAllGotoSymtaxSymbol(syntaxProducts);
+        Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap = SyntacticLRParser.getSymbolProductMap(syntaxProducts);
+        Map<ItemCollection, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
+        SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
+        // 显示LR0自动机
+        LexUtils.outputSyntaxEchart(startItemCollection);
+
+        System.out.println("-------------------------------LR0 parse----------------------------------");
+        SyntacticLRParser.syntaxParseLR0(startItemCollection, tokens);
+    }
+
 }

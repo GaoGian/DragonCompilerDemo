@@ -1,6 +1,8 @@
 package gian.compiler.practice.syntactic;
 
 import gian.compiler.practice.exception.ParseException;
+import gian.compiler.practice.lexical.parser.LexExpression;
+import gian.compiler.practice.lexical.parser.LexicalParser;
 import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.MyStack;
@@ -8,6 +10,7 @@ import gian.compiler.practice.syntactic.lrsyntax.Item;
 import gian.compiler.practice.syntactic.lrsyntax.ItemCollection;
 import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
 import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
+import gian.compiler.utils.ParseUtils;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -252,6 +255,9 @@ public class SyntacticLRParser {
 
             // 根据项集判断是移入还是归约操作
             if(nextItemCollection != null){
+                // 将后续项集和转换符号压入栈中
+                syntaxShiftLR(nextItemCollection, moveSymbol, itemCollectionStack, syntaxSymbolStack);
+
                 // 判断是否是接收状态
                 if(nextItemCollection instanceof ItemCollection.AcceptItemCollection){
                     if(i == (tokenList.size() - 1)){
@@ -268,8 +274,8 @@ public class SyntacticLRParser {
                     // 有后继状态，并且项集只有一个项，推导位置处于末尾，说明是归约操作     // TODO 归约状态判定条件是否正确
                     syntaxReduceLR(nextItemCollection, itemCollectionStack, syntaxSymbolStack);
                 }else{
-                    // 不表示直接规约项，先将符号和项集压入栈中，根据后续输入符号进行一下不操作
-                    syntaxShiftLR(nextItemCollection, moveSymbol, itemCollectionStack, syntaxSymbolStack);
+                    // 不表示直接规约项，不做任何操作，需要根据后续输入符号进一步处理
+
                 }
             }else{
                 // TODO 如果没有后继状态，则判断是否有归约项，如果有则先归约再根据归约后的符号进行移入操作，如果没有则报错
@@ -282,12 +288,41 @@ public class SyntacticLRParser {
         return acceptSuccess;
     }
 
+    public static boolean syntaxParseLR0(List<String> syntaxs, List<Token> tokenList){
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+
+        // 获取初始项集节点
+        AtomicInteger itemCollectionNo = new AtomicInteger(0);
+        ItemCollection startItemCollection = SyntacticLRParser.getStartItemCollection(syntaxSymbols, itemCollectionNo.getAndIncrement());
+
+        // 获取LR(O)后续项集节点
+        List<SyntaxProduct> syntaxProducts = SyntacticLRParser.getSyntaxProducts(syntaxSymbols);
+        Set<SyntaxSymbol> allGotoSymtaxSymbol = SyntacticLRParser.getAllGotoSymtaxSymbol(syntaxProducts);
+        Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap = SyntacticLRParser.getSymbolProductMap(syntaxProducts);
+        Map<ItemCollection, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
+        SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
+
+        // LR0 parse
+        return SyntacticLRParser.syntaxParseLR0(startItemCollection, tokenList);
+
+    }
+
+    public static boolean syntaxParseLR0(String syntaxFile, String targetProgarmFile, List<LexExpression.Expression> expressions, boolean isClassPath){
+        // 读取文法文件
+        List<String> syntaxs = ParseUtils.getFile(syntaxFile, isClassPath);
+
+        // 解析目标语言文件生成词法单元数据
+        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile(targetProgarmFile, isClassPath), expressions);
+
+        return syntaxParseLR0(syntaxs, tokens);
+    }
+
     /**执行规约动作**/
     public static void syntaxReduceLR(ItemCollection reduceItemCollection,
-                                      MyStack<ItemCollection> itemCollectionStack,
-                                      MyStack<SyntaxSymbol> syntaxSymbolStack){
+                                      MyStack<ItemCollection> itemCollectionStack, MyStack<SyntaxSymbol> syntaxSymbolStack){
 
-        // TODO 按照项集的生成方式，规约项只会在首位
+        // 获取所有规约项      TODO 可能存在 规约/规约 冲突
         Set<Item> reduceItemSet = new HashSet<>();
         for(Item item : reduceItemCollection.getItemList()){
             if(item.getIndex() == item.getSyntaxProduct().getProduct().size()){
@@ -295,7 +330,10 @@ public class SyntacticLRParser {
             }
         }
 
-        if(reduceItemSet.size() > 1){
+        if(reduceItemSet.size() == 0) {
+            // 没有规约项，直接返回
+            return;
+        }else if(reduceItemSet.size() > 1){
             throw new ParseException("存在 规约/规约 冲突，项集：" + reduceItemCollection.getNumber());
         }else {
             // 正常情况时只有一个规约项
@@ -315,24 +353,27 @@ public class SyntacticLRParser {
                     // 规约后回退到的项集
                     ItemCollection currentItemCollection = itemCollectionStack.top();
                     // 规约后的文法符号
-                    SyntaxSymbol moveSymbol = reduceItem.getSyntaxProduct().getHead();
+                    SyntaxSymbol reduceSymbol = reduceItem.getSyntaxProduct().getHead();
 
                     // 根据输入符获取离开后的项集
-                    ItemCollection nextItemCollection = currentItemCollection.getMoveItemCollectionMap().get(moveSymbol);
+                    ItemCollection nextItemCollection = currentItemCollection.getMoveItemCollectionMap().get(reduceSymbol);
 
                     // 根据项集判断是移入还是归约操作
                     if(nextItemCollection != null){
+                        // 将后续项集和转换符号压入栈中
+                        syntaxShiftLR(nextItemCollection, reduceSymbol, itemCollectionStack, syntaxSymbolStack);
+
                         // 判断是移入还是归约操作
                         if(nextItemCollection.getItemList().size() == 1) {
                             // 有后继状态，并且项集只有一个项，推导位置处于末尾，说明是归约操作
                             // TODO 归约状态判定条件是否正确
-                            syntaxReduceLR(reduceItemCollection, itemCollectionStack, syntaxSymbolStack);
+                            syntaxReduceLR(nextItemCollection, itemCollectionStack, syntaxSymbolStack);
                         }else{
-                            // 不表示直接规约项，先将符号和项集压入栈中，根据后续输入符号进行一下不操作
-                            syntaxShiftLR(nextItemCollection, moveSymbol, itemCollectionStack, syntaxSymbolStack);
+                            // 如果有多个项，需要根据后续输入符号进一步处理，交由上层程序处理
+
                         }
                     }else{
-                        throw new ParseException("规约后发生错误, 规约项集：" + currentItemCollection.getNumber() + ", 规约符号：" + moveSymbol.getSymbol());
+                        throw new ParseException("规约后发生错误, 规约项集：" + currentItemCollection.getNumber() + ", 规约符号：" + reduceSymbol.getSymbol());
                     }
                 }else{
                     throw new ParseException("项集状态错误：" + reduceItem.toString());
