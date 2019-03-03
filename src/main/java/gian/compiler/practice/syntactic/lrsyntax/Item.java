@@ -88,7 +88,7 @@ public class Item {
 
     @Override
     public int hashCode(){
-        return this.toString().hashCode();
+        return 0;
     }
 
 }

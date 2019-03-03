@@ -120,6 +120,6 @@ public class SyntaxSymbol {
 
     @Override
     public int hashCode() {
-        return symbol != null ? symbol.hashCode() : 0;
+        return 0;
     }
 }

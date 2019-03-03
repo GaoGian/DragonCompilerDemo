@@ -95,7 +95,7 @@ public class SyntaxProduct {
 
     @Override
     public int hashCode(){
-        return this.toString().hashCode();
+        return 0;
     }
 
 }

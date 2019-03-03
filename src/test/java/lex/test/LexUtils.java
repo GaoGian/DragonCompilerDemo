@@ -547,14 +547,15 @@ public class LexUtils {
 
 
         // 输出
-        System.out.println("-----------------------------pointList-------------------------------");
+        System.out.println("----------------------------- pointList size: " + pointSet.size() + " -------------------------------");
         for(LexUtils.EcharDemoPoint point : pointSet){
             System.out.println(point.toString());
         }
-        System.out.println("-----------------------------edgeList--------------------------------");
+        System.out.println("----------------------------- edgeList size: " + echarEdgeSet.size() + " --------------------------------");
         for(LexUtils.EchartDemoEdge echartEdge : echarEdgeSet){
             System.out.println(echartEdge.toString());
         }
+        System.out.println("---------------------------------------------------------------------");
 
     }
 
@@ -566,12 +567,18 @@ public class LexUtils {
             }
         }
 
-        if(tempItemList.size() == 0){
-            // 说明是初始项集
-            tempItemList.add(startItemCollection.getItemList().get(0));
+        if(!(startItemCollection instanceof ItemCollection.AcceptItemCollection)) {
+            if (tempItemList.size() == 0) {
+                // 说明是初始项集
+                tempItemList.add(startItemCollection.getItemList().get(0));
+            }
         }
 
-        return startItemCollection.getNumber() + ":" + tempItemList.toString();
+        if(!(startItemCollection instanceof ItemCollection.AcceptItemCollection)) {
+            return startItemCollection.getNumber() + ":" + tempItemList.toString();
+        }else{
+            return startItemCollection.toString();
+        }
     }
 
     public static class EcharDemoPoint{

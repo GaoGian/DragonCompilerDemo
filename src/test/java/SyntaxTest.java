@@ -389,7 +389,7 @@ public class SyntaxTest {
         Set<SyntaxSymbol> allGotoSymtaxSymbol = SyntacticLRParser.getAllGotoSymtaxSymbol(syntaxProducts);
         Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap = SyntacticLRParser.getSymbolProductMap(syntaxProducts);
         Map<ItemCollection, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
-        SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
+        SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
 
         // 显示LR0自动机
         System.out.println("LR(O) 项集数量：" + allItemCollectionMap.size());

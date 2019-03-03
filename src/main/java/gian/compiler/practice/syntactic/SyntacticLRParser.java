@@ -1,6 +1,7 @@
 package gian.compiler.practice.syntactic;
 
 import gian.compiler.practice.exception.ParseException;
+import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.syntactic.lrsyntax.Item;
 import gian.compiler.practice.syntactic.lrsyntax.ItemCollection;
@@ -185,14 +186,24 @@ public class SyntacticLRParser {
      * 生成 LR0 自动机
      * @return
      */
-    public static void getLR0ItemCollectionNodes(ItemCollection itemCollection, Set<SyntaxSymbol> allGotoSymtaxSymbol,
+    public static void getLR0ItemCollectionNodes(SyntaxProduct startSyntaxProduct, ItemCollection itemCollection, Set<SyntaxSymbol> allGotoSymtaxSymbol,
                                                         Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap, AtomicInteger number,
                                                         Map<ItemCollection, ItemCollection> allItemCollectionMap){
 
         allItemCollectionMap.put(itemCollection, itemCollection);
 
-        // TODO 需要特别处理 $ 终结符，判断是否可以转换成接收状态
         for(SyntaxSymbol syntaxSymbol : allGotoSymtaxSymbol){
+            // TODO 需要特别处理 $ 终结符，判断是否可以转换成接收状态
+            if(syntaxSymbol.getSymbol().equals(LexConstants.SYNTAX_END)){
+                for(Item item : itemCollection.getItemList()){
+                    if(item.getSyntaxProduct().equals(startSyntaxProduct) && item.getIndex() == 1){
+                        // 说明是起始文法归约状态，加入接收状态
+                        ItemCollection.AcceptItemCollection acceptItemCollection = new ItemCollection.AcceptItemCollection();
+                        itemCollection.getMoveItemCollectionMap().put(syntaxSymbol, acceptItemCollection);
+                    }
+                }
+            }
+
             ItemCollection moveItemCollection = moveItem(itemCollection, syntaxSymbol, number.getAndIncrement(), symbolProductMap);
             if(moveItemCollection != null){
                 if(allItemCollectionMap.get(moveItemCollection) != null) {
@@ -201,14 +212,17 @@ public class SyntacticLRParser {
                     itemCollection.getMoveItemCollectionMap().put(syntaxSymbol, moveItemCollection);
                     allItemCollectionMap.put(moveItemCollection, moveItemCollection);
 
-                    getLR0ItemCollectionNodes(moveItemCollection, allGotoSymtaxSymbol, symbolProductMap, number, allItemCollectionMap);
+                    getLR0ItemCollectionNodes(startSyntaxProduct, moveItemCollection, allGotoSymtaxSymbol, symbolProductMap, number, allItemCollectionMap);
                 }
             }
         }
 
     }
 
-    public static void syntaxParseLR0(ItemCollection startItemCollection){
+    /**
+     * LR(0) 语法分析
+     */
+    public static void syntaxParseLR0(ItemCollection startItemCollection, List<Token> tokenList){
 
     }
 

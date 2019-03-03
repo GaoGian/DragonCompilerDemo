@@ -64,4 +64,11 @@ public class ItemCollection {
         return 0;
     }
 
+    public static class AcceptItemCollection extends ItemCollection{
+        @Override
+        public String toString(){
+            return "accept";
+        }
+    }
+
 }
