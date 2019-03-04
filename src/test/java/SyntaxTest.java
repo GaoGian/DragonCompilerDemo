@@ -436,7 +436,34 @@ public class SyntaxTest {
 
     @Test
     public void testLR0parse1(){
-        SyntacticLRParser.syntaxParseLR0("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
+        // 读取文法文件
+        List<String> syntaxs = ParseUtils.getFile("syntaxContentFile.txt", true);
+
+        // 解析目标语言文件生成词法单元数据
+        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+
+        System.out.println("-------------------------------startItemCollection----------------------------------");
+        AtomicInteger itemCollectionNo = new AtomicInteger(0);
+        ItemCollection startItemCollection = SyntacticLRParser.getStartItemCollection(syntaxSymbols, itemCollectionNo.getAndIncrement());
+        for(Item item : startItemCollection.getItemList()){
+            System.out.println(item.toString());
+        }
+
+        System.out.println("-------------------------------ItemCollectionNode----------------------------------");
+        List<SyntaxProduct> syntaxProducts = SyntacticLRParser.getSyntaxProducts(syntaxSymbols);
+        Set<SyntaxSymbol> allGotoSymtaxSymbol = SyntacticLRParser.getAllGotoSymtaxSymbol(syntaxProducts);
+        Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap = SyntacticLRParser.getSymbolProductMap(syntaxProducts);
+        Map<ItemCollection, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
+        SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
+        // 显示LR0自动机
+        LexUtils.outputSyntaxEchart(startItemCollection);
+
+        System.out.println("-------------------------------LR0 parse----------------------------------");
+        SyntacticLRParser.syntaxParseLR0(startItemCollection, tokens);
+
+
     }
 
 }
