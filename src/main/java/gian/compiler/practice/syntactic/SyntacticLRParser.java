@@ -270,11 +270,11 @@ public class SyntacticLRParser {
                 }
 
                 // 判断是移入还是归约操作
-                if(nextItemCollection.getItemList().size() == 1) {
+                if(nextItemCollection.getItemList().size() == 1 && nextItemCollection.getMoveItemCollectionMap().size() == 0) {
                     // 有后继状态，并且项集只有一个项，推导位置处于末尾，说明是归约操作     // TODO 归约状态判定条件是否正确
                     syntaxReduceLR(nextItemCollection, itemCollectionStack, syntaxSymbolStack);
                 }else{
-                    // 不表示直接规约项，不做任何操作，需要根据后续输入符号进一步处理
+                    // 如果移入后不能规约，需要根据后续输入符号进一步处理
 
                 }
             }else{
@@ -390,12 +390,12 @@ public class SyntacticLRParser {
             syntaxShiftLR(nextItemCollection, reduceSyntaxSymbol, itemCollectionStack, syntaxSymbolStack);
 
             // 判断是移入还是归约操作
-            if(nextItemCollection.getItemList().size() == 1) {
+            if(nextItemCollection.getItemList().size() == 1 && nextItemCollection.getMoveItemCollectionMap().size() == 0) {
                 // 有后继状态，并且项集只有一个项，推导位置处于末尾，说明是归约操作
                 // TODO 归约状态判定条件是否正确
                 syntaxReduceLR(nextItemCollection, itemCollectionStack, syntaxSymbolStack);
             }else{
-                // 如果有多个项，需要根据后续输入符号进一步处理，交由上层程序处理
+                // goto后不能规约，需要根据后续输入符号进一步处理，交由上层程序处理
 
             }
         }else{

@@ -404,6 +404,8 @@ public class SyntaxTest {
         tokens.add(new Token("id", LexExpression.TokenType.ID));
         tokens.add(new Token("*", LexExpression.TokenType.OPERATOR));
         tokens.add(new Token("id", LexExpression.TokenType.ID));
+        tokens.add(new Token("+", LexExpression.TokenType.OPERATOR));
+        tokens.add(new Token("id", LexExpression.TokenType.ID));
         tokens.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
 
 

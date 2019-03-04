@@ -503,7 +503,7 @@ public class LexUtils {
         boolean hasNew = true;
         while(hasNew) {
             hasNew = false;
-            x += 600;
+            x += 3600;
             y = 0;
             int end = moveItemCollectionList.size();
             for (; index<end; index++) {
