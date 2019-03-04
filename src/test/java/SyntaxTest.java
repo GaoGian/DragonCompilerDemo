@@ -434,4 +434,9 @@ public class SyntaxTest {
         SyntacticLRParser.syntaxParseLR0(startItemCollection, tokens);
     }
 
+    @Test
+    public void testLR0parse1(){
+        SyntacticLRParser.syntaxParseLR0("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
+    }
+
 }

@@ -357,26 +357,8 @@ public class SyntacticLRParser {
                     // 规约后的文法符号
                     SyntaxSymbol reduceSymbol = reduceItem.getSyntaxProduct().getHead();
 
-                    // 根据输入符获取离开后的项集
-                    ItemCollection nextItemCollection = currentItemCollection.getMoveItemCollectionMap().get(reduceSymbol);
-
-                    // 根据项集判断是移入还是归约操作
-                    if(nextItemCollection != null){
-                        // 将后续项集和转换符号压入栈中
-                        syntaxShiftLR(nextItemCollection, reduceSymbol, itemCollectionStack, syntaxSymbolStack);
-
-                        // 判断是移入还是归约操作
-                        if(nextItemCollection.getItemList().size() == 1) {
-                            // 有后继状态，并且项集只有一个项，推导位置处于末尾，说明是归约操作
-                            // TODO 归约状态判定条件是否正确
-                            syntaxReduceLR(nextItemCollection, itemCollectionStack, syntaxSymbolStack);
-                        }else{
-                            // 如果有多个项，需要根据后续输入符号进一步处理，交由上层程序处理
-
-                        }
-                    }else{
-                        throw new ParseException("规约后发生错误, 规约项集：" + currentItemCollection.getNumber() + ", 规约符号：" + reduceSymbol.getSymbol());
-                    }
+                    // 归约后根据归约的符号进行状态迁移
+                    syntaxGotoLR(currentItemCollection, reduceSymbol, itemCollectionStack, syntaxSymbolStack);
                 }else{
                     throw new ParseException("项集状态错误：" + reduceItem.toString());
                 }
@@ -393,6 +375,32 @@ public class SyntacticLRParser {
         itemCollectionStack.push(shiftItemCollection);
         syntaxSymbolStack.push(shiftSyntaxSymbol);
 
+    }
+
+    /**归约后需要根据归约符号进行移入操作，以后后继的归约操作**/
+    public static void syntaxGotoLR(ItemCollection currentItemCollection, SyntaxSymbol reduceSyntaxSymbol,
+                                    MyStack<ItemCollection> itemCollectionStack, MyStack<SyntaxSymbol> syntaxSymbolStack){
+
+        // 根据输入符获取离开后的项集
+        ItemCollection nextItemCollection = currentItemCollection.getMoveItemCollectionMap().get(reduceSyntaxSymbol);
+
+        // 根据项集判断是移入还是归约操作
+        if(nextItemCollection != null){
+            // 将后续项集和转换符号压入栈中
+            syntaxShiftLR(nextItemCollection, reduceSyntaxSymbol, itemCollectionStack, syntaxSymbolStack);
+
+            // 判断是移入还是归约操作
+            if(nextItemCollection.getItemList().size() == 1) {
+                // 有后继状态，并且项集只有一个项，推导位置处于末尾，说明是归约操作
+                // TODO 归约状态判定条件是否正确
+                syntaxReduceLR(nextItemCollection, itemCollectionStack, syntaxSymbolStack);
+            }else{
+                // 如果有多个项，需要根据后续输入符号进一步处理，交由上层程序处理
+
+            }
+        }else{
+            throw new ParseException("规约后发生错误, 规约项集：" + currentItemCollection.getNumber() + ", 规约符号：" + reduceSyntaxSymbol.getSymbol());
+        }
     }
 
 }
