@@ -342,6 +342,7 @@ public class SyntacticLRParser {
             }
         }
 
+        boolean isEmptyReduce = false;
         if(reduceItemSet.size() == 0) {
             // 没有规约项，直接返回
             // FIXME 无法对存在的能推导出空产生式的
@@ -355,6 +356,7 @@ public class SyntacticLRParser {
                     if(firstSet.contains(LexConstants.SYNTAX_EMPTY) && followSet.contains(input.getSymbol())){
                         // 说明类似LL中推到为ε的产生式
                         reduceItemSet.add(item);
+                        isEmptyReduce = true;
                     }
                 }
             }
@@ -373,18 +375,27 @@ public class SyntacticLRParser {
             // 规约产生式
             SyntaxProduct reduceProduct = reduceItem.getSyntaxProduct();
             List<SyntaxSymbol> reduceProductBody = reduceProduct.getProduct();
-            // 输出规约信息
-            System.out.println("按照 " + reduceProduct.toString() + " 规约");
             // 将产生式体对应的项集探针（按照产生式的长度）
-            for (int i = 0; i < reduceProductBody.size(); i++) {
-                itemCollectionStack.pop();
-                syntaxSymbolStack.pop();
+            if(!isEmptyReduce) {
+                for (int i = 0; i < reduceProductBody.size(); i++) {
+                    itemCollectionStack.pop();
+                    syntaxSymbolStack.pop();
+                }
+            }else{
+                // 如果是按照空产生式规约，则回退长度减一，因为实际之推进了reduceProductBody.size()-1个项集
+                for (int i = 0; i < reduceProductBody.size()-1; i++) {
+                    itemCollectionStack.pop();
+                    syntaxSymbolStack.pop();
+                }
             }
 
             // 规约后回退到的项集
             ItemCollection currentItemCollection = itemCollectionStack.top();
             // 规约后的文法符号
             SyntaxSymbol reduceSymbol = reduceItem.getSyntaxProduct().getHead();
+
+            // 输出规约信息
+            System.out.println("按照 " + reduceProduct.toString() + " 规约，当前状态：" + currentItemCollection.getNumber() + ", 规约符号：" + reduceSymbol.getSymbol());
 
             // 归约后根据归约的符号进行状态迁移
             syntaxGotoLR(currentItemCollection, reduceSymbol, itemCollectionStack, syntaxSymbolStack, syntaxFirstMap, syntaxFollowMap);
@@ -397,9 +408,10 @@ public class SyntacticLRParser {
     public static void syntaxShiftLR(ItemCollection shiftItemCollection, SyntaxSymbol shiftSyntaxSymbol,
                                      MyStack<ItemCollection> itemCollectionStack, MyStack<SyntaxSymbol> syntaxSymbolStack){
 
-        System.out.println("移入：" + shiftSyntaxSymbol.getSymbol());
         itemCollectionStack.push(shiftItemCollection);
         syntaxSymbolStack.push(shiftSyntaxSymbol);
+
+        System.out.println("移入：" + shiftSyntaxSymbol.getSymbol() + ", 当前状态：" + itemCollectionStack.top().getNumber());
 
     }
 
