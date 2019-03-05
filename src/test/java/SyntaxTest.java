@@ -433,7 +433,10 @@ public class SyntaxTest {
         LexUtils.outputSyntaxEchart(startItemCollection);
 
         System.out.println("-------------------------------LR0 parse----------------------------------");
-        SyntacticLRParser.syntaxParseLR0(startItemCollection, tokens);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+
+        SyntacticLRParser.syntaxParseLR0(startItemCollection, tokens, syntaxFirstMap, syntaxFollowMap);
     }
 
     @Test
@@ -463,7 +466,9 @@ public class SyntaxTest {
         LexUtils.outputSyntaxEchart(startItemCollection);
 
         System.out.println("-------------------------------LR0 parse----------------------------------");
-        SyntacticLRParser.syntaxParseLR0(startItemCollection, tokens);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        SyntacticLRParser.syntaxParseLR0(startItemCollection, tokens, syntaxFirstMap, syntaxFollowMap);
 
 
     }
