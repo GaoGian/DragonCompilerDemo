@@ -37,4 +37,15 @@ public class LexConstants {
     public static final String AUGMENT_SYNTAX_TAG = "^";
     public static final String AUGMENT_SYNTAX_INDEX_TAG = "·";
 
+    // LR
+    public static final String SYNTAX_LR_ACTION = "ACTION";
+    public static final String SYNTAX_LR_GOTO = "GOTO";
+
+    public static final String SYNTAX_LR_ACTION_SHIFT = "ACTION_SHIFT";
+    public static final String SYNTAX_LR_ACTION_REDUCE = "ACTION_REDUCE";
+    public static final String SYNTAX_LR_ACTION_ACCEPT = "ACTION_ACCEPT";
+    public static final String SYNTAX_LR_ACTION_ERROR = "ACTION_ERROR";
+
+
+
 }

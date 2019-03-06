@@ -443,4 +443,95 @@ public class SyntacticLRParser {
         }
     }
 
+    /**
+     * 构造SLR分析表
+     */
+    public static void predictSLRMap(ItemCollection startItemCollection, List<SyntaxSymbol> syntaxSymbols,
+                                     Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap,
+                                     Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap){
+
+        List<SyntaxProduct> syntaxProducts = SyntacticLRParser.getSyntaxProducts(syntaxSymbols);
+        Set<SyntaxSymbol> terminalSymbolSet = getAllTerminalSymbol(syntaxProducts);
+        Set<SyntaxSymbol> nonTerminalSymbolSet = getAllNonTerminalSymbol(syntaxProducts);
+
+        Set<ItemCollection> allItemCollection = getAllItemCollection(startItemCollection);
+
+
+
+    }
+
+    // 获取所有项集
+    public static Set<ItemCollection> getAllItemCollection(ItemCollection startItemCollection){
+        Set<ItemCollection> allItemCollection = new LinkedHashSet<>();
+        allItemCollection.add(startItemCollection);
+
+        // 用于广度遍历
+        Set<ItemCollection> tempItemCollectionSet = new LinkedHashSet<>();
+        tempItemCollectionSet.addAll(allItemCollection);
+
+        boolean hasNew = true;
+        while(hasNew){
+            hasNew = false;
+            Set<ItemCollection> tempSubItemCollectionSet = new LinkedHashSet<>();
+            for(ItemCollection itemCollection : tempItemCollectionSet){
+                for(ItemCollection subItemCollection : itemCollection.getMoveItemCollectionMap().values()){
+                    // 排除接收状态项集
+                    if(!(subItemCollection instanceof ItemCollection.AcceptItemCollection)){
+                        if(!allItemCollection.contains(subItemCollection)){
+                            allItemCollection.add(subItemCollection);
+                            hasNew = true;
+
+                            tempSubItemCollectionSet.addAll(subItemCollection.getMoveItemCollectionMap().values());
+                        }
+                    }
+                }
+            }
+
+            tempItemCollectionSet = tempSubItemCollectionSet;
+        }
+
+        return allItemCollection;
+    }
+
+    // 获取所有action使用的终结符
+    public static Set<SyntaxSymbol> getAllTerminalSymbol(List<SyntaxProduct> syntaxProducts){
+        Set<SyntaxSymbol> terminalSymbolSet = new LinkedHashSet<>();
+        for(SyntaxProduct syntaxProduct : syntaxProducts){
+            if(syntaxProduct.getHead().isTerminal()){
+                terminalSymbolSet.add(syntaxProduct.getHead());
+            }
+
+            for(SyntaxSymbol syntaxSymbol : syntaxProduct.getProduct()){
+                if(syntaxSymbol.isTerminal() && !syntaxSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
+                    terminalSymbolSet.add(syntaxProduct.getHead());
+                }
+            }
+        }
+
+        terminalSymbolSet.add(new SyntaxSymbol(LexConstants.SYNTAX_END, true));
+
+        return terminalSymbolSet;
+    }
+
+    // 获取所有goto使用的非终结符
+    public static Set<SyntaxSymbol> getAllNonTerminalSymbol(List<SyntaxProduct> syntaxProducts){
+        Set<SyntaxSymbol> nonTerminalSymbolSet = new LinkedHashSet<>();
+        for(SyntaxProduct syntaxProduct : syntaxProducts){
+            if(!syntaxProduct.getHead().isTerminal()){
+                nonTerminalSymbolSet.add(syntaxProduct.getHead());
+            }
+
+            for(SyntaxSymbol syntaxSymbol : syntaxProduct.getProduct()){
+                if(!syntaxSymbol.isTerminal()){
+                    nonTerminalSymbolSet.add(syntaxProduct.getHead());
+                }
+            }
+        }
+
+        nonTerminalSymbolSet.add(new SyntaxSymbol(LexConstants.SYNTAX_END, true));
+
+        return nonTerminalSymbolSet;
+    }
+
+
 }
