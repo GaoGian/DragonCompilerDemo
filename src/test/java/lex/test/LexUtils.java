@@ -478,6 +478,10 @@ public class LexUtils {
     // 使用ECharts路径图显示
     // https://echarts.baidu.com/examples/editor.html?c=graph-simple
     public static void outputSyntaxEchart(ItemCollection startItemCollection){
+        outputSyntaxEchart(startItemCollection, 300, 300);
+    }
+
+    public static void outputSyntaxEchart(ItemCollection startItemCollection, int xIncre, int yIncre){
 
         // 广度遍历
         Set<LexUtils.EcharDemoPoint> pointSet = new HashSet<>();
@@ -503,7 +507,7 @@ public class LexUtils {
         boolean hasNew = true;
         while(hasNew) {
             hasNew = false;
-            x += 3600;
+            x += xIncre;
             y = 0;
             int end = moveItemCollectionList.size();
             for (; index<end; index++) {
@@ -540,7 +544,7 @@ public class LexUtils {
                     }
                 }
 
-                y -= 300;
+                y -= yIncre;
             }
 
         }
