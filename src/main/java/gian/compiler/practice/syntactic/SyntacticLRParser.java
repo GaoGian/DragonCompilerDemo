@@ -454,20 +454,21 @@ public class SyntacticLRParser {
         Set<SyntaxSymbol> terminalSymbolSet = getAllTerminalSymbol(syntaxProducts);
         Set<SyntaxSymbol> nonTerminalSymbolSet = getAllNonTerminalSymbol(syntaxProducts);
 
-        Set<ItemCollection> allItemCollection = getAllItemCollection(startItemCollection);
+        Map<Integer, ItemCollection> allItemCollectionMap = getAllItemCollectionMap(startItemCollection);
 
-
+        // SLR分析表，一级key：项集，二级key：ACTION|GOTO，三级key：输入符，四级key：动作类型、迁移状态
+        Map<ItemCollection, Map<String, Map<String, Map<String, Object>>>> predictSLRMap = new LinkedHashMap<>();
 
     }
 
     // 获取所有项集
-    public static Set<ItemCollection> getAllItemCollection(ItemCollection startItemCollection){
-        Set<ItemCollection> allItemCollection = new LinkedHashSet<>();
-        allItemCollection.add(startItemCollection);
+    public static Map<Integer, ItemCollection> getAllItemCollectionMap(ItemCollection startItemCollection){
+        Map<Integer, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
+        allItemCollectionMap.put(startItemCollection.getNumber(), startItemCollection);
 
         // 用于广度遍历
         Set<ItemCollection> tempItemCollectionSet = new LinkedHashSet<>();
-        tempItemCollectionSet.addAll(allItemCollection);
+        tempItemCollectionSet.addAll(allItemCollectionMap.values());
 
         boolean hasNew = true;
         while(hasNew){
@@ -477,8 +478,8 @@ public class SyntacticLRParser {
                 for(ItemCollection subItemCollection : itemCollection.getMoveItemCollectionMap().values()){
                     // 排除接收状态项集
                     if(!(subItemCollection instanceof ItemCollection.AcceptItemCollection)){
-                        if(!allItemCollection.contains(subItemCollection)){
-                            allItemCollection.add(subItemCollection);
+                        if(allItemCollectionMap.get(subItemCollection.getNumber()) == null){
+                            allItemCollectionMap.put(subItemCollection.getNumber(), subItemCollection);
                             hasNew = true;
 
                             tempSubItemCollectionSet.addAll(subItemCollection.getMoveItemCollectionMap().values());
@@ -490,7 +491,7 @@ public class SyntacticLRParser {
             tempItemCollectionSet = tempSubItemCollectionSet;
         }
 
-        return allItemCollection;
+        return allItemCollectionMap;
     }
 
     // 获取所有action使用的终结符
