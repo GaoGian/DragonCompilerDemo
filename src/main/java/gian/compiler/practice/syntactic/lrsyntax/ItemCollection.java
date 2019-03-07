@@ -16,7 +16,11 @@ public class ItemCollection {
     protected Integer number;
     protected List<Item> itemList = new ArrayList<>();
 
+    // TODO 是否需要考虑自关联的情况
     protected Map<SyntaxSymbol, ItemCollection> moveItemCollectionMap = new HashMap<>();
+
+    // TODO 是否需要考虑自关联的情况
+    protected Map<SyntaxSymbol, ItemCollection> preItemCollectionMap = new HashMap<>();
 
     public ItemCollection(){}
 
@@ -47,6 +51,14 @@ public class ItemCollection {
 
     public void setMoveItemCollectionMap(Map<SyntaxSymbol, ItemCollection> moveItemCollectionMap) {
         this.moveItemCollectionMap = moveItemCollectionMap;
+    }
+
+    public Map<SyntaxSymbol, ItemCollection> getPreItemCollectionMap() {
+        return preItemCollectionMap;
+    }
+
+    public void setPreItemCollectionMap(Map<SyntaxSymbol, ItemCollection> preItemCollectionMap) {
+        this.preItemCollectionMap = preItemCollectionMap;
     }
 
     @Override

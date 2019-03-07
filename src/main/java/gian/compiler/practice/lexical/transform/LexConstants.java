@@ -41,13 +41,15 @@ public class LexConstants {
     public static final String SYNTAX_LR_ACTION = "ACTION";
     public static final String SYNTAX_LR_GOTO = "GOTO";
 
+    public static final String SYNTAX_LR_ACTION_TYPE = "ACTION_TYPE";
+    public static final String SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION = "NEXT_ITEMCOLLECTION";
+
     public static final String SYNTAX_LR_ACTION_SHIFT = "ACTION_SHIFT";
     public static final String SYNTAX_LR_ACTION_REDUCE = "ACTION_REDUCE";
     public static final String SYNTAX_LR_ACTION_ACCEPT = "ACTION_ACCEPT";
     public static final String SYNTAX_LR_ACTION_ERROR = "ACTION_ERROR";
 
-    public static final String SYNTAX_LR_ACTION_TYPE = "ACTION_TYPE";
-    public static final String SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION = "NEXT_ITEMCOLLECTION";
+    public static final String SYNTAX_LR_ACTION_GOTO = "ACTION_GOTO";
 
 
 }
