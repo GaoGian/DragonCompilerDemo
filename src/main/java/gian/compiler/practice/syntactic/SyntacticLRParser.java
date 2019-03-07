@@ -458,6 +458,7 @@ public class SyntacticLRParser {
      * 2、如果[A→α·]在I[i]中，那么对于FOLLOW(A)中的所有a，那么将ACTION[i,a]设置为“归约A→α”。A不是^S
      * 3、如果[^S→S·]在I[i]中，那么将ACTION[i,$]设置为“接受”
      * 4、其他情况是error状态
+     * 5、状态i对于各个非终结符A的GOTO转换使用下列规则构造：如果GOTO(I[i],A)=I[j]，那么GOTO[i,A]=j
      *
      */
     public static void predictSLRMap(ItemCollection startItemCollection, List<SyntaxSymbol> syntaxSymbols,
@@ -483,10 +484,12 @@ public class SyntacticLRParser {
                     ItemCollection moveItemCollection = moveItemCollectionMap.get(terminalSymbol);
                     Map<String, Object> actionMap = new LinkedHashMap<>();
                     if(moveItemCollection instanceof ItemCollection.AcceptItemCollection){
+                        // 3、如果[^S→S·]在I[i]中，那么将ACTION[i,$]设置为“接受”
                         // 接收操作
                         actionMap.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_ACCEPT);
                         actionMap.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection.getNumber());
                     }else{
+                        // 1、如果[A→α·aβ]在I[i]中，并且GOTO(I[i],a)=I[j]，那么将ACTION[i,a]设置为“移入j”。a是终结符号
                         // 移入操作
                         actionMap.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_SHIFT);
                         actionMap.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection.getNumber());
@@ -504,19 +507,53 @@ public class SyntacticLRParser {
 
                     predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).put(terminalSymbol, actionMap);
 
-                }else{
-                    // 判断是否有归约项
-                    Set<Item> reduceItemList = new HashSet<>();
-                    for(Item item : itemCollection.getItemList()){
-                        if(item.getIndex() == item.getSyntaxProduct().getProduct().size()){
-                            // 已到达推导末尾，可以进行归约
-                            reduceItemList.add(item);
-                        }
-                    }
-
                 }
             }
 
+            // 2、如果[A→α·]在I[i]中，那么对于FOLLOW(A)中的所有a，那么将ACTION[i,a]设置为“归约A→α”。A不是^S
+            // 判断是否有归约项
+            Set<Item> reduceItemList = new HashSet<>();
+            for(Item item : itemCollection.getItemList()){
+                if(item.getIndex() == item.getSyntaxProduct().getProduct().size()){
+                    // 已到达推导末尾，可以进行归约
+                    reduceItemList.add(item);
+                }else if(item.getIndex() == item.getSyntaxProduct().getProduct().size()-1){
+                    // TODO 这里尝试将[A→α·β]，如果FOLLOW(α)=FIRST(β)包含ε，那么也将[A→α·β]加入到归约项中
+                    reduceItemList.add(item);
+                }
+            }
+
+            if(reduceItemList.size() == 0){
+                // TODO 似乎不用做太多操作
+            }else if(reduceItemList.size() > 1){
+                throw new ParseException("存在 规约/规约 冲突，项集：" + itemCollection.getNumber());
+            }else{
+                for(Item reduceItem : reduceItemList){
+                    List<SyntaxSymbol> reduceProduct = reduceItem.getSyntaxProduct().getProduct();
+                    int reduceLength = 0;
+                    if(reduceItem.getIndex() == reduceItem.getSyntaxProduct().getProduct().size()){
+                        reduceLength = reduceItem.getSyntaxProduct().getProduct().size();
+                    }else if(reduceItem.getIndex() == reduceItem.getSyntaxProduct().getProduct().size()-1){
+                        reduceLength = reduceItem.getSyntaxProduct().getProduct().size()-1;
+                    }
+
+                    ItemCollection currentItemCollection = itemCollection;
+                    for(int i=reduceLength; i>=0; i--){
+                        SyntaxSymbol reduceSymbol = reduceProduct.get(i);
+                        currentItemCollection = itemCollection.getPreItemCollectionMap().get(reduceSymbol);
+                    }
+
+                    Map<String, Object> actionMap = new LinkedHashMap<>();
+                    // 2、如果[A→α·]在I[i]中，那么对于FOLLOW(A)中的所有a，那么将ACTION[i,a]设置为“归约A→α”。A不是^S
+                    // 归约操作
+                    actionMap.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_REDUCE);
+                    actionMap.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, currentItemCollection.getNumber());
+                }
+
+            }
+
+
+            // 5、状态i对于各个非终结符A的GOTO转换使用下列规则构造：如果GOTO(I[i],A)=I[j]，那么GOTO[i,A]=j
             // 记录GOTO
             for(SyntaxSymbol nonTerminalSymbol : nonTerminalSymbolSet){
                 if(moveItemCollectionMap.get(nonTerminalSymbol) != null){
