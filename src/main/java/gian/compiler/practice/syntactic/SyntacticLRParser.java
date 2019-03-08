@@ -461,7 +461,7 @@ public class SyntacticLRParser {
      * 5、状态i对于各个非终结符A的GOTO转换使用下列规则构造：如果GOTO(I[i],A)=I[j]，那么GOTO[i,A]=j
      *
      */
-    public static void predictSLRMap(ItemCollection startItemCollection, List<SyntaxSymbol> syntaxSymbols,
+    public static Map<ItemCollection, Map<String, Map<SyntaxSymbol, Map<String, Object>>>> predictSLRMap(ItemCollection startItemCollection, List<SyntaxSymbol> syntaxSymbols,
                                      Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap,
                                      Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap){
 
@@ -517,6 +517,7 @@ public class SyntacticLRParser {
                 if(item.getIndex() == item.getSyntaxProduct().getProduct().size()){
                     // 已到达推导末尾，可以进行归约
                     reduceItemList.add(item);
+                    break;
                 }else if(item.getIndex() == item.getSyntaxProduct().getProduct().size()-1){
                     // TODO 这里尝试将[A→α·β]，如果FOLLOW(α)=FIRST(β)包含ε，那么也将[A→α·β]加入到归约项中
                     reduceItemList.add(item);
@@ -578,7 +579,7 @@ public class SyntacticLRParser {
 
         }
 
-
+        return predictSLRMap;
 
     }
 

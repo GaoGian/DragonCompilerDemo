@@ -750,4 +750,94 @@ public class LexUtils {
         System.out.println(str.toString());
     }
 
+    /**
+     * 输出LR分析表
+     * // SLR分析表，一级key：项集，二级key：ACTION|GOTO，三级key：输入符，四级key：动作类型、迁移状态
+     */
+    public static void outputLRPredictMap(Map<ItemCollection, Map<String, Map<SyntaxSymbol, Map<String, Object>>>> predictSLRMap){
+
+        Set<SyntaxSymbol> actionSymbolSet = getLRPredictSymbol(predictSLRMap, LexConstants.SYNTAX_LR_ACTION);
+        Set<SyntaxSymbol> gotoSymbolSet = getLRPredictSymbol(predictSLRMap, LexConstants.SYNTAX_LR_GOTO);
+        // 使用bootstrap表格显示, http://www.runoob.com/try/try.php?filename=bootstrap3-table-basic
+        StringBuilder str = new StringBuilder();
+        str.append("<table class=\"table\">\n");
+        str.append("<thead>\n");
+        str.append("    <th>状态</th>\n");
+        str.append("    <th>\n");
+        str.append("        <tr>" + LexConstants.SYNTAX_LR_ACTION + "</tr>\n");
+        str.append("        <tr>\n");
+        for(SyntaxSymbol actionSymbol : actionSymbolSet){
+            if(!actionSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
+                str.append("<th>" + actionSymbol.getSymbol() + "</th>\n");
+            }
+        }
+        str.append("        </tr>\n");
+        str.append("    </th>\n");
+        str.append("    <th>\n");
+        str.append("        <tr>" + LexConstants.SYNTAX_LR_GOTO + "</tr>\n");
+        str.append("        <tr>\n");
+        for(SyntaxSymbol gotoSymbol : gotoSymbolSet){
+            if(!gotoSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
+                str.append("<th>" + gotoSymbol.getSymbol() + "</th>\n");
+            }
+        }
+        str.append("        </tr>\n");
+        str.append("    </th>\n");
+        str.append("</thead>\n");
+
+        str.append("<tbody>\n");
+        for(ItemCollection itemCollection : predictSLRMap.keySet()){
+            str.append("<tr>\n");
+//            str.append("    <th>" + itemCollection.toString() + "</th>\n");
+            str.append("    <th>" + itemCollection.getNumber() + "</th>\n");
+            str.append("    <th>\n");
+            str.append("        <tr>\n");
+            for(SyntaxSymbol actionSymbol : actionSymbolSet){
+                if(!actionSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
+                    if(predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(actionSymbol) != null) {
+                        Map<String, Object> actionInfo = predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(actionSymbol);
+                        str.append("    <th>" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE) + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION) + "</th>\n");
+                    }else{
+                        str.append("    <th></th>\n");
+                    }
+                }
+            }
+            str.append("        </tr>\n");
+            str.append("    </th>\n");
+
+            str.append("    <th>\n");
+            str.append("        <tr>\n");
+            for(SyntaxSymbol gotoSymbol : gotoSymbolSet){
+                if(!gotoSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
+                    if(predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO).get(gotoSymbol) != null) {
+                        Map<String, Object> actionInfo = predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO).get(gotoSymbol);
+                        str.append("    <th>" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION) + "</th>\n");
+                    }else{
+                        str.append("    <th></th>\n");
+                    }
+                }
+            }
+            str.append("        </tr>\n");
+            str.append("    </th>\n");
+            str.append("</tr>\n");
+        }
+        str.append("</tbody>\n");
+        str.append("</table>\n");
+
+        System.out.println(str.toString());
+    }
+
+    public static Set<SyntaxSymbol> getLRPredictSymbol(Map<ItemCollection, Map<String, Map<SyntaxSymbol, Map<String, Object>>>> predictSLRMap, String type){
+        Set<SyntaxSymbol> predictSymbol = new LinkedHashSet<>();
+
+        for(ItemCollection itemCollection : predictSLRMap.keySet()){
+            for(SyntaxSymbol syntaxSymbol : predictSLRMap.get(itemCollection).get(type).keySet()){
+                predictSymbol.add(syntaxSymbol);
+            }
+            break;
+        }
+
+        return predictSymbol;
+    }
+
 }
