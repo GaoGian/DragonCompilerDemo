@@ -778,45 +778,38 @@ public class LexUtils {
         str.append("<tbody>\n");
         for(ItemCollection itemCollection : predictSLRMap.keySet()){
             str.append("<tr>\n");
-//            str.append("    <th>" + itemCollection.toString() + "</th>\n");
-            str.append("    <th>" + itemCollection.getNumber() + "</th>\n");
-            str.append("    <th>\n");
-            str.append("        <tr>\n");
+//            str.append("    <td>" + itemCollection.toString() + "</td>\n");
+            str.append("    <td>" + itemCollection.getNumber() + "</td>\n");
             for(SyntaxSymbol actionSymbol : actionSymbolSet){
                 if(!actionSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
                     if(predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION) != null) {
                         if (predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(actionSymbol) != null) {
                             Map<String, Object> actionInfo = predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(actionSymbol).get(0);
-                            str.append("    <th>" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE) + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION) + "</th>\n");
+                            str.append("    <td>" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString().replace("ACTION_", "").substring(0, 1).toLowerCase() + "_" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION) + "</td>\n");
                         } else {
-                            str.append("    <th></th>\n");
+                            str.append("    <td></td>\n");
                         }
                     }else{
-                        str.append("    <th></th>\n");
+                        str.append("    <td></td>\n");
                     }
                 }
             }
-            str.append("        </tr>\n");
-            str.append("    </th>\n");
 
-            str.append("    <th>\n");
-            str.append("        <tr>\n");
             for(SyntaxSymbol gotoSymbol : gotoSymbolSet){
                 if(!gotoSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
                     if(predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO) != null) {
                         if (predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO).get(gotoSymbol) != null) {
                             Map<String, Object> actionInfo = predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO).get(gotoSymbol).get(0);
-                            str.append("    <th>" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION) + "</th>\n");
+                            str.append("    <td>" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION) + "</td>\n");
                         } else {
-                            str.append("    <th></th>\n");
+                            str.append("    <td></td>\n");
                         }
                     }else{
-                        str.append("    <th></th>\n");
+                        str.append("    <td></td>\n");
                     }
                 }
             }
-            str.append("        </tr>\n");
-            str.append("    </th>\n");
+
             str.append("</tr>\n");
         }
         str.append("</tbody>\n");
@@ -829,10 +822,11 @@ public class LexUtils {
         Set<SyntaxSymbol> predictSymbol = new LinkedHashSet<>();
 
         for(ItemCollection itemCollection : predictSLRMap.keySet()){
-            for(SyntaxSymbol syntaxSymbol : predictSLRMap.get(itemCollection).get(type).keySet()){
-                predictSymbol.add(syntaxSymbol);
+            if(predictSLRMap.get(itemCollection).get(type) != null) {
+                for (SyntaxSymbol syntaxSymbol : predictSLRMap.get(itemCollection).get(type).keySet()) {
+                    predictSymbol.add(syntaxSymbol);
+                }
             }
-            break;
         }
 
         return predictSymbol;
