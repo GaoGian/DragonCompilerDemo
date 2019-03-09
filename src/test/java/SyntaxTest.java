@@ -510,7 +510,7 @@ public class SyntaxTest {
         System.out.println("-------------------------------SLRPredictMap----------------------------------");
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
-        Map<ItemCollection, Map<String, Map<SyntaxSymbol, Map<String, Object>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
+        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
         LexUtils.outputLRPredictMap(predictSLRMap);
 
