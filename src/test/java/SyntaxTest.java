@@ -474,16 +474,7 @@ public class SyntaxTest {
     }
 
     @Test
-    public void testSLRPredictMap(){
-        List<Token> tokens = new ArrayList<>();
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token("*", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token("+", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
-
-
+    public void testCreateSLRPredictMap(){
         List<String> syntaxs = new ArrayList<>();
         syntaxs.add("E → E + T | T ");
         syntaxs.add("T → T * F | F ");
@@ -518,6 +509,56 @@ public class SyntaxTest {
         Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
         LexUtils.outputLRPredictMap(predictSLRMap);
+
+    }
+
+    @Test
+    public void testSLRPredictMap(){
+        List<Token> tokens = new ArrayList<>();
+        tokens.add(new Token("id", LexExpression.TokenType.ID));
+        tokens.add(new Token("*", LexExpression.TokenType.OPERATOR));
+        tokens.add(new Token("id", LexExpression.TokenType.ID));
+        tokens.add(new Token("+", LexExpression.TokenType.OPERATOR));
+        tokens.add(new Token("id", LexExpression.TokenType.ID));
+        tokens.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
+
+        List<String> syntaxs = new ArrayList<>();
+        syntaxs.add("E → E + T | T ");
+        syntaxs.add("T → T * F | F ");
+        syntaxs.add("F → ( E ) | id ");
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+
+        System.out.println("-------------------------------startItemCollection----------------------------------");
+        AtomicInteger itemCollectionNo = new AtomicInteger(0);
+        ItemCollection startItemCollection = SyntacticLRParser.getStartItemCollection(syntaxSymbols, itemCollectionNo.getAndIncrement());
+        for(Item item : startItemCollection.getItemList()){
+            System.out.println(item.toString());
+        }
+
+        System.out.println("-------------------------------ItemCollectionNode----------------------------------");
+        List<SyntaxProduct> syntaxProducts = SyntacticLRParser.getSyntaxProducts(syntaxSymbols);
+        Set<SyntaxSymbol> allGotoSymtaxSymbol = SyntacticLRParser.getAllGotoSymtaxSymbol(syntaxProducts);
+        Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap = SyntacticLRParser.getSymbolProductMap(syntaxProducts);
+        Map<ItemCollection, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
+        SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
+        // 显示LR0自动机
+        LexUtils.outputSyntaxEchart(startItemCollection, 300, 100);
+
+        System.out.println("-------------------------------product number----------------------------------");
+        for(SyntaxProduct syntaxProduct : syntaxProducts){
+            System.out.println("prduct: " + syntaxProduct.getNumber() + ": " + syntaxProduct.toString());
+        }
+
+        System.out.println("-------------------------------Create SLRPredictMap----------------------------------");
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
+        // 显示SLR分析表
+        LexUtils.outputLRPredictMap(predictSLRMap);
+
+        System.out.println("-------------------------------SLRPredictMap----------------------------------");
+        SyntacticLRParser.syntaxParseSLR(startItemCollection, tokens, predictSLRMap);
 
     }
 

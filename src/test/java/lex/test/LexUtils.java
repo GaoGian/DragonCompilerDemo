@@ -785,7 +785,12 @@ public class LexUtils {
                     if(predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION) != null) {
                         if (predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(actionSymbol) != null) {
                             Map<String, Object> actionInfo = predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(actionSymbol).get(0);
-                            str.append("    <td>" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString().replace("ACTION_", "").substring(0, 1).toLowerCase() + "_" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION) + "</td>\n");
+                            if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION) instanceof ItemCollection) {
+                                str.append("    <td>" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString().replace("ACTION_", "").substring(0, 1).toLowerCase() + "_" + ((ItemCollection)actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION)).getNumber() + "</td>\n");
+                            }else{
+                                str.append("    <td>" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString().replace("ACTION_", "").substring(0, 1).toLowerCase() + "_" + ((Item)actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION)).getSyntaxProduct().getNumber() + "</td>\n");
+
+                            }
                         } else {
                             str.append("    <td></td>\n");
                         }
@@ -800,7 +805,7 @@ public class LexUtils {
                     if(predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO) != null) {
                         if (predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO).get(gotoSymbol) != null) {
                             Map<String, Object> actionInfo = predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO).get(gotoSymbol).get(0);
-                            str.append("    <td>" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION) + "</td>\n");
+                            str.append("    <td>" + ((ItemCollection)actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION)).getNumber() + "</td>\n");
                         } else {
                             str.append("    <td></td>\n");
                         }

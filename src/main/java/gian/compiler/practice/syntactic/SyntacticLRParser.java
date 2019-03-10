@@ -501,12 +501,12 @@ public class SyntacticLRParser {
                             // 3、如果[^S→S·]在I[i]中，那么将ACTION[i,$]设置为“接受”
                             // 接收操作
                             actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_ACCEPT);
-                            actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection.getNumber());
+                            actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection);
                         } else {
                             // 1、如果[A→α·aβ]在I[i]中，并且GOTO(I[i],a)=I[j]，那么将ACTION[i,a]设置为“移入j”。a是终结符号
                             // 移入操作
                             actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_SHIFT);
-                            actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection.getNumber());
+                            actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection);
                         }
 
                         setPredictAction(predictSLRMap, itemCollection, LexConstants.SYNTAX_LR_ACTION, terminalSymbol, actionInfo);
@@ -539,13 +539,12 @@ public class SyntacticLRParser {
                     throw new ParseException("存在 规约/规约 冲突，项集：" + itemCollection.getNumber());
                 } else {
                     for (Item reduceItem : reduceItemList) {
-                        SyntaxProduct reduceProduct = reduceItem.getSyntaxProduct();
 
                         Map<String, Object> actionInfo = new LinkedHashMap<>();
                         // 2、如果[A→α·]在I[i]中，那么对于FOLLOW(A)中的所有a，那么将ACTION[i,a]设置为“归约A→α”。A不是^S
                         // 归约操作
                         actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_REDUCE);
-                        actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, reduceProduct.getNumber());
+                        actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, reduceItem);
 
                         SyntaxSymbol headSymbol = reduceItem.getSyntaxProduct().getHead();
                         Set<String> followSet = SyntacticParser.getSyntaxFollow(headSymbol, syntaxFollowMap);
@@ -569,7 +568,7 @@ public class SyntacticLRParser {
                     ItemCollection moveItemCollection = moveItemCollectionMap.get(nonTerminalSymbol);
                     Map<String, Object> actionInfo = new LinkedHashMap<>();
                     actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_GOTO);
-                    actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection.getNumber());
+                    actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection);
 
                     setPredictAction(predictSLRMap, itemCollection, LexConstants.SYNTAX_LR_GOTO, nonTerminalSymbol, actionInfo);
 
@@ -685,5 +684,95 @@ public class SyntacticLRParser {
         return nonTerminalSymbolSet;
     }
 
+    /**
+     * 根据SLR分析表解析
+     * SLR分析表，一级key：项集，二级key：ACTION|GOTO，三级key：输入符，四级key：动作类型、迁移状态
+     */
+    public static void syntaxParseSLR(ItemCollection startItemCollection, List<Token> tokens,
+                                      Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap){
+
+        // 记录当前推导的位置（推导链路）
+        MyStack<ItemCollection> itemCollectionStack = new MyStack<>();
+        itemCollectionStack.push(startItemCollection);
+        System.out.println("移入 " + startItemCollection.getNumber());
+
+        ItemCollection currentItemCollection = startItemCollection;
+        for(int i=0; i<tokens.size(); i++){
+            Token token = tokens.get(i);
+            SyntaxSymbol tokenSyntaxSymbol = null;
+            if(token.getType().isRexgexToken()){
+                tokenSyntaxSymbol = new SyntaxSymbol(token.getType().getType(), true);
+            }else{
+                tokenSyntaxSymbol = new SyntaxSymbol(token.getToken(), true);
+            }
+
+            Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> itemCollectionPredictMap = predictSLRMap.get(currentItemCollection);
+            Map<SyntaxSymbol, List<Map<String, Object>>> actionPredictMap = itemCollectionPredictMap.get(LexConstants.SYNTAX_LR_ACTION);
+            Map<SyntaxSymbol, List<Map<String, Object>>> gotoPredictMap = itemCollectionPredictMap.get(LexConstants.SYNTAX_LR_GOTO);
+
+            List<Map<String, Object>> actionOperats = actionPredictMap.get(tokenSyntaxSymbol);
+            if(actionOperats.size() == 0){
+                // 说明对应的操作为报错
+                throw new ParseException("SLR分析表ACTION异常，项集" + currentItemCollection.getNumber() + ", 输入符：" + tokenSyntaxSymbol.getSymbol());
+            }else if(actionOperats.size() > 1){
+                String confictActions = "";
+                for (Map<String, Object> actionInfo : actionOperats) {
+                    confictActions += actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString() + ((ItemCollection)actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION)).getNumber();
+                    confictActions += "|";
+                }
+
+                throw new ParseException("SLR分析表ACTION存在冲突，项集：" + currentItemCollection.getNumber() + ", 终结符：" + tokenSyntaxSymbol.getSymbol() + ", 冲突集合：" + confictActions);
+            }else{
+                Map<String, Object> actionInfo = actionOperats.get(0);
+                if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_SHIFT)){
+                    // 说明是移入操作，压入下一项集状态
+                    ItemCollection shiftItemCollection = (ItemCollection) actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION);
+                    itemCollectionStack.push(shiftItemCollection);
+
+                    System.out.println("移入 " + shiftItemCollection.getNumber());
+
+                    currentItemCollection = shiftItemCollection;
+                }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_REDUCE)){
+                    // 说明是规约操作，根据规约产生式先弹出对应数量的项集状态，再压入GOTO后的项集状态
+                    Item reduceItem = (Item) actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION);
+                    for(int j=0; j<reduceItem.getIndex()-1; i++){
+                        itemCollectionStack.pop();
+                    }
+
+                    SyntaxSymbol reduceSyntaxSymbol = reduceItem.getSyntaxProduct().getHead();
+                    List<Map<String, Object>> gotoOperats = gotoPredictMap.get(reduceSyntaxSymbol);
+                    if(gotoOperats.size() == 0){
+                        // 说明对应的操作为报错
+                        throw new ParseException("SLR分析表GOTO异常，项集" + currentItemCollection.getNumber() + ", 输入符：" + tokenSyntaxSymbol.getSymbol());
+                    }else if(gotoOperats.size() > 1){
+                        String confictActions = "";
+                        for (Map<String, Object> gotoInfo : gotoOperats) {
+                            confictActions += gotoInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString() + ((Item)gotoInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION)).getSyntaxProduct().getNumber();
+                            confictActions += "|";
+                        }
+
+                        throw new ParseException("SLR分析表GOTO存在冲突，项集：" + currentItemCollection.getNumber() + ", 终结符：" + tokenSyntaxSymbol.getSymbol() + ", 冲突集合：" + confictActions);
+                    }else{
+                        Map<String, Object> gotoInfo = gotoOperats.get(0);
+                        ItemCollection gotoItemCollection = (ItemCollection) gotoInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION);
+                        itemCollectionStack.push(gotoItemCollection);
+
+                        System.out.println("规约 " + reduceItem.toString());
+
+                        currentItemCollection = gotoItemCollection;
+                    }
+                }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_ACCEPT)){
+                    if(i == tokens.size()-1){
+                        System.out.println("接收");
+                        break;
+                    }else{
+                        throw new ParseException("SLR分析表接收状态异常，味道输入流末尾");
+                    }
+                }
+            }
+
+        }
+
+    }
 
 }
