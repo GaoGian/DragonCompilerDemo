@@ -38,7 +38,7 @@ public class SyntacticLRParser {
         augmentedSyntax.addAll(syntaxSymbols);
 
         // 分离成多个产生式
-        List<SyntaxProduct> syntaxProducts = getSyntaxProducts(augmentedSyntax);
+        List<SyntaxProduct> syntaxProducts = getSyntaxProducts(augmentedSyntax, true);
 
         // 根据产生式生成初始项集簇
         List<Item> startItems = new ArrayList<>();
@@ -52,12 +52,21 @@ public class SyntacticLRParser {
     }
 
     public static List<SyntaxProduct> getSyntaxProducts(List<SyntaxSymbol> syntaxSymbols){
+        return getSyntaxProducts(syntaxSymbols, false);
+    }
+
+    public static List<SyntaxProduct> getSyntaxProducts(List<SyntaxSymbol> syntaxSymbols, boolean isAugmented){
         List<SyntaxProduct> syntaxProducts = new ArrayList<>();
         int number = 0;
+        if(!isAugmented){
+            number++;
+        }
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols){
             for(List<SyntaxSymbol> product : syntaxSymbol.getBody()){
                 SyntaxProduct syntaxProduct = new SyntaxProduct(number, syntaxSymbol, product);
                 syntaxProducts.add(syntaxProduct);
+
+                number++;
             }
         }
         return syntaxProducts;
@@ -487,46 +496,20 @@ public class SyntacticLRParser {
                 if(terminalSymbol.isTerminal()) {
                     if (moveItemCollectionMap.get(terminalSymbol) != null) {
                         ItemCollection moveItemCollection = moveItemCollectionMap.get(terminalSymbol);
-                        Map<String, Object> actionMap = new LinkedHashMap<>();
+                        Map<String, Object> actionInfo = new LinkedHashMap<>();
                         if (moveItemCollection instanceof ItemCollection.AcceptItemCollection) {
                             // 3、如果[^S→S·]在I[i]中，那么将ACTION[i,$]设置为“接受”
                             // 接收操作
-                            actionMap.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_ACCEPT);
-                            actionMap.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection.getNumber());
+                            actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_ACCEPT);
+                            actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection.getNumber());
                         } else {
                             // 1、如果[A→α·aβ]在I[i]中，并且GOTO(I[i],a)=I[j]，那么将ACTION[i,a]设置为“移入j”。a是终结符号
                             // 移入操作
-                            actionMap.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_SHIFT);
-                            actionMap.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection.getNumber());
+                            actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_SHIFT);
+                            actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection.getNumber());
                         }
 
-                        if (predictSLRMap.get(itemCollection) == null) {
-                            Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> itemCollectionPredictMap = new LinkedHashMap<>();
-                            predictSLRMap.put(itemCollection, itemCollectionPredictMap);
-                        }
-
-                        if (predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION) == null) {
-                            Map<SyntaxSymbol, List<Map<String, Object>>> terminalActionMap = new LinkedHashMap<>();
-                            predictSLRMap.get(itemCollection).put(LexConstants.SYNTAX_LR_ACTION, terminalActionMap);
-                        }
-
-                        if (predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(terminalSymbol) == null) {
-                            List<Map<String, Object>> actions = new ArrayList<>();
-                            predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).put(terminalSymbol, actions);
-                        }
-
-                        predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(terminalSymbol).add(actionMap);
-
-                        if (predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(terminalSymbol).size() > 1) {
-                            String confictActions = "";
-                            for (Map<String, Object> action : predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(terminalSymbol)) {
-                                confictActions += action.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString() + action.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION).toString();
-                                confictActions += "|";
-                            }
-
-                            throw new ParseException("SLR分析表存在动作冲突，项集：" + itemCollection.getNumber() + ", 终结符：" + terminalSymbol.getSymbol() + ", 冲突集合：" + confictActions);
-                        }
-
+                        setPredictAction(predictSLRMap, itemCollection, LexConstants.SYNTAX_LR_ACTION, terminalSymbol, actionInfo);
                     }
                 }
             }
@@ -556,25 +539,13 @@ public class SyntacticLRParser {
                     throw new ParseException("存在 规约/规约 冲突，项集：" + itemCollection.getNumber());
                 } else {
                     for (Item reduceItem : reduceItemList) {
-                        List<SyntaxSymbol> reduceProduct = reduceItem.getSyntaxProduct().getProduct();
-                        int reduceLength = 0;
-                        if (reduceItem.getIndex() == reduceItem.getSyntaxProduct().getProduct().size()) {
-                            reduceLength = reduceItem.getSyntaxProduct().getProduct().size();
-                        } else if (reduceItem.getIndex() == reduceItem.getSyntaxProduct().getProduct().size() - 1) {
-                            reduceLength = reduceItem.getSyntaxProduct().getProduct().size() - 1;
-                        }
+                        SyntaxProduct reduceProduct = reduceItem.getSyntaxProduct();
 
-                        ItemCollection currentItemCollection = itemCollection;
-                        for (int i = reduceLength - 1; i >= 0; i--) {
-                            // 通过反向关联获取前一个项集
-                            SyntaxSymbol reduceSymbol = reduceProduct.get(i);
-                        }
-
-                        Map<String, Object> actionMap = new LinkedHashMap<>();
+                        Map<String, Object> actionInfo = new LinkedHashMap<>();
                         // 2、如果[A→α·]在I[i]中，那么对于FOLLOW(A)中的所有a，那么将ACTION[i,a]设置为“归约A→α”。A不是^S
                         // 归约操作
-                        actionMap.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_REDUCE);
-                        actionMap.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, currentItemCollection.getNumber());
+                        actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_REDUCE);
+                        actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, reduceProduct.getNumber());
 
                         SyntaxSymbol headSymbol = reduceItem.getSyntaxProduct().getHead();
                         Set<String> followSet = SyntacticParser.getSyntaxFollow(headSymbol, syntaxFollowMap);
@@ -582,32 +553,7 @@ public class SyntacticLRParser {
                             if (!followStr.equals(LexConstants.SYNTAX_EMPTY)) {
                                 SyntaxSymbol terminalSymbol = new SyntaxSymbol(followStr, true);
 
-                                if(predictSLRMap.get(itemCollection) == null){
-                                    Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> itemCollectionPredictMap = new LinkedHashMap<>();
-                                    predictSLRMap.put(itemCollection, itemCollectionPredictMap);
-                                }
-
-                                if(predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION) == null){
-                                    Map<SyntaxSymbol, List<Map<String, Object>>> terminalActionMap = new LinkedHashMap<>();
-                                    predictSLRMap.get(itemCollection).put(LexConstants.SYNTAX_LR_ACTION, terminalActionMap);
-                                }
-
-                                if(predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(terminalSymbol) == null){
-                                    List<Map<String, Object>> actions = new ArrayList<>();
-                                    predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).put(terminalSymbol, actions);
-                                }
-
-                                predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(terminalSymbol).add(actionMap);
-
-                                if (predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(terminalSymbol).size() > 1) {
-                                    String confictActions = "";
-                                    for (Map<String, Object> action : predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(terminalSymbol)) {
-                                        confictActions += action.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString() + action.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION).toString();
-                                        confictActions += "|";
-                                    }
-
-                                    throw new ParseException("SLR分析表存在动作冲突，项集：" + itemCollection.getNumber() + ", 终结符：" + terminalSymbol.getSymbol() + ", 冲突集合：" + confictActions);
-                                }
+                                setPredictAction(predictSLRMap, itemCollection, LexConstants.SYNTAX_LR_ACTION, terminalSymbol, actionInfo);
 
                             }
                         }
@@ -621,36 +567,11 @@ public class SyntacticLRParser {
             for(SyntaxSymbol nonTerminalSymbol : nonTerminalSymbolSet){
                 if(moveItemCollectionMap.get(nonTerminalSymbol) != null){
                     ItemCollection moveItemCollection = moveItemCollectionMap.get(nonTerminalSymbol);
-                    Map<String, Object> actionMap = new LinkedHashMap<>();
-                    actionMap.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_GOTO);
-                    actionMap.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection.getNumber());
+                    Map<String, Object> actionInfo = new LinkedHashMap<>();
+                    actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_GOTO);
+                    actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection.getNumber());
 
-                    if(predictSLRMap.get(itemCollection) == null){
-                        Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> itemCollectionPredictMap = new LinkedHashMap<>();
-                        predictSLRMap.put(itemCollection, itemCollectionPredictMap);
-                    }
-
-                    if(predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO) == null){
-                        Map<SyntaxSymbol, List<Map<String, Object>>> terminalActionMap = new LinkedHashMap<>();
-                        predictSLRMap.get(itemCollection).put(LexConstants.SYNTAX_LR_GOTO, terminalActionMap);
-                    }
-
-                    if(predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO).get(nonTerminalSymbol) == null){
-                        List<Map<String, Object>> actions = new ArrayList<>();
-                        predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO).put(nonTerminalSymbol, actions);
-                    }
-
-                    predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO).get(nonTerminalSymbol).add(actionMap);
-
-                    if(predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO).get(nonTerminalSymbol).size() > 1){
-                        String confictActions = "";
-                        for(Map<String, Object> action : predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_GOTO).get(nonTerminalSymbol)){
-                            confictActions += action.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION).toString();
-                            confictActions += "|";
-                        }
-
-                        throw new ParseException("SLR分析表存在动作冲突，项集：" + itemCollection.getNumber() + ", 终结符：" + nonTerminalSymbol.getSymbol() + ", 冲突集合：" + confictActions);
-                    }
+                    setPredictAction(predictSLRMap, itemCollection, LexConstants.SYNTAX_LR_GOTO, nonTerminalSymbol, actionInfo);
 
                 }
             }
@@ -658,6 +579,38 @@ public class SyntacticLRParser {
         }
 
         return predictSLRMap;
+
+    }
+
+    public static void setPredictAction(Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap,
+                                        ItemCollection itemCollection, String actionType, SyntaxSymbol syntaxSymbol, Map<String, Object> actionInfo){
+
+        if (predictSLRMap.get(itemCollection) == null) {
+            Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> itemCollectionPredictMap = new LinkedHashMap<>();
+            predictSLRMap.put(itemCollection, itemCollectionPredictMap);
+        }
+
+        if (predictSLRMap.get(itemCollection).get(actionType) == null) {
+            Map<SyntaxSymbol, List<Map<String, Object>>> terminalActionMap = new LinkedHashMap<>();
+            predictSLRMap.get(itemCollection).put(actionType, terminalActionMap);
+        }
+
+        if (predictSLRMap.get(itemCollection).get(actionType).get(syntaxSymbol) == null) {
+            List<Map<String, Object>> actions = new ArrayList<>();
+            predictSLRMap.get(itemCollection).get(actionType).put(syntaxSymbol, actions);
+        }
+
+        predictSLRMap.get(itemCollection).get(actionType).get(syntaxSymbol).add(actionInfo);
+
+        if (predictSLRMap.get(itemCollection).get(actionType).get(syntaxSymbol).size() > 1) {
+            String confictActions = "";
+            for (Map<String, Object> action : predictSLRMap.get(itemCollection).get(actionType).get(syntaxSymbol)) {
+                confictActions += action.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString() + action.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION).toString();
+                confictActions += "|";
+            }
+
+            throw new ParseException("SLR分析表存在动作冲突，项集：" + itemCollection.getNumber() + ", 终结符：" + syntaxSymbol.getSymbol() + ", 冲突集合：" + confictActions);
+        }
 
     }
 

@@ -507,6 +507,11 @@ public class SyntaxTest {
         // 显示LR0自动机
         LexUtils.outputSyntaxEchart(startItemCollection, 300, 100);
 
+        System.out.println("-------------------------------product number----------------------------------");
+        for(SyntaxProduct syntaxProduct : syntaxProducts){
+            System.out.println("prduct: " + syntaxProduct.getNumber() + ": " + syntaxProduct.toString());
+        }
+
         System.out.println("-------------------------------SLRPredictMap----------------------------------");
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
