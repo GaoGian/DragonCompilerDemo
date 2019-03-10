@@ -204,9 +204,6 @@ public class SyntacticLRParser {
                         // 说明是起始文法归约状态，加入接收状态
                         ItemCollection.AcceptItemCollection acceptItemCollection = new ItemCollection.AcceptItemCollection();
                         itemCollection.getMoveItemCollectionMap().put(syntaxSymbol, acceptItemCollection);
-
-                        // 反向关联
-                        acceptItemCollection.getPreItemCollectionMap().put(syntaxSymbol, itemCollection);
                     }
                 }
             }
@@ -215,15 +212,9 @@ public class SyntacticLRParser {
             if(moveItemCollection != null){
                 if(allItemCollectionMap.get(moveItemCollection) != null) {
                     itemCollection.getMoveItemCollectionMap().put(syntaxSymbol, allItemCollectionMap.get(moveItemCollection));
-
-                    // 反向关联
-                    moveItemCollection.getPreItemCollectionMap().put(syntaxSymbol, itemCollection);
                 }else{
                     itemCollection.getMoveItemCollectionMap().put(syntaxSymbol, moveItemCollection);
                     allItemCollectionMap.put(moveItemCollection, moveItemCollection);
-
-                    // 反向关联
-                    moveItemCollection.getPreItemCollectionMap().put(syntaxSymbol, itemCollection);
 
                     getLR0ItemCollectionNodes(startSyntaxProduct, moveItemCollection, allGotoSymtaxSymbol, symbolProductMap, number, allItemCollectionMap);
                 }
@@ -234,6 +225,10 @@ public class SyntacticLRParser {
 
     /**
      * LR(0) 语法分析
+     * TODO 这里的处理是优先进行移入操作，如果不能移入再在做规约处理，规约后再做移入（规约包括最后一个符号可以推导为空的情况，参考LL分析）
+     * TODO（因此不会出现过度规约的情况）
+     * TODO 可以解决类似 if else then 这种空桥的情况
+     * FIXME 由于规约向包括最后一个符号推导为空的情况，可能出现的问题是 /factor component/ stmt 如果component可以推导为空, 是否会出现读入的字符应该属于stmt而被推到为component的情况？这种情况是否可以通过修改文法改变？
      */
     public static boolean syntaxParseLR0(ItemCollection startItemCollection, List<Token> tokenList,
                                          Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap,
@@ -293,6 +288,7 @@ public class SyntacticLRParser {
                 // TODO 如果没有后继状态，但是未到输入流末尾，则需要进行规约操作，需要将输入流位置回退一位，保证停留在当前输入符号
                 // TODO 可能会有 规约/规约 冲突
                 // FIXME 这里可以参考LL(1)分析，如果项集处于倒数第二推导位置项的FIRST集包含ε（该项类似LL的当前展开项），并且当前符号在产生体的FOLLOW中，则也可以进行规约
+                // FIXME 现在是无法移入就尝试规约，应该根据“可行前缀”和“向前看输入符”进行判断，参考LR分析表
                 syntaxReduceLR(currentItemCollection, moveSymbol, itemCollectionStack, syntaxSymbolStack, syntaxFirstMap, syntaxFollowMap);
                 // 需要回退一位输入，保证停留在当前输入符号
                 i--;
@@ -461,6 +457,8 @@ public class SyntacticLRParser {
      * 4、其他情况是error状态
      * 5、状态i对于各个非终结符A的GOTO转换使用下列规则构造：如果GOTO(I[i],A)=I[j]，那么GOTO[i,A]=j
      *
+     * TODO 这里改造成每个动作都应改变后的状态，相当于不需要再根据 syntaxParseLR0 方法进行实时推导，只要根据每个动作对应的下个项集状态就好了
+     *
      */
     public static Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap(ItemCollection startItemCollection, List<SyntaxSymbol> syntaxSymbols,
                                      Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap,
@@ -528,6 +526,7 @@ public class SyntacticLRParser {
                 }
             }
 
+            // 设置规约项 TODO 这里需要重新遍历项集树，遇到规约项就设置规约内容（是否需要把所有FOLLOW集合都设置一遍）
             if(!itemCollection.equals(startItemCollection)) {
                 // 2、如果[A→α·]在I[i]中，那么对于FOLLOW(A)中的所有a，那么将ACTION[i,a]设置为“归约A→α”。A不是^S
                 // 判断是否有归约项
@@ -536,7 +535,6 @@ public class SyntacticLRParser {
                     if (item.getIndex() == item.getSyntaxProduct().getProduct().size()) {
                         // 已到达推导末尾，可以进行归约
                         reduceItemList.add(item);
-                        break;
                     } else if (item.getIndex() == item.getSyntaxProduct().getProduct().size() - 1) {
                         // TODO 这里尝试将[A→α·β]，如果FOLLOW(α)=FIRST(β)包含ε，那么也将[A→α·β]加入到归约项中
                         SyntaxSymbol lastSymbol = item.getSyntaxProduct().getProduct().get(item.getIndex());
@@ -565,7 +563,6 @@ public class SyntacticLRParser {
                         for (int i = reduceLength - 1; i >= 0; i--) {
                             // 通过反向关联获取前一个项集
                             SyntaxSymbol reduceSymbol = reduceProduct.get(i);
-                            currentItemCollection = currentItemCollection.getPreItemCollectionMap().get(reduceSymbol);
                         }
 
                         Map<String, Object> actionMap = new LinkedHashMap<>();
