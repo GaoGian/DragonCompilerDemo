@@ -234,6 +234,11 @@ public class SyntacticLRParser {
 
     /**
      * LR(0) 语法分析
+     *
+     * FIXME 该处理方式有问题，只会优先处理移入操作，导致都是按照最右归约处理，如果是需要先归约再移入的话会出现问题，
+     * FIXME 这里需要参考预测分析表归约时候的判断，根据后一个输入符是否是FOLLOW集特定子集（需要由推导链向下传播）判断
+     * FIXME 关于“可行前缀”，如果是处于项集推导过程中的某一位置，那么就可以保证栈中的前缀就是可行前缀，只要不是过度归约（可以根据上一点来判断是否是归约还是移入）
+     *
      */
     public static boolean syntaxParseLR0(ItemCollection startItemCollection, List<Token> tokenList,
                                          Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap,
