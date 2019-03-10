@@ -229,6 +229,11 @@ public class SyntacticLRParser {
      * TODO（因此不会出现过度规约的情况）
      * TODO 可以解决类似 if else then 这种空桥的情况
      * FIXME 由于规约向包括最后一个符号推导为空的情况，可能出现的问题是 /factor component/ stmt 如果component可以推导为空, 是否会出现读入的字符应该属于stmt而被推到为component的情况？这种情况是否可以通过修改文法改变？
+     *
+     * FIXME 该处理方式有问题，只会优先处理移入操作，导致都是按照最右归约处理，如果是需要先归约再移入的话会出现问题，
+     * FIXME 这里需要参考预测分析表归约时候的判断，根据后一个输入符是否是FOLLOW集特定子集（需要由推导链向下传播）判断
+     * FIXME 关于“可行前缀”，如果是处于项集推导过程中的某一位置，那么就可以保证栈中的前缀就是可行前缀，只要不是过度归约（可以根据上一点来判断是否是归约还是移入）
+     *
      */
     public static boolean syntaxParseLR0(ItemCollection startItemCollection, List<Token> tokenList,
                                          Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap,
