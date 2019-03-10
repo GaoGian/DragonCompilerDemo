@@ -708,7 +708,6 @@ public class SyntacticLRParser {
 
             Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> itemCollectionPredictMap = predictSLRMap.get(currentItemCollection);
             Map<SyntaxSymbol, List<Map<String, Object>>> actionPredictMap = itemCollectionPredictMap.get(LexConstants.SYNTAX_LR_ACTION);
-            Map<SyntaxSymbol, List<Map<String, Object>>> gotoPredictMap = itemCollectionPredictMap.get(LexConstants.SYNTAX_LR_GOTO);
 
             List<Map<String, Object>> actionOperats = actionPredictMap.get(tokenSyntaxSymbol);
             if(actionOperats.size() == 0){
@@ -735,9 +734,13 @@ public class SyntacticLRParser {
                 }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_REDUCE)){
                     // 说明是规约操作，根据规约产生式先弹出对应数量的项集状态，再压入GOTO后的项集状态
                     Item reduceItem = (Item) actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION);
-                    for(int j=0; j<reduceItem.getIndex()-1; i++){
+                    for(int j=0; j<=reduceItem.getIndex()-1; j++){
                         itemCollectionStack.pop();
                     }
+
+                    currentItemCollection = itemCollectionStack.top();
+                    Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> reduceItemCollectionPredictMap = predictSLRMap.get(currentItemCollection);
+                    Map<SyntaxSymbol, List<Map<String, Object>>> gotoPredictMap = reduceItemCollectionPredictMap.get(LexConstants.SYNTAX_LR_GOTO);
 
                     SyntaxSymbol reduceSyntaxSymbol = reduceItem.getSyntaxProduct().getHead();
                     List<Map<String, Object>> gotoOperats = gotoPredictMap.get(reduceSyntaxSymbol);
@@ -760,7 +763,11 @@ public class SyntacticLRParser {
                         System.out.println("规约 " + reduceItem.toString());
 
                         currentItemCollection = gotoItemCollection;
+
+                        // FIXME 这里需要嵌套处理GOTO，如果GOTO后的状态在当前输入符下也是规约动作，则继续规约
+
                     }
+
                 }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_ACCEPT)){
                     if(i == tokens.size()-1){
                         System.out.println("接收");
