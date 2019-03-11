@@ -543,6 +543,7 @@ public class SyntacticLRParser {
                         Map<String, Object> actionInfo = new LinkedHashMap<>();
                         // 2、如果[A→α·]在I[i]中，那么对于FOLLOW(A)中的所有a，那么将ACTION[i,a]设置为“归约A→α”。A不是^S
                         // 归约操作
+                        // TODO 这里需要改造成LR(1)/LALR
                         actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_REDUCE);
                         actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, reduceItem);
 
@@ -688,8 +689,8 @@ public class SyntacticLRParser {
      * 根据SLR分析表解析
      * SLR分析表，一级key：项集，二级key：ACTION|GOTO，三级key：输入符，四级key：动作类型、迁移状态
      */
-    public static void syntaxParseSLR(ItemCollection startItemCollection, List<Token> tokens,
-                                      Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap){
+    public static void syntaxParseLR(ItemCollection startItemCollection, List<Token> tokens,
+                                     Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap){
 
         // 记录当前推导的位置（推导链路）
         MyStack<ItemCollection> itemCollectionStack = new MyStack<>();
@@ -706,7 +707,7 @@ public class SyntacticLRParser {
                 tokenSyntaxSymbol = new SyntaxSymbol(token.getToken(), true);
             }
 
-            Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> itemCollectionPredictMap = predictSLRMap.get(currentItemCollection);
+            Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> itemCollectionPredictMap = predictLRMap.get(currentItemCollection);
             Map<SyntaxSymbol, List<Map<String, Object>>> actionPredictMap = itemCollectionPredictMap.get(LexConstants.SYNTAX_LR_ACTION);
 
             List<Map<String, Object>> actionOperats = actionPredictMap.get(tokenSyntaxSymbol);
@@ -729,7 +730,7 @@ public class SyntacticLRParser {
 
                 }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_REDUCE)){
                     // 说明是规约操作，根据规约产生式先弹出对应数量的项集状态，再压入GOTO后的项集状态
-                    currentItemCollection = syntaxLRReduceByPredictMap(actionInfo, tokenSyntaxSymbol, itemCollectionStack, predictSLRMap);
+                    currentItemCollection = syntaxLRReduceByPredictMap(actionInfo, tokenSyntaxSymbol, itemCollectionStack, predictLRMap);
 
                     // 归约后输入符需要保持不变
                     i--;
@@ -748,6 +749,35 @@ public class SyntacticLRParser {
 
     }
 
+    public static void syntaxParseLR(String syntaxFile, String targetProgarmFile, List<LexExpression.Expression> expressions, boolean isClassPath){
+        // 解析目标语言文件生成词法单元数据
+        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile(targetProgarmFile, isClassPath), expressions);
+
+        // 读取文法文件
+        List<String> syntaxs = ParseUtils.getFile(syntaxFile, isClassPath);
+        // 解析文法文件
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+
+        // 生成所有项集
+        AtomicInteger itemCollectionNo = new AtomicInteger(0);
+        ItemCollection startItemCollection = SyntacticLRParser.getStartItemCollection(syntaxSymbols, itemCollectionNo.getAndIncrement());
+        List<SyntaxProduct> syntaxProducts = SyntacticLRParser.getSyntaxProducts(syntaxSymbols);
+        Set<SyntaxSymbol> allGotoSymtaxSymbol = SyntacticLRParser.getAllGotoSymtaxSymbol(syntaxProducts);
+        Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap = SyntacticLRParser.getSymbolProductMap(syntaxProducts);
+        Map<ItemCollection, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
+        SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
+
+        // 生成LR分析表
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
+
+        // 根据LR分析表解析文本
+        SyntacticLRParser.syntaxParseLR(startItemCollection, tokens, predictSLRMap);
+
+    }
+
+    /*shift操作*/
     public static ItemCollection syntaxLRShiftByPredictMap(Map<String, Object> actionInfo, MyStack<ItemCollection> itemCollectionStack){
 
         // 说明是移入操作，压入下一项集状态
@@ -761,7 +791,7 @@ public class SyntacticLRParser {
 
     /*reduce操作*/
     public static ItemCollection syntaxLRReduceByPredictMap(Map<String, Object> actionInfo, SyntaxSymbol tokenSyntaxSymbol, MyStack<ItemCollection> itemCollectionStack,
-                                                            Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap){
+                                                            Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap){
 
         // 说明是规约操作，根据规约产生式先弹出对应数量的项集状态，再压入GOTO后的项集状态
         Item reduceItem = (Item) actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION);
@@ -772,7 +802,7 @@ public class SyntacticLRParser {
         System.out.println("规约 " + reduceItem.toString());
 
         // 归约后需要根据归约后的符号进行GOTO操作
-        ItemCollection currentItemCollection = syntaxLRGotoByPredictMap(reduceItem, tokenSyntaxSymbol, itemCollectionStack.top(), itemCollectionStack, predictSLRMap);
+        ItemCollection currentItemCollection = syntaxLRGotoByPredictMap(reduceItem, tokenSyntaxSymbol, itemCollectionStack.top(), itemCollectionStack, predictLRMap);
 
         return currentItemCollection;
     }
@@ -780,10 +810,10 @@ public class SyntacticLRParser {
     /*goto操作*/
     public static ItemCollection syntaxLRGotoByPredictMap(Item reduceItem, SyntaxSymbol tokenSyntaxSymbol,
                                                           ItemCollection currentItemCollection, MyStack<ItemCollection> itemCollectionStack,
-                                                          Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap){
+                                                          Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap){
 
         // 根据归约栈顶的状态进行GOTO操作
-        Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> reduceItemCollectionPredictMap = predictSLRMap.get(currentItemCollection);
+        Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> reduceItemCollectionPredictMap = predictLRMap.get(currentItemCollection);
         Map<SyntaxSymbol, List<Map<String, Object>>> gotoPredictMap = reduceItemCollectionPredictMap.get(LexConstants.SYNTAX_LR_GOTO);
 
         SyntaxSymbol reduceSyntaxSymbol = reduceItem.getSyntaxProduct().getHead();
@@ -811,7 +841,7 @@ public class SyntacticLRParser {
             currentItemCollection = gotoItemCollection;
 
             // FIXME 这里需要嵌套处理GOTO，如果GOTO后的状态在当前输入符下也是规约动作，则继续规约
-            Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> nextItemCollectionPredictMap = predictSLRMap.get(currentItemCollection);
+            Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> nextItemCollectionPredictMap = predictLRMap.get(currentItemCollection);
             Map<SyntaxSymbol, List<Map<String, Object>>> nextActionPredictMap = nextItemCollectionPredictMap.get(LexConstants.SYNTAX_LR_ACTION);
 
             List<Map<String, Object>> nextActionOperats = nextActionPredictMap.get(tokenSyntaxSymbol);
@@ -832,7 +862,7 @@ public class SyntacticLRParser {
                 Map<String, Object> nextActionInfo = nextActionOperats.get(0);
                 if(nextActionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_REDUCE)){
                     // 说明是可以继续规约
-                    currentItemCollection = syntaxLRReduceByPredictMap(nextActionInfo, tokenSyntaxSymbol, itemCollectionStack, predictSLRMap);
+                    currentItemCollection = syntaxLRReduceByPredictMap(nextActionInfo, tokenSyntaxSymbol, itemCollectionStack, predictLRMap);
                 }
             }
 

@@ -558,8 +558,55 @@ public class SyntaxTest {
         LexUtils.outputLRPredictMap(predictSLRMap);
 
         System.out.println("-------------------------------SLRPredictMap----------------------------------");
-        SyntacticLRParser.syntaxParseSLR(startItemCollection, tokens, predictSLRMap);
+        SyntacticLRParser.syntaxParseLR(startItemCollection, tokens, predictSLRMap);
 
+    }
+
+    @Test
+    public void testSLRPredictMap2(){
+        // 读取文法文件
+        List<String> syntaxs = ParseUtils.getFile("syntaxContentFile.txt", true);
+
+        // 解析目标语言文件生成词法单元数据
+        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+
+        System.out.println("-------------------------------startItemCollection----------------------------------");
+        AtomicInteger itemCollectionNo = new AtomicInteger(0);
+        ItemCollection startItemCollection = SyntacticLRParser.getStartItemCollection(syntaxSymbols, itemCollectionNo.getAndIncrement());
+        for(Item item : startItemCollection.getItemList()){
+            System.out.println(item.toString());
+        }
+
+        System.out.println("-------------------------------ItemCollectionNode----------------------------------");
+        List<SyntaxProduct> syntaxProducts = SyntacticLRParser.getSyntaxProducts(syntaxSymbols);
+        Set<SyntaxSymbol> allGotoSymtaxSymbol = SyntacticLRParser.getAllGotoSymtaxSymbol(syntaxProducts);
+        Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap = SyntacticLRParser.getSymbolProductMap(syntaxProducts);
+        Map<ItemCollection, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
+        SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
+        // 显示LR0自动机
+        LexUtils.outputSyntaxEchart(startItemCollection, 3600, 300);
+
+        System.out.println("-------------------------------product number----------------------------------");
+        for(SyntaxProduct syntaxProduct : syntaxProducts){
+            System.out.println("prduct: " + syntaxProduct.getNumber() + ": " + syntaxProduct.toString());
+        }
+
+        System.out.println("-------------------------------Create SLRPredictMap----------------------------------");
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
+        // 显示SLR分析表
+        LexUtils.outputLRPredictMap(predictSLRMap);
+
+        System.out.println("-------------------------------SLRPredictMap----------------------------------");
+        SyntacticLRParser.syntaxParseLR(startItemCollection, tokens, predictSLRMap);
+    }
+
+    @Test
+    public void testSLRPredictMap3(){
+        SyntacticLRParser.syntaxParseLR("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
     }
 
 }
