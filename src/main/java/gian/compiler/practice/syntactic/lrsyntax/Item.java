@@ -3,6 +3,9 @@ package gian.compiler.practice.syntactic.lrsyntax;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * LR 状态项
  * Created by gaojian on 2019/3/1.
@@ -12,11 +15,19 @@ public class Item {
     protected SyntaxProduct syntaxProduct;
     protected int index;
 
+    protected Set<String> lookForwardSymbol = new HashSet<>();
+
     public Item(){}
 
     public Item(SyntaxProduct syntaxProduct, int index) {
         this.syntaxProduct = syntaxProduct;
         this.index = index;
+    }
+
+    public Item(SyntaxProduct syntaxProduct, int index, Set<String> lookForwardSymbol) {
+        this.syntaxProduct = syntaxProduct;
+        this.index = index;
+        this.lookForwardSymbol = lookForwardSymbol;
     }
 
     public SyntaxProduct getSyntaxProduct() {
@@ -33,6 +44,14 @@ public class Item {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public Set<String> getLookForwardSymbol() {
+        return lookForwardSymbol;
+    }
+
+    public void setLookForwardSymbol(Set<String> lookForwardSymbol) {
+        this.lookForwardSymbol = lookForwardSymbol;
     }
 
     @Override
@@ -64,6 +83,11 @@ public class Item {
             str.append(LexConstants.AUGMENT_SYNTAX_INDEX_TAG);
         }
 
+        if(this.lookForwardSymbol.size() > 0){
+            str.append(", ");
+            str.append(this.lookForwardSymbol.toString());
+        }
+
         return str.toString();
     }
 
@@ -79,6 +103,10 @@ public class Item {
 
         Item otherItem = (Item) other;
         if(this.index != otherItem.getIndex() || !this.syntaxProduct.equals(otherItem.getSyntaxProduct())){
+            return false;
+        }
+
+        if(!this.lookForwardSymbol.equals(otherItem.getLookForwardSymbol())){
             return false;
         }
 
