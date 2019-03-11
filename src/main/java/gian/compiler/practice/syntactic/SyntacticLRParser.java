@@ -731,6 +731,8 @@ public class SyntacticLRParser {
                     // 说明是规约操作，根据规约产生式先弹出对应数量的项集状态，再压入GOTO后的项集状态
                     currentItemCollection = syntaxLRReduceByPredictMap(actionInfo, tokenSyntaxSymbol, itemCollectionStack, predictSLRMap);
 
+                    // 归约后输入符需要保持不变
+                    i--;
                 }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_ACCEPT)){
                     // 说明是接收状态
                     if(i == tokens.size()-1){
