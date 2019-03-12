@@ -21,6 +21,11 @@ public class ItemCollection {
 
     public ItemCollection(){}
 
+    public ItemCollection(Integer number, Item item) {
+        this.number = number;
+        this.itemList.add(item);
+    }
+
     public ItemCollection(Integer number, List<Item> itemList) {
         this.number = number;
         this.itemList = itemList;

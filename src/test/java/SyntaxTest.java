@@ -3,7 +3,7 @@ import gian.compiler.practice.lexical.parser.LexicalParser;
 import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.syntactic.SyntacticLRParser;
-import gian.compiler.practice.syntactic.SyntacticParser;
+import gian.compiler.practice.syntactic.SyntacticLLParser;
 import gian.compiler.practice.syntactic.lrsyntax.Item;
 import gian.compiler.practice.syntactic.lrsyntax.ItemCollection;
 import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
@@ -27,7 +27,7 @@ public class SyntaxTest {
         syntaxs.add("stmt → if expr then stmt else stmt | if stmt then stmt | begin stmtList end");
         syntaxs.add("stmtList → stmt ; stmtList | stmt | ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
             System.out.println(syntaxSymbol);
@@ -44,7 +44,7 @@ public class SyntaxTest {
         syntaxs.add("T → T + F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         // 消除前
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -53,7 +53,7 @@ public class SyntaxTest {
 
         System.out.println("----------------------------------------------------------------------");
 
-        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+        SyntacticLLParser.eliminateLeftRecursion(syntaxSymbols);
 
         // 消除后
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -69,7 +69,7 @@ public class SyntaxTest {
 //        syntaxs.add("stmt → if expr then stmt else stmt | if expr then stmt");
         syntaxs.add("T → a * F | a * F - F");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         // 提取前
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -78,7 +78,7 @@ public class SyntaxTest {
 
         System.out.println("----------------------------------------------------------------------");
 
-        SyntacticParser.mergeCommonFactor(syntaxSymbols);
+        SyntacticLLParser.mergeCommonFactor(syntaxSymbols);
 
         // 提取后
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -94,7 +94,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | T * F - F ");
         syntaxs.add("F → id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         // 消除前
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -103,7 +103,7 @@ public class SyntaxTest {
 
         System.out.println("-----------------------------左递归-------------------------------------");
 
-        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+        SyntacticLLParser.eliminateLeftRecursion(syntaxSymbols);
 
         // 消除后
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -113,7 +113,7 @@ public class SyntaxTest {
         System.out.println("-----------------------------公因式-------------------------------------");
 
         // TODO 不能正确处理提取公因式后的文法
-        SyntacticParser.mergeCommonFactor(syntaxSymbols);
+        SyntacticLLParser.mergeCommonFactor(syntaxSymbols);
 
         // 提取公因式
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -131,7 +131,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         // 消除前
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -140,7 +140,7 @@ public class SyntaxTest {
 
         System.out.println("----------------------------------------------------------------------");
 
-        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+        SyntacticLLParser.eliminateLeftRecursion(syntaxSymbols);
 
         // 提取后
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -148,18 +148,18 @@ public class SyntaxTest {
         }
 
         System.out.println("-------------------------------FIRST-----------------------------------");
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
 
         for(SyntaxSymbol symbol : syntaxSymbols) {
-            System.out.println(symbol.getSymbol() + " -------- " + SyntacticParser.getSyntaxFirst(symbol, syntaxFirstMap));
+            System.out.println(symbol.getSymbol() + " -------- " + SyntacticLLParser.getSyntaxFirst(symbol, syntaxFirstMap));
         }
 
         System.out.println("-------------------------------FOLLOW----------------------------------");
 
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> followMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> followMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
 
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols){
-            System.out.println(syntaxSymbol.getSymbol() + " -------- " + SyntacticParser.getSyntaxFollow(syntaxSymbol, followMap));
+            System.out.println(syntaxSymbol.getSymbol() + " -------- " + SyntacticLLParser.getSyntaxFollow(syntaxSymbol, followMap));
         }
 
     }
@@ -178,17 +178,17 @@ public class SyntaxTest {
 //        syntaxs.add("S' → e S | ε ");
 //        syntaxs.add("E → b ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
-        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+        SyntacticLLParser.eliminateLeftRecursion(syntaxSymbols);
 
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
 
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
 
         System.out.println("-------------------------------预测分析表----------------------------------");
 
-        Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
+        Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticLLParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
 
         LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
     }
@@ -213,24 +213,24 @@ public class SyntaxTest {
         syntaxs.add("F → ( E ) | id ");
 
         System.out.println("----------------------------消除左递归，提取公因式------------------------------");
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
-        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        SyntacticLLParser.eliminateLeftRecursion(syntaxSymbols);
         // 提取后
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
             System.out.println(syntaxSymbol);
         }
 
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
 
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
 
-        Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
+        Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticLLParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
 
         LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
 
         System.out.println("-------------------------------LL(1)语法分析----------------------------------");
 
-        SyntacticParser.syntaxParseByLL(tokens, syntaxSymbols.get(0), syntaxPredictMap);
+        SyntacticLLParser.syntaxParseByLL(tokens, syntaxSymbols.get(0), syntaxPredictMap);
 
     }
 
@@ -248,21 +248,21 @@ public class SyntaxTest {
         System.out.println("----------------------------文法解析------------------------------");
         // TODO 修改终结符的识别方式，需要和词法规则联系起来
         // TODO 终结符有几类：关键字、符号、变量、值
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
         // 消除前
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
             System.out.println(syntaxSymbol);
         }
 
         System.out.println("----------------------------消除左递归------------------------------");
-        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+        SyntacticLLParser.eliminateLeftRecursion(syntaxSymbols);
         // 提取后
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
             System.out.println(syntaxSymbol);
         }
 
         System.out.println("-----------------------------提取公因式-------------------------------------");
-        SyntacticParser.mergeCommonFactor(syntaxSymbols);
+        SyntacticLLParser.mergeCommonFactor(syntaxSymbols);
 
         // 提取公因式
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -270,11 +270,11 @@ public class SyntaxTest {
         }
 
         System.out.println("-------------------------------预测分析表----------------------------------");
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
 
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
 
-        Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
+        Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticLLParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
 
         LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
 
@@ -305,13 +305,13 @@ public class SyntaxTest {
         System.out.println("");
 
         System.out.println("-------------------------------LL(1)语法分析----------------------------------");
-        SyntacticParser.syntaxParseByLL(tokens, syntaxSymbols.get(0), syntaxPredictMap);
+        SyntacticLLParser.syntaxParseByLL(tokens, syntaxSymbols.get(0), syntaxPredictMap);
 
     }
 
     @Test
     public void testSyntaxPredict4(){
-        SyntacticParser.syntaxParseByLL("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
+        SyntacticLLParser.syntaxParseByLL("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
     }
 
     @Test
@@ -321,7 +321,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         ItemCollection startItemCollection = SyntacticLRParser.getStartItemCollection(syntaxSymbols, 0);
@@ -345,7 +345,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         ItemCollection startItemCollection = SyntacticLRParser.getStartItemCollection(syntaxSymbols, 0);
@@ -375,7 +375,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -414,7 +414,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -433,8 +433,8 @@ public class SyntaxTest {
         LexUtils.outputSyntaxEchart(startItemCollection);
 
         System.out.println("-------------------------------LR0 parse----------------------------------");
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
 
         SyntacticLRParser.syntaxParseLR0(startItemCollection, tokens, syntaxFirstMap, syntaxFollowMap);
     }
@@ -447,7 +447,7 @@ public class SyntaxTest {
         // 解析目标语言文件生成词法单元数据
         List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -466,8 +466,8 @@ public class SyntaxTest {
         LexUtils.outputSyntaxEchart(startItemCollection, 3600, 300);
 
         System.out.println("-------------------------------LR0 parse----------------------------------");
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
         SyntacticLRParser.syntaxParseLR0(startItemCollection, tokens, syntaxFirstMap, syntaxFollowMap);
 
 
@@ -480,7 +480,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -504,8 +504,8 @@ public class SyntaxTest {
         }
 
         System.out.println("-------------------------------SLRPredictMap----------------------------------");
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
         Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
         LexUtils.outputLRPredictMap(predictSLRMap);
@@ -527,7 +527,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -551,8 +551,8 @@ public class SyntaxTest {
         }
 
         System.out.println("-------------------------------Create SLRPredictMap----------------------------------");
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
         Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
         LexUtils.outputLRPredictMap(predictSLRMap);
@@ -570,7 +570,7 @@ public class SyntaxTest {
         // 解析目标语言文件生成词法单元数据
         List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -594,8 +594,8 @@ public class SyntaxTest {
         }
 
         System.out.println("-------------------------------Create SLRPredictMap----------------------------------");
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
         Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
         LexUtils.outputLRPredictMap(predictSLRMap);

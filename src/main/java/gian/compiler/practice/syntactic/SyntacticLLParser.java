@@ -15,7 +15,7 @@ import java.util.*;
 /**
  * Created by gaojian on 2019/1/25.
  */
-public class SyntacticParser {
+public class SyntacticLLParser {
 
     /**
      * 解析简单文法：
@@ -773,11 +773,11 @@ public class SyntacticParser {
         Set<String> allTerminalSymbol = new LinkedHashSet<>();
 
         for(SyntaxSymbol symbol : syntaxFirstMap.keySet()) {
-            allTerminalSymbol.addAll(SyntacticParser.getSyntaxFirst(symbol, syntaxFirstMap));
+            allTerminalSymbol.addAll(SyntacticLLParser.getSyntaxFirst(symbol, syntaxFirstMap));
         }
 
         for(SyntaxSymbol syntaxSymbol : syntaxFirstMap.keySet()){
-            allTerminalSymbol.addAll(SyntacticParser.getSyntaxFollow(syntaxSymbol, syntaxFollowMap));
+            allTerminalSymbol.addAll(SyntacticLLParser.getSyntaxFollow(syntaxSymbol, syntaxFollowMap));
         }
 
         return allTerminalSymbol;
@@ -860,22 +860,22 @@ public class SyntacticParser {
         // 读取文法文件
         List<String> syntaxs = ParseUtils.getFile(syntaxFile, isClassPath);
         // 解析词法文件
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
         // 消除左递归
-        SyntacticParser.eliminateLeftRecursion(syntaxSymbols);
+        SyntacticLLParser.eliminateLeftRecursion(syntaxSymbols);
         // 提供公因式
-        SyntacticParser.mergeCommonFactor(syntaxSymbols);
+        SyntacticLLParser.mergeCommonFactor(syntaxSymbols);
         // 生成 FIRST 集合
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
         // 生成 FOLOOW 集合
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
         // 生成预测分析表
-        Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
+        Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticLLParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
 
         // 解析目标语言文件生成词法单元数据
         List<Token> tokens = LexicalParser.parser(ParseUtils.getFile(targetProgarmFile, isClassPath), expressions);
         // 根据预测分析表解析云烟
-        SyntacticParser.syntaxParseByLL(tokens, syntaxSymbols.get(0), syntaxPredictMap);
+        SyntacticLLParser.syntaxParseByLL(tokens, syntaxSymbols.get(0), syntaxPredictMap);
     }
 
     /**

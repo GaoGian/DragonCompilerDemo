@@ -317,7 +317,7 @@ public class SyntacticLRParser {
                                          Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap,
                                          Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap){
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         // 获取初始项集节点
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -371,8 +371,8 @@ public class SyntacticLRParser {
             for(Item item : reduceItemCollection.getItemList()){
                 if(item.getIndex() == item.getSyntaxProduct().getProduct().size()-1){
                     //判断该产生式的FIRST集合是否有ε，输入符号是否在FOLLOW集中
-                    Set<String> firstSet = SyntacticParser.getSyntaxFirst(item.getSyntaxProduct().getProduct().get(item.getIndex()), syntaxFirstMap);
-                    Set<String> followSet = SyntacticParser.getSyntaxFollow(item.getSyntaxProduct().getHead(), syntaxFollowMap);
+                    Set<String> firstSet = SyntacticLLParser.getSyntaxFirst(item.getSyntaxProduct().getProduct().get(item.getIndex()), syntaxFirstMap);
+                    Set<String> followSet = SyntacticLLParser.getSyntaxFollow(item.getSyntaxProduct().getHead(), syntaxFollowMap);
                     if(firstSet.contains(LexConstants.SYNTAX_EMPTY) && followSet.contains(input.getSymbol())){
                         // 说明类似LL中推到为ε的产生式
                         reduceItemSet.add(item);
@@ -526,7 +526,7 @@ public class SyntacticLRParser {
                     } else if (item.getIndex() == item.getSyntaxProduct().getProduct().size() - 1) {
                         // TODO 这里尝试将[A→α·β]，如果FOLLOW(α)=FIRST(β)包含ε，那么也将[A→α·β]加入到归约项中
                         SyntaxSymbol lastSymbol = item.getSyntaxProduct().getProduct().get(item.getIndex());
-                        Set<String> firstSet = SyntacticParser.getSyntaxFirst(lastSymbol, syntaxFirstMap);
+                        Set<String> firstSet = SyntacticLLParser.getSyntaxFirst(lastSymbol, syntaxFirstMap);
                         if (firstSet.contains(LexConstants.SYNTAX_EMPTY)) {
                             reduceItemList.add(item);
                         }
@@ -548,7 +548,7 @@ public class SyntacticLRParser {
                         actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, reduceItem);
 
                         SyntaxSymbol headSymbol = reduceItem.getSyntaxProduct().getHead();
-                        Set<String> followSet = SyntacticParser.getSyntaxFollow(headSymbol, syntaxFollowMap);
+                        Set<String> followSet = SyntacticLLParser.getSyntaxFollow(headSymbol, syntaxFollowMap);
                         for (String followStr : followSet) {
                             if (!followStr.equals(LexConstants.SYNTAX_EMPTY)) {
                                 SyntaxSymbol terminalSymbol = new SyntaxSymbol(followStr, true);
@@ -756,7 +756,7 @@ public class SyntacticLRParser {
         // 读取文法文件
         List<String> syntaxs = ParseUtils.getFile(syntaxFile, isClassPath);
         // 解析文法文件
-        List<SyntaxSymbol> syntaxSymbols = SyntacticParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         // 生成所有项集
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -768,8 +768,8 @@ public class SyntacticLRParser {
         SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
 
         // 生成LR分析表
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticParser.syntaxFirst(syntaxSymbols);
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
         Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
 
         // 根据LR分析表解析文本
@@ -869,6 +869,111 @@ public class SyntacticLRParser {
         }
 
         return currentItemCollection;
+    }
+
+    /**
+     * LR1分析
+     * TODO LALR分析解析
+     *      TODO LALR是否会出现“移入/归约”冲突：如果有冲突，说明移入项的后一字符A和归约项的向前看符号FIRST(B)重叠，说明同一文法出现在两个不同层次产生式的不同位置（首位、尾部），修改文法不要让同一文法出现在不同层次、出现的位置不同，
+     *      TODO 出现“归约/归约”冲突：归约和上面的类似
+     *      TODO 文法注意事项：不要让高层次跨级依赖下级文法，下级文法不要回调上级文法，不要让文法出现在不同产生式的不同位置
+     */
+    public Map<Integer, ItemCollection> getLALRItemCollectionMap(List<SyntaxSymbol> syntaxSymbols, AtomicInteger itemCollectionNo){
+        // 处理成增广文法，起始开始符号
+        List<SyntaxSymbol> augmentStartSymbolProduct = new ArrayList<>();
+        augmentStartSymbolProduct.add(syntaxSymbols.get(0));
+        SyntaxSymbol augmentStartSymbol = new SyntaxSymbol(LexConstants.AUGMENT_SYNTAX_TAG + syntaxSymbols.get(0).getSymbol(), false);
+        augmentStartSymbol.getBody().add(augmentStartSymbolProduct);
+
+        List<SyntaxSymbol> augmentedSyntax = new ArrayList<>();
+        augmentedSyntax.add(augmentStartSymbol);
+        augmentedSyntax.addAll(syntaxSymbols);
+
+        // 分离成多个产生式
+        List<SyntaxProduct> syntaxProducts = getSyntaxProducts(augmentedSyntax, true);
+        Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap = SyntacticLRParser.getSymbolProductMap(syntaxProducts);
+
+        // 生成所有的FIRST、FOLLOW集合
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+
+        // 生产起始增广项集
+        Item augmentedItem = new Item(syntaxProducts.get(0), 0, LexConstants.SYNTAX_END);
+        ItemCollection  augmentedItemCollection = new ItemCollection(itemCollectionNo.getAndIncrement(), augmentedItem);
+
+        // 记录生成的项集
+        Map<ItemCollection, ItemCollection> allItemCollections = new LinkedHashMap<>();
+
+
+
+
+        Map<Integer, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
+        for(ItemCollection itemCollection : allItemCollections.keySet()){
+            allItemCollectionMap.put(itemCollection.getNumber(), itemCollection);
+        }
+
+        return allItemCollectionMap;
+    }
+
+    /*CLOSURE函数*/
+    public static void syntaxLALRClosure(ItemCollection itemCollection, Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap,
+                                       Map<ItemCollection, ItemCollection> allItemCollections, Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap){
+
+        for(int i=0; i<itemCollection.getItemList().size(); i++){
+            Item item = itemCollection.getItemList().get(i);
+            if(item.getIndex() < item.getSyntaxProduct().getProduct().size()) {
+                SyntaxSymbol syntaxSymbol = item.getSyntaxProduct().getProduct().get(item.getIndex());
+                Set<String> lookSymbolSet = getLAItemLookSymbolSet(item, syntaxFirstMap);
+
+                Set<SyntaxProduct> syntaxProducts = symbolProductMap.get(syntaxSymbol);
+                for(SyntaxProduct product : syntaxProducts){
+                    Item newItem = new Item(product, 0, lookSymbolSet);
+                    if(!itemCollection.getItemList().contains(newItem)){
+                        itemCollection.getItemList().add(newItem);
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    /*GOTO函数*/
+    public static ItemCollection syntaxLALRGoto(ItemCollection itemCollection, Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap,
+                                                Map<ItemCollection, ItemCollection> allItemCollections, Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap){
+
+        return null;
+    }
+
+    /*获取向前看符号*/
+    public static Set<String> getLAItemLookSymbolSet(Item item, Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap){
+        Set<String> lookSymbolSet = new HashSet<>();
+        if(item.getIndex() == item.getSyntaxProduct().getProduct().size()){
+            // A → α·，$
+            lookSymbolSet.addAll(item.getLookForwardSymbolSet());
+        }else if(item.getIndex() == item.getSyntaxProduct().getProduct().size()-1){
+            // A → α·B，c/d
+            // A → α·BC，c/d TODO 需要验证如果B→ε，C→ε，是否使用FIRST(BC)+c/d
+            for(int i=item.getIndex(); i<item.getSyntaxProduct().getProduct().size(); i++){
+                SyntaxSymbol syntaxSymbol = item.getSyntaxProduct().getProduct().get(i);
+                if(syntaxSymbol.isTerminal()){
+                    lookSymbolSet.add(syntaxSymbol.getSymbol());
+                    break;
+                }else {
+                    lookSymbolSet.addAll(SyntacticLLParser.getSyntaxFirst(syntaxSymbol, syntaxFirstMap));
+                    if (lookSymbolSet.contains(LexConstants.SYNTAX_EMPTY)) {
+                        lookSymbolSet.remove(LexConstants.SYNTAX_EMPTY);
+                    } else {
+                        break;
+                    }
+
+                    if (i == item.getSyntaxProduct().getProduct().size() - 1) {
+                        lookSymbolSet.addAll(item.getLookForwardSymbolSet());
+                    }
+                }
+            }
+        }
+        return lookSymbolSet;
     }
 
 }

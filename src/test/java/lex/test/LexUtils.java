@@ -3,7 +3,7 @@ package lex.test;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.MyStack;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
-import gian.compiler.practice.syntactic.SyntacticParser;
+import gian.compiler.practice.syntactic.SyntacticLLParser;
 import gian.compiler.practice.syntactic.lrsyntax.Item;
 import gian.compiler.practice.syntactic.lrsyntax.ItemCollection;
 import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
@@ -714,8 +714,8 @@ public class LexUtils {
                                               Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap,
                                               Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap){
 
-        Set<String> allTerminalSymbol = SyntacticParser.getAllTerminalSymbol(syntaxFirstMap, syntaxFollowMap);
-        Set<SyntaxSymbol> allNonTerminalSymbol = SyntacticParser.getAllNonTerminalSymbol(syntaxFirstMap);
+        Set<String> allTerminalSymbol = SyntacticLLParser.getAllTerminalSymbol(syntaxFirstMap, syntaxFollowMap);
+        Set<SyntaxSymbol> allNonTerminalSymbol = SyntacticLLParser.getAllNonTerminalSymbol(syntaxFirstMap);
 
         // 使用bootstrap表格显示, http://www.runoob.com/try/try.php?filename=bootstrap3-table-basic
         StringBuilder str = new StringBuilder();

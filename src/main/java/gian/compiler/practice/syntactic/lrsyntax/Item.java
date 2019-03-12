@@ -15,7 +15,7 @@ public class Item {
     protected SyntaxProduct syntaxProduct;
     protected int index;
 
-    protected Set<String> lookForwardSymbol = new HashSet<>();
+    protected Set<String> lookForwardSymbolSet = new HashSet<>();
 
     public Item(){}
 
@@ -24,10 +24,16 @@ public class Item {
         this.index = index;
     }
 
-    public Item(SyntaxProduct syntaxProduct, int index, Set<String> lookForwardSymbol) {
+    public Item(SyntaxProduct syntaxProduct, int index, String lookForwardSymbol) {
         this.syntaxProduct = syntaxProduct;
         this.index = index;
-        this.lookForwardSymbol = lookForwardSymbol;
+        this.lookForwardSymbolSet.add(lookForwardSymbol);
+    }
+
+    public Item(SyntaxProduct syntaxProduct, int index, Set<String> lookForwardSymbolSet) {
+        this.syntaxProduct = syntaxProduct;
+        this.index = index;
+        this.lookForwardSymbolSet = lookForwardSymbolSet;
     }
 
     public SyntaxProduct getSyntaxProduct() {
@@ -46,12 +52,12 @@ public class Item {
         this.index = index;
     }
 
-    public Set<String> getLookForwardSymbol() {
-        return lookForwardSymbol;
+    public Set<String> getLookForwardSymbolSet() {
+        return lookForwardSymbolSet;
     }
 
-    public void setLookForwardSymbol(Set<String> lookForwardSymbol) {
-        this.lookForwardSymbol = lookForwardSymbol;
+    public void setLookForwardSymbolSet(Set<String> lookForwardSymbolSet) {
+        this.lookForwardSymbolSet = lookForwardSymbolSet;
     }
 
     @Override
@@ -83,9 +89,9 @@ public class Item {
             str.append(LexConstants.AUGMENT_SYNTAX_INDEX_TAG);
         }
 
-        if(this.lookForwardSymbol.size() > 0){
+        if(this.lookForwardSymbolSet.size() > 0){
             str.append(", ");
-            str.append(this.lookForwardSymbol.toString());
+            str.append(this.lookForwardSymbolSet.toString());
         }
 
         return str.toString();
@@ -106,7 +112,7 @@ public class Item {
             return false;
         }
 
-        if(!this.lookForwardSymbol.equals(otherItem.getLookForwardSymbol())){
+        if(!this.lookForwardSymbolSet.equals(otherItem.getLookForwardSymbolSet())){
             return false;
         }
 
