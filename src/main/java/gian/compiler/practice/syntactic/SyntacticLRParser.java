@@ -1,5 +1,6 @@
 package gian.compiler.practice.syntactic;
 
+import com.google.common.collect.Sets;
 import gian.compiler.practice.exception.ParseException;
 import gian.compiler.practice.lexical.parser.LexExpression;
 import gian.compiler.practice.lexical.parser.LexicalParser;
@@ -878,7 +879,7 @@ public class SyntacticLRParser {
      *      TODO 出现“归约/归约”冲突：归约和上面的类似
      *      TODO 文法注意事项：不要让高层次跨级依赖下级文法，下级文法不要回调上级文法，不要让文法出现在不同产生式的不同位置
      */
-    public Map<Integer, ItemCollection> getLALRItemCollectionMap(List<SyntaxSymbol> syntaxSymbols, AtomicInteger itemCollectionNo){
+    public static Map<Integer, ItemCollection> getLALRItemCollectionMap(List<SyntaxSymbol> syntaxSymbols){
         // 处理成增广文法，起始开始符号
         List<SyntaxSymbol> augmentStartSymbolProduct = new ArrayList<>();
         augmentStartSymbolProduct.add(syntaxSymbols.get(0));
@@ -899,15 +900,49 @@ public class SyntacticLRParser {
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
 
         // 生产起始增广项集
+        AtomicInteger itemCollectionNo = new AtomicInteger(0);
         Item augmentedItem = new Item(syntaxProducts.get(0), 0, LexConstants.SYNTAX_END);
-        ItemCollection  augmentedItemCollection = new ItemCollection(itemCollectionNo.getAndIncrement(), augmentedItem);
+        ItemCollection  startItemCollection = syntaxLALRClosure(new ItemCollection(itemCollectionNo.getAndIncrement(), augmentedItem), symbolProductMap, syntaxFirstMap);
 
         // 记录生成的项集
         Map<ItemCollection, ItemCollection> allItemCollections = new LinkedHashMap<>();
+        allItemCollections.put(startItemCollection, startItemCollection);
 
         // TODO 使用CLOSURE、GOTO函数生成所有项集
+        Set<ItemCollection> preItemCollections = Sets.newHashSet(allItemCollections.keySet());
+        while(preItemCollections.size() > 0){
+            // 记录新生成的项集
+            Set<ItemCollection> tempPreItemCollections = new HashSet<>();
 
+            for(SyntaxSymbol gotoSymbol : allGotoSymtaxSymbol){
+                // TODO 这里需要优化下处理，已经遍历过项集的就不需要再遍历了
+                for(ItemCollection preItemCollection : preItemCollections){
+                    // 计算goto集合
+                    ItemCollection gotoItemCollection = syntaxLALRGoto(preItemCollection, gotoSymbol, startItemCollection.getItemList().get(0).getSyntaxProduct(), symbolProductMap, syntaxFirstMap);
 
+                    if(gotoItemCollection != null) {
+                        // 如果原来的集合找不到goto后的项集，说明是新项集
+                        if (allItemCollections.get(gotoItemCollection) == null) {
+                            // 记录生成的新项集
+                            allItemCollections.put(gotoItemCollection, gotoItemCollection);
+                            tempPreItemCollections.add(gotoItemCollection);
+                            // 设置新项集编码
+                            gotoItemCollection.setNumber(itemCollectionNo.getAndIncrement());
+                        }
+
+                        // 设置转换关系
+                        preItemCollection.getMoveItemCollectionMap().put(gotoSymbol, allItemCollections.get(gotoItemCollection));
+
+                    }
+                }
+            }
+
+            // 设置下次遍历的新项集
+            preItemCollections = tempPreItemCollections;
+
+        }
+
+        // 将集合转变成编号映射
         Map<Integer, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
         for(ItemCollection itemCollection : allItemCollections.keySet()){
             allItemCollectionMap.put(itemCollection.getNumber(), itemCollection);
@@ -918,8 +953,8 @@ public class SyntacticLRParser {
 
     /*CLOSURE函数*/
     public static ItemCollection syntaxLALRClosure(ItemCollection itemCollection,
-                                        Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap, AtomicInteger itemCollectionNo,
-                                        Map<ItemCollection, ItemCollection> allItemCollections, Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap){
+                                        Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap,
+                                        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap){
 
         for(int i=0; i<itemCollection.getItemList().size(); i++){
             Item item = itemCollection.getItemList().get(i);
@@ -929,76 +964,96 @@ public class SyntacticLRParser {
 
                 // 加入所有[B→·γ, FIRST(βa)]项
                 SyntaxSymbol syntaxSymbol = item.getSyntaxProduct().getProduct().get(item.getIndex());
-                Set<SyntaxProduct> syntaxProducts = symbolProductMap.get(syntaxSymbol);
-                for(SyntaxProduct product : syntaxProducts){
-                    Item newItem = new Item(product, 0, lookSymbolSet);
-                    if(!itemCollection.getItemList().contains(newItem)){
-                        itemCollection.getItemList().add(newItem);
+                if(!syntaxSymbol.isTerminal()) {
+                    Set<SyntaxProduct> syntaxProducts = symbolProductMap.get(syntaxSymbol);
+                    for (SyntaxProduct product : syntaxProducts) {
+                        Item newItem = new Item(product, 0, lookSymbolSet);
+                        if (!itemCollection.getItemList().contains(newItem)) {
+                            itemCollection.getItemList().add(newItem);
+                        }
                     }
                 }
 
             }
         }
 
-        if(allItemCollections.get(itemCollection) != null){
-            return allItemCollections.get(itemCollection);
-        }else{
-            allItemCollections.put(itemCollection, itemCollection);
-            itemCollection.setNumber(itemCollectionNo.getAndIncrement());
-            return itemCollection;
-        }
+        return itemCollection;
 
     }
 
     /*GOTO函数*/
-    public static ItemCollection syntaxLALRGoto(ItemCollection itemCollection, SyntaxSymbol gotoSymbol,
-                                                Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap, AtomicInteger itemCollectionNo,
-                                                Map<ItemCollection, ItemCollection> allItemCollections, Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap){
+    public static ItemCollection syntaxLALRGoto(ItemCollection itemCollection, SyntaxSymbol gotoSymbol, SyntaxProduct startProduct,
+                                                Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap,
+                                                Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap){
 
         // 加入可移入的项
-        ItemCollection gotoItemCollection = new ItemCollection();
+        List<Item> itemList = new ArrayList<>();
         for(Item item : itemCollection.getItemList()){
-            if(item.getIndex() < item.getSyntaxProduct().getProduct().size()){
-                SyntaxSymbol syntaxSymbol = item.getSyntaxProduct().getProduct().get(item.getIndex());
-                if(syntaxSymbol.equals(gotoSymbol)){
-                    gotoItemCollection.getItemList().add(new Item(item.getSyntaxProduct(), item.getIndex()+1, item.getLookForwardSymbolSet()));
+            if(item.getIndex() == item.getSyntaxProduct().getProduct().size()
+                    && item.getSyntaxProduct().equals(startProduct)
+                    && gotoSymbol.getSymbol().equals(LexConstants.SYNTAX_END)){
+
+                // 说明是接收状态
+                return new ItemCollection.AcceptItemCollection();
+
+            }else {
+                if (item.getIndex() < item.getSyntaxProduct().getProduct().size()) {
+                    SyntaxSymbol syntaxSymbol = item.getSyntaxProduct().getProduct().get(item.getIndex());
+                    if (syntaxSymbol.equals(gotoSymbol)) {
+                        itemList.add(new Item(item.getSyntaxProduct(), item.getIndex() + 1, item.getLookForwardSymbolSet()));
+                    }
                 }
             }
         }
 
-        // 计算CLOSURE集合
-        gotoItemCollection = syntaxLALRClosure(gotoItemCollection, symbolProductMap, itemCollectionNo, allItemCollections, syntaxFirstMap);
+        if(itemList.size() > 0) {
+            ItemCollection gotoItemCollection = new ItemCollection();
+            gotoItemCollection.setItemList(itemList);
 
-        // 设置转换关系
-        itemCollection.getMoveItemCollectionMap().put(gotoSymbol, gotoItemCollection);
+            // 计算CLOSURE集合
+            gotoItemCollection = syntaxLALRClosure(gotoItemCollection, symbolProductMap, syntaxFirstMap);
 
-        return gotoItemCollection;
+            return gotoItemCollection;
+        }else{
+            return null;
+        }
     }
 
-    /*获取向前看符号*/
+    /**
+     * 获取向前看符号
+     *
+     *
+     * */
     public static Set<String> getLAItemLookSymbolSet(Item item, Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap){
         Set<String> lookSymbolSet = new HashSet<>();
         if(item.getIndex() == item.getSyntaxProduct().getProduct().size()){
-            // A → α·，$
-            lookSymbolSet.addAll(item.getLookForwardSymbolSet());
+            // A → α·，$     这种情况不需要推导，CLOSURE不会推导这种项
+//            lookSymbolSet.addAll(item.getLookForwardSymbolSet());
         }else if(item.getIndex() == item.getSyntaxProduct().getProduct().size()-1){
-            // A → α·B，c/d
-            // A → α·BC，c/d TODO 需要验证如果B→ε，C→ε，是否使用FIRST(BC)+c/d
+            // A → α·B，c/d      lookSymbol = [c/d]
+            lookSymbolSet.addAll(item.getLookForwardSymbolSet());
+        }else{
+            // A → α·BC，c/d TODO lookSymbol = [FIRST(C) + c/d] 需要验证如果B→ε，C→ε，是否使用FIRST(C)+c/d
             for(int i=item.getIndex(); i<item.getSyntaxProduct().getProduct().size(); i++){
                 SyntaxSymbol syntaxSymbol = item.getSyntaxProduct().getProduct().get(i);
                 if(syntaxSymbol.isTerminal()){
                     lookSymbolSet.add(syntaxSymbol.getSymbol());
                     break;
-                }else {
+                }else{
                     lookSymbolSet.addAll(SyntacticLLParser.getSyntaxFirst(syntaxSymbol, syntaxFirstMap));
+
+                    boolean hasEmpty = false;
                     if (lookSymbolSet.contains(LexConstants.SYNTAX_EMPTY)) {
+                        hasEmpty = true;
                         lookSymbolSet.remove(LexConstants.SYNTAX_EMPTY);
                     } else {
                         break;
                     }
 
-                    if (i == item.getSyntaxProduct().getProduct().size() - 1) {
-                        lookSymbolSet.addAll(item.getLookForwardSymbolSet());
+                    if(hasEmpty) {
+                        if (i == item.getSyntaxProduct().getProduct().size() - 1) {
+                            lookSymbolSet.addAll(item.getLookForwardSymbolSet());
+                        }
                     }
                 }
             }

@@ -609,4 +609,21 @@ public class SyntaxTest {
         SyntacticLRParser.syntaxParseLR("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
     }
 
+    @Test
+    public void testLALRItemCollection(){
+
+        List<String> syntaxs = new ArrayList<>();
+        syntaxs.add("S → C C ");
+        syntaxs.add("C → c C | d ");
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+
+        Map<Integer, ItemCollection> allLALRItemCollectionMap = SyntacticLRParser.getLALRItemCollectionMap(syntaxSymbols);
+
+        System.out.println("-------------------------------ItemCollectionNode----------------------------------");
+        // 显示LR0自动机
+        LexUtils.outputSyntaxEchart(allLALRItemCollectionMap.get(0), 300, -200, true);
+
+    }
+
 }

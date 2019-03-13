@@ -482,6 +482,10 @@ public class LexUtils {
     }
 
     public static void outputSyntaxEchart(ItemCollection startItemCollection, int xIncre, int yIncre){
+        outputSyntaxEchart(startItemCollection, xIncre, yIncre, false);
+    }
+
+    public static void outputSyntaxEchart(ItemCollection startItemCollection, int xIncre, int yIncre, boolean showOtherItem){
 
         // 广度遍历
         Set<LexUtils.EcharDemoPoint> pointSet = new HashSet<>();
@@ -489,7 +493,7 @@ public class LexUtils {
 
         int x = 0;
         int y = 0;
-        pointSet.add(new LexUtils.EcharDemoPoint(getCoreItemTag(startItemCollection), x, y));
+        pointSet.add(new LexUtils.EcharDemoPoint(getCoreItemTag(startItemCollection, showOtherItem), x, y));
 
         List<Map<String, Object>> moveItemCollectionList = new ArrayList<>();
         for(SyntaxSymbol moveSymbol : startItemCollection.getMoveItemCollectionMap().keySet()) {
@@ -516,11 +520,11 @@ public class LexUtils {
                 SyntaxSymbol moveSymbol = (SyntaxSymbol) map.get("symbol");
                 ItemCollection moveItemCollection = (ItemCollection) map.get("subIC");
 
-                LexUtils.EcharDemoPoint newPoiont = new LexUtils.EcharDemoPoint(getCoreItemTag(moveItemCollection), x, y);
+                LexUtils.EcharDemoPoint newPoiont = new LexUtils.EcharDemoPoint(getCoreItemTag(moveItemCollection, showOtherItem), x, y);
                 if (!pointSet.contains(newPoiont)) {
                     pointSet.add(newPoiont);
                 }
-                LexUtils.EchartDemoEdge newEdge = new LexUtils.EchartDemoEdge(getCoreItemTag(preItemCollection), getCoreItemTag(moveItemCollection), moveSymbol.getSymbol());
+                LexUtils.EchartDemoEdge newEdge = new LexUtils.EchartDemoEdge(getCoreItemTag(preItemCollection, showOtherItem), getCoreItemTag(moveItemCollection, showOtherItem), moveSymbol.getSymbol());
                 if (!echarEdgeSet.contains(newEdge)) {
                     echarEdgeSet.add(newEdge);
                 }
@@ -538,7 +542,7 @@ public class LexUtils {
                         hasNew = true;
                     }
 
-                    LexUtils.EchartDemoEdge subNewEdge = new LexUtils.EchartDemoEdge(getCoreItemTag(moveItemCollection), getCoreItemTag(subItemCollection), subMoveSymbol.getSymbol());
+                    LexUtils.EchartDemoEdge subNewEdge = new LexUtils.EchartDemoEdge(getCoreItemTag(moveItemCollection, showOtherItem), getCoreItemTag(subItemCollection, showOtherItem), subMoveSymbol.getSymbol());
                     if (!echarEdgeSet.contains(subNewEdge)) {
                         echarEdgeSet.add(subNewEdge);
                     }
@@ -563,12 +567,16 @@ public class LexUtils {
 
     }
 
-    public static String getCoreItemTag(ItemCollection startItemCollection){
+    public static String getCoreItemTag(ItemCollection startItemCollection, boolean showOtherItem){
         List<Item> tempItemList = new ArrayList<>();
-        for(Item tempItem : startItemCollection.getItemList()){
-            if(tempItem.getIndex() > 0){
-                tempItemList.add(tempItem);
+        if(!showOtherItem) {
+            for (Item tempItem : startItemCollection.getItemList()) {
+                if (tempItem.getIndex() > 0) {
+                    tempItemList.add(tempItem);
+                }
             }
+        }else{
+            tempItemList.addAll(startItemCollection.getItemList());
         }
 
         if(!(startItemCollection instanceof ItemCollection.AcceptItemCollection)) {
