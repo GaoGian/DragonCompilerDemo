@@ -506,7 +506,7 @@ public class SyntaxTest {
         System.out.println("-------------------------------SLRPredictMap----------------------------------");
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
-        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
+        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
         LexUtils.outputLRPredictMap(predictSLRMap);
 
@@ -553,7 +553,7 @@ public class SyntaxTest {
         System.out.println("-------------------------------Create SLRPredictMap----------------------------------");
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
-        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
+        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
         LexUtils.outputLRPredictMap(predictSLRMap);
 
@@ -596,7 +596,7 @@ public class SyntaxTest {
         System.out.println("-------------------------------Create SLRPredictMap----------------------------------");
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
-        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictSLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
+        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
         LexUtils.outputLRPredictMap(predictSLRMap);
 
@@ -624,6 +624,34 @@ public class SyntaxTest {
         // 显示LR0自动机
         LexUtils.outputSyntaxEchart(allLALRItemCollectionMap.get(0), 300, -200, true);
 
+    }
+
+    @Test
+    public void testLALRItemCollection1(){
+
+        // 读取文法文件
+        List<String> syntaxs = ParseUtils.getFile("syntaxContentFile.txt", true);
+
+        // 解析目标语言文件生成词法单元数据
+        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
+
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+
+
+        System.out.println("-------------------------------LR ItemCollectionNode----------------------------------");
+        Map<Integer, ItemCollection> allLALRItemCollectionMap = SyntacticLRParser.getLALRItemCollectionMap(syntaxSymbols);
+        // 显示LR0自动机
+        LexUtils.outputSyntaxEchart(allLALRItemCollectionMap.get(0), 3600, -300, false);
+
+        System.out.println("-------------------------------Create SLRPredictMap----------------------------------");
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap = SyntacticLRParser.predictLRMap(allLALRItemCollectionMap.get(0), syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
+        // 显示SLR分析表
+        LexUtils.outputLRPredictMap(predictLRMap);
+
+        System.out.println("-------------------------------SLRPredictMap----------------------------------");
+        SyntacticLRParser.syntaxParseLR(allLALRItemCollectionMap.get(0), tokens, predictLRMap);
     }
 
 }
