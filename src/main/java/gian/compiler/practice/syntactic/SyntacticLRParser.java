@@ -485,10 +485,18 @@ public class SyntacticLRParser {
 
         Map<Integer, ItemCollection> allItemCollectionMap = getAllItemCollectionMap(startItemCollection);
 
+        List<Integer> allItemCollectionNumberList = new ArrayList<>(allItemCollectionMap.keySet());
+        allItemCollectionNumberList.sort(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o1.compareTo(o2);
+            }
+        });
+
         // SLR分析表，一级key：项集，二级key：ACTION|GOTO，三级key：输入符，四级key：动作类型、迁移状态
         Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap = new LinkedHashMap<>();
 
-        for(Integer itemCollectionNum : allItemCollectionMap.keySet()){
+        for(Integer itemCollectionNum : allItemCollectionNumberList){
             ItemCollection itemCollection = allItemCollectionMap.get(itemCollectionNum);
             Map<SyntaxSymbol, ItemCollection> moveItemCollectionMap = itemCollection.getMoveItemCollectionMap();
 

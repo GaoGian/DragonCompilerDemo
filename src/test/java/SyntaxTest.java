@@ -641,7 +641,7 @@ public class SyntaxTest {
         System.out.println("-------------------------------LR ItemCollectionNode----------------------------------");
         Map<Integer, ItemCollection> allLALRItemCollectionMap = SyntacticLRParser.getLALRItemCollectionMap(syntaxSymbols);
         // 显示LR0自动机
-        LexUtils.outputSyntaxEchart(allLALRItemCollectionMap.get(0), 3600, -600, false);
+        LexUtils.outputSyntaxEchart(allLALRItemCollectionMap.get(0), 3600, -600, true);
 
         System.out.println("-------------------------------Create SLRPredictMap----------------------------------");
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
