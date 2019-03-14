@@ -764,6 +764,14 @@ public class LexUtils {
      */
     public static void outputLRPredictMap(Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap){
 
+        List<ItemCollection> itemCollectionList = new ArrayList<>(predictSLRMap.keySet());
+        itemCollectionList.sort(new Comparator<ItemCollection>() {
+            @Override
+            public int compare(ItemCollection o1, ItemCollection o2) {
+                return o1.getNumber().compareTo(o2.getNumber());
+            }
+        });
+
         Set<SyntaxSymbol> actionSymbolSet = getLRPredictSymbol(predictSLRMap, LexConstants.SYNTAX_LR_ACTION);
         Set<SyntaxSymbol> gotoSymbolSet = getLRPredictSymbol(predictSLRMap, LexConstants.SYNTAX_LR_GOTO);
         // 使用bootstrap表格显示, http://www.runoob.com/try/try.php?filename=bootstrap3-table-basic
@@ -784,7 +792,7 @@ public class LexUtils {
         str.append("</thead>\n");
 
         str.append("<tbody>\n");
-        for(ItemCollection itemCollection : predictSLRMap.keySet()){
+        for(ItemCollection itemCollection : itemCollectionList){
             str.append("<tr>\n");
 //            str.append("    <td>" + itemCollection.toString() + "</td>\n");
             str.append("    <td>" + itemCollection.getNumber() + "</td>\n");

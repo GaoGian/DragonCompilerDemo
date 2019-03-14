@@ -725,7 +725,7 @@ public class SyntacticLRParser {
             Map<SyntaxSymbol, List<Map<String, Object>>> actionPredictMap = itemCollectionPredictMap.get(LexConstants.SYNTAX_LR_ACTION);
 
             List<Map<String, Object>> actionOperats = actionPredictMap.get(tokenSyntaxSymbol);
-            if(actionOperats.size() == 0){
+            if(actionOperats == null || actionOperats.size() == 0){
                 // 说明对应的操作为报错
                 throw new ParseException("SLR分析表ACTION异常，项集" + currentItemCollection.getNumber() + ", 输入符：" + tokenSyntaxSymbol.getSymbol());
             }else if(actionOperats.size() > 1){
