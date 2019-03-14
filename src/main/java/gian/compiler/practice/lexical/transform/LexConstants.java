@@ -45,6 +45,7 @@ public class LexConstants {
     public static final String SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION = "NEXT_ITEMCOLLECTION";
 
     public static final String SYNTAX_LR_ACTION_SHIFT = "ACTION_SHIFT";
+    public static final String SYNTAX_LR_ACTION_SHIFT_EPSILON = "ACTION_SHIFT_EPSILON";
     public static final String SYNTAX_LR_ACTION_REDUCE = "ACTION_REDUCE";
     public static final String SYNTAX_LR_ACTION_ACCEPT = "ACTION_ACCEPT";
     public static final String SYNTAX_LR_ACTION_ERROR = "ACTION_ERROR";

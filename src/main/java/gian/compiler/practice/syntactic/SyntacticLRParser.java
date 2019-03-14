@@ -504,6 +504,7 @@ public class SyntacticLRParser {
             for(SyntaxSymbol terminalSymbol : terminalSymbolSet){
                 if(terminalSymbol.isTerminal()) {
                     if (moveItemCollectionMap.get(terminalSymbol) != null) {
+                        // 可直接进行移入操作
                         ItemCollection moveItemCollection = moveItemCollectionMap.get(terminalSymbol);
                         Map<String, Object> actionInfo = new LinkedHashMap<>();
                         if (moveItemCollection instanceof ItemCollection.AcceptItemCollection) {
@@ -519,6 +520,40 @@ public class SyntacticLRParser {
                         }
 
                         setPredictAction(predictLRMap, itemCollection, LexConstants.SYNTAX_LR_ACTION, terminalSymbol, actionInfo);
+                    }else{
+                        // FIXME 需要验证 如果没有可直接移入的项，那么可以考虑空产生式，并且按照空产生式进行移入
+                        Set<SyntaxSymbol> epsilonGotoSymbolSet = new HashSet<>();
+                        for(Item item : itemCollection.getItemList()){
+                            if(item.getSyntaxProduct().getProduct().get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
+                                // 说明是空产生式，可以按照该产生式进行移入
+                                if(item.getLookForwardSymbolSet().contains(terminalSymbol.getSymbol())){
+                                    epsilonGotoSymbolSet.add(item.getSyntaxProduct().getHead());
+                                }
+                            }
+                        }
+
+                        if(epsilonGotoSymbolSet.size() > 1){
+                            // FIXME 是不是不能有多个空产生式进行移入操作，如果移入符号不同会造成不知道按照那个产生式进行规约？？？
+                            throw new ParseException("LR1 空产生式异常，有多个可以移入的产生式");
+                        }else{
+                            for(SyntaxSymbol epsilonGotoSymbol : epsilonGotoSymbolSet){
+                                ItemCollection epsilonMoveItemCollection = moveItemCollectionMap.get(epsilonGotoSymbol);
+                                Map<String, Object> epsilonActionInfo = new LinkedHashMap<>();
+                                if (epsilonMoveItemCollection instanceof ItemCollection.AcceptItemCollection) {
+                                    // 3、如果[^S→S·]在I[i]中，那么将ACTION[i,$]设置为“接受”
+                                    // 接收操作
+                                    epsilonActionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_ACCEPT);
+                                    epsilonActionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, epsilonMoveItemCollection);
+                                } else {
+                                    // 此时是空产生式移入操作，需要特别标识，此时进行移入，需要保持输入符不变
+                                    epsilonActionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_SHIFT_EPSILON);
+                                    epsilonActionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, epsilonMoveItemCollection);
+                                }
+
+                                setPredictAction(predictLRMap, itemCollection, LexConstants.SYNTAX_LR_ACTION, terminalSymbol, epsilonActionInfo);
+                            }
+                        }
+
                     }
                 }
             }
@@ -650,6 +685,11 @@ public class SyntacticLRParser {
             hasNew = false;
             Set<ItemCollection> tempSubItemCollectionSet = new LinkedHashSet<>();
             for(ItemCollection itemCollection : tempItemCollectionSet){
+                if(!(itemCollection instanceof ItemCollection.AcceptItemCollection)){
+                    if(allItemCollectionMap.get(itemCollection.getNumber()) == null){
+                        allItemCollectionMap.put(itemCollection.getNumber(), itemCollection);
+                    }
+                }
                 for(ItemCollection subItemCollection : itemCollection.getMoveItemCollectionMap().values()){
                     // 排除接收状态项集
                     if(!(subItemCollection instanceof ItemCollection.AcceptItemCollection)){
@@ -750,6 +790,12 @@ public class SyntacticLRParser {
                     // 说明是移入操作，压入下一项集状态
                     currentItemCollection = syntaxLRShiftByPredictMap(actionInfo, itemCollectionStack);
 
+                }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_SHIFT_EPSILON)){
+                    // 说明是空产生式移入操作，压入下一项集状态
+                    currentItemCollection = syntaxLRShiftByPredictMap(actionInfo, itemCollectionStack);
+
+                    // 空产生式移入操作不需要保持输入符不变
+                    i--;
                 }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_REDUCE)){
                     // 说明是规约操作，根据规约产生式先弹出对应数量的项集状态，再压入GOTO后的项集状态
                     currentItemCollection = syntaxLRReduceByPredictMap(actionInfo, tokenSyntaxSymbol, itemCollectionStack, predictLRMap);
@@ -1041,36 +1087,6 @@ public class SyntacticLRParser {
                     if (syntaxSymbol.equals(gotoSymbol)) {
                         Item newItem = new Item(item.getSyntaxProduct(), item.getIndex() + 1, item.getLookForwardSymbolSet());
                         itemList.add(newItem);
-                    }
-                }
-            }
-        }
-
-        // FIXME 需要验证 如果没有可直接移入的项，那么可以考虑空产生式，并且按照空产生式进行移入
-        Set<SyntaxSymbol> epsilonGotoSymbolSet = new HashSet<>();
-        if(itemList.size() == 0){
-            for(Item item : itemCollection.getItemList()){
-                if(item.getSyntaxProduct().getProduct().get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
-                    // 说明是空产生式，可以按照该产生式进行移入
-                    if(item.getLookForwardSymbolSet().contains(gotoSymbol.getSymbol())){
-                        epsilonGotoSymbolSet.add(item.getSyntaxProduct().getHead());
-                    }
-                }
-            }
-        }
-
-        if(epsilonGotoSymbolSet.size() > 1){
-            // FIXME 是不是不能有多个空产生式进行移入操作，如果移入符号不同会造成不知道按照那个产生式进行规约？？？
-            throw new ParseException("LR1 空产生式异常，有多个可以移入的产生式");
-        }else{
-            for(SyntaxSymbol epsilonGotoSymbol : epsilonGotoSymbolSet){
-                for(Item item : itemCollection.getItemList()) {
-                    if (item.getIndex() < item.getSyntaxProduct().getProduct().size()) {
-                        SyntaxSymbol syntaxSymbol = item.getSyntaxProduct().getProduct().get(item.getIndex());
-                        if (syntaxSymbol.equals(epsilonGotoSymbol)) {
-                            Item newItem = new Item(item.getSyntaxProduct(), item.getIndex() + 1, item.getLookForwardSymbolSet());
-                            itemList.add(newItem);
-                        }
                     }
                 }
             }
