@@ -540,7 +540,8 @@ public class SyntacticLRParser {
                 if (reduceItemList.size() == 0) {
                     // TODO 似乎不用做太多操作
                 } else if (reduceItemList.size() > 1) {
-                    throw new ParseException("存在 规约/规约 冲突，项集：" + itemCollection.getNumber());
+                    // FIXME 验证调整成LR后同一项集是否会存在多个归约项
+//                    throw new ParseException("存在 规约/规约 冲突，项集：" + itemCollection.getNumber());
                 } else {
                     for (Item reduceItem : reduceItemList) {
 
@@ -551,10 +552,8 @@ public class SyntacticLRParser {
                         actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_REDUCE);
                         actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, reduceItem);
 
-//                        SyntaxSymbol headSymbol = reduceItem.getSyntaxProduct().getHead();
-//                        Set<String> followSet = SyntacticLLParser.getSyntaxFollow(headSymbol, syntaxFollowMap);
+                        // LR项集中只有遇到lookSymbolSet才能进行归约，而不是follow集
                         Set<String> lookSymbolSet = reduceItem.getLookForwardSymbolSet();
-
                         for (String lookSymbol : lookSymbolSet) {
                             if (!lookSymbol.equals(LexConstants.SYNTAX_EMPTY)) {
                                 SyntaxSymbol terminalSymbol = new SyntaxSymbol(lookSymbol, true);
@@ -606,7 +605,16 @@ public class SyntacticLRParser {
             predictSLRMap.get(itemCollection).get(actionType).put(syntaxSymbol, actions);
         }
 
-        predictSLRMap.get(itemCollection).get(actionType).get(syntaxSymbol).add(actionInfo);
+        // 只加入新动作
+        if(predictSLRMap.get(itemCollection).get(actionType).get(syntaxSymbol).size() == 0){
+            predictSLRMap.get(itemCollection).get(actionType).get(syntaxSymbol).add(actionInfo);
+        }else{
+            Map<String, Object> otherAction = predictSLRMap.get(itemCollection).get(actionType).get(syntaxSymbol).get(0);
+            if(!otherAction.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE))
+                    || !otherAction.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION).equals(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION))){
+                predictSLRMap.get(itemCollection).get(actionType).get(syntaxSymbol).add(actionInfo);
+            }
+        }
 
         if (predictSLRMap.get(itemCollection).get(actionType).get(syntaxSymbol).size() > 1) {
             String confictActions = "";
@@ -920,7 +928,7 @@ public class SyntacticLRParser {
             Set<ItemCollection> tempPreItemCollections = new HashSet<>();
 
             for(SyntaxSymbol gotoSymbol : allGotoSymtaxSymbol){
-                // TODO 这里需要优化下处理，已经遍历过项集的就不需要再遍历了
+                // 遍历新加入项集
                 for(ItemCollection preItemCollection : preItemCollections){
                     // 计算goto集合
                     ItemCollection gotoItemCollection = syntaxLALRGoto(preItemCollection, gotoSymbol, startItemCollection.getItemList().get(0).getSyntaxProduct(), symbolProductMap, syntaxFirstMap);
@@ -991,6 +999,8 @@ public class SyntacticLRParser {
                                                 Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap,
                                                 Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap){
 
+        // 根据SyntaxProduct及index记录项，用于合并项的lookforward集合
+        Map<SyntaxProduct, Map<Integer, Item>> reduceItemMap = new HashMap<>();
         // 加入可移入的项
         List<Item> itemList = new ArrayList<>();
         for(Item item : itemCollection.getItemList()){
@@ -1005,7 +1015,19 @@ public class SyntacticLRParser {
                 if (item.getIndex() < item.getSyntaxProduct().getProduct().size()) {
                     SyntaxSymbol syntaxSymbol = item.getSyntaxProduct().getProduct().get(item.getIndex());
                     if (syntaxSymbol.equals(gotoSymbol)) {
-                        itemList.add(new Item(item.getSyntaxProduct(), item.getIndex() + 1, item.getLookForwardSymbolSet()));
+                        if(reduceItemMap.get(item.getSyntaxProduct()) == null){
+                            Map<Integer, Item> newItemMap = new HashMap<>();
+                            reduceItemMap.put(item.getSyntaxProduct(), newItemMap);
+                        }
+
+                        if(reduceItemMap.get(item.getSyntaxProduct()).get(item.getIndex()) == null){
+                            Item newItem = new Item(item.getSyntaxProduct(), item.getIndex() + 1, item.getLookForwardSymbolSet());
+                            reduceItemMap.get(item.getSyntaxProduct()).put(item.getIndex(), newItem);
+                            itemList.add(newItem);
+                        }else{
+                            // 合并lookforward集合
+                            reduceItemMap.get(item.getSyntaxProduct()).get(item.getIndex()).getLookForwardSymbolSet().addAll(item.getLookForwardSymbolSet());
+                        }
                     }
                 }
             }
