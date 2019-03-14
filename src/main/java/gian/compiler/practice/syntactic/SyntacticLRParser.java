@@ -840,7 +840,7 @@ public class SyntacticLRParser {
 
         SyntaxSymbol reduceSyntaxSymbol = reduceItem.getSyntaxProduct().getHead();
         List<Map<String, Object>> gotoOperats = gotoPredictMap.get(reduceSyntaxSymbol);
-        if(gotoOperats.size() == 0){
+        if(gotoOperats == null && gotoOperats.size() == 0){
             // 说明对应的操作为报错
             throw new ParseException("SLR分析表GOTO异常，项集" + currentItemCollection.getNumber() + ", 输入符：" + tokenSyntaxSymbol.getSymbol());
 
@@ -977,6 +977,9 @@ public class SyntacticLRParser {
                                         Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap,
                                         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap){
 
+        // 根据SyntaxProduct及index记录项，用于合并项的lookforward集合
+        Map<SyntaxProduct, Map<Integer, Item>> reduceItemMap = new HashMap<>();
+
         for(int i=0; i<itemCollection.getItemList().size(); i++){
             Item item = itemCollection.getItemList().get(i);
             if(item.getIndex() < item.getSyntaxProduct().getProduct().size()) {
@@ -990,10 +993,23 @@ public class SyntacticLRParser {
                 if(!syntaxSymbol.isTerminal()) {
                     Set<SyntaxProduct> syntaxProducts = symbolProductMap.get(syntaxSymbol);
                     for (SyntaxProduct product : syntaxProducts) {
-                        Item newItem = new Item(product, 0, lookSymbolSet);
-                        if (!itemCollection.getItemList().contains(newItem)) {
-                            itemCollection.getItemList().add(newItem);
+
+                        if(reduceItemMap.get(product) == null){
+                            Map<Integer, Item> newItemMap = new HashMap<>();
+                            reduceItemMap.put(product, newItemMap);
                         }
+
+                        if(reduceItemMap.get(product).get(0) == null){
+                            Item newItem = new Item(product, 0, lookSymbolSet);
+                            reduceItemMap.get(product).put(0, newItem);
+
+                            // 加入新项
+                            itemCollection.getItemList().add(newItem);
+                        }else{
+                            // 合并lookforward集合
+                            reduceItemMap.get(product).get(0).getLookForwardSymbolSet().addAll(lookSymbolSet);
+                        }
+
                     }
                 }
 
@@ -1009,9 +1025,7 @@ public class SyntacticLRParser {
                                                 Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap,
                                                 Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap){
 
-        // 根据SyntaxProduct及index记录项，用于合并项的lookforward集合
-        Map<SyntaxProduct, Map<Integer, Item>> reduceItemMap = new HashMap<>();
-        // 加入可移入的项
+        // 加入可直接移入的项
         List<Item> itemList = new ArrayList<>();
         for(Item item : itemCollection.getItemList()){
             if(item.getIndex() == item.getSyntaxProduct().getProduct().size()
@@ -1025,24 +1039,44 @@ public class SyntacticLRParser {
                 if (item.getIndex() < item.getSyntaxProduct().getProduct().size()) {
                     SyntaxSymbol syntaxSymbol = item.getSyntaxProduct().getProduct().get(item.getIndex());
                     if (syntaxSymbol.equals(gotoSymbol)) {
-                        if(reduceItemMap.get(item.getSyntaxProduct()) == null){
-                            Map<Integer, Item> newItemMap = new HashMap<>();
-                            reduceItemMap.put(item.getSyntaxProduct(), newItemMap);
-                        }
+                        Item newItem = new Item(item.getSyntaxProduct(), item.getIndex() + 1, item.getLookForwardSymbolSet());
+                        itemList.add(newItem);
+                    }
+                }
+            }
+        }
 
-                        if(reduceItemMap.get(item.getSyntaxProduct()).get(item.getIndex()) == null){
+        // FIXME 需要验证 如果没有可直接移入的项，那么可以考虑空产生式，并且按照空产生式进行移入
+        Set<SyntaxSymbol> epsilonGotoSymbolSet = new HashSet<>();
+        if(itemList.size() == 0){
+            for(Item item : itemCollection.getItemList()){
+                if(item.getSyntaxProduct().getProduct().get(0).getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
+                    // 说明是空产生式，可以按照该产生式进行移入
+                    if(item.getLookForwardSymbolSet().contains(gotoSymbol.getSymbol())){
+                        epsilonGotoSymbolSet.add(item.getSyntaxProduct().getHead());
+                    }
+                }
+            }
+        }
+
+        if(epsilonGotoSymbolSet.size() > 1){
+            // FIXME 是不是不能有多个空产生式进行移入操作，如果移入符号不同会造成不知道按照那个产生式进行规约？？？
+            throw new ParseException("LR1 空产生式异常，有多个可以移入的产生式");
+        }else{
+            for(SyntaxSymbol epsilonGotoSymbol : epsilonGotoSymbolSet){
+                for(Item item : itemCollection.getItemList()) {
+                    if (item.getIndex() < item.getSyntaxProduct().getProduct().size()) {
+                        SyntaxSymbol syntaxSymbol = item.getSyntaxProduct().getProduct().get(item.getIndex());
+                        if (syntaxSymbol.equals(epsilonGotoSymbol)) {
                             Item newItem = new Item(item.getSyntaxProduct(), item.getIndex() + 1, item.getLookForwardSymbolSet());
-                            reduceItemMap.get(item.getSyntaxProduct()).put(item.getIndex(), newItem);
                             itemList.add(newItem);
-                        }else{
-                            // 合并lookforward集合
-                            reduceItemMap.get(item.getSyntaxProduct()).get(item.getIndex()).getLookForwardSymbolSet().addAll(item.getLookForwardSymbolSet());
                         }
                     }
                 }
             }
         }
 
+        // 计算移入后的CLOSURE闭包项集
         if(itemList.size() > 0) {
             ItemCollection gotoItemCollection = new ItemCollection();
             gotoItemCollection.setItemList(itemList);
@@ -1071,7 +1105,7 @@ public class SyntacticLRParser {
             lookSymbolSet.addAll(item.getLookForwardSymbolSet());
         }else{
             // A → α·BC，c/d TODO lookSymbol = [FIRST(C) + c/d] 需要验证如果B→ε，C→ε，是否使用FIRST(C)+c/d
-            for(int i=item.getIndex(); i<item.getSyntaxProduct().getProduct().size(); i++){
+            for(int i=(item.getIndex()+1); i<item.getSyntaxProduct().getProduct().size(); i++){
                 SyntaxSymbol syntaxSymbol = item.getSyntaxProduct().getProduct().get(i);
                 if(syntaxSymbol.isTerminal()){
                     lookSymbolSet.add(syntaxSymbol.getSymbol());
