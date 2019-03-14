@@ -981,6 +981,8 @@ public class SyntacticLRParser {
             Item item = itemCollection.getItemList().get(i);
             if(item.getIndex() < item.getSyntaxProduct().getProduct().size()) {
                 // 计算当前位置推导的向前看符号
+                // TODO 验证是否需要处理ε产生式
+                // TODO 需要循环将上级lookforward集加入到当前lookforward
                 Set<String> lookSymbolSet = getLAItemLookSymbolSet(item, syntaxFirstMap);
 
                 // 加入所有[B→·γ, FIRST(βa)]项
