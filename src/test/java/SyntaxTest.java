@@ -604,13 +604,16 @@ public class SyntaxTest {
         SyntacticLRParser.syntaxParseLR(startItemCollection, tokens, predictSLRMap);
     }
 
+    /**
+     * 完整测试
+     */
     @Test
     public void testSLRPredictMap3(){
-        SyntacticLRParser.syntaxParseLR("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
+        SyntacticLRParser.syntaxParseSLR("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
     }
 
     @Test
-    public void testLALRItemCollection(){
+    public void testLRItemCollection(){
 
         List<String> syntaxs = new ArrayList<>();
         syntaxs.add("S → C C ");
@@ -618,16 +621,16 @@ public class SyntaxTest {
 
         List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
-        Map<Integer, ItemCollection> allLALRItemCollectionMap = SyntacticLRParser.getLALRItemCollectionMap(syntaxSymbols);
+        Map<Integer, ItemCollection> allLRItemCollectionMap = SyntacticLRParser.getLRItemCollectionMap(syntaxSymbols);
 
         System.out.println("-------------------------------ItemCollectionNode----------------------------------");
         // 显示LR0自动机
-        LexUtils.outputSyntaxEchart(allLALRItemCollectionMap.get(0), 300, -200, true);
+        LexUtils.outputSyntaxEchart(allLRItemCollectionMap.get(0), 300, -200, true);
 
     }
 
     @Test
-    public void testLALRItemCollection1(){
+    public void testLRItemCollection1(){
 
         // 读取文法文件
         List<String> syntaxs = ParseUtils.getFile("syntaxContentFile.txt", true);
@@ -639,19 +642,27 @@ public class SyntaxTest {
 
 
         System.out.println("-------------------------------LR ItemCollectionNode----------------------------------");
-        Map<Integer, ItemCollection> allLALRItemCollectionMap = SyntacticLRParser.getLALRItemCollectionMap(syntaxSymbols);
+        Map<Integer, ItemCollection> allLRItemCollectionMap = SyntacticLRParser.getLRItemCollectionMap(syntaxSymbols);
         // 显示LR0自动机
-        LexUtils.outputSyntaxEchart(allLALRItemCollectionMap.get(0), 3600, -600, true);
+        LexUtils.outputSyntaxEchart(allLRItemCollectionMap.get(0), 3600, -600, true);
 
-        System.out.println("-------------------------------Create SLRPredictMap----------------------------------");
+        System.out.println("-------------------------------Create LR PredictMap----------------------------------");
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
-        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap = SyntacticLRParser.predictLRMap(allLALRItemCollectionMap.get(0), syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
+        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap = SyntacticLRParser.predictLRMap(allLRItemCollectionMap.get(0), syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
         LexUtils.outputLRPredictMap(predictLRMap);
 
-        System.out.println("-------------------------------SLRPredictMap----------------------------------");
-        SyntacticLRParser.syntaxParseLR(allLALRItemCollectionMap.get(0), tokens, predictLRMap);
+        System.out.println("------------------------------LRPredictMap----------------------------------");
+        SyntacticLRParser.syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
+    }
+
+    /**
+     * 完整测试
+     */
+    @Test
+    public void testLRItemCollection2(){
+        SyntacticLRParser.syntaxParseLR("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
     }
 
 }

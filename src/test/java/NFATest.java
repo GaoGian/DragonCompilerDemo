@@ -170,6 +170,9 @@ public class NFATest {
         LexUtils.outputEchart(cell);
     }
 
+    /**
+     * 完整测试
+     */
     @Test
     public void testLexParser(){
         List<Token> parseRs = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
