@@ -1,7 +1,12 @@
 import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+import jdk.nashorn.internal.objects.Global;
+import jdk.nashorn.internal.runtime.ScriptObject;
 import org.junit.Test;
 
 import javax.script.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -193,7 +198,7 @@ public class MyTest {
         }
     }
 
-    // 通过绑定变量到全局进行执行
+    // 通过绑定变量到全局进行执行 (可行)
     @Test
     public void testJSEngine3(){
 
@@ -203,13 +208,13 @@ public class MyTest {
         try {
             // 绑定变量
             Integer valueIn = 10;
-            SimpleBindings simpleBindings = new SimpleBindings();
+            Constructor constructor =  ScriptObjectMirror.class.getDeclaredConstructor(ScriptObject.class, Global.class);
+            constructor.setAccessible(true);
+            ScriptObjectMirror simpleBindings = (ScriptObjectMirror) constructor.newInstance((ScriptObject) getField(engine, "global"), (Global) getField(engine, "global"));
             simpleBindings.put("valueIn", valueIn);
 
             // 将绑定的变量设置到js引擎中
             engine.eval("function executeJS(){ print(valueIn); }", simpleBindings);
-//            engine.eval("function executeJS(){ print(globalValue); }");
-//            engine.eval("print(globalValue)", simpleBindings);
 
             if (engine instanceof Invocable) {
                 Invocable invocable = (Invocable) engine;
@@ -221,7 +226,7 @@ public class MyTest {
                     e.printStackTrace();
                 }
             }
-        } catch (ScriptException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -245,35 +250,16 @@ public class MyTest {
         }
     }
 
-    // 通过绑定变量到全局进行执行
-    @Test
-    public void testJSEngine4(){
-
-        String str="function executeJS(){ systemOut.println('js execute java System.out'); }";
-
-        ScriptEngineManager manager = new ScriptEngineManager();
-
-        ScriptEngine engine = manager.getEngineByName("nashorn");
+    public Object getField(Object target, String fieldName){
+        Object result = null;
         try {
-            // 绑定变量
-            SimpleBindings simpleBindings = new SimpleBindings();
-            simpleBindings.put("systemOut", System.out);
-
-            // 将绑定的变量设置到js引擎中
-            engine.eval(str, simpleBindings);
-            if (engine instanceof Invocable) {
-                Invocable invocable = (Invocable) engine;
-                //从脚本引擎中返回一个给定接口的实现
-                try {
-                    Object[] args = new Object[]{};
-                    invocable.invokeFunction("executeJS", args);
-                } catch (NoSuchMethodException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (ScriptException ex) {
-            ex.printStackTrace();
+            Field field = target.getClass().getDeclaredField(fieldName);
+            field.setAccessible(true);
+            result = field.get(target);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return result;
     }
 
     public static class JSTest{
