@@ -210,13 +210,18 @@ public class MyTest {
             constructor.setAccessible(true);
             ScriptObjectMirror simpleBindings = (ScriptObjectMirror) constructor.newInstance((ScriptObject) getField(engine, "global"), (Global) getField(engine, "global"));
             Map<String, JSTest> map = new HashMap<>();
-            map.put("jsTest_key", new JSTest("jsTest_value"));
+            JSTest jsTest = new JSTest("jsTest_value");
+            map.put("jsTest_key", jsTest);
             List<Map<String, JSTest>> stack = new ArrayList<>();
             stack.add(map);
             simpleBindings.put("jsTest", stack);
 
             // 将绑定的变量设置到js引擎中
-            engine.eval("function executeJS(){ print(jsTest); print(jsTest[0].jsTest_key.name); print(jsTest[0].jsTest_key.showName()); }", simpleBindings);
+            engine.eval("function executeJS(){ " +
+                    "print(jsTest); " +
+                    "print(jsTest[0].jsTest_key.name); " +
+                    "print(jsTest[0].jsTest_key.showName()); " +
+                    "jsTest[0].jsTest_key.name='test'; print(jsTest[0].jsTest_key.name); }", simpleBindings);
 
             if (engine instanceof Invocable) {
                 Invocable invocable = (Invocable) engine;
@@ -228,6 +233,8 @@ public class MyTest {
                     e.printStackTrace();
                 }
             }
+
+            System.out.println(jsTest.name);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
