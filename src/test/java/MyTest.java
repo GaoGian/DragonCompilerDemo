@@ -7,9 +7,7 @@ import org.junit.Test;
 import javax.script.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -211,10 +209,14 @@ public class MyTest {
             Constructor constructor =  ScriptObjectMirror.class.getDeclaredConstructor(ScriptObject.class, Global.class);
             constructor.setAccessible(true);
             ScriptObjectMirror simpleBindings = (ScriptObjectMirror) constructor.newInstance((ScriptObject) getField(engine, "global"), (Global) getField(engine, "global"));
-            simpleBindings.put("valueIn", valueIn);
+            Map<String, JSTest> map = new HashMap<>();
+            map.put("jsTest_key", new JSTest("jsTest_value"));
+            List<Map<String, JSTest>> stack = new ArrayList<>();
+            stack.add(map);
+            simpleBindings.put("jsTest", stack);
 
             // 将绑定的变量设置到js引擎中
-            engine.eval("function executeJS(){ print(valueIn); }", simpleBindings);
+            engine.eval("function executeJS(){ print(jsTest); print(jsTest[0].jsTest_key.name); print(jsTest[0].jsTest_key.showName()); }", simpleBindings);
 
             if (engine instanceof Invocable) {
                 Invocable invocable = (Invocable) engine;
@@ -264,7 +266,7 @@ public class MyTest {
 
     public static class JSTest{
 
-        private String name;
+        public String name;
 
         public JSTest(){};
 
