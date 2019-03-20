@@ -4,6 +4,7 @@ import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.syntactic.SyntacticLLParser;
 import gian.compiler.practice.syntactic.SyntacticLRParser;
 import gian.compiler.practice.syntactic.element.ItemCollection;
+import gian.compiler.practice.syntactic.element.SyntaxProduct;
 import gian.compiler.practice.syntactic.element.SyntaxSymbol;
 import gian.compiler.practice.syntactic.element.SyntaxTree;
 import lex.test.LexUtils;
@@ -48,12 +49,36 @@ public class SyntaxDirectedTest {
         SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
 
         System.out.println("------------------------------SyntaxTree----------------------------------");
-        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), new LexUtils.UniversalTreeNode.UniversalTreeNodeMatch<SyntaxTree.SyntaxTreeNode>(){
+        LexUtils.UniversalTreeNode.UniversalTreeNodeMatch treeNodeMatcher = new LexUtils.UniversalTreeNode.UniversalTreeNodeMatch<SyntaxTree.SyntaxTreeNode>(){
             @Override
-            public List<SyntaxTree.SyntaxTreeNode> getChildTreeNode(SyntaxTree.SyntaxTreeNode targetNode) {
-                return targetNode.getSubProductNodeList();
+            public List<LexUtils.UniversalTreeNode> getChildTreeNode(SyntaxTree.SyntaxTreeNode targetNode) {
+                List<SyntaxTree.SyntaxTreeNode> originSubTreeNodeList = targetNode.getSubProductNodeList();
+                List<SyntaxSymbol> product = targetNode.getProductNode().getProduct();
+                List<LexUtils.UniversalTreeNode> subTreeNode = new ArrayList<LexUtils.UniversalTreeNode>();
+
+                int originSubTreeIndex=0;
+                int productIndex=0;
+
+                for(; productIndex < product.size(); productIndex++){
+                    if(originSubTreeNodeList.size() ==0
+                            || originSubTreeIndex >= originSubTreeNodeList.size()
+                            || !product.get(productIndex).equals(originSubTreeNodeList.get(originSubTreeIndex).getProductNode().getHead())){
+
+                        SyntaxProduct tempProductNode = new SyntaxProduct(product.get(productIndex), new ArrayList<SyntaxSymbol>());
+                        SyntaxTree.SyntaxTreeNode tempTreeNode = new SyntaxTree.SyntaxTreeNode(targetNode.getNumber()*1000+originSubTreeIndex, true ,tempProductNode);
+                        subTreeNode.add(new LexUtils.UniversalTreeNode(tempTreeNode, this, false));
+
+                    }else{
+                        subTreeNode.add(new LexUtils.UniversalTreeNode(originSubTreeNodeList.get(originSubTreeIndex), this, true));
+                        originSubTreeIndex++;
+                    }
+                }
+
+                return subTreeNode;
             }
-        }));
+        };
+
+        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), treeNodeMatcher, true));
 
     }
 

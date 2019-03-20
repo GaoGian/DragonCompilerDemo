@@ -27,6 +27,7 @@ public class SyntaxTree {
 
     public static class SyntaxTreeNode{
 
+        protected Integer number;
         protected boolean isLeafNode;
         protected SyntaxProduct productNode;
         protected List<SyntaxTreeNode> subProductNodeList = new ArrayList<>();
@@ -42,6 +43,12 @@ public class SyntaxTree {
             this.productNode = productNode;
         }
 
+        public SyntaxTreeNode(Integer number, boolean isLeafNode, SyntaxProduct productNode) {
+            this.number = number;
+            this.isLeafNode = isLeafNode;
+            this.productNode = productNode;
+        }
+
         public SyntaxTreeNode(SyntaxProduct productNode, List<SyntaxTreeNode> subProductNodeList) {
             this.productNode = productNode;
             this.subProductNodeList.addAll(subProductNodeList);
@@ -51,6 +58,21 @@ public class SyntaxTree {
             this.isLeafNode = isLeafNode;
             this.productNode = productNode;
             this.subProductNodeList.addAll(subProductNodeList);
+        }
+
+        public SyntaxTreeNode(Integer number, boolean isLeafNode, SyntaxProduct productNode, List<SyntaxTreeNode> subProductNodeList) {
+            this.number = number;
+            this.isLeafNode = isLeafNode;
+            this.productNode = productNode;
+            this.subProductNodeList = subProductNodeList;
+        }
+
+        public Integer getNumber() {
+            return number;
+        }
+
+        public void setNumber(Integer number) {
+            this.number = number;
         }
 
         public boolean isLeafNode() {
@@ -76,6 +98,12 @@ public class SyntaxTree {
         public void setSubProductNodeList(List<SyntaxTreeNode> subProductNodeList) {
             this.subProductNodeList.addAll(subProductNodeList);
         }
+
+        @Override
+        public String toString(){
+            return this.number + ":" + this.productNode.getHead().getSymbol();
+        }
+
     }
 
 }

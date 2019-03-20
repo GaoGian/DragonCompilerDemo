@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+<head>
+    <meta charset="utf-8">
+</head>
+<body style="height: 100%; margin: 0">
+<div id="container" style="height: 100%"></div>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+<script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+<script type="text/javascript">
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    option = {
+        title: {
+            text: 'Graph 简单示例'
+        },
+        tooltip: {},
+        animationDurationUpdate: 1500,
+        animationEasingUpdate: 'quinticInOut',
+        series : [
+            {
+                type: 'graph',
+                layout: 'none',
+                symbolSize: 5,
+                roam: true,
+                label: {
+                    normal: {
+                        show: true
+                    }
+                },
+                edgeSymbol: ['circle', 'arrow'],
+                edgeSymbolSize: [4, 10],
+                edgeLabel: {
+                    normal: {
+                        textStyle: {
+                            fontSize: 20
+                        }
+                    }
+                },
+                data: [
+                    {name:'5:F',x:300,y:600},
+                    {name:'7:E',x:0,y:0},
+                    {name:'1000:id',x:900,y:900},
+                    {name:'1401:+',x:300,y:300},
+                    {name:'601:*',x:300,y:900},
+                    {name:'1:T',x:0,y:900},
+                    {name:'3:T',x:0,y:600},
+                    {name:'6:T',x:600,y:300},
+                    {name:'0:id',x:0,y:1500},
+                    {name:'400:id',x:300,y:1200},
+                    {name:'0:F',x:0,y:1200},
+                    {name:'2:F',x:600,y:900},
+                    {name:'4:E',x:0,y:300}
+
+                ],
+                // links: [],
+                links: [
+                    {source:'4:E',target:'3:T',label:{normal:{show:true,formatter: ''}},lineStyle:{normal:{curveness:0.3}}},
+                    {source:'6:T',target:'5:F',label:{normal:{show:true,formatter: ''}},lineStyle:{normal:{curveness:0.3}}},
+                    {source:'3:T',target:'1:T',label:{normal:{show:true,formatter: ''}},lineStyle:{normal:{curveness:0.3}}},
+                    {source:'2:F',target:'400:id',label:{normal:{show:true,formatter: ''}},lineStyle:{normal:{curveness:0.3}}},
+                    {source:'7:E',target:'1401:+',label:{normal:{show:true,formatter: ''}},lineStyle:{normal:{curveness:0.3}}},
+                    {source:'0:F',target:'0:id',label:{normal:{show:true,formatter: ''}},lineStyle:{normal:{curveness:0.3}}},
+                    {source:'5:F',target:'1000:id',label:{normal:{show:true,formatter: ''}},lineStyle:{normal:{curveness:0.3}}},
+                    {source:'7:E',target:'4:E',label:{normal:{show:true,formatter: ''}},lineStyle:{normal:{curveness:0.3}}},
+                    {source:'7:E',target:'6:T',label:{normal:{show:true,formatter: ''}},lineStyle:{normal:{curveness:0.3}}},
+                    {source:'1:T',target:'0:F',label:{normal:{show:true,formatter: ''}},lineStyle:{normal:{curveness:0.3}}},
+                    {source:'3:T',target:'601:*',label:{normal:{show:true,formatter: ''}},lineStyle:{normal:{curveness:0.3}}},
+                    {source:'3:T',target:'2:F',label:{normal:{show:true,formatter: ''}},lineStyle:{normal:{curveness:0.3}}}
+
+                ],
+                lineStyle: {
+                    normal: {
+                        opacity: 0.9,
+                        width: 2,
+                        curveness: 0
+                    }
+                }
+            }
+        ]
+    };;
+    if (option && typeof option === "object") {
+        myChart.setOption(option, true);
+    }
+</script>
+</body>
+</html>

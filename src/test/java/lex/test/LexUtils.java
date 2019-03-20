@@ -596,23 +596,73 @@ public class LexUtils {
     // 输出树结构
     public static void outputUniversalTreeEchart(UniversalTreeNode rootNode){
 
+        // 广度遍历
+        Set<LexUtils.EcharDemoPoint> pointSet = new HashSet<>();
+        Set<LexUtils.EchartDemoEdge> echarEdgeSet = new HashSet<>();
+
+        int x = 0;
+        int y = 0;
+
+        int yInc = 300;
+        int xInc = 300;
+
+        List<UniversalTreeNode> currentTreeNodeList = new ArrayList<>();
+        currentTreeNodeList.add(rootNode);
+
+        while(currentTreeNodeList.size() > 0){
+            x = 0;
+            List<UniversalTreeNode> tempTreeNodeList = new ArrayList<>();
+            for(UniversalTreeNode treeNode : currentTreeNodeList){
+                pointSet.add(new EcharDemoPoint(treeNode.toString(), x, y));
+
+                if(treeNode.showSubTreeNode){
+                    List<UniversalTreeNode> subTreeNodeList = treeNode.getSubTreeNode();
+                    for (UniversalTreeNode subTreeNode : subTreeNodeList) {
+                        echarEdgeSet.add(new EchartDemoEdge(treeNode.toString(), subTreeNode.toString(), ""));
+
+                        tempTreeNodeList.add(subTreeNode);
+                    }
+                }
+
+                x += xInc;
+            }
+
+            currentTreeNodeList = tempTreeNodeList;
+
+            y += yInc;
+        }
+
+
+        // 输出
+        System.out.println("----------------------------- pointList size: " + pointSet.size() + " -------------------------------");
+        for(LexUtils.EcharDemoPoint point : pointSet){
+            System.out.println(point.toString());
+        }
+        System.out.println("----------------------------- edgeList size: " + echarEdgeSet.size() + " --------------------------------");
+        for(LexUtils.EchartDemoEdge echartEdge : echarEdgeSet){
+            System.out.println(echartEdge.toString());
+        }
+        System.out.println("---------------------------------------------------------------------");
+
     }
 
     public static class UniversalTreeNode<T>{
         private T node;
         private UniversalTreeNodeMatch matcher;
+        private boolean showSubTreeNode;
 
         private int xAxis;
         private int yAxis;
 
         public UniversalTreeNode(){}
 
-        public UniversalTreeNode(T node, UniversalTreeNodeMatch matcher){
+        public UniversalTreeNode(T node, UniversalTreeNodeMatch matcher, boolean showSubTreeNode){
             this.node = node;
             this.matcher = matcher;
+            this.showSubTreeNode = showSubTreeNode;
         }
 
-        public List<T> getSubTreeNode(){
+        public List<UniversalTreeNode> getSubTreeNode(){
             return this.matcher.getChildTreeNode(this.node);
         }
 
@@ -656,7 +706,7 @@ public class LexUtils {
         // 由于匹配不同的数据结构
         public static abstract class UniversalTreeNodeMatch<T>{
 
-            public abstract List<T> getChildTreeNode(T targetNode);
+            public abstract List<UniversalTreeNode> getChildTreeNode(T targetNode);
 
         }
 

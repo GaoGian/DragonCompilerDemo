@@ -988,13 +988,15 @@ public class SyntacticLRParser {
 
         // 语法分析树根节点
         SyntaxTree syntaxTree = new SyntaxTree();
+        // 语法分析树节点编号
+        AtomicInteger syntaxTreeNodeNum = new AtomicInteger(0);
+        // 用于记录生成的语法分析树节点
+        MyStack<SyntaxTree.SyntaxTreeNode> currentSubProductNodeStack = new MyStack<>();
 
         // 记录当前推导的位置（推导链路）
         MyStack<ItemCollection> itemCollectionStack = new MyStack<>();
         itemCollectionStack.push(startItemCollection);
         System.out.println("移入 " + startItemCollection.getNumber());
-
-        List<SyntaxTree.SyntaxTreeNode> currentSubProductNodeList = new ArrayList<>();
 
         ItemCollection currentItemCollection = startItemCollection;
         for(int i=0; i<tokens.size(); i++){
@@ -1035,24 +1037,10 @@ public class SyntacticLRParser {
                     i--;
                 }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_REDUCE)){
                     // 说明是规约操作，根据规约产生式先弹出对应数量的项集状态，再压入GOTO后的项集状态
-                    currentItemCollection = syntaxLRReduceByPredictMap(actionInfo, tokenSyntaxSymbol, itemCollectionStack, predictLRMap);
+                    currentItemCollection = syntaxLRReduceByPredictMap(actionInfo, tokenSyntaxSymbol, itemCollectionStack, predictLRMap, syntaxTreeNodeNum, currentSubProductNodeStack);
 
                     // 归约后输入符需要保持不变
                     i--;
-
-                    // 获取归约项对应的产生式
-                    Item reduceItem = (Item) actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION);
-                    SyntaxProduct reduceProduct = reduceItem.getSyntaxProduct();
-                    // 判断是否是叶子节点
-                    SyntaxTree.SyntaxTreeNode productNode = null;
-                    if(reduceProduct.getProduct().size() == 1 && reduceProduct.getProduct().get(0).isTerminal()){
-                        productNode = new SyntaxTree.SyntaxTreeNode(true, reduceProduct);
-                        currentSubProductNodeList.add(productNode);
-                    }else{
-                        productNode = new SyntaxTree.SyntaxTreeNode(false, reduceProduct, currentSubProductNodeList);
-                        currentSubProductNodeList = new ArrayList<>();
-                        currentSubProductNodeList.add(productNode);
-                    }
 
                 }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_ACCEPT)){
                     // 说明是接收状态
@@ -1060,7 +1048,7 @@ public class SyntacticLRParser {
                         System.out.println("接收");
 
                         // 接收状态设置根节点，根节点为上一次归约使用的产生式（当前接收的产生式是增广文法的产生式）
-                        syntaxTree.setSyntaxTreeRoot(currentSubProductNodeList.get(0));
+                        syntaxTree.setSyntaxTreeRoot(currentSubProductNodeStack.top());
 
                         break;
                     }else{
@@ -1094,6 +1082,33 @@ public class SyntacticLRParser {
         syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
     }
 
+    /* 构建语法分析树 */
+    public static void constructSyntaxTree(Map<String, Object> actionInfo,
+                                           AtomicInteger syntaxTreeNodeNum, MyStack<SyntaxTree.SyntaxTreeNode> currentSubProductNodeStack){
+
+        // 获取归约项对应的产生式
+        Item reduceItem = (Item) actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION);
+        SyntaxProduct reduceProduct = reduceItem.getSyntaxProduct();
+        // 判断是否是叶子节点
+        SyntaxTree.SyntaxTreeNode productNode = null;
+        if(reduceProduct.getProduct().size() == 1 && reduceProduct.getProduct().get(0).isTerminal()){
+            productNode = new SyntaxTree.SyntaxTreeNode(syntaxTreeNodeNum.getAndIncrement(), true, reduceProduct);
+            currentSubProductNodeStack.push(productNode);
+        }else{
+            List<SyntaxTree.SyntaxTreeNode> subTreeNodeList = new ArrayList<>();
+            for(SyntaxSymbol symbol : reduceProduct.getProduct()) {
+                if(!symbol.isTerminal()) {
+                    subTreeNodeList.add(currentSubProductNodeStack.pop());
+                }
+            }
+            // 需要反转一下
+            Collections.reverse(subTreeNodeList);
+
+            productNode = new SyntaxTree.SyntaxTreeNode(syntaxTreeNodeNum.getAndIncrement(), false, reduceProduct, subTreeNodeList);
+            currentSubProductNodeStack.push(productNode);
+        }
+
+    }
 
     /*shift操作*/
     public static ItemCollection syntaxLRShiftByPredictMap(Map<String, Object> actionInfo, MyStack<ItemCollection> itemCollectionStack){
@@ -1109,7 +1124,8 @@ public class SyntacticLRParser {
 
     /*reduce操作*/
     public static ItemCollection syntaxLRReduceByPredictMap(Map<String, Object> actionInfo, SyntaxSymbol tokenSyntaxSymbol, MyStack<ItemCollection> itemCollectionStack,
-                                                            Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap){
+                                                            Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap,
+                                                            AtomicInteger syntaxTreeNodeNum, MyStack<SyntaxTree.SyntaxTreeNode> currentSubProductNodeStack){
 
         // 说明是规约操作，根据规约产生式先弹出对应数量的项集状态，再压入GOTO后的项集状态
         Item reduceItem = (Item) actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION);
@@ -1119,8 +1135,11 @@ public class SyntacticLRParser {
 
         System.out.println("规约 " + reduceItem.toString());
 
+        // 构建语法分析树
+        constructSyntaxTree(actionInfo, syntaxTreeNodeNum, currentSubProductNodeStack);
+
         // 归约后需要根据归约后的符号进行GOTO操作
-        ItemCollection currentItemCollection = syntaxLRGotoByPredictMap(reduceItem, tokenSyntaxSymbol, itemCollectionStack.top(), itemCollectionStack, predictLRMap);
+        ItemCollection currentItemCollection = syntaxLRGotoByPredictMap(reduceItem, tokenSyntaxSymbol, itemCollectionStack.top(), itemCollectionStack, predictLRMap, syntaxTreeNodeNum, currentSubProductNodeStack);
 
         return currentItemCollection;
     }
@@ -1128,7 +1147,8 @@ public class SyntacticLRParser {
     /*goto操作*/
     public static ItemCollection syntaxLRGotoByPredictMap(Item reduceItem, SyntaxSymbol tokenSyntaxSymbol,
                                                           ItemCollection currentItemCollection, MyStack<ItemCollection> itemCollectionStack,
-                                                          Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap){
+                                                          Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap,
+                                                          AtomicInteger syntaxTreeNodeNum, MyStack<SyntaxTree.SyntaxTreeNode> currentSubProductNodeStack){
 
         // 根据归约栈顶的状态进行GOTO操作
         Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>> reduceItemCollectionPredictMap = predictLRMap.get(currentItemCollection);
@@ -1180,7 +1200,8 @@ public class SyntacticLRParser {
                 Map<String, Object> nextActionInfo = nextActionOperats.get(0);
                 if(nextActionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_REDUCE)){
                     // 说明是可以继续规约
-                    currentItemCollection = syntaxLRReduceByPredictMap(nextActionInfo, tokenSyntaxSymbol, itemCollectionStack, predictLRMap);
+                    currentItemCollection = syntaxLRReduceByPredictMap(nextActionInfo, tokenSyntaxSymbol, itemCollectionStack, predictLRMap, syntaxTreeNodeNum, currentSubProductNodeStack);
+
                 }
             }
 
