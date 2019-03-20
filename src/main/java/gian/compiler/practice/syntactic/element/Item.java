@@ -1,7 +1,6 @@
-package gian.compiler.practice.syntactic.lrsyntax;
+package gian.compiler.practice.syntactic.element;
 
 import gian.compiler.practice.lexical.transform.LexConstants;
-import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
 
 import java.util.HashSet;
 import java.util.Set;

@@ -4,10 +4,10 @@ import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.MyStack;
 import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
 import gian.compiler.practice.syntactic.SyntacticLLParser;
-import gian.compiler.practice.syntactic.lrsyntax.Item;
-import gian.compiler.practice.syntactic.lrsyntax.ItemCollection;
-import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
-import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
+import gian.compiler.practice.syntactic.element.Item;
+import gian.compiler.practice.syntactic.element.ItemCollection;
+import gian.compiler.practice.syntactic.element.SyntaxProduct;
+import gian.compiler.practice.syntactic.element.SyntaxSymbol;
 
 import java.util.*;
 
@@ -592,6 +592,76 @@ public class LexUtils {
             return startItemCollection.toString();
         }
     }
+
+    // 输出树结构
+    public static void outputUniversalTreeEchart(UniversalTreeNode rootNode){
+
+    }
+
+    public static class UniversalTreeNode<T>{
+        private T node;
+        private UniversalTreeNodeMatch matcher;
+
+        private int xAxis;
+        private int yAxis;
+
+        public UniversalTreeNode(){}
+
+        public UniversalTreeNode(T node, UniversalTreeNodeMatch matcher){
+            this.node = node;
+            this.matcher = matcher;
+        }
+
+        public List<T> getSubTreeNode(){
+            return this.matcher.getChildTreeNode(this.node);
+        }
+
+        public T getNode() {
+            return node;
+        }
+
+        public void setNode(T node) {
+            this.node = node;
+        }
+
+        public UniversalTreeNodeMatch<T> getMatcher() {
+            return matcher;
+        }
+
+        public void setMatcher(UniversalTreeNodeMatch<T> matcher) {
+            this.matcher = matcher;
+        }
+
+        public int getxAxis() {
+            return xAxis;
+        }
+
+        public void setxAxis(int xAxis) {
+            this.xAxis = xAxis;
+        }
+
+        public int getyAxis() {
+            return yAxis;
+        }
+
+        public void setyAxis(int yAxis) {
+            this.yAxis = yAxis;
+        }
+
+        @Override
+        public String toString(){
+            return this.node.toString();
+        }
+
+        // 由于匹配不同的数据结构
+        public static abstract class UniversalTreeNodeMatch<T>{
+
+            public abstract List<T> getChildTreeNode(T targetNode);
+
+        }
+
+    }
+
 
     public static class EcharDemoPoint{
         private String name;

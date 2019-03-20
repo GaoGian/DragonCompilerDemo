@@ -1,12 +1,9 @@
-package gian.compiler.practice.syntactic.symbol;
+package gian.compiler.practice.syntactic.element;
 
-import gian.compiler.practice.lexical.parser.LexExpression;
 import gian.compiler.practice.lexical.transform.LexConstants;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Gian on 2019/2/19.

@@ -1,4 +1,4 @@
-package gian.compiler.practice.syntactic.symbol;
+package gian.compiler.practice.syntactic.element;
 
 import gian.compiler.practice.lexical.transform.LexConstants;
 

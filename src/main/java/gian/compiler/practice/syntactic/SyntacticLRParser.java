@@ -7,10 +7,7 @@ import gian.compiler.practice.lexical.parser.LexicalParser;
 import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.MyStack;
-import gian.compiler.practice.syntactic.lrsyntax.Item;
-import gian.compiler.practice.syntactic.lrsyntax.ItemCollection;
-import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
-import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
+import gian.compiler.practice.syntactic.element.*;
 import gian.compiler.utils.ParseUtils;
 
 import java.util.*;
@@ -986,13 +983,18 @@ public class SyntacticLRParser {
      * 根据LR分析表解析
      * LR分析表，一级key：项集，二级key：ACTION|GOTO，三级key：输入符，四级key：动作类型、迁移状态
      */
-    public static void syntaxParseLR(ItemCollection startItemCollection, List<Token> tokens,
-                                     Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap){
+    public static SyntaxTree syntaxParseLR(ItemCollection startItemCollection, List<Token> tokens,
+                                           Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap){
+
+        // 语法分析树根节点
+        SyntaxTree syntaxTree = new SyntaxTree();
 
         // 记录当前推导的位置（推导链路）
         MyStack<ItemCollection> itemCollectionStack = new MyStack<>();
         itemCollectionStack.push(startItemCollection);
         System.out.println("移入 " + startItemCollection.getNumber());
+
+        List<SyntaxTree.SyntaxTreeNode> currentSubProductNodeList = new ArrayList<>();
 
         ItemCollection currentItemCollection = startItemCollection;
         for(int i=0; i<tokens.size(); i++){
@@ -1037,10 +1039,29 @@ public class SyntacticLRParser {
 
                     // 归约后输入符需要保持不变
                     i--;
+
+                    // 获取归约项对应的产生式
+                    Item reduceItem = (Item) actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION);
+                    SyntaxProduct reduceProduct = reduceItem.getSyntaxProduct();
+                    // 判断是否是叶子节点
+                    SyntaxTree.SyntaxTreeNode productNode = null;
+                    if(reduceProduct.getProduct().size() == 1 && reduceProduct.getProduct().get(0).isTerminal()){
+                        productNode = new SyntaxTree.SyntaxTreeNode(true, reduceProduct);
+                        currentSubProductNodeList.add(productNode);
+                    }else{
+                        productNode = new SyntaxTree.SyntaxTreeNode(false, reduceProduct, currentSubProductNodeList);
+                        currentSubProductNodeList = new ArrayList<>();
+                        currentSubProductNodeList.add(productNode);
+                    }
+
                 }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_ACCEPT)){
                     // 说明是接收状态
                     if(i == tokens.size()-1){
                         System.out.println("接收");
+
+                        // 接收状态设置根节点，根节点为上一次归约使用的产生式（当前接收的产生式是增广文法的产生式）
+                        syntaxTree.setSyntaxTreeRoot(currentSubProductNodeList.get(0));
+
                         break;
                     }else{
                         throw new ParseException("SLR分析表接收状态异常，味道输入流末尾");
@@ -1050,6 +1071,7 @@ public class SyntacticLRParser {
 
         }
 
+        return syntaxTree;
     }
 
     public static void syntaxParseLR(String syntaxFile, String targetProgarmFile, List<LexExpression.Expression> expressions, boolean isClassPath){

@@ -1,6 +1,4 @@
-package gian.compiler.practice.syntactic.lrsyntax;
-
-import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
+package gian.compiler.practice.syntactic.element;
 
 import java.util.ArrayList;
 import java.util.HashMap;

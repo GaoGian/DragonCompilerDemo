@@ -6,8 +6,8 @@ import gian.compiler.practice.lexical.parser.LexicalParser;
 import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.lexical.transform.MyStack;
-import gian.compiler.practice.syntactic.symbol.SyntaxProduct;
-import gian.compiler.practice.syntactic.symbol.SyntaxSymbol;
+import gian.compiler.practice.syntactic.element.SyntaxProduct;
+import gian.compiler.practice.syntactic.element.SyntaxSymbol;
 import gian.compiler.utils.ParseUtils;
 
 import java.util.*;
