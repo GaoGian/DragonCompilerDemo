@@ -218,10 +218,20 @@ public class MyTest {
 
             // 将绑定的变量设置到js引擎中
             engine.eval("function executeJS(){ " +
+                    // 判断是否获取到java对象
                     "print(jsTest); " +
+                    // 判断是否可以操作list、map
                     "print(jsTest[0].jsTest_key.name); " +
+                    // 判断是否可以调用实例方法
                     "print(jsTest[0].jsTest_key.showName()); " +
-                    "jsTest[0].jsTest_key.name='test'; print(jsTest[0].jsTest_key.name); }", simpleBindings);
+                    // 判断是否可以赋值
+                    "jsTest[0].jsTest_key.name='test'; print(jsTest[0].jsTest_key.name); " +
+                    // 创建java对象
+                    "var JSTest = Java.type('MyTest.JSTest'); var newJSTest = new JSTest('newJSTest'); jsTest[0].newJSTest=newJSTest; print(jsTest[0].newJSTest.name); " +
+                    // 调用call方法
+//                    "var showName = jsTest[0].newJSTest.showName; print(showName.call(jsTest[0].jsTest_key)); " +
+                    " }",
+                    simpleBindings);
 
             if (engine instanceof Invocable) {
                 Invocable invocable = (Invocable) engine;
@@ -235,6 +245,7 @@ public class MyTest {
             }
 
             System.out.println(jsTest.name);
+            System.out.println(map.get("newJSTest").name);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
