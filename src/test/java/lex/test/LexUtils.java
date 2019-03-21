@@ -902,6 +902,8 @@ public class LexUtils {
         for(SyntaxSymbol actionSymbol : actionSymbolSet){
             if(!actionSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
                 str.append("<th>" + actionSymbol.getSymbol() + "</th>\n");
+            }else{
+                str.append("<th><span style='color:red'>" + actionSymbol.getSymbol() + "</span></th>\n");
             }
         }
         for(SyntaxSymbol gotoSymbol : gotoSymbolSet){
@@ -917,23 +919,30 @@ public class LexUtils {
 //            str.append("    <td>" + itemCollection.toString() + "</td>\n");
             str.append("    <td>" + itemCollection.getNumber() + "</td>\n");
             for(SyntaxSymbol actionSymbol : actionSymbolSet){
-                if(!actionSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
                     if(predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION) != null) {
                         if (predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(actionSymbol) != null) {
                             Map<String, Object> actionInfo = predictSLRMap.get(itemCollection).get(LexConstants.SYNTAX_LR_ACTION).get(actionSymbol).get(0);
-                            if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION) instanceof ItemCollection) {
-                                str.append("    <td>" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString().replace("ACTION_", "").substring(0, 1).toLowerCase() + "_" + ((ItemCollection)actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION)).getNumber() + "</td>\n");
-                            }else{
-                                str.append("    <td>" + actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString().replace("ACTION_", "").substring(0, 1).toLowerCase() + "_" + ((Item)actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION)).getSyntaxProduct().getNumber() + "</td>\n");
-
+                            str.append("    <td>");
+                            if(actionSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
+                                str.append("<span style='color:red'>");
                             }
+
+                            if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION) instanceof ItemCollection) {
+                                str.append(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString().replace("ACTION_", "").substring(0, 1).toLowerCase() + "_" + ((ItemCollection)actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION)).getNumber());
+                            }else{
+                                str.append(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString().replace("ACTION_", "").substring(0, 1).toLowerCase() + "_" + ((Item)actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION)).getSyntaxProduct().getNumber());
+                            }
+
+                            if(actionSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)) {
+                                str.append("</span>");
+                            }
+                            str.append("    </td>\n");
                         } else {
                             str.append("    <td></td>\n");
                         }
                     }else{
                         str.append("    <td></td>\n");
                     }
-                }
             }
 
             for(SyntaxSymbol gotoSymbol : gotoSymbolSet){
