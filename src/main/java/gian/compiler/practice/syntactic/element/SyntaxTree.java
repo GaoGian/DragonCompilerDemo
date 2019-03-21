@@ -101,7 +101,7 @@ public class SyntaxTree {
 
         @Override
         public String toString(){
-            return this.number + ":" + this.productNode.getHead().getSymbol();
+            return this.number + " : " + this.productNode.getHead().getSymbol();
         }
 
     }

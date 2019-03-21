@@ -893,7 +893,8 @@ public class SyntacticLRParser {
                                 actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_SHIFT_EPSILON);
                                 actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection);
 
-                                // TODO 如果是空产生式需要将转换符替换成lookforwar集合，每个字符都有单独的转换边到达该项集
+                                // TODO 如果是空产生式需要将转换符替换成 lookforwar集合，每个字符都有单独的转换边到达该项集
+                                // TODO 验证是否会出现 移入/移入 冲突，即 lookforwar集合中的元素和其他项的元素重叠
                                 if(moveItemCollection.getItemList().size() > 1){
                                     throw new ParseException("空产生项集存在多个空产生式");
                                 }
