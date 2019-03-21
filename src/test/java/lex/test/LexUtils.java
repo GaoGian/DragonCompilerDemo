@@ -595,6 +595,10 @@ public class LexUtils {
 
     // 输出树结构
     public static void outputUniversalTreeEchart(UniversalTreeNode rootNode){
+        outputUniversalTreeEchart(rootNode, 300, 300);
+    }
+
+    public static void outputUniversalTreeEchart(UniversalTreeNode rootNode, int xInc, int yInc){
 
         // 广度遍历
         Set<LexUtils.EcharDemoPoint> pointSet = new HashSet<>();
@@ -603,17 +607,21 @@ public class LexUtils {
         int x = 0;
         int y = 0;
 
-        int yInc = 300;
-        int xInc = 300;
-
         List<UniversalTreeNode> currentTreeNodeList = new ArrayList<>();
         currentTreeNodeList.add(rootNode);
 
+        Map<UniversalTreeNode, UniversalTreeNode> preAndSubMap = new HashMap<>();
+
+        Integer preStartIndex = x;
         while(currentTreeNodeList.size() > 0){
-            x = 0;
+            x = preStartIndex;
+            preStartIndex = null;
             List<UniversalTreeNode> tempTreeNodeList = new ArrayList<>();
             for(UniversalTreeNode treeNode : currentTreeNodeList){
+                x = preAndSubMap.get(treeNode) == null ? x : preAndSubMap.get(treeNode).getxAxis() > x ? preAndSubMap.get(treeNode).getxAxis() : x;
                 pointSet.add(new EcharDemoPoint(treeNode.toString(), x, y));
+                treeNode.setxAxis(x);
+                treeNode.setyAxis(y);
 
                 if(treeNode.showSubTreeNode){
                     List<UniversalTreeNode> subTreeNodeList = treeNode.getSubTreeNode();
@@ -621,6 +629,11 @@ public class LexUtils {
                         echarEdgeSet.add(new EchartDemoEdge(treeNode.toString(), subTreeNode.toString(), ""));
 
                         tempTreeNodeList.add(subTreeNode);
+                        preAndSubMap.put(subTreeNode, treeNode);
+
+                        if(preStartIndex == null){
+                            preStartIndex = x;
+                        }
                     }
                 }
 
@@ -643,7 +656,6 @@ public class LexUtils {
             System.out.println(echartEdge.toString());
         }
         System.out.println("---------------------------------------------------------------------");
-
     }
 
     public static class UniversalTreeNode<T>{
@@ -701,6 +713,22 @@ public class LexUtils {
         @Override
         public String toString(){
             return this.node.toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            UniversalTreeNode<?> that = (UniversalTreeNode<?>) o;
+
+            return node != null ? node.toString().equals(that.node.toString()) : that.node == null;
+
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
         }
 
         // 由于匹配不同的数据结构
