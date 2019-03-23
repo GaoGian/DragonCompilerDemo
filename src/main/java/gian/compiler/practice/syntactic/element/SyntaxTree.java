@@ -94,6 +94,14 @@ public class SyntaxTree {
             this.product = product;
         }
 
+        public SyntaxSymbol getSyntaxSymbol() {
+            return syntaxSymbol;
+        }
+
+        public void setSyntaxSymbol(SyntaxSymbol syntaxSymbol) {
+            this.syntaxSymbol = syntaxSymbol;
+        }
+
         public List<SyntaxTreeNode> getSubProductNodeList() {
             return subProductNodeList;
         }

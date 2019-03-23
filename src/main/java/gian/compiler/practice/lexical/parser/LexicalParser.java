@@ -11,10 +11,27 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * 词法分析器
  * Created by gaojian on 2019/1/24.
  */
 public class LexicalParser {
 
+    /**
+     * 读取词法文件，生成词法规则
+     * 词法规则格式：expressName → regexStr type isRegex isEmpty
+     * regexStr：匹配正则表达式
+     * type：类型名称
+     * isRegex：是否根据字面量匹配
+     * isEmpty：是否需要识别，为空的话就跳过
+     */
+    public static List<LexExpression.Expression> readExpressionFile(String flie, boolean isClassPath){
+        return null;
+    }
+
+    /**
+     * 根据词法规则解析目标文件内容
+     *
+     * */
     public static List<Token> parser(List<String> fileContent, List<LexExpression.Expression> lexExpression){
         // TODO 将正则表达式转换成状态转换图
         List<TranCell> tranCells = new ArrayList<>();

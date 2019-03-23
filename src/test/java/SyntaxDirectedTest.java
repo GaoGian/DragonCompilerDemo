@@ -22,6 +22,7 @@ import java.util.Set;
  */
 public class SyntaxDirectedTest {
 
+    // 匹配语法分析树
     public static LexUtils.UniversalTreeNode.UniversalTreeNodeMatch treeNodeMatcher = new LexUtils.UniversalTreeNode.UniversalTreeNodeMatch<SyntaxTree.SyntaxTreeNode>(){
         @Override
         public List<LexUtils.UniversalTreeNode> getChildTreeNode(SyntaxTree.SyntaxTreeNode targetNode) {
@@ -91,5 +92,7 @@ public class SyntaxDirectedTest {
         LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), treeNodeMatcher, true), 300, 500);
 
     }
+
+
 
 }
