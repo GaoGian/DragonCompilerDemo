@@ -29,42 +29,37 @@ public class SyntaxTree {
 
         protected Integer number;
         protected boolean isLeafNode;
-        protected SyntaxProduct productNode;
+        protected SyntaxTreeNode parentNode;
+        protected SyntaxProduct product;
+        protected SyntaxSymbol syntaxSymbol;
         protected List<SyntaxTreeNode> subProductNodeList = new ArrayList<>();
 
         public SyntaxTreeNode(){}
 
-        public SyntaxTreeNode(SyntaxProduct productNode) {
-            this.productNode = productNode;
-        }
-
-        public SyntaxTreeNode(boolean isLeafNode, SyntaxProduct productNode) {
-            this.isLeafNode = isLeafNode;
-            this.productNode = productNode;
-        }
-
-        public SyntaxTreeNode(Integer number, boolean isLeafNode, SyntaxProduct productNode) {
+        public SyntaxTreeNode(Integer number, boolean isLeafNode, SyntaxSymbol syntaxSymbol) {
             this.number = number;
             this.isLeafNode = isLeafNode;
-            this.productNode = productNode;
+            this.syntaxSymbol = syntaxSymbol;
         }
 
-        public SyntaxTreeNode(SyntaxProduct productNode, List<SyntaxTreeNode> subProductNodeList) {
-            this.productNode = productNode;
-            this.subProductNodeList.addAll(subProductNodeList);
-        }
-
-        public SyntaxTreeNode(boolean isLeafNode, SyntaxProduct productNode, List<SyntaxTreeNode> subProductNodeList) {
-            this.isLeafNode = isLeafNode;
-            this.productNode = productNode;
-            this.subProductNodeList.addAll(subProductNodeList);
-        }
-
-        public SyntaxTreeNode(Integer number, boolean isLeafNode, SyntaxProduct productNode, List<SyntaxTreeNode> subProductNodeList) {
+        public SyntaxTreeNode(Integer number, boolean isLeafNode, SyntaxProduct product) {
             this.number = number;
             this.isLeafNode = isLeafNode;
-            this.productNode = productNode;
+            this.product = product;
+            this.syntaxSymbol = product.getHead();
+        }
+
+        public SyntaxTreeNode(Integer number, boolean isLeafNode, SyntaxProduct product, List<SyntaxTreeNode> subProductNodeList) {
+            this.number = number;
+            this.isLeafNode = isLeafNode;
+            this.product = product;
+            this.syntaxSymbol = product.getHead();
             this.subProductNodeList = subProductNodeList;
+
+            // 反向关联父节点
+            for(SyntaxTreeNode childNode : subProductNodeList){
+                childNode.setParentNode(this);
+            }
         }
 
         public Integer getNumber() {
@@ -83,12 +78,20 @@ public class SyntaxTree {
             isLeafNode = leafNode;
         }
 
-        public SyntaxProduct getProductNode() {
-            return productNode;
+        public SyntaxTreeNode getParentNode() {
+            return parentNode;
         }
 
-        public void setProductNode(SyntaxProduct productNode) {
-            this.productNode = productNode;
+        public void setParentNode(SyntaxTreeNode parentNode) {
+            this.parentNode = parentNode;
+        }
+
+        public SyntaxProduct getProduct() {
+            return product;
+        }
+
+        public void setProduct(SyntaxProduct product) {
+            this.product = product;
         }
 
         public List<SyntaxTreeNode> getSubProductNodeList() {
@@ -96,14 +99,35 @@ public class SyntaxTree {
         }
 
         public void setSubProductNodeList(List<SyntaxTreeNode> subProductNodeList) {
-            this.subProductNodeList.addAll(subProductNodeList);
+            this.subProductNodeList = subProductNodeList;
+
+            // 反向关联父节点
+            for(SyntaxTreeNode childNode : subProductNodeList){
+                childNode.setParentNode(this);
+            }
+
         }
 
         @Override
         public String toString(){
-            return this.number + " : " + this.productNode.getHead().getSymbol();
+            return this.number + " : " + this.syntaxSymbol.getSymbol();
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            SyntaxTreeNode that = (SyntaxTreeNode) o;
+
+            return number != null ? number.equals(that.number) : that.number == null;
+
+        }
+
+        @Override
+        public int hashCode() {
+            return 0;
+        }
     }
 
 }

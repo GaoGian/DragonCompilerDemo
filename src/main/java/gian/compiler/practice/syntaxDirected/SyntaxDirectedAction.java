@@ -6,6 +6,16 @@ package gian.compiler.practice.syntaxDirected;
  */
 public abstract class SyntaxDirectedAction {
 
-    public abstract void invokeDirectedAction();
+    protected String matchSyntaxSymbolTag;
+
+    public void SyntaxDirectedAction(String matchSyntaxSymbolTag){
+        this.matchSyntaxSymbolTag = matchSyntaxSymbolTag;
+    }
+
+    public boolean isMatch(String matchSyntaxSymbol){
+        return this.matchSyntaxSymbolTag.equals(matchSyntaxSymbol);
+    }
+
+    public abstract void invokeDirectedAction(SyntaxDirectedContext context);
 
 }

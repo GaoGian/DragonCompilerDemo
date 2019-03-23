@@ -973,7 +973,7 @@ public class SyntacticLRParser {
     }
 
     /**
-     * 根据LR分析表解析
+     * 根据LR分析表解析生成语法分析树（只包含非终结符号节点，终结符号节点需要对比产生式获取）
      * LR分析表，一级key：项集，二级key：ACTION|GOTO，三级key：输入符，四级key：动作类型、迁移状态
      */
     public static SyntaxTree syntaxParseLR(ItemCollection startItemCollection, List<Token> tokens,
@@ -1052,6 +1052,9 @@ public class SyntacticLRParser {
 
         }
 
+        // 补充终结符号叶子结点
+        fillSyntaxTreeLeafNode(syntaxTree.getSyntaxTreeRoot(), syntaxTreeNodeNum);
+
         return syntaxTree;
     }
 
@@ -1075,17 +1078,18 @@ public class SyntacticLRParser {
         syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
     }
 
-    /* 构建语法分析树 */
+    /* 构建语法分析树，只加入非终结符号节点 */
     public static void constructSyntaxTree(Map<String, Object> actionInfo,
                                            AtomicInteger syntaxTreeNodeNum, MyStack<SyntaxTree.SyntaxTreeNode> currentSubProductNodeStack){
 
         // 获取归约项对应的产生式
         Item reduceItem = (Item) actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION);
         SyntaxProduct reduceProduct = reduceItem.getSyntaxProduct();
-        // 判断是否是叶子节点
         SyntaxTree.SyntaxTreeNode productNode = null;
+
+        // 判断是否是终结符号归约
         if(reduceProduct.getProduct().size() == 1 && reduceProduct.getProduct().get(0).isTerminal()){
-            productNode = new SyntaxTree.SyntaxTreeNode(syntaxTreeNodeNum.getAndIncrement(), true, reduceProduct);
+            productNode = new SyntaxTree.SyntaxTreeNode(syntaxTreeNodeNum.getAndIncrement(), false, reduceProduct);
             currentSubProductNodeStack.push(productNode);
         }else{
             List<SyntaxTree.SyntaxTreeNode> subTreeNodeList = new ArrayList<>();
@@ -1099,6 +1103,46 @@ public class SyntacticLRParser {
 
             productNode = new SyntaxTree.SyntaxTreeNode(syntaxTreeNodeNum.getAndIncrement(), false, reduceProduct, subTreeNodeList);
             currentSubProductNodeStack.push(productNode);
+        }
+
+    }
+
+    public static void fillSyntaxTreeLeafNode(SyntaxTree.SyntaxTreeNode syntaxTreeNode, AtomicInteger syntaxTreeNodeNum){
+        List<SyntaxTree.SyntaxTreeNode> originSubTreeNodeList = syntaxTreeNode.getSubProductNodeList();
+        List<SyntaxSymbol> productList = syntaxTreeNode.getProduct().getProduct();
+
+        // 记录新的语法树节点
+        List<SyntaxTree.SyntaxTreeNode> fillSubTreeNodeList = new ArrayList<>();
+
+        // 语法分析树节点序号
+        int syntaxTreeIndex=0;
+        // 产生式序号
+        int productIndex=0;
+
+        // 生成的语法分析树只包括非终结符号节点，需要对比产生式加入非终结符号节点
+        for(; productIndex < productList.size(); productIndex++){
+            if(syntaxTreeIndex < originSubTreeNodeList.size()
+                    && productList.get(productIndex).equals(originSubTreeNodeList.get(syntaxTreeIndex).getProduct().getHead())){
+
+                // 当前遍历的文法符号是非终结符号      TODO 产生式文法符号的前后位置和语法分析树节点的位置是一致的
+                fillSubTreeNodeList.add(originSubTreeNodeList.get(syntaxTreeIndex));
+                syntaxTreeIndex++;
+            }else{
+
+                // 加入终结符号叶子结点，叶子节点没有产生式
+                SyntaxTree.SyntaxTreeNode leafNode = new SyntaxTree.SyntaxTreeNode(syntaxTreeNodeNum.getAndIncrement(), true, productList.get(productIndex));
+                fillSubTreeNodeList.add(leafNode);
+            }
+        }
+
+        // 设置填充后的语法树节点
+        syntaxTreeNode.setSubProductNodeList(fillSubTreeNodeList);
+
+        // 遍历下级非终结符号节点
+        for(SyntaxTree.SyntaxTreeNode childNode : syntaxTreeNode.getSubProductNodeList()){
+            if(!childNode.isLeafNode()) {
+                fillSyntaxTreeLeafNode(childNode, syntaxTreeNodeNum);
+            }
         }
 
     }
