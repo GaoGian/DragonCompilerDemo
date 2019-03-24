@@ -15,13 +15,13 @@ public class ProgramSyntaxDirectedAction extends SyntaxDirectedListener {
     }
 
     @Override
-    public void enterSyntaxSymbol(SyntaxDirectedContext context) {
-
+    public String enterSyntaxSymbol(SyntaxDirectedContext context) {
+        return "";
     }
 
     @Override
-    public void exitSyntaxSymbol(SyntaxDirectedContext context) {
-
+    public String exitSyntaxSymbol(SyntaxDirectedContext context) {
+        return "";
     }
 
 }

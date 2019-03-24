@@ -6,9 +6,11 @@ package gian.compiler.practice.syntaxDirected;
  */
 public abstract class SyntaxDirectedListener {
 
-    // 匹配的产生式标识（产生式字符串，和输入格式保持一致）
+    // 匹配的产生式标识（父节点产生式字符串，和输入格式保持一致）
     protected String matchProductTag;
+    // 当前节点在兄弟节点的位置
     protected Integer matchIndex;
+    // 当前节点文法符号
     protected String matchSymbol;
     // 是否是匹配叶子节点（终结符）
     protected Boolean isLeaf;
@@ -30,10 +32,48 @@ public abstract class SyntaxDirectedListener {
         }
     }
 
-    // 遍历节点前执行
-    public abstract void enterSyntaxSymbol(SyntaxDirectedContext context);
+    // 遍历节点前执行，返回code
+    public abstract String enterSyntaxSymbol(SyntaxDirectedContext context);
 
-    // 离开节点时执行
-    public abstract void exitSyntaxSymbol(SyntaxDirectedContext context);
+    // 离开节点时执行，返回code
+    public abstract String exitSyntaxSymbol(SyntaxDirectedContext context);
 
+    public void setProperties(String matchProductTag, Integer matchIndex, String matchSymbol, Boolean isLeaf){
+        this.matchProductTag = matchProductTag;
+        this.matchIndex = matchIndex;
+        this.matchSymbol = matchSymbol;
+        this.isLeaf = isLeaf;
+    }
+
+    public String getMatchProductTag() {
+        return matchProductTag;
+    }
+
+    public void setMatchProductTag(String matchProductTag) {
+        this.matchProductTag = matchProductTag;
+    }
+
+    public Integer getMatchIndex() {
+        return matchIndex;
+    }
+
+    public void setMatchIndex(Integer matchIndex) {
+        this.matchIndex = matchIndex;
+    }
+
+    public String getMatchSymbol() {
+        return matchSymbol;
+    }
+
+    public void setMatchSymbol(String matchSymbol) {
+        this.matchSymbol = matchSymbol;
+    }
+
+    public Boolean getLeaf() {
+        return isLeaf;
+    }
+
+    public void setLeaf(Boolean leaf) {
+        isLeaf = leaf;
+    }
 }

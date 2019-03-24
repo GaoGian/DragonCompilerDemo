@@ -1058,7 +1058,7 @@ public class SyntacticLRParser {
         return syntaxTree;
     }
 
-    public static void syntaxParseLR(String syntaxFile, String targetProgarmFile, List<LexExpression.Expression> expressions, boolean isClassPath){
+    public static SyntaxTree syntaxParseLR(String syntaxFile, String targetProgarmFile, List<LexExpression.Expression> expressions, boolean isClassPath){
         // 读取文法文件
         List<String> syntaxs = ParseUtils.getFile(syntaxFile, isClassPath);
 
@@ -1075,7 +1075,7 @@ public class SyntacticLRParser {
         Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap = SyntacticLRParser.predictLRMap(allLRItemCollectionMap.get(0), syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
 
         // 根据LR PredictMap 预测分析表解析目标代码
-        syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
+        return syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
     }
 
     /* 构建语法分析树，只加入非终结符号节点 */
