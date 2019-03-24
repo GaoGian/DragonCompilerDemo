@@ -660,7 +660,7 @@ public class LexUtils {
 
     public static class UniversalTreeNode<T>{
         private T node;
-        private UniversalTreeNodeMatch matcher;
+        private UniversalTreeNodeMatcher matcher;
         private boolean showSubTreeNode;
 
         private int xAxis;
@@ -668,7 +668,7 @@ public class LexUtils {
 
         public UniversalTreeNode(){}
 
-        public UniversalTreeNode(T node, UniversalTreeNodeMatch matcher, boolean showSubTreeNode){
+        public UniversalTreeNode(T node, UniversalTreeNodeMatcher matcher, boolean showSubTreeNode){
             this.node = node;
             this.matcher = matcher;
             this.showSubTreeNode = showSubTreeNode;
@@ -686,11 +686,11 @@ public class LexUtils {
             this.node = node;
         }
 
-        public UniversalTreeNodeMatch<T> getMatcher() {
+        public UniversalTreeNodeMatcher<T> getMatcher() {
             return matcher;
         }
 
-        public void setMatcher(UniversalTreeNodeMatch<T> matcher) {
+        public void setMatcher(UniversalTreeNodeMatcher<T> matcher) {
             this.matcher = matcher;
         }
 
@@ -732,7 +732,7 @@ public class LexUtils {
         }
 
         // 由于匹配不同的数据结构
-        public static abstract class UniversalTreeNodeMatch<T>{
+        public static abstract class UniversalTreeNodeMatcher<T>{
 
             public abstract List<UniversalTreeNode> getChildTreeNode(T targetNode);
 

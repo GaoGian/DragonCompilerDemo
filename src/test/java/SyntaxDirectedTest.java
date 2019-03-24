@@ -1,17 +1,14 @@
 import gian.compiler.practice.lexical.parser.LexExpression;
-import gian.compiler.practice.lexical.parser.LexicalParser;
 import gian.compiler.practice.lexical.parser.Token;
 import gian.compiler.practice.lexical.transform.LexConstants;
 import gian.compiler.practice.syntactic.SyntacticLLParser;
 import gian.compiler.practice.syntactic.SyntacticLRParser;
 import gian.compiler.practice.syntactic.element.ItemCollection;
-import gian.compiler.practice.syntactic.element.SyntaxProduct;
 import gian.compiler.practice.syntactic.element.SyntaxSymbol;
 import gian.compiler.practice.syntactic.element.SyntaxTree;
 import gian.compiler.practice.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.practice.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.practice.syntaxDirected.SyntaxDirectedParser;
-import gian.compiler.utils.ParseUtils;
 import lex.test.LexUtils;
 import org.junit.Test;
 
@@ -23,16 +20,44 @@ import java.util.*;
 public class SyntaxDirectedTest {
 
     // 匹配语法分析树
-    public static LexUtils.UniversalTreeNode.UniversalTreeNodeMatch treeNodeMatcher = new LexUtils.UniversalTreeNode.UniversalTreeNodeMatch<SyntaxTree.SyntaxTreeNode>(){
-        @Override
-        public List<LexUtils.UniversalTreeNode> getChildTreeNode(SyntaxTree.SyntaxTreeNode targetNode) {
-            List<LexUtils.UniversalTreeNode> matchSubTreeNodeList = new ArrayList<>();
-            for(SyntaxTree.SyntaxTreeNode childNode : targetNode.getSubProductNodeList()){
-                matchSubTreeNodeList.add(new LexUtils.UniversalTreeNode(childNode, this, true));
+    public static LexUtils.UniversalTreeNode.UniversalTreeNodeMatcher getDirectTreeMatcher(){
+        return new LexUtils.UniversalTreeNode.UniversalTreeNodeMatcher<SyntaxTree.SyntaxTreeNode>(){
+            @Override
+            public List<LexUtils.UniversalTreeNode> getChildTreeNode(SyntaxTree.SyntaxTreeNode targetNode) {
+                List<LexUtils.UniversalTreeNode> matchSubTreeNodeList = new ArrayList<>();
+                for(SyntaxTree.SyntaxTreeNode childNode : targetNode.getSubProductNodeList()){
+                    matchSubTreeNodeList.add(new LexUtils.UniversalTreeNode(childNode, this, true));
+                }
+                return matchSubTreeNodeList;
             }
-            return matchSubTreeNodeList;
-        }
-    };
+        };
+    }
+
+    // 匹配注释语法分析树
+    public static LexUtils.UniversalTreeNode.UniversalTreeNodeMatcher getDirectActionTreeMatcher(Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap){
+        return new LexUtils.UniversalTreeNode.UniversalTreeNodeMatcher<SyntaxTree.SyntaxTreeNode>(){
+            @Override
+            public List<LexUtils.UniversalTreeNode> getChildTreeNode(SyntaxTree.SyntaxTreeNode targetNode) {
+                List<LexUtils.UniversalTreeNode> matchSubTreeNodeList = new ArrayList<>();
+                for(int i=0; i<targetNode.getSubProductNodeList().size(); i++){
+                    SyntaxTree.SyntaxTreeNode childNode = targetNode.getSubProductNodeList().get(i);
+                    SyntaxDirectedListener childDirectAction = syntaxDirectActionMap.get(childNode.getNumber());
+                    if(childDirectAction != null){
+                        // 加入预处理语义动作节点
+                        SyntaxTree.SyntaxTreeNode enterDirectActionNode = new SyntaxTree.SyntaxTreeNode(targetNode.getNumber()*10+i, true, new SyntaxSymbol(childDirectAction.enterSyntaxSymbol(null), true));
+                        matchSubTreeNodeList.add(new LexUtils.UniversalTreeNode(enterDirectActionNode, this, true) );
+                    }
+                    matchSubTreeNodeList.add(new LexUtils.UniversalTreeNode(childNode, this, true));
+                    if(childDirectAction != null){
+                        // 加入综合记录语义动作几点
+                        SyntaxTree.SyntaxTreeNode exitDirectActionNode = new SyntaxTree.SyntaxTreeNode(targetNode.getNumber()*100+i, true, new SyntaxSymbol(childDirectAction.exitSyntaxSymbol(null), true));
+                        matchSubTreeNodeList.add(new LexUtils.UniversalTreeNode(exitDirectActionNode, this, true) );
+                    }
+                }
+                return matchSubTreeNodeList;
+            }
+        };
+    }
 
     @Test
     public void testSyntaxTree(){
@@ -49,19 +74,9 @@ public class SyntaxDirectedTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
-
-        System.out.println("-------------------------------LR ItemCollectionNode----------------------------------");
-        Map<Integer, ItemCollection> allLRItemCollectionMap = SyntacticLRParser.getLRItemCollectionMap(syntaxSymbols);
-
-        System.out.println("-------------------------------Create LR PredictMap----------------------------------");
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
-        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap = SyntacticLRParser.predictLRMap(allLRItemCollectionMap.get(0), syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
-
-        System.out.println("------------------------------LRPredictMap----------------------------------");
-        SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
-        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), treeNodeMatcher, true));
+        System.out.println("------------------------------SyntaxTree----------------------------------");
+        SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR(syntaxs, tokens);
+        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true));
 
     }
 
@@ -69,11 +84,11 @@ public class SyntaxDirectedTest {
     public void testSyntaxTree1(){
         System.out.println("------------------------------SyntaxTree----------------------------------");
         SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
-        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), treeNodeMatcher, true), 300, 500);
+        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true), 300, 500);
     }
 
     @Test
-    public void testSyntaxDirectAnnotateTree(){
+    public void testSyntaxDirectActionTree(){
         List<Token> tokens = new ArrayList<>();
         tokens.add(new Token("id", LexExpression.TokenType.ID));
         tokens.add(new Token("*", LexExpression.TokenType.OPERATOR));
@@ -88,21 +103,10 @@ public class SyntaxDirectedTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
-
-        System.out.println("-------------------------------LR ItemCollectionNode----------------------------------");
-        Map<Integer, ItemCollection> allLRItemCollectionMap = SyntacticLRParser.getLRItemCollectionMap(syntaxSymbols);
-
-        System.out.println("-------------------------------Create LR PredictMap----------------------------------");
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
-        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap = SyntacticLRParser.predictLRMap(allLRItemCollectionMap.get(0), syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
-
         System.out.println("------------------------------SyntaxTree----------------------------------");
-        SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
-        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), treeNodeMatcher, true));
+        SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR(syntaxs, tokens);
 
-        System.out.println("------------------------------注释语法分析树----------------------------------");
+        System.out.println("------------------------------SyntaxTree DirectAction----------------------------------");
         SyntaxDirectedListener Er_to_E_0_Listener = new SyntaxDirectedListener("L → E", 0, "E", false) {
             @Override
             public String enterSyntaxSymbol(SyntaxDirectedContext context) {
@@ -247,7 +251,6 @@ public class SyntaxDirectedTest {
             }
         };
 
-
         List<SyntaxDirectedListener> syntaxDirectedListenerList = new ArrayList<>();
         syntaxDirectedListenerList.add(Er_to_E_0_Listener);
         syntaxDirectedListenerList.add(E_to_E_add_T_0_Listener);
@@ -259,39 +262,17 @@ public class SyntaxDirectedTest {
         syntaxDirectedListenerList.add(F_to_r_E_r_Listener);
         syntaxDirectedListenerList.add(F_to_id_Listener);
 
-//        Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap = SyntaxDirectedParser.matchSyntaxTreeNodeDirectAction(syntaxTree.getSyntaxTreeRoot(), 0, syntaxDirectedListenerList, new HashMap<>());
+        System.out.println("------------------------------SyntaxDirectActionTree----------------------------------");
+        Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap = SyntaxDirectedParser.matchSyntaxTreeNodeDirectAction(syntaxTree.getSyntaxTreeRoot(), 0, syntaxDirectedListenerList, new HashMap<>());
+        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), getDirectActionTreeMatcher(syntaxDirectActionMap), true));
 
+        System.out.println("------------------------------SyntaxDirectTree Parse----------------------------------");
         SyntaxDirectedParser.syntaxDirectedParser(syntaxTree, syntaxDirectedListenerList);
 
     }
 
     @Test
     public void testSyntaxDirect(){
-        List<Token> tokens = new ArrayList<>();
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token("*", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token("+", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
-
-        List<String> syntaxs = new ArrayList<>();
-        syntaxs.add("E → E + T | T ");
-        syntaxs.add("T → T * F | F ");
-        syntaxs.add("F → ( E ) | id ");
-
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
-
-        System.out.println("-------------------------------LR ItemCollectionNode----------------------------------");
-        Map<Integer, ItemCollection> allLRItemCollectionMap = SyntacticLRParser.getLRItemCollectionMap(syntaxSymbols);
-
-        System.out.println("-------------------------------Create LR PredictMap----------------------------------");
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
-        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
-        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap = SyntacticLRParser.predictLRMap(allLRItemCollectionMap.get(0), syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
-
-        System.out.println("------------------------------LRPredictMap----------------------------------");
-        SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
 
 
 

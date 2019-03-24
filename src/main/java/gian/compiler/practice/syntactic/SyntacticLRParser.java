@@ -1058,6 +1058,21 @@ public class SyntacticLRParser {
         return syntaxTree;
     }
 
+    public static SyntaxTree syntaxParseLR( List<String> syntaxs, List<Token> tokens){
+        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+
+        // 生成所有 LR ItemCollection 集合
+        Map<Integer, ItemCollection> allLRItemCollectionMap = SyntacticLRParser.getLRItemCollectionMap(syntaxSymbols);
+
+        // 生成 LR PredictMap 与分析表
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
+        Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
+        Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap = SyntacticLRParser.predictLRMap(allLRItemCollectionMap.get(0), syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
+
+        // 根据LR PredictMap 预测分析表解析目标代码
+        return syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
+    }
+
     public static SyntaxTree syntaxParseLR(String syntaxFile, String targetProgarmFile, List<LexExpression.Expression> expressions, boolean isClassPath){
         // 读取文法文件
         List<String> syntaxs = ParseUtils.getFile(syntaxFile, isClassPath);
