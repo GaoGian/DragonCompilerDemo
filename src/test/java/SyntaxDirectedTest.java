@@ -1,14 +1,12 @@
-import gian.compiler.practice.lexical.parser.LexExpression;
-import gian.compiler.practice.lexical.parser.Token;
-import gian.compiler.practice.lexical.transform.LexConstants;
-import gian.compiler.practice.syntactic.SyntacticLLParser;
-import gian.compiler.practice.syntactic.SyntacticLRParser;
-import gian.compiler.practice.syntactic.element.ItemCollection;
-import gian.compiler.practice.syntactic.element.SyntaxSymbol;
-import gian.compiler.practice.syntactic.element.SyntaxTree;
-import gian.compiler.practice.syntaxDirected.SyntaxDirectedContext;
-import gian.compiler.practice.syntaxDirected.SyntaxDirectedListener;
-import gian.compiler.practice.syntaxDirected.SyntaxDirectedParser;
+import gian.compiler.front.lexical.parser.LexExpression;
+import gian.compiler.front.lexical.parser.Token;
+import gian.compiler.front.lexical.transform.LexConstants;
+import gian.compiler.front.syntactic.SyntacticLRParser;
+import gian.compiler.front.syntactic.element.SyntaxSymbol;
+import gian.compiler.front.syntactic.element.SyntaxTree;
+import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
+import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
+import gian.compiler.front.syntaxDirected.SyntaxDirectedParser;
 import lex.test.LexUtils;
 import org.junit.Test;
 

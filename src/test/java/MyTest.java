@@ -1,4 +1,4 @@
-import gian.compiler.practice.syntactic.element.SyntaxSymbol;
+import gian.compiler.front.syntactic.element.SyntaxSymbol;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.internal.objects.Global;
 import jdk.nashorn.internal.runtime.ScriptObject;

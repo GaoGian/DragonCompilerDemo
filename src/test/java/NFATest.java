@@ -1,13 +1,12 @@
 import com.alibaba.fastjson.JSON;
-import gian.compiler.practice.lexical.parser.LexExpression;
-import gian.compiler.practice.lexical.parser.LexicalParser;
-import gian.compiler.practice.lexical.parser.Token;
-import gian.compiler.practice.lexical.transform.LexConstants;
+import gian.compiler.front.lexical.parser.LexExpression;
+import gian.compiler.front.lexical.parser.LexicalParser;
+import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.utils.ParseUtils;
 import lex.test.LexUtils;
-import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
-import gian.compiler.practice.lexical.transform.regex.copy.LexPattern;
-import gian.compiler.practice.lexical.transform.regex.LexSimplePattern;
+import gian.compiler.front.lexical.transform.regex.LexAutomatonTransformer;
+import gian.compiler.front.lexical.transform.regex.copy.LexPattern;
+import gian.compiler.front.lexical.transform.regex.LexSimplePattern;
 import lex.test.*;
 import org.junit.Test;
 import utils.BST;
@@ -16,8 +15,8 @@ import utils.TreePrintUtil;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer.EOF_META;
-import static gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer.buildLexDFANode;
+import static gian.compiler.front.lexical.transform.regex.LexAutomatonTransformer.EOF_META;
+import static gian.compiler.front.lexical.transform.regex.LexAutomatonTransformer.buildLexDFANode;
 
 /**
  * Created by Gian on 2019/1/27.

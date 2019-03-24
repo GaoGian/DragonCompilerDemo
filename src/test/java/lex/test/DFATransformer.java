@@ -1,13 +1,13 @@
 package lex.test;
 
 import com.alibaba.fastjson.JSON;
-import gian.compiler.practice.lexical.transform.LexConstants;
-import gian.compiler.practice.lexical.transform.MyStack;
-import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
+import gian.compiler.front.lexical.transform.LexConstants;
+import gian.compiler.front.lexical.transform.MyStack;
+import gian.compiler.front.lexical.transform.regex.LexAutomatonTransformer;
 
 import java.util.*;
 
-import static gian.compiler.practice.lexical.transform.LexConstants.EOF;
+import static gian.compiler.front.lexical.transform.LexConstants.EOF;
 
 /**
  * Created by gaojian on 2019/1/28.

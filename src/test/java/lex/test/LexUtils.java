@@ -1,13 +1,13 @@
 package lex.test;
 
-import gian.compiler.practice.lexical.transform.LexConstants;
-import gian.compiler.practice.lexical.transform.MyStack;
-import gian.compiler.practice.lexical.transform.regex.LexAutomatonTransformer;
-import gian.compiler.practice.syntactic.SyntacticLLParser;
-import gian.compiler.practice.syntactic.element.Item;
-import gian.compiler.practice.syntactic.element.ItemCollection;
-import gian.compiler.practice.syntactic.element.SyntaxProduct;
-import gian.compiler.practice.syntactic.element.SyntaxSymbol;
+import gian.compiler.front.lexical.transform.LexConstants;
+import gian.compiler.front.lexical.transform.MyStack;
+import gian.compiler.front.lexical.transform.regex.LexAutomatonTransformer;
+import gian.compiler.front.syntactic.SyntacticLLParser;
+import gian.compiler.front.syntactic.element.Item;
+import gian.compiler.front.syntactic.element.ItemCollection;
+import gian.compiler.front.syntactic.element.SyntaxProduct;
+import gian.compiler.front.syntactic.element.SyntaxSymbol;
 
 import java.util.*;
 
