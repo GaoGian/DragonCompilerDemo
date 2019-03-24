@@ -1,4 +1,4 @@
-package gian.compiler.front.lexical.transform.regex.copy;
+package sample.regex.copy;
 
 /**
  * Created by gaojian on 2019/1/30.

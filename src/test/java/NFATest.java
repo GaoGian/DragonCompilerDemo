@@ -5,7 +5,7 @@ import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.utils.ParseUtils;
 import lex.test.LexUtils;
 import gian.compiler.front.lexical.transform.regex.LexAutomatonTransformer;
-import gian.compiler.front.lexical.transform.regex.copy.LexPattern;
+import sample.regex.copy.LexPattern;
 import gian.compiler.front.lexical.transform.regex.LexSimplePattern;
 import lex.test.*;
 import org.junit.Test;

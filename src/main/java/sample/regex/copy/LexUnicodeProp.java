@@ -1,4 +1,4 @@
-package gian.compiler.front.lexical.transform.regex.copy;
+package sample.regex.copy;
 
 import java.util.HashMap;
 import java.util.Locale;
