@@ -1,4 +1,4 @@
-# Demo_Compiler_front
+# CompilerDemo
 《编译原理》（机械工业出版社）--编译器前端
 
 #示例代码
