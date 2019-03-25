@@ -1,5 +1,6 @@
 package gian.compiler.front.syntactic.element;
 
+import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.front.lexical.transform.LexConstants;
 
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ public class SyntaxTree {
 
         protected Integer number;
         protected boolean isLeafNode;
+        protected boolean isIdNode;
+        protected Token idToken;
         protected SyntaxTreeNode parentNode;
         protected SyntaxProduct product;
         protected SyntaxSymbol syntaxSymbol;
@@ -51,9 +54,21 @@ public class SyntaxTree {
             initPropertyMap();
         }
 
-        public SyntaxTreeNode(Integer number, boolean isLeafNode, SyntaxProduct product) {
+        public SyntaxTreeNode(Integer number, boolean isLeafNode, boolean isIdNode, Token idToken, SyntaxSymbol syntaxSymbol) {
             this.number = number;
             this.isLeafNode = isLeafNode;
+            this.isIdNode = isIdNode;
+            this.idToken = idToken;
+            this.syntaxSymbol = syntaxSymbol;
+
+            initPropertyMap();
+        }
+
+        public SyntaxTreeNode(Integer number, boolean isLeafNode, boolean isIdNode, Token idToken, SyntaxProduct product) {
+            this.number = number;
+            this.isLeafNode = isLeafNode;
+            this.isIdNode = isIdNode;
+            this.idToken = idToken;
             this.product = product;
             this.syntaxSymbol = product.getHead();
 
@@ -89,6 +104,22 @@ public class SyntaxTree {
 
         public void setLeafNode(boolean leafNode) {
             isLeafNode = leafNode;
+        }
+
+        public boolean isIdNode() {
+            return isIdNode;
+        }
+
+        public void setIdNode(boolean idNode) {
+            isIdNode = idNode;
+        }
+
+        public Token getIdToken() {
+            return idToken;
+        }
+
+        public void setIdToken(Token idToken) {
+            this.idToken = idToken;
         }
 
         public SyntaxTreeNode getParentNode() {
@@ -144,7 +175,11 @@ public class SyntaxTree {
 
         @Override
         public String toString(){
-            return this.number + " : " + this.syntaxSymbol.getSymbol();
+            if(!this.isIdNode) {
+                return this.number + " : " + this.syntaxSymbol.getSymbol();
+            }else{
+                return this.number + " : " + this.syntaxSymbol.getSymbol() + "=" + this.idToken.getToken();
+            }
         }
 
         @Override

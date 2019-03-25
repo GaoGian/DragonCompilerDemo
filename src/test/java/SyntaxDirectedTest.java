@@ -287,13 +287,13 @@ public class SyntaxDirectedTest {
         syntaxs.add("T → B C");
         syntaxs.add("B → int");
         syntaxs.add("B → float");
-        syntaxs.add("C → [ num ] C | ε");
+        syntaxs.add("C → [ digit ] C | ε");
 
         System.out.println("------------------------------SyntaxTree----------------------------------");
         SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR(syntaxs, tokens);
 
         System.out.println("------------------------------SyntaxTree DirectAction----------------------------------");
-        SyntaxDirectedListener Er_to_E_0_Listener = new SyntaxDirectedListener("L → T", 0, "T", false) {
+        SyntaxDirectedListener L_to_T_0_Listener = new SyntaxDirectedListener("L → T", 0, "T", false) {
             @Override
             public String enterSyntaxSymbol(SyntaxDirectedContext context) {
                 System.out.println("expression: L → ◀T▶");
@@ -310,7 +310,7 @@ public class SyntaxDirectedTest {
                 return code;
             }
         };
-        SyntaxDirectedListener E_to_E_add_T_0_Listener = new SyntaxDirectedListener("T → B C", 0, "B", false) {
+        SyntaxDirectedListener T_to_B_C_0_Listener = new SyntaxDirectedListener("T → B C", 0, "B", false) {
             @Override
             public String enterSyntaxSymbol(SyntaxDirectedContext context) {
                 System.out.println("expression: T → ◀B▶ C");
@@ -326,11 +326,12 @@ public class SyntaxDirectedTest {
                 return code;
             }
         };
-        SyntaxDirectedListener E_to_E_add_T_2_Listener = new SyntaxDirectedListener("T → B C", 1, "C", false) {
+        SyntaxDirectedListener T_to_B_C_1_Listener = new SyntaxDirectedListener("T → B C", 1, "C", false) {
             @Override
             public String enterSyntaxSymbol(SyntaxDirectedContext context) {
                 System.out.println("expression: T → B ◀C▶");
 
+                // 获取前一兄弟节点的继承属性：基础类型
                 String baseType = context.getBrotherNodeList().get(context.getCurrentNodeIndex()-1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get("type").toString();
                 context.getCurrentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put("baseType", baseType);
 
@@ -341,6 +342,7 @@ public class SyntaxDirectedTest {
             }
             @Override
             public String exitSyntaxSymbol(SyntaxDirectedContext context) {
+                // 将最后的综合属性：类型表达式传递给父节点
                 String type = context.getCurrentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get("type").toString();
                 context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put("type", type);
 
@@ -350,109 +352,98 @@ public class SyntaxDirectedTest {
                 return code;
             }
         };
-        SyntaxDirectedListener E_to_T_Listener = new SyntaxDirectedListener("E → T", 0, "T", false) {
+        SyntaxDirectedListener B_to_int_Listener = new SyntaxDirectedListener("B → int", 0, "int", false) {
             @Override
             public String enterSyntaxSymbol(SyntaxDirectedContext context) {
-                System.out.println("expression: E → ◀T▶");
-                System.out.println("action: T.inh = E.syn");
+                System.out.println("expression: B → ◀int▶");
 
-                String code = "T.inh = E.syn";
+                String code = "";
                 return code;
             }
             @Override
             public String exitSyntaxSymbol(SyntaxDirectedContext context) {
-                System.out.println("action: E.value = T.value");
+                String type = context.getCurrentNode().getSyntaxSymbol().getSymbol();
+                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put("type", type);
 
-                String code = "E.value = T.value";
+                System.out.println("action: B.type = " + type);
+
+                String code = "B.type = " + type;
                 return code;
             }
         };
-        SyntaxDirectedListener T_to_T_multi_F_0_Listener = new SyntaxDirectedListener("T → T * F", 0, "T", false) {
+        SyntaxDirectedListener B_to_float_Listener = new SyntaxDirectedListener("B → float", 0, "float", false) {
             @Override
             public String enterSyntaxSymbol(SyntaxDirectedContext context) {
-                System.out.println("expression: T → ◀T▶ * F");
-                System.out.println("action: T_0.inh = T.syn");
+                System.out.println("expression: B → ◀float▶");
 
-                String code = "T_0.inh = T.syn";
+                String code = "";
                 return code;
             }
             @Override
             public String exitSyntaxSymbol(SyntaxDirectedContext context) {
-                System.out.println("action:");
+                String type = context.getCurrentNode().getSyntaxSymbol().getSymbol();
+                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put("type", type);
 
-                return "";
+                System.out.println("action: B.type = " + type);
+
+                String code = "B.type = " + type;
+                return code;
             }
         };
-        SyntaxDirectedListener T_to_T_multi_F_2_Listener = new SyntaxDirectedListener("T → T * F", 2, "F", false) {
+        SyntaxDirectedListener C_to_b_digit_b_C_3_Listener = new SyntaxDirectedListener("C → [ digit ] C", 3, "C", false) {
             @Override
             public String enterSyntaxSymbol(SyntaxDirectedContext context) {
-                System.out.println("expression: T → T * ◀F▶");
-                System.out.println("action: F.inh = T_0.syn");
+                System.out.println("expression: C → [ digit ] ◀C▶");
 
-                return "F.inh = T_0.syn";
+                String baseType = context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get("baseType").toString();
+                context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put("baseType", baseType);
+
+                System.out.println("action: C_3.baseType = C.baseType");
+
+                String code = "C_3.baseType = C.baseType";
+                return code;
             }
             @Override
             public String exitSyntaxSymbol(SyntaxDirectedContext context) {
-                System.out.println("action: T.value = T_0.value * F.value");
+                String number = context.getBrotherNodeList().get(context.getCurrentNodeIndex()-2).getIdToken().getToken();
+                String type = context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get("type").toString();
 
-                return "T.value = T_0.value * F.value";
+                System.out.println("action: C.type = array(" + number + ", " + type + ")");
+
+                String code = "C.type = array(" + number + ", " + type + ")";
+
+                return code;
             }
         };
-        SyntaxDirectedListener T_to_F_Listener = new SyntaxDirectedListener("T → F", 0, "F", false) {
+        SyntaxDirectedListener C_to_epsilon_Listener = new SyntaxDirectedListener("C → ε", 0, "ε", false) {
             @Override
             public String enterSyntaxSymbol(SyntaxDirectedContext context) {
-                System.out.println("expression: T → ◀F▶");
-                System.out.println("action: F.inh = T.syn");
+                System.out.println("expression: C → ◀ε▶");
 
-                return "F.inh = T.syn";
+                String code = "";
+                return code;
             }
             @Override
             public String exitSyntaxSymbol(SyntaxDirectedContext context) {
-                System.out.println("action: T.value = F.value");
+                String type = context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get("baseType").toString();
+                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put("type", type);
 
-                return "T.value = F.value";
+                System.out.println("action: C.type = C.baseType");
+
+                String code = "C.type = C.baseType";
+                return code;
             }
         };
-        SyntaxDirectedListener F_to_r_E_r_Listener = new SyntaxDirectedListener("F → ( E )", 1, "E", false) {
-            @Override
-            public String enterSyntaxSymbol(SyntaxDirectedContext context) {
-                System.out.println("expression: F → ( ◀E▶ )");
-                System.out.println("action: E.inh = F.syn");
 
-                return "E.inh = F.syn";
-            }
-            @Override
-            public String exitSyntaxSymbol(SyntaxDirectedContext context) {
-                System.out.println("action: F.value = E.value");
-
-                return "F.value = E.value";
-            }
-        };
-        SyntaxDirectedListener F_to_id_Listener = new SyntaxDirectedListener("F → id", 0, "id", false) {
-            @Override
-            public String enterSyntaxSymbol(SyntaxDirectedContext context) {
-                System.out.println("expression: F → ◀id▶");
-
-                return "";
-            }
-            @Override
-            public String exitSyntaxSymbol(SyntaxDirectedContext context) {
-                System.out.println("action: F.value = id.lexval");
-
-                return "F.value = id.lexval";
-            }
-        };
 
         List<SyntaxDirectedListener> syntaxDirectedListenerList = new ArrayList<>();
-        syntaxDirectedListenerList.add(Er_to_E_0_Listener);
-        syntaxDirectedListenerList.add(E_to_E_add_T_0_Listener);
-        syntaxDirectedListenerList.add(E_to_E_add_T_2_Listener);
-        syntaxDirectedListenerList.add(E_to_T_Listener);
-        syntaxDirectedListenerList.add(T_to_T_multi_F_0_Listener);
-        syntaxDirectedListenerList.add(T_to_T_multi_F_2_Listener);
-        syntaxDirectedListenerList.add(T_to_F_Listener);
-        syntaxDirectedListenerList.add(F_to_r_E_r_Listener);
-        syntaxDirectedListenerList.add(F_to_id_Listener);
+        syntaxDirectedListenerList.add(L_to_T_0_Listener);
+        syntaxDirectedListenerList.add(T_to_B_C_0_Listener);
+        syntaxDirectedListenerList.add(T_to_B_C_1_Listener);
+        syntaxDirectedListenerList.add(B_to_int_Listener);
+        syntaxDirectedListenerList.add(B_to_float_Listener);
+        syntaxDirectedListenerList.add(C_to_b_digit_b_C_3_Listener);
+        syntaxDirectedListenerList.add(C_to_epsilon_Listener);
 
         System.out.println("------------------------------SyntaxDirectActionTree----------------------------------");
         Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap = SyntaxDirectedParser.matchSyntaxTreeNodeDirectAction(syntaxTree.getSyntaxTreeRoot(), 0, syntaxDirectedListenerList, new HashMap<>());
