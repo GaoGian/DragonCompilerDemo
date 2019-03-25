@@ -1,7 +1,11 @@
 package gian.compiler.front.syntactic.element;
 
+import gian.compiler.front.lexical.transform.LexConstants;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gaojian on 2019/3/20.
@@ -34,12 +38,17 @@ public class SyntaxTree {
         protected SyntaxSymbol syntaxSymbol;
         protected List<SyntaxTreeNode> subProductNodeList = new ArrayList<>();
 
+        // 存储语义分析继承属性、综合属性，一级key：属性类型 inh、syn，二级key：属性名称，value：属性值
+        protected Map<String, Map<String, Object>> propertyMap = new HashMap<>();
+
         public SyntaxTreeNode(){}
 
         public SyntaxTreeNode(Integer number, boolean isLeafNode, SyntaxSymbol syntaxSymbol) {
             this.number = number;
             this.isLeafNode = isLeafNode;
             this.syntaxSymbol = syntaxSymbol;
+
+            initPropertyMap();
         }
 
         public SyntaxTreeNode(Integer number, boolean isLeafNode, SyntaxProduct product) {
@@ -47,6 +56,8 @@ public class SyntaxTree {
             this.isLeafNode = isLeafNode;
             this.product = product;
             this.syntaxSymbol = product.getHead();
+
+            initPropertyMap();
         }
 
         public SyntaxTreeNode(Integer number, boolean isLeafNode, SyntaxProduct product, List<SyntaxTreeNode> subProductNodeList) {
@@ -55,6 +66,8 @@ public class SyntaxTree {
             this.product = product;
             this.syntaxSymbol = product.getHead();
             this.subProductNodeList = subProductNodeList;
+
+            initPropertyMap();
 
             // 反向关联父节点
             for(SyntaxTreeNode childNode : subProductNodeList){
@@ -114,6 +127,19 @@ public class SyntaxTree {
                 childNode.setParentNode(this);
             }
 
+        }
+
+        public void initPropertyMap(){
+            this.propertyMap.put(LexConstants.SYNTAX_DIRECT_PROPERTY_INH, new HashMap<>());
+            this.propertyMap.put(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN, new HashMap<>());
+        }
+
+        public Map<String, Map<String, Object>> getPropertyMap() {
+            return propertyMap;
+        }
+
+        public void setPropertyMap(Map<String, Map<String, Object>> propertyMap) {
+            this.propertyMap = propertyMap;
         }
 
         @Override

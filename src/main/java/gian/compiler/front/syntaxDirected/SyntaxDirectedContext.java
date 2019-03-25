@@ -13,10 +13,16 @@ import java.util.Map;
 public class SyntaxDirectedContext {
 
     protected SyntaxTree syntaxTree;
+
+    // 当前遍历节点父节点下的位置
+    protected Integer currentNodeIndex;
+    protected SyntaxTree.SyntaxTreeNode currentNode;
+
     protected SyntaxTree.SyntaxTreeNode parentNode;
     protected List<SyntaxTree.SyntaxTreeNode> brotherNodeList;
 
-    Map<String, Object> propertyMap = new HashMap<>();
+    // 存放属性的地方，以父节点作为key存储分层域
+    Map<SyntaxTree.SyntaxTreeNode, Map<String, Object>> propertyMap = new HashMap<>();
 
     public SyntaxDirectedContext(SyntaxTree syntaxTree) {
         this.syntaxTree = syntaxTree;
@@ -28,6 +34,22 @@ public class SyntaxDirectedContext {
 
     public void setSyntaxTree(SyntaxTree syntaxTree) {
         this.syntaxTree = syntaxTree;
+    }
+
+    public Integer getCurrentNodeIndex() {
+        return currentNodeIndex;
+    }
+
+    public void setCurrentNodeIndex(Integer currentNodeIndex) {
+        this.currentNodeIndex = currentNodeIndex;
+    }
+
+    public SyntaxTree.SyntaxTreeNode getCurrentNode() {
+        return currentNode;
+    }
+
+    public void setCurrentNode(SyntaxTree.SyntaxTreeNode currentNode) {
+        this.currentNode = currentNode;
     }
 
     public SyntaxTree.SyntaxTreeNode getParentNode() {
@@ -46,11 +68,11 @@ public class SyntaxDirectedContext {
         this.brotherNodeList = brotherNodeList;
     }
 
-    public Map<String, Object> getPropertyMap() {
+    public Map<SyntaxTree.SyntaxTreeNode, Map<String, Object>> getPropertyMap() {
         return propertyMap;
     }
 
-    public void setPropertyMap(Map<String, Object> propertyMap) {
+    public void setPropertyMap(Map<SyntaxTree.SyntaxTreeNode, Map<String, Object>> propertyMap) {
         this.propertyMap = propertyMap;
     }
 }

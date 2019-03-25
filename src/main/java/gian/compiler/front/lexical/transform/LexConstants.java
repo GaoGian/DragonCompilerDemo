@@ -52,5 +52,8 @@ public class LexConstants {
 
     public static final String SYNTAX_LR_ACTION_GOTO = "ACTION_GOTO";
 
+    // SyntaxDirect
+    public static final String SYNTAX_DIRECT_PROPERTY_INH = "INH";
+    public static final String SYNTAX_DIRECT_PROPERTY_SYN = "SYN";
 
 }

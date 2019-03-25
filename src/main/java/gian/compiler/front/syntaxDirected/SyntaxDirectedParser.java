@@ -25,23 +25,23 @@ public class SyntaxDirectedParser {
         SyntaxDirectedContext context = new SyntaxDirectedContext(syntaxTree);
 
         // 后续遍历语法树，执行相关语义动作
-        executeSyntaxTreeDirectAction(syntaxTree.getSyntaxTreeRoot(), context, syntaxDirectActionMap);
+        executeSyntaxTreeDirectAction(syntaxTree.getSyntaxTreeRoot(), 0, context, syntaxDirectActionMap);
 
     }
 
     // 深度遍历语法树，执行相关语义动作
     // TODO 上下文环境是否需要按照作用域进行分层？？或者单独设置环境变量
-    public static void executeSyntaxTreeDirectAction(SyntaxTree.SyntaxTreeNode syntaxTreeNode, SyntaxDirectedContext context,
-                                                     Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap){
+    public static void executeSyntaxTreeDirectAction(SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex,
+                                                     SyntaxDirectedContext context, Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap){
 
         // 设置上下文信息：父节点、兄弟节点，位置信息
         // TODO 根节点暂时不考虑
-        if(syntaxTreeNode.getParentNode() != null) {
-            setDirectedContextInfo(context, syntaxTreeNode);
+        if(currentTreeNode.getParentNode() != null) {
+            setDirectedContextInfo(context, 0, currentTreeNode);
         }
 
         // 获取匹配语义动作
-        SyntaxDirectedListener syntaxDirectedListener = syntaxDirectActionMap.get(syntaxTreeNode.getNumber());
+        SyntaxDirectedListener syntaxDirectedListener = syntaxDirectActionMap.get(currentTreeNode.getNumber());
 
         // 执行预处理语义动作
         if(syntaxDirectedListener != null) {
@@ -50,14 +50,14 @@ public class SyntaxDirectedParser {
 
         // 深度遍历下级语法节点，执行子节点语义动作
         // TODO 可以根据需要创建每个节点的属性集合，交由具体的action处理
-        for(int i=0; i<syntaxTreeNode.getSubProductNodeList().size(); i++){
-            SyntaxTree.SyntaxTreeNode childNode = syntaxTreeNode.getSubProductNodeList().get(i);
-            executeSyntaxTreeDirectAction(childNode, context, syntaxDirectActionMap);
+        for(int i=0; i<currentTreeNode.getSubProductNodeList().size(); i++){
+            SyntaxTree.SyntaxTreeNode childNode = currentTreeNode.getSubProductNodeList().get(i);
+            executeSyntaxTreeDirectAction(childNode, i, context, syntaxDirectActionMap);
         }
 
         // 遍历完下级节点后重新设置上下文信息：父节点、兄弟节点，位置信息
-        if(syntaxTreeNode.getParentNode() != null) {
-            setDirectedContextInfo(context, syntaxTreeNode);
+        if(currentTreeNode.getParentNode() != null) {
+            setDirectedContextInfo(context, currentIndex, currentTreeNode);
         }
 
         // 执行综合语义处理动作
@@ -98,7 +98,9 @@ public class SyntaxDirectedParser {
         return syntaxDirectActionMap;
     }
 
-    public static void setDirectedContextInfo(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentNode){
+    public static void setDirectedContextInfo(SyntaxDirectedContext context, Integer currentIndex, SyntaxTree.SyntaxTreeNode currentNode){
+        context.setCurrentNodeIndex(currentIndex);
+        context.setCurrentNode(currentNode);
         context.setParentNode(currentNode.getParentNode());
         context.setBrotherNodeList(currentNode.getParentNode().getSubProductNodeList());
     }
