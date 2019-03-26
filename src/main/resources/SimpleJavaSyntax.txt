@@ -1,0 +1,62 @@
+#包名 import包列表 类声明
+javaLanguage → packageDeclaration importDeclaration classDeclaration
+
+#包名
+packageDeclaration → package qualifiedName ; | ε
+importDeclaration → import qualifiedName ; | ε
+qualifiedName → ◀Identifier▶ IdentifierRepeat
+
+#类声明
+classDeclaration → class Identifier extendsInfo classBody
+#类继承信息
+extendsInfo → extends classIdentifier | ε
+#类名
+classIdentifier → ◀Identifier▶
+IdentifierRepeat → . ◀Identifier▶ | ε
+
+#类体
+classBody → { classBodyDeclaration }
+classBodyDeclaration → fieldDeclaration methodDeclaration | ε
+
+#类属性声明
+fieldDeclaration → typeDeclaration variableDeclaratorId ;
+
+#变量类型声明
+typeDeclaration → baseTypeDeclaration typeComponent
+baseTypeDeclaration → primitiveType | classIdentifier
+#基础类型
+primitiveType → boolean | char | byte | short | int | long | float | double
+#数组声明
+typeComponent → [ ] typeComponent | ε
+#变量名
+variableDeclaratorId → Identifier
+
+#方法声明
+methodDeclaration → typeDeclaration methodIdentifier formalParameters methodBody
+#方法名
+methodIdentifier → Identifier
+#方法变量声明
+formalParameters → ( formalParameterDecls )
+formalParameterDecls → typeDeclaration variableDeclaratorId formalParameterDeclsRest | ε
+formalParameterDeclsRest → , typeDeclaration variableDeclaratorId formalParameterDeclsRest | ε
+#方法体声明
+methodBody → block
+
+#代码块
+block → { blockStatement }
+#代码语句
+blockStatement → localVariableDeclarationStatement | statement | ε
+#局部变量声明
+localVariableDeclarationStatement → localVariableDeclaration ; localVariableDeclarationStatement | ε
+localVariableDeclaration → typeDeclaration variableDeclaratorId
+
+#方法语句
+statement → block | if parExpression statement elseStatement | for ( forControl ) statement | while parExpression statement | do statement while parExpression ; | switch parExpression switchBlock | return expression ; | break ; | continue ; | statementExpression ;
+#if else 部分
+elseStatement → else statement | ε
+#表达式
+parExpression → ( expression )
+expression → variableDeclaratorId |
+
+
+
