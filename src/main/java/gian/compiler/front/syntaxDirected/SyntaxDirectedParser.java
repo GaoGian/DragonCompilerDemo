@@ -1,8 +1,10 @@
 package gian.compiler.front.syntaxDirected;
 
 import gian.compiler.front.exception.ParseException;
+import gian.compiler.front.syntactic.element.SyntaxSymbol;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +19,7 @@ public class SyntaxDirectedParser {
      * 执行语法分析树
      *
      */
-    public static void syntaxDirectedParser(SyntaxTree syntaxTree, List<SyntaxDirectedListener> syntaxDirectedListenerList){
+    public static SyntaxTree syntaxDirectedParser(SyntaxTree syntaxTree, List<SyntaxDirectedListener> syntaxDirectedListenerList){
         // 建立语法树节点和语义动作映射
         Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap = matchSyntaxTreeNodeDirectAction(syntaxTree.getSyntaxTreeRoot(), 0, syntaxDirectedListenerList, new HashMap<>());
 
@@ -25,19 +27,27 @@ public class SyntaxDirectedParser {
         SyntaxDirectedContext context = new SyntaxDirectedContext(syntaxTree);
 
         // 后续遍历语法树，执行相关语义动作
-        executeSyntaxTreeDirectAction(syntaxTree.getSyntaxTreeRoot(), 0, context, syntaxDirectActionMap);
+        SyntaxTree.SyntaxTreeNode annotionSyntaxTreeRoot = executeSyntaxTreeDirectAction(syntaxTree.getSyntaxTreeRoot(), 0, context, syntaxDirectActionMap);
 
+        // 返回注释语法分析树
+        SyntaxTree annotionSyntaxTree = new SyntaxTree(annotionSyntaxTreeRoot);
+
+        return annotionSyntaxTree;
     }
 
     // 深度遍历语法树，执行相关语义动作
     // TODO 上下文环境是否需要按照作用域进行分层？？或者单独设置环境变量
-    public static void executeSyntaxTreeDirectAction(SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex,
+    public static SyntaxTree.SyntaxTreeNode executeSyntaxTreeDirectAction(SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex,
                                                      SyntaxDirectedContext context, Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap){
+
+        // 生成注释语法分析树节点
+        SyntaxTree.SyntaxTreeNode annotionNode = new SyntaxTree.SyntaxTreeNode(currentTreeNode);
+        List<SyntaxTree.SyntaxTreeNode> subAnnotionNodeList = new ArrayList<>();
 
         // 设置上下文信息：父节点、兄弟节点，位置信息
         // TODO 根节点暂时不考虑
         if(currentTreeNode.getParentNode() != null) {
-            setDirectedContextInfo(context, 0, currentTreeNode);
+            setDirectedContextInfo(context, currentIndex, currentTreeNode);
         }
 
         // 获取匹配语义动作
@@ -45,14 +55,21 @@ public class SyntaxDirectedParser {
 
         // 执行预处理语义动作
         if(syntaxDirectedListener != null) {
-            syntaxDirectedListener.enterSyntaxSymbol(context);
+            String code = syntaxDirectedListener.enterSyntaxSymbol(context, currentTreeNode, currentIndex);
+
+            // 加入预处理语义动作节点
+            SyntaxTree.SyntaxTreeNode enterDirectActionNode = new SyntaxTree.SyntaxTreeNode(currentTreeNode.getNumber()*100+currentIndex, true, new SyntaxSymbol(code, true));
+            subAnnotionNodeList.add(enterDirectActionNode);
         }
 
         // 深度遍历下级语法节点，执行子节点语义动作
         // TODO 可以根据需要创建每个节点的属性集合，交由具体的action处理
         for(int i=0; i<currentTreeNode.getSubProductNodeList().size(); i++){
             SyntaxTree.SyntaxTreeNode childNode = currentTreeNode.getSubProductNodeList().get(i);
-            executeSyntaxTreeDirectAction(childNode, i, context, syntaxDirectActionMap);
+            SyntaxTree.SyntaxTreeNode childAnnotionNode = executeSyntaxTreeDirectAction(childNode, i, context, syntaxDirectActionMap);
+
+            // 加入下级注释节点
+            subAnnotionNodeList.add(childAnnotionNode);
         }
 
         // 遍历完下级节点后重新设置上下文信息：父节点、兄弟节点，位置信息
@@ -63,9 +80,16 @@ public class SyntaxDirectedParser {
         // 执行综合语义处理动作
         // TODO 根节点暂时不考虑
         if(syntaxDirectedListener != null) {
-            syntaxDirectedListener.exitSyntaxSymbol(context);
+            String code = syntaxDirectedListener.exitSyntaxSymbol(context, currentTreeNode, currentIndex);
+
+            // 加入综合记录语义动作节点
+            SyntaxTree.SyntaxTreeNode exitDirectActionNode = new SyntaxTree.SyntaxTreeNode(currentTreeNode.getNumber()*1000+currentIndex, true, new SyntaxSymbol(code, true));
+            subAnnotionNodeList.add(exitDirectActionNode);
         }
 
+        annotionNode.setSubProductNodeList(subAnnotionNodeList);
+
+        return annotionNode;
     }
 
 

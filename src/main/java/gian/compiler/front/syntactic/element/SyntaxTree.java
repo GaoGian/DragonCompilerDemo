@@ -46,6 +46,17 @@ public class SyntaxTree {
 
         public SyntaxTreeNode(){}
 
+        // 生成注释语法树节点
+        public SyntaxTreeNode(SyntaxTreeNode copyNode){
+            this.number = copyNode.getNumber();
+            this.isLeafNode = copyNode.isLeafNode();
+            this.isIdNode = copyNode.isIdNode();
+            this.idToken = copyNode.getIdToken();
+            this.parentNode = copyNode.getParentNode();
+            this.product = copyNode.getProduct();
+            this.syntaxSymbol = copyNode.getSyntaxSymbol();
+        }
+
         public SyntaxTreeNode(Integer number, boolean isLeafNode, SyntaxSymbol syntaxSymbol) {
             this.number = number;
             this.isLeafNode = isLeafNode;
@@ -60,17 +71,6 @@ public class SyntaxTree {
             this.isIdNode = isIdNode;
             this.idToken = idToken;
             this.syntaxSymbol = syntaxSymbol;
-
-            initPropertyMap();
-        }
-
-        public SyntaxTreeNode(Integer number, boolean isLeafNode, boolean isIdNode, Token idToken, SyntaxProduct product) {
-            this.number = number;
-            this.isLeafNode = isLeafNode;
-            this.isIdNode = isIdNode;
-            this.idToken = idToken;
-            this.product = product;
-            this.syntaxSymbol = product.getHead();
 
             initPropertyMap();
         }
@@ -175,7 +175,7 @@ public class SyntaxTree {
 
         @Override
         public String toString(){
-            if(!this.isIdNode) {
+            if(!this.isIdNode || !this.idToken.getType().isRexgexToken()) {
                 return this.number + " : " + this.syntaxSymbol.getSymbol();
             }else{
                 return this.number + " : " + this.syntaxSymbol.getSymbol() + "=" + this.idToken.getToken();

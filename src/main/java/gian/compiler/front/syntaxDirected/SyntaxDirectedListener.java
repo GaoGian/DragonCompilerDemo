@@ -1,5 +1,7 @@
 package gian.compiler.front.syntaxDirected;
 
+import gian.compiler.front.syntactic.element.SyntaxTree;
+
 /**
  * 产生式嵌入的语义动作
  * Created by Gian on 2019/3/21.
@@ -33,10 +35,10 @@ public abstract class SyntaxDirectedListener {
     }
 
     // 遍历节点前执行，返回code
-    public abstract String enterSyntaxSymbol(SyntaxDirectedContext context);
+    public abstract String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex);
 
     // 离开节点时执行，返回code
-    public abstract String exitSyntaxSymbol(SyntaxDirectedContext context);
+    public abstract String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex);
 
     public void setProperties(String matchProductTag, Integer matchIndex, String matchSymbol, Boolean isLeaf){
         this.matchProductTag = matchProductTag;
