@@ -56,7 +56,21 @@ statement → block | if parExpression statement elseStatement | for ( forContro
 elseStatement → else statement | ε
 #表达式
 parExpression → ( expression )
-expression → variableDeclaratorId |
+#TODO表达式
+expression → variableDeclaratorId | new Identifier ( expressionList ) | expression + term | expression - term | term
+expressionList → expression expressionListRest
+expressionListRest → , expression expressionListRest | ε
+term → term * factor | term / factor | factor | ◀Number▶ | ◀Digit▶
+factor → variableDeclaratorId
 
+#for循环条件表达式
+forControl → forInit ; expression ; forUpdate
+forInit → localVariableDeclaration
+forUpdate → expressionList
 
+#switch
+switchBlock → { switchBlockStatementGroup switchLabel }
+switchBlockStatementGroup → switchLabel blockStatement
+switchLabel → case ◀Digit▶ : | case ◀Number▶ : | case ◀String▶ : | default :
 
+statementExpression → expression

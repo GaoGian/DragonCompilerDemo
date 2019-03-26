@@ -4,6 +4,7 @@ package
 import
 class
 extends
+new
 
 public
 protected
@@ -20,11 +21,13 @@ switch
 return
 break
 continue
+case
 
 
 Identifier → [A-Za-z]\w* Identifier true false
 Digit
 Number
+String
 
 boolean
 char
