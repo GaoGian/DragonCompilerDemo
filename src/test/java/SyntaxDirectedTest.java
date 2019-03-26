@@ -407,6 +407,8 @@ public class SyntaxDirectedTest {
                 String number = context.getBrotherNodeList().get(currentIndex-2).getIdToken().getToken();
                 String type = currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get("type").toString();
 
+                currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put("type", "array(" + number + ", " + type + ")");
+
                 System.out.println("action: C.type = array(" + number + ", " + type + ")");
 
                 String code = "C.type = array(" + number + ", " + type + ")";

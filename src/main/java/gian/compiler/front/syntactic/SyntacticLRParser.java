@@ -1024,7 +1024,9 @@ public class SyntacticLRParser {
 
                 }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_SHIFT_EPSILON)){
                     // 说明是空产生式移入操作，压入下一项集状态
-                    currentItemCollection = syntaxLRShiftByPredictMap(actionInfo, itemCollectionStack, token, syntaxTreeNodeNum, currentSubProductNodeStack);
+                    // TODO 这里出于技术考虑，将token替换成ε
+                    Token epsilonToken = new Token(LexConstants.EPSILON_STR, LexExpression.TokenType.SECTION);
+                    currentItemCollection = syntaxLRShiftByPredictMap(actionInfo, itemCollectionStack, epsilonToken, syntaxTreeNodeNum, currentSubProductNodeStack);
 
                     // 空产生式移入操作需要保持输入符不变
                     i--;
