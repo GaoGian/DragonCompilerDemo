@@ -1,0 +1,18 @@
+package com.gian.compiler.language.java.simple
+
+public class SimpleJavaMath {
+
+    public boolean isJava;
+    public SimpleJavaMath mather;
+    private String name;
+
+    public SimpleJavaMath(boolean isJava, String name){
+        this.isJava = isJava;
+        this.name = name;
+    }
+
+    public int add(int x, int y){
+        return x + y;
+    }
+
+}

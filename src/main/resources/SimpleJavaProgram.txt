@@ -1,0 +1,22 @@
+package com.gian.compiler.language.java.simple
+
+import com.gian.compiler.language.java.simple.SimpleJavaMath
+
+public class SimpleJavaProgram{
+
+    public void test(){
+        int x = 2;
+        int y = 10;
+        int z = 3;
+
+        String name = "testSimpleJavaMath";
+
+        SimpleJavaMath javaMath = new SimpleJavaMath(false, name);
+
+        int result = javaMath.add(x, y);
+
+    }
+
+}
+
+

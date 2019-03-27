@@ -24,6 +24,9 @@ public class SyntaxDirectedContext {
     // 存放属性的地方，以父节点作为key存储分层域
     Map<SyntaxTree.SyntaxTreeNode, Map<String, Object>> propertyMap = new HashMap<>();
 
+    // 存放全局属性
+    Map<String, Object> globalPropertyMap = new HashMap<>();
+
     public SyntaxDirectedContext(SyntaxTree syntaxTree) {
         this.syntaxTree = syntaxTree;
     }
@@ -74,5 +77,13 @@ public class SyntaxDirectedContext {
 
     public void setPropertyMap(Map<SyntaxTree.SyntaxTreeNode, Map<String, Object>> propertyMap) {
         this.propertyMap = propertyMap;
+    }
+
+    public Map<String, Object> getGlobalPropertyMap() {
+        return globalPropertyMap;
+    }
+
+    public void setGlobalPropertyMap(Map<String, Object> globalPropertyMap) {
+        this.globalPropertyMap = globalPropertyMap;
     }
 }

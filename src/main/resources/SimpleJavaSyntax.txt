@@ -3,8 +3,9 @@ javaLanguage → packageDeclaration importDeclaration classDeclaration
 
 #包名
 packageDeclaration → ◀package▶ qualifiedName ◀;▶ | ε
-importDeclaration → ◀import▶ qualifiedName ◀;▶ | ε
+importDeclaration → ◀import▶ qualifiedName ◀;▶ importDeclaration | ε
 qualifiedName → ◀Identifier▶ IdentifierRepeat
+IdentifierRepeat → ◀.▶ ◀Identifier▶ | ε
 
 #类声明
 classDeclaration → modifierDeclaration ◀class▶ Identifier extendsInfo classBody
@@ -12,7 +13,6 @@ classDeclaration → modifierDeclaration ◀class▶ Identifier extendsInfo clas
 extendsInfo → ◀extends▶ classIdentifier | ε
 #类名
 classIdentifier → ◀Identifier▶
-IdentifierRepeat → ◀.▶ ◀Identifier▶ | ε
 
 #权限
 modifierDeclaration → ◀public▶ | ◀protected▶ | ◀private▶ | ◀static▶
