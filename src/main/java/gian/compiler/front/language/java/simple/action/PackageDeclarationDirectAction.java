@@ -1,5 +1,6 @@
 package gian.compiler.front.language.java.simple.action;
 
+import gian.compiler.front.language.java.simple.JavaConstants;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
@@ -29,8 +30,8 @@ public class PackageDeclarationDirectAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String packageName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get("packageName");
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put("packageName", packageName);
+            String packageName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PACKAGE_NAME);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.PACKAGE_NAME, packageName);
 
             return null;
         }
@@ -56,7 +57,7 @@ public class PackageDeclarationDirectAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put("packageName", "");
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.PACKAGE_NAME, "");
             return null;
         }
     }

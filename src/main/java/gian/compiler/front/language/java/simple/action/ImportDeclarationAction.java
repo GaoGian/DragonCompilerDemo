@@ -1,5 +1,6 @@
 package gian.compiler.front.language.java.simple.action;
 
+import gian.compiler.front.language.java.simple.JavaConstants;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
@@ -33,10 +34,10 @@ public class ImportDeclarationAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            List<String> importList = (List<String>) context.getGlobalPropertyMap().get("importList");
-            Map<String, String> importMap = (Map<String, String>) context.getGlobalPropertyMap().get("importMap");
+            List<String> importList = (List<String>) context.getGlobalPropertyMap().get(JavaConstants.IMPORT_LIST);
+            Map<String, String> importMap = (Map<String, String>) context.getGlobalPropertyMap().get(JavaConstants.IMPORT_MAP);
 
-            String importClazzAllName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get("importClazzAllName");
+            String importClazzAllName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.IMPORT_CLAZZ_ALL_NAME);
             importList.add(importClazzAllName);
 
             String importClazzName = importClazzAllName.substring(importClazzAllName.lastIndexOf("\\.") + 1);

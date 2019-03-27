@@ -1,5 +1,6 @@
 package gian.compiler.front.language.java.simple.action;
 
+import gian.compiler.front.language.java.simple.JavaConstants;
 import gian.compiler.front.language.java.simple.bean.JavaClazz;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
@@ -32,15 +33,15 @@ public class JavaLanguageDirectAction {
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // key: 类全名, value: clazz
             Map<String, JavaClazz> clazzMap = new HashMap<>();
-            context.getGlobalPropertyMap().put("clazzMap", clazzMap);
+            context.getGlobalPropertyMap().put(JavaConstants.CLAZZ_MAP, clazzMap);
 
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String packageName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get("packageName");
-            context.getGlobalPropertyMap().put("packageName", packageName);
+            String packageName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PACKAGE_NAME);
+            context.getGlobalPropertyMap().put(JavaConstants.PACKAGE_NAME, packageName);
 
             return null;
         }
@@ -61,17 +62,20 @@ public class JavaLanguageDirectAction {
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             List<String> importList = new ArrayList<>();
             Map<String, String> importMap = new HashMap<>();
-            context.getGlobalPropertyMap().put("importList", importList);
-            context.getGlobalPropertyMap().put("importMap", importMap);
+            context.getGlobalPropertyMap().put(JavaConstants.IMPORT_LIST, importList);
+            context.getGlobalPropertyMap().put(JavaConstants.IMPORT_MAP, importMap);
 
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            List<String> importList = (List<String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get("importList");
-            JavaClazz clazz = (JavaClazz) context.getPropertyMap().get(context.getParentNode()).get("JavaClazz");
-            clazz.setImportList(importList);
+            // 交由ImportDeclarationListener处理
+//            List<String> importList = (List<String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get("importList");
+//            Map<String, String> importMap = (Map<String, String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get("importMap");
+//
+//            context.getGlobalPropertyMap().put("importList", importList);
+//            context.getGlobalPropertyMap().put("importMap", importMap);
 
             return null;
         }
@@ -90,6 +94,7 @@ public class JavaLanguageDirectAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+
             return null;
         }
 

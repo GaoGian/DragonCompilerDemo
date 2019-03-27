@@ -16,6 +16,9 @@ public class JavaClazz {
 
     private String permission;
 
+    private String clazzName;
+    private String clazzAllName;
+
     private List<ClazzField> fieldList = new ArrayList<>();
     private List<ClazzConstructor> constructorList = new ArrayList<>();
     private List<ClazzMethod> methodList = new ArrayList<>();
@@ -50,6 +53,22 @@ public class JavaClazz {
 
     public void setPermission(String permission) {
         this.permission = permission;
+    }
+
+    public String getClazzName() {
+        return clazzName;
+    }
+
+    public void setClazzName(String clazzName) {
+        this.clazzName = clazzName;
+    }
+
+    public String getClazzAllName() {
+        return clazzAllName;
+    }
+
+    public void setClazzAllName(String clazzAllName) {
+        this.clazzAllName = clazzAllName;
     }
 
     public List<ClazzField> getFieldList() {
