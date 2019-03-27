@@ -19,7 +19,9 @@ public class LexicalParser {
      * isRegex：是否根据字面量匹配
      * isEmpty：是否需要识别，为空的话就跳过
      */
-    public static List<LexExpression.Expression> readExpressionFile(String flie, boolean isClassPath){
+    public static List<LexExpression.Expression> readExpressionFile(List<String> fileContent){
+
+
         return null;
     }
 
