@@ -19,10 +19,24 @@ public class LexicalParser {
      * isRegex：是否根据字面量匹配
      * isEmpty：是否需要识别，为空的话就跳过
      */
-    public static List<LexExpression.Expression> readExpressionFile(List<String> fileContent){
+    public static List<LexExpression.Expression> readExpressionFile(List<String> lexicalContent){
+        // 解析成终结符/非终结符
+        List<LexExpression.Expression> lexExpressionList = new ArrayList<>();
+        for(String lexical : lexicalContent) {
+            String lexicalHead = lexical.split("→")[0].trim();
+            String lexicalBody = lexical.split("→")[1].trim();
+            String[] lexElements = lexicalBody.split(" ");
+            String regex = lexElements[0];
+            String type = lexElements[1];
+            Boolean isRexgexToken = Boolean.valueOf(lexElements[2]);
+            Boolean isEmpty = Boolean.valueOf(lexElements[3]);
 
+            LexExpression.Expression lexExpression = new LexExpression.Expression(regex, new LexExpression.TokenType(type, isRexgexToken), isEmpty);
+            lexExpressionList.add(lexExpression);
 
-        return null;
+        }
+
+        return lexExpressionList;
     }
 
     /**

@@ -84,12 +84,17 @@ public class LexExpression {
 
     }
 
-    public static enum TokenType {
-        KEYWORD("keyword"), TYPE("type"),
-        ID("id", true), NUMBER("number", true), DIGIT("digit", true),
-        OPERATOR("operator"), SEPARATOR("separator"),
-        PUNCTUATION("punctuation"), SECTION("section"),
-        END(LexConstants.SYNTAX_END);
+    public static class TokenType {
+        public static TokenType KEYWORD = new TokenType("keyword");
+        public static TokenType TYPE = new TokenType("type");
+        public static TokenType ID = new TokenType("id", true);
+        public static TokenType NUMBER = new TokenType("number", true);
+        public static TokenType DIGIT = new TokenType("digit", true);
+        public static TokenType OPERATOR = new TokenType("operator");
+        public static TokenType SEPARATOR = new TokenType("separator");
+        public static TokenType PUNCTUATION = new TokenType("punctuation");
+        public static TokenType SECTION = new TokenType("section");
+        public static TokenType END = new TokenType(LexConstants.SYNTAX_END);
 
         private String type;
         // TODO 是否是正则表达式词法单元，Lex语法中通过单独维护对应的正则表达式进行判断，这里集成到一块显示
@@ -99,11 +104,11 @@ public class LexExpression {
         //                          正则表达式词法单元 --> 词法单元类型 --> 正则表达式终结符
         private boolean isRexgexToken;
 
-        private TokenType(String type){
+        public TokenType(String type){
             this.type = type;
         }
 
-        private TokenType(String type, boolean isRexgexToken){
+        public TokenType(String type, boolean isRexgexToken){
             this.type = type;
             this.isRexgexToken = isRexgexToken;
         }

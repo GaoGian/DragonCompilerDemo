@@ -29,10 +29,10 @@ case → case keyword false false
 default → default keyword false false
 
 #变量相关
-Identifier → [A-Za-z]\w* id true false
-Digit → \d+ digit true false
-Number → \d+(\.\d+)? number true false
-String → "(\S|\s)*"
+Identifier → [A-Za-z]\w* Identifier true false
+Digit → \d+ Digit true false
+Number → \d+(\.\d+)? Number true false
+String → "(\S|\s)*" String true false
 
 #基本数据类型
 boolean → default type false false
@@ -72,8 +72,8 @@ double → double type false false
 #标点符号
 . → . punctuation false false
 ; → ; punctuation false false
-" → "" punctuation false false
-' → '' punctuation false false
+" → " punctuation false false
+' → ' punctuation false false
 : → : punctuation false false
 
 #空格
