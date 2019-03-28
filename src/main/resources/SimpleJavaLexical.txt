@@ -35,14 +35,14 @@ Number → \d+(\.\d+)? Number true false
 String → "(\S|\s)*" String true false
 
 #基本数据类型
-boolean → default type false false
-char → char type false false
-byte → byte type false false
-short → short type false false
 int → int type false false
 long → long type false false
+short → short type false false
 float → float type false false
 double → double type false false
+char → char type false false
+byte → byte type false false
+boolean → default type false false
 
 #分界符
 { → { separator false false

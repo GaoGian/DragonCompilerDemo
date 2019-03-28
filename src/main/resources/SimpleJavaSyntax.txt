@@ -22,7 +22,7 @@ classBody → ◀{▶ classBodyDeclaration ◀}▶
 classBodyDeclaration → fieldDeclaration constructorDeclaration methodDeclaration | ε
 
 #类属性声明
-fieldDeclaration → modifierDeclaration typeDeclaration variableDeclaratorId ◀;▶
+fieldDeclaration → modifierDeclaration typeDeclaration variableDeclaratorId ◀;▶ fieldDeclaration | ε
 
 #变量类型声明
 typeDeclaration → baseTypeDeclaration typeComponent
@@ -35,12 +35,12 @@ typeComponent → ◀[▶ ◀]▶ typeComponent | ε
 variableDeclaratorId → Identifier
 
 #构造体声明
-constructorDeclaration → modifierDeclaration Identifier formalParameters constructorBody
+constructorDeclaration → modifierDeclaration Identifier formalParameters constructorBody constructorDeclaration | ε
 constructorBody → ◀{▶ explicitConstructorInvocation blockStatement ◀}▶
 explicitConstructorInvocation → ◀super▶ ◀(▶ expressionList ◀)▶
 
 #方法声明
-methodDeclaration → modifierDeclaration typeDeclaration methodIdentifier formalParameters methodBody
+methodDeclaration → modifierDeclaration typeDeclaration methodIdentifier formalParameters methodBody methodDeclaration | ε
 #方法名
 methodIdentifier → Identifier
 #方法变量声明

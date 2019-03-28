@@ -9,9 +9,13 @@ import java.util.List;
 public class ClazzConstructor {
 
     private String permission;
+    private String constructorName;
 
     private List<Object> paramList = new ArrayList<>();
 
     private List<Object> code = new ArrayList<>();
+
+
+
 
 }

@@ -19,6 +19,8 @@ public class JavaClazz {
     private String clazzName;
     private String clazzAllName;
 
+    private Map<String, String> extendInfo = new HashMap<>();
+
     private List<ClazzField> fieldList = new ArrayList<>();
     private List<ClazzConstructor> constructorList = new ArrayList<>();
     private List<ClazzMethod> methodList = new ArrayList<>();
@@ -69,6 +71,14 @@ public class JavaClazz {
 
     public void setClazzAllName(String clazzAllName) {
         this.clazzAllName = clazzAllName;
+    }
+
+    public Map<String, String> getExtendInfo() {
+        return extendInfo;
+    }
+
+    public void setExtendInfo(Map<String, String> extendInfo) {
+        this.extendInfo = extendInfo;
     }
 
     public List<ClazzField> getFieldList() {
