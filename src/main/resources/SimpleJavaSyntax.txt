@@ -53,26 +53,34 @@ methodBody → block
 #代码块
 block → ◀{▶ blockStatement ◀}▶
 #代码语句
-blockStatement → localVariableDeclarationStatement statement | statement
+blockStatement → localVariableDeclarationStatement statement
 #局部变量声明
 localVariableDeclarationStatement → localVariableDeclaration localVariableDeclarationStatement
 localVariableDeclarationStatementRest → ◀;▶ localVariableDeclarationStatementRest | ε
 localVariableDeclaration → typeDeclaration variableDeclaratorId variableInitializer | ε
 #局部变量初始化
-variableInitializer → ◀=▶ expression | ε
+variableInitializer → ◀=▶ expression | ◀String▶ | ε
 
 #方法语句
-statement → block | ◀if▶ parExpression statement elseStatement | ◀for▶ ◀(▶ forControl ◀)▶ statement | ◀while▶ parExpression statement | ◀do▶ statement ◀while▶ parExpression ◀;▶ | ◀switch▶ parExpression switchBlock | ◀return▶ expression ◀;▶ | ◀break▶ ◀;▶ | ◀continue▶ ◀;▶ | statementExpression
+statement → block | ◀if▶ ◀(▶ parExpression ◀)▶ statement elseStatement | ◀for▶ ◀(▶ forControl ◀)▶ statement | ◀while▶ ◀(▶ parExpression ◀)▶ statement | ◀do▶ statement ◀while▶ ◀(▶ parExpression ◀)▶ ◀;▶ | ◀switch▶ ◀(▶ parExpression ◀)▶ switchBlock | ◀return▶ expression ◀;▶ | ◀break▶ ◀;▶ | ◀continue▶ ◀;▶ | statementExpression
 #if else 部分
 elseStatement → ◀else▶ statement | ε
+#表达式 ‘|’ 替换成 ‘&#124;’
+parExpression → expressionTerm ◀&#124;&#124;▶ expressionTerm | expressionTerm ◀&&▶ expressionTerm | expression
+expressionTerm → expressionFactor ◀>▶ expressionFactor | expressionFactor ◀>=▶ expressionFactor | expressionFactor ◀<▶ expressionFactor | expressionFactor ◀<=▶ expressionFactor
+expressionFactor → expression ◀==▶ expression | expression ◀!=▶ expression | expression
 #表达式
-parExpression → ◀(▶ expression ◀)▶
-#表达式
-expression → targetVariableDeclaratorId ◀.▶ methodIdentifier ◀(▶ expressionList ◀)▶ | targetVariableDeclaratorId ◀.▶ variableDeclaratorId | expression ◀[▶ expression ◀]▶ | expression ◀(▶ expressionList ◀)▶ | ◀new▶ classIdentifier ◀(▶ expressionList ◀)▶ | expression ◀+▶ expression | expression ◀-▶ expression | term | ◀String▶
+expression → targetVariable | targetVariable ◀.▶ methodIdentifier ◀(▶ expressionList ◀)▶ | methodIdentifier ◀(▶ expressionList ◀)▶ | ◀new▶ classIdentifier ◀(▶ expressionList ◀)▶ | computeExpression
 expressionList → expression expressionListRest | ε
 expressionListRest → ◀,▶ expression expressionListRest | ε
+#计算公式
+computeExpression → expression ◀+▶ expression | expression ◀-▶ expression | term
+
 #引用对象声明
-targetVariableDeclaratorId → variableDeclaratorId | ◀this▶
+targetVariable → variableDeclaratorId variableDeclaratorIdRest arrayRest | ◀this▶
+variableDeclaratorIdRest → ◀.▶ variableDeclaratorId variableDeclaratorIdRest | ε
+arrayRest → ◀[▶ expression ◀]▶
+
 #乘除表达式因子
 term → term ◀*▶ factor | term ◀/▶ factor | factor
 factor → variableDeclaratorId | ◀Number▶ | ◀Digit▶

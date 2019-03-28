@@ -37,11 +37,8 @@ public class SyntacticLLParser {
             for(String body : products){
                 String[] symbols = body.trim().split(" ");
                 List<String> symbolList = new ArrayList<>();
-                if(symbols != null && symbols.length >0){
-                    symbolList.addAll(Arrays.asList(symbols));
-                }else{
-                    // 如果是空转换则加入空字符串
-                    symbolList.add(LexConstants.SYNTAX_EMPTY);
+                for(String symbol : symbols){
+                    symbolList.add(symbol.replace(LexConstants.MONTANT_UNICODE, LexConstants.MONTANT_STRING));
                 }
 
                 if(syntaxMap.get(head.trim()) == null){

@@ -475,7 +475,7 @@ public class SyntacticLRParser {
                 confictActions += "|";
             }
 
-            throw new ParseException("SLR分析表存在动作冲突，项集：" + itemCollection.getNumber() + ", 终结符：" + syntaxSymbol.getSymbol() + ", 冲突集合：" + confictActions);
+            throw new ParseException("LR分析表存在动作冲突，项集：" + itemCollection.getNumber() + ", 终结符：" + syntaxSymbol.getSymbol() + ", 冲突集合：" + confictActions);
         }
 
     }
