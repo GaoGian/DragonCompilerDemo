@@ -527,10 +527,7 @@ public class SyntacticLRParser {
             }
 
             for(SyntaxSymbol syntaxSymbol : syntaxProduct.getProduct()){
-                // TODO 考虑到LR(1)文法可以按照空产生式进行推导，因此不需要排序空产生式，将空产生式作为一个单独的项集考虑
-                // FIXME 需要考虑是否会出现一个项集两个空产生式的情况，会导致 归约/归约 冲突
-//                if(syntaxSymbol.isTerminal() && !syntaxSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
-                if(syntaxSymbol.isTerminal()){
+                if(syntaxSymbol.isTerminal() && !syntaxSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
                     terminalSymbolSet.add(syntaxSymbol);
                 }
             }
@@ -613,7 +610,11 @@ public class SyntacticLRParser {
         // 分离成多个产生式
         List<SyntaxProduct> syntaxProducts = getSyntaxProducts(augmentedSyntax, true);
         Map<SyntaxSymbol, Set<SyntaxProduct>> symbolProductMap = SyntacticLRParser.getSymbolProductMap(syntaxProducts);
-        Set<SyntaxSymbol> allGotoSymtaxSymbol = SyntacticLRParser.getAllGotoSymtaxSymbol(syntaxProducts);
+
+        // TODO 考虑到LR(1)文法可以按照空产生式进行推导，因此不需要排序空产生式，将空产生式作为一个单独的项集考虑
+        // FIXME 需要考虑是否会出现一个项集两个空产生式的情况，会导致 归约/归约 冲突
+        List<SyntaxSymbol> allGotoSymtaxSymbol = new ArrayList<>(SyntacticLRParser.getAllGotoSymtaxSymbol(syntaxProducts));
+        allGotoSymtaxSymbol.add(new SyntaxSymbol(LexConstants.SYNTAX_EMPTY, true));
 
         // 生成所有的FIRST、FOLLOW集合
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
@@ -683,13 +684,11 @@ public class SyntacticLRParser {
             }
 
             for(SyntaxSymbol syntaxSymbol : syntaxProduct.getProduct()){
-                // TODO 考虑到LR(1)文法可以按照空产生式进行推导，因此不需要排序空产生式，将空产生式作为一个单独的项集考虑
-                // FIXME 需要考虑是否会出现一个项集两个空产生式的情况，会导致 归约/归约 冲突
-//                if(!syntaxSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
-                if (!gotoSyntaxSymbol.contains(syntaxSymbol)) {
-                    gotoSyntaxSymbol.add(syntaxSymbol);
+                if(!syntaxSymbol.getSymbol().equals(LexConstants.SYNTAX_EMPTY)){
+                    if (!gotoSyntaxSymbol.contains(syntaxSymbol)) {
+                        gotoSyntaxSymbol.add(syntaxSymbol);
+                    }
                 }
-//                }
             }
         }
 
@@ -845,7 +844,12 @@ public class SyntacticLRParser {
                                                                                                               Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap){
 
         List<SyntaxProduct> syntaxProducts = SyntacticLRParser.getSyntaxProducts(syntaxSymbols);
-        Set<SyntaxSymbol> terminalSymbolSet = getAllTerminalSymbol(syntaxProducts);
+
+        // TODO 考虑到LR(1)文法可以按照空产生式进行推导，因此不需要排序空产生式，将空产生式作为一个单独的项集考虑
+        // FIXME 需要考虑是否会出现一个项集两个空产生式的情况，会导致 归约/归约 冲突
+        List<SyntaxSymbol> terminalSymbolSet = new ArrayList<>(getAllTerminalSymbol(syntaxProducts));
+        terminalSymbolSet.add(new SyntaxSymbol(LexConstants.SYNTAX_EMPTY, true));
+
         Set<SyntaxSymbol> nonTerminalSymbolSet = getAllNonTerminalSymbol(syntaxProducts);
 
         Map<Integer, ItemCollection> allItemCollectionMap = getAllItemCollectionMap(startItemCollection);
@@ -866,6 +870,8 @@ public class SyntacticLRParser {
             Map<SyntaxSymbol, ItemCollection> moveItemCollectionMap = itemCollection.getMoveItemCollectionMap();
 
             // 记录移入
+            // TODO 记录可以移入的终结符
+            List<String> shiftSymbol = new ArrayList<>();
             for(SyntaxSymbol terminalSymbol : terminalSymbolSet){
                 if(terminalSymbol.isTerminal()) {
                     if (moveItemCollectionMap.get(terminalSymbol) != null) {
@@ -888,6 +894,9 @@ public class SyntacticLRParser {
                                 actionInfo.put(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION, moveItemCollection);
 
                                 setPredictAction(predictLRMap, itemCollection, LexConstants.SYNTAX_LR_ACTION, terminalSymbol, actionInfo);
+
+                                // TODO 记录可以移入的终结符
+                                shiftSymbol.add(terminalSymbol.getSymbol());
                             }else{
                                 // TODO 空产生式移入需要特别表示
                                 actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_SHIFT_EPSILON);
@@ -896,11 +905,14 @@ public class SyntacticLRParser {
                                 // TODO 如果是空产生式需要将转换符替换成 lookforwar集合，每个字符都有单独的转换边到达该项集
                                 // TODO 验证是否会出现 移入/移入 冲突，即 lookforwar集合中的元素和其他项的元素重叠
                                 if(moveItemCollection.getItemList().size() > 1){
-                                    throw new ParseException("空产生项集存在多个空产生式");
+                                    throw new ParseException("空产生项集存在多个空产生式, 项集：" + moveItemCollection.getNumber());
                                 }
                                 for(String lookforward : moveItemCollection.getItemList().get(0).getLookForwardSymbolSet()){
-                                    SyntaxSymbol lookforwardSymbol = new SyntaxSymbol(lookforward, true);
-                                    setPredictAction(predictLRMap, itemCollection, LexConstants.SYNTAX_LR_ACTION, lookforwardSymbol, actionInfo);
+                                    // TODO 只有不在shiftSymbol可移入符号的向前看符号，才可以进行空产生式移入，避免出现移入/空产生式移入冲突
+                                    if(!shiftSymbol.contains(lookforward)) {
+                                        SyntaxSymbol lookforwardSymbol = new SyntaxSymbol(lookforward, true);
+                                        setPredictAction(predictLRMap, itemCollection, LexConstants.SYNTAX_LR_ACTION, lookforwardSymbol, actionInfo);
+                                    }
                                 }
                             }
                         }

@@ -8,7 +8,7 @@ qualifiedName → ◀Identifier▶ IdentifierRepeat
 IdentifierRepeat → ◀.▶ ◀Identifier▶ | ε
 
 #类声明
-classDeclaration → modifierDeclaration ◀class▶ Identifier extendsInfo classBody
+classDeclaration → modifierDeclaration ◀class▶ classIdentifier extendsInfo classBody
 #类继承信息
 extendsInfo → ◀extends▶ classIdentifier | ε
 #类名
@@ -19,7 +19,7 @@ modifierDeclaration → ◀public▶ | ◀protected▶ | ◀private▶ | ◀stat
 
 #类体
 classBody → ◀{▶ classBodyDeclaration ◀}▶
-classBodyDeclaration → fieldDeclaration constructorDeclaration methodDeclaration | ε
+classBodyDeclaration → fieldDeclaration constructorDeclaration methodDeclaration
 
 #类属性声明
 fieldDeclaration → modifierDeclaration typeDeclaration variableDeclaratorId ◀;▶ fieldDeclaration | ε
@@ -32,17 +32,17 @@ primitiveType → ◀boolean▶ | ◀char▶ | ◀byte▶ | ◀short▶ | ◀int
 #数组声明
 typeComponent → ◀[▶ ◀]▶ typeComponent | ε
 #变量名
-variableDeclaratorId → Identifier
+variableDeclaratorId → ◀Identifier▶
 
 #构造体声明
-constructorDeclaration → modifierDeclaration Identifier formalParameters constructorBody constructorDeclaration | ε
+constructorDeclaration → modifierDeclaration classIdentifier formalParameters constructorBody constructorDeclaration | ε
 constructorBody → ◀{▶ explicitConstructorInvocation blockStatement ◀}▶
 explicitConstructorInvocation → ◀super▶ ◀(▶ expressionList ◀)▶
 
 #方法声明
 methodDeclaration → modifierDeclaration typeDeclaration methodIdentifier formalParameters methodBody methodDeclaration | ε
 #方法名
-methodIdentifier → Identifier
+methodIdentifier → ◀Identifier▶
 #方法变量声明
 formalParameters → ◀(▶ formalParameterDecls ◀)▶
 formalParameterDecls → typeDeclaration variableDeclaratorId formalParameterDeclsRest | ε
@@ -53,10 +53,11 @@ methodBody → block
 #代码块
 block → ◀{▶ blockStatement ◀}▶
 #代码语句
-blockStatement → localVariableDeclarationStatement statement | statement | ε
+blockStatement → localVariableDeclarationStatement statement | statement
 #局部变量声明
-localVariableDeclarationStatement → localVariableDeclaration ◀;▶ localVariableDeclarationStatement | ε
-localVariableDeclaration → typeDeclaration variableDeclaratorId variableInitializer
+localVariableDeclarationStatement → localVariableDeclaration localVariableDeclarationStatement
+localVariableDeclarationStatementRest → ◀;▶ localVariableDeclarationStatementRest | ε
+localVariableDeclaration → typeDeclaration variableDeclaratorId variableInitializer | ε
 #局部变量初始化
 variableInitializer → ◀=▶ expression | ε
 
@@ -67,7 +68,7 @@ elseStatement → ◀else▶ statement | ε
 #表达式
 parExpression → ◀(▶ expression ◀)▶
 #表达式
-expression → variableDeclaratorId | targetVariableDeclaratorId ◀.▶ methodIdentifier ◀(▶ expressionList ◀)▶ | targetVariableDeclaratorId ◀.▶ variableDeclaratorId | expression ◀[▶ expression ◀]▶ | expression ◀(▶ expressionList ◀)▶ | ◀new▶ Identifier ◀(▶ expressionList ◀)▶ | expression ◀+▶ expression | expression ◀-▶ expression | term | ◀String▶
+expression → variableDeclaratorId | targetVariableDeclaratorId ◀.▶ methodIdentifier ◀(▶ expressionList ◀)▶ | targetVariableDeclaratorId ◀.▶ variableDeclaratorId | expression ◀[▶ expression ◀]▶ | expression ◀(▶ expressionList ◀)▶ | ◀new▶ classIdentifier ◀(▶ expressionList ◀)▶ | expression ◀+▶ expression | expression ◀-▶ expression | term | ◀String▶
 expressionList → expression expressionListRest | ε
 expressionListRest → ◀,▶ expression expressionListRest | ε
 #引用对象声明
