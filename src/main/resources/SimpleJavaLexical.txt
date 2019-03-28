@@ -32,7 +32,7 @@ default → default keyword false false
 Identifier → [A-Za-z]\w* Identifier true false
 Digit → \d+ Digit true false
 Number → \d+(\.\d+)? Number true false
-String → "(\S|\s)*" String true false
+String → "(\d|\w|\s)*" String true false
 
 #基本数据类型
 int → int type false false
@@ -45,28 +45,28 @@ byte → byte type false false
 boolean → default type false false
 
 #分界符
-{ → { separator false false
-} → } separator false false
-[ → [ separator false false
-] → ] separator false false
-( → ( separator false false
-) → ) separator false false
+{ → \{ separator false false
+} → \} separator false false
+[ → \[ separator false false
+] → \] separator false false
+( → \( separator false false
+) → \) separator false false
 
 #运算符
 = → = operator false false
-+ → + operator false false
++ → \+ operator false false
 - → - operator false false
-* → * operator false false
+* → \* operator false false
 / → / operator false false
-++ → ++ operator false false
+++ → \+\+ operator false false
 -- → -- operator false false
-== → ) operator false false
+== → == operator false false
 != → != operator false false
 > → > operator false false
 < → < operator false false
 >= → >= operator false false
 <= → <= operator false false
-|| → || operator false false
+|| → \|\| operator false false
 && → && operator false false
 
 #标点符号
@@ -77,6 +77,6 @@ boolean → default type false false
 : → : punctuation false false
 
 #空格
-Empty  →  \s+ empty true true
+Empty → \s+ empty true true
 
 

@@ -1005,51 +1005,56 @@ public class SyntacticLRParser {
             Map<SyntaxSymbol, List<Map<String, Object>>> actionPredictMap = itemCollectionPredictMap.get(LexConstants.SYNTAX_LR_ACTION);
 
             List<Map<String, Object>> actionOperats = actionPredictMap.get(tokenSyntaxSymbol);
-            if(actionOperats == null || actionOperats.size() == 0){
-                // 说明对应的操作为报错
-                throw new ParseException("LR分析表ACTION异常，项集" + currentItemCollection.getNumber() + ", 输入符：" + tokenSyntaxSymbol.getSymbol());
-            }else if(actionOperats.size() > 1){
-                String confictActions = "";
-                for (Map<String, Object> actionInfo : actionOperats) {
-                    confictActions += actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString() + ((ItemCollection)actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION)).getNumber();
-                    confictActions += "|";
-                }
 
-                throw new ParseException("LR分析表ACTION存在冲突，项集：" + currentItemCollection.getNumber() + ", 终结符：" + tokenSyntaxSymbol.getSymbol() + ", 冲突集合：" + confictActions);
-            }else{
-                Map<String, Object> actionInfo = actionOperats.get(0);
-                if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_SHIFT)){
-                    // 说明是移入操作，压入下一项集状态
-                    currentItemCollection = syntaxLRShiftByPredictMap(actionInfo, itemCollectionStack, token, syntaxTreeNodeNum, currentSubProductNodeStack);
+            try {
+                if (actionOperats == null || actionOperats.size() == 0) {
+                    // 说明对应的操作为报错
+                    throw new ParseException("LR分析表ACTION异常，项集" + currentItemCollection.getNumber() + ", 输入符：" + tokenSyntaxSymbol.getSymbol());
+                } else if (actionOperats.size() > 1) {
+                    String confictActions = "";
+                    for (Map<String, Object> actionInfo : actionOperats) {
+                        confictActions += actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).toString() + ((ItemCollection) actionInfo.get(LexConstants.SYNTAX_LR_ACTION_NEXT_ITEMCOLLECTION)).getNumber();
+                        confictActions += "|";
+                    }
 
-                }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_SHIFT_EPSILON)){
-                    // 说明是空产生式移入操作，压入下一项集状态
-                    // TODO 这里出于技术考虑，将token替换成ε
-                    Token epsilonToken = new Token(LexConstants.EPSILON_STR, LexExpression.TokenType.SECTION);
-                    currentItemCollection = syntaxLRShiftByPredictMap(actionInfo, itemCollectionStack, epsilonToken, syntaxTreeNodeNum, currentSubProductNodeStack);
+                    throw new ParseException("LR分析表ACTION存在冲突，项集：" + currentItemCollection.getNumber() + ", 终结符：" + tokenSyntaxSymbol.getSymbol() + ", 冲突集合：" + confictActions);
+                } else {
+                    Map<String, Object> actionInfo = actionOperats.get(0);
+                    if (actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_SHIFT)) {
+                        // 说明是移入操作，压入下一项集状态
+                        currentItemCollection = syntaxLRShiftByPredictMap(actionInfo, itemCollectionStack, token, syntaxTreeNodeNum, currentSubProductNodeStack);
 
-                    // 空产生式移入操作需要保持输入符不变
-                    i--;
-                }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_REDUCE)){
-                    // 说明是规约操作，根据规约产生式先弹出对应数量的项集状态，再压入GOTO后的项集状态
-                    currentItemCollection = syntaxLRReduceByPredictMap(actionInfo, tokenSyntaxSymbol, itemCollectionStack, predictLRMap, syntaxTreeNodeNum, currentSubProductNodeStack);
+                    } else if (actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_SHIFT_EPSILON)) {
+                        // 说明是空产生式移入操作，压入下一项集状态
+                        // TODO 这里出于技术考虑，将token替换成ε
+                        Token epsilonToken = new Token(LexConstants.EPSILON_STR, LexExpression.TokenType.SECTION);
+                        currentItemCollection = syntaxLRShiftByPredictMap(actionInfo, itemCollectionStack, epsilonToken, syntaxTreeNodeNum, currentSubProductNodeStack);
 
-                    // 归约后输入符需要保持不变
-                    i--;
+                        // 空产生式移入操作需要保持输入符不变
+                        i--;
+                    } else if (actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_REDUCE)) {
+                        // 说明是规约操作，根据规约产生式先弹出对应数量的项集状态，再压入GOTO后的项集状态
+                        currentItemCollection = syntaxLRReduceByPredictMap(actionInfo, tokenSyntaxSymbol, itemCollectionStack, predictLRMap, syntaxTreeNodeNum, currentSubProductNodeStack);
 
-                }else if(actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_ACCEPT)){
-                    // 说明是接收状态
-                    if(i == tokens.size()-1){
-                        System.out.println("接收");
+                        // 归约后输入符需要保持不变
+                        i--;
 
-                        // 接收状态设置根节点，根节点为上一次归约使用的产生式（当前接收的产生式是增广文法的产生式）
-                        syntaxTree.setSyntaxTreeRoot(currentSubProductNodeStack.top());
+                    } else if (actionInfo.get(LexConstants.SYNTAX_LR_ACTION_TYPE).equals(LexConstants.SYNTAX_LR_ACTION_ACCEPT)) {
+                        // 说明是接收状态
+                        if (i == tokens.size() - 1) {
+                            System.out.println("接收");
 
-                        break;
-                    }else{
-                        throw new ParseException("SLR分析表接收状态异常，味道输入流末尾");
+                            // 接收状态设置根节点，根节点为上一次归约使用的产生式（当前接收的产生式是增广文法的产生式）
+                            syntaxTree.setSyntaxTreeRoot(currentSubProductNodeStack.top());
+
+                            break;
+                        } else {
+                            throw new ParseException("SLR分析表接收状态异常，味道输入流末尾");
+                        }
                     }
                 }
+            } catch (ParseException e){
+                throw new ParseException("line: " + token.getLine() + ", index: " + token.getIndex() + ", error: " + e.getMessage());
             }
 
         }
@@ -1057,7 +1062,7 @@ public class SyntacticLRParser {
         return syntaxTree;
     }
 
-    public static SyntaxTree syntaxParseLR( List<String> syntaxs, List<Token> tokens){
+    public static SyntaxTree syntaxParseLR(List<String> syntaxs, List<Token> tokens){
         List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
         // 生成所有 LR ItemCollection 集合
@@ -1070,6 +1075,14 @@ public class SyntacticLRParser {
 
         // 根据LR PredictMap 预测分析表解析目标代码
         return syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
+    }
+
+    public static SyntaxTree syntaxParseLR(String lexicalFile, String syntaxFile, String targetProgarmFile, boolean isClassPath){
+        // 读取词法文件
+        List<String> lexicalContent = ParseUtils.getFile(lexicalFile, isClassPath);
+        List<LexExpression.Expression> expressions = LexicalParser.readExpressionFile(lexicalContent);
+
+        return syntaxParseLR(syntaxFile, targetProgarmFile, expressions, isClassPath);
     }
 
     public static SyntaxTree syntaxParseLR(String syntaxFile, String targetProgarmFile, List<LexExpression.Expression> expressions, boolean isClassPath){

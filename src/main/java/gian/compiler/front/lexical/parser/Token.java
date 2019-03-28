@@ -58,8 +58,8 @@ public class Token {
 
     @Override
     public String toString(){
-        return "<'" + token + "', " + type.getType() + ", " + line + ", " + index + ">;";
-//        return "'" + token + "'";
+//        return "<'" + token + "', " + type.getType() + ", " + line + ", " + index + ">;";
+        return "'" + token + "'";
     }
 
 }

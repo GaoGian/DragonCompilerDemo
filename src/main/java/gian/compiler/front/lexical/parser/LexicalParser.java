@@ -1,5 +1,6 @@
 package gian.compiler.front.lexical.parser;
 
+import gian.compiler.front.exception.ParseException;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.lexical.transform.regex.LexAutomatonTransformer;
 
@@ -80,90 +81,95 @@ public class LexicalParser {
 
             // 输入字符
             while(endIndex < line.length()){
-                String input = String.valueOf(line.charAt(endIndex));
-                Map<TranCell, Integer> accTranAbleCell = new LinkedHashMap<>();
+                try {
+                    String input = String.valueOf(line.charAt(endIndex));
+                    Map<TranCell, Integer> accTranAbleCell = new LinkedHashMap<>();
 
-                for(int i=0; i<matchKeyList.size(); i++){
-                    TranCell matchCell = matchKeyList.get(i);
-                    // 当前状态
-                    Set<LexAutomatonTransformer.LexState> tranStates = matchTranCells.get(matchCell);
-                    // 转换后的状态
-                    Set<LexAutomatonTransformer.LexState> tranAbleStates = new HashSet<>();
+                    for (int i = 0; i < matchKeyList.size(); i++) {
+                        TranCell matchCell = matchKeyList.get(i);
+                        // 当前状态
+                        Set<LexAutomatonTransformer.LexState> tranStates = matchTranCells.get(matchCell);
+                        // 转换后的状态
+                        Set<LexAutomatonTransformer.LexState> tranAbleStates = new HashSet<>();
 
-                    // 逐个转换，返回转换集合
-                    for(LexAutomatonTransformer.LexState tranState : tranStates){
-                        Set<LexAutomatonTransformer.LexState> tranStateList = tranState.tranState(input);
-                        tranAbleStates.addAll(tranStateList);
-                    }
-
-                    if(tranAbleStates.size() == 0){
-                        // 说明无法继续转换，判断当前状态是否是接受状态，否则报错
-                        LexAutomatonTransformer.LexDFACell lexCell = matchCell.getLexCell();
-                        Set<LexAutomatonTransformer.LexAggState> accStateSet = lexCell.getAccStateSet();
-                        // 判断上一次转换是否是接受态
-                        for(LexAutomatonTransformer.LexState tranAbleState : tranStates){
-                            if(!accStateSet.contains(tranAbleState)){
-                                // 说明不能转换，去除该匹配单元
-                            }else{
-                                // 说明已经接受，去除该匹配单元
-                                accTranAbleCell.put(matchCell, endIndex - startIndex);
-                            }
-                            matchKeyList.remove(i);
-                            // 修正下个转换的位置
-                            i--;
+                        // 逐个转换，返回转换集合
+                        for (LexAutomatonTransformer.LexState tranState : tranStates) {
+                            Set<LexAutomatonTransformer.LexState> tranStateList = tranState.tranState(input);
+                            tranAbleStates.addAll(tranStateList);
                         }
-                    }else{
-                        // 说明还能继续转换，更新下次的转换集合
-                        matchTranCells.put(matchCell, tranAbleStates);
+
+                        if (tranAbleStates.size() == 0) {
+                            // 说明无法继续转换，判断当前状态是否是接受状态，否则报错
+                            LexAutomatonTransformer.LexDFACell lexCell = matchCell.getLexCell();
+                            Set<LexAutomatonTransformer.LexAggState> accStateSet = lexCell.getAccStateSet();
+                            // 判断上一次转换是否是接受态
+                            for (LexAutomatonTransformer.LexState tranAbleState : tranStates) {
+                                if (!accStateSet.contains(tranAbleState)) {
+                                    // 说明不能转换，去除该匹配单元
+                                } else {
+                                    // 说明已经接受，去除该匹配单元
+                                    accTranAbleCell.put(matchCell, endIndex - startIndex);
+                                }
+                                matchKeyList.remove(i);
+                                // 修正下个转换的位置
+                                i--;
+                            }
+                        } else {
+                            // 说明还能继续转换，更新下次的转换集合
+                            matchTranCells.put(matchCell, tranAbleStates);
+                        }
+
                     }
 
-                }
-
-                if(matchKeyList.size() == 0){
-                    // 说明已经匹配结束，输出接受集合最大长度
-                    TranCell maxMatchCell = null;
-                    Integer maxMatchLength = null;
-                    for(TranCell matchAbleCell : accTranAbleCell.keySet()){
-                        Integer matchLength = accTranAbleCell.get(matchAbleCell);
-                        if(maxMatchCell == null){
-                            maxMatchCell = matchAbleCell;
-                            maxMatchLength = matchLength;
-                        }else{
-                            if(matchLength > maxMatchLength){
+                    if (matchKeyList.size() == 0) {
+                        // 说明已经匹配结束，输出接受集合最大长度
+                        TranCell maxMatchCell = null;
+                        Integer maxMatchLength = null;
+                        for (TranCell matchAbleCell : accTranAbleCell.keySet()) {
+                            Integer matchLength = accTranAbleCell.get(matchAbleCell);
+                            if (maxMatchCell == null) {
                                 maxMatchCell = matchAbleCell;
                                 maxMatchLength = matchLength;
-                            }
-                            if(matchLength == maxMatchLength){
-                                // 如果匹配长度一样，那么按照顺序匹配，TODO 也可以设置优先级
+                            } else {
+                                if (matchLength > maxMatchLength) {
+                                    maxMatchCell = matchAbleCell;
+                                    maxMatchLength = matchLength;
+                                }
+                                if (matchLength == maxMatchLength) {
+                                    // 如果匹配长度一样，那么按照顺序匹配，TODO 也可以设置优先级
 //                                    throw new RuntimeException("maxMatchLength error");
+                                }
                             }
                         }
-                    }
 
-                    // 返回最长匹配字符
-                    Integer accIndex = startIndex + maxMatchLength;
-                    if(!maxMatchCell.getExpression().isEmpty()) {
+                        // 返回最长匹配字符
+                        Integer accIndex = startIndex + maxMatchLength;
+                        if (!maxMatchCell.getExpression().isEmpty()) {
 //                            Token token = new Token(line.substring(startIndex, accIndex), maxMatchCell.getExpression().getType());
-                        Token token = new Token(line.substring(startIndex, accIndex), maxMatchCell.getExpression().getType(), startIndex + 1, lineIndex + 1);
-                        parseResult.add(token);
+                            Token token = new Token(line.substring(startIndex, accIndex), maxMatchCell.getExpression().getType(), startIndex + 1, lineIndex + 1);
+                            parseResult.add(token);
+                        }
+
+                        // 重置匹配集合
+                        matchTranCells.clear();
+                        matchTranCells.putAll(originMatchTranCells);
+                        matchKeyList.clear();
+                        matchKeyList.addAll(originMatchTranCells.keySet());
+
+                        // 刷新读取位置
+                        startIndex = accIndex;
+                        endIndex = accIndex;
+
+                        if (endIndex == (line.length()-1)) {
+                            break;
+                        }
+                    } else {
+                        endIndex++;
                     }
-
-                    // 重置匹配集合
-                    matchTranCells.clear();
-                    matchTranCells.putAll(originMatchTranCells);
-                    matchKeyList.clear();
-                    matchKeyList.addAll(originMatchTranCells.keySet());
-
-                    // 刷新读取位置
-                    startIndex = accIndex;
-                    endIndex = accIndex;
-
-                    if(endIndex == line.length()) {
-                        break;
-                    }
-                }else{
-                    endIndex++;
+                } catch (Exception e){
+                    throw new ParseException("line: " + line + ", index: " + endIndex + ", error: " + e.getMessage());
                 }
+
             }
 
             lineIndex++;

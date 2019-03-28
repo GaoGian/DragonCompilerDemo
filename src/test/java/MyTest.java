@@ -24,14 +24,19 @@ public class MyTest {
 
     @Test
     public void test1(){
-
         String content = "I am noob from runoob.com.";
-
         String pattern = ".*runoob.*";
-
         boolean isMatch = Pattern.matches(pattern, content);
         System.out.println("字符串中是否包含了 'runoob' 子字符串? " + isMatch);
 
+    }
+
+    @Test
+    public void test21(){
+        String content = "\"testSimpleJavaMath\"";
+        String pattern = "\"(\\S|\\s)*\"";
+        boolean isMatch = Pattern.matches(pattern, content);
+        System.out.println(isMatch);
     }
 
     @Test

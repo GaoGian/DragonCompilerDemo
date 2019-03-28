@@ -1,5 +1,6 @@
 package lex.test;
 
+import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.lexical.transform.MyStack;
 import gian.compiler.front.lexical.transform.regex.LexAutomatonTransformer;
@@ -9,12 +10,24 @@ import gian.compiler.front.syntactic.element.ItemCollection;
 import gian.compiler.front.syntactic.element.SyntaxProduct;
 import gian.compiler.front.syntactic.element.SyntaxSymbol;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.*;
 
 /**
  * Created by gaojian on 2019/1/28.
  */
 public class LexUtils {
+
+    static {
+        PrintStream print = null;
+        try {
+            print = new PrintStream("E:\\test.txt");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.setOut(print);
+    }
 
     /**
      * 将正则表达式进行逆波兰转化（转后缀）
@@ -861,6 +874,19 @@ public class LexUtils {
             result = 31 * result + label.hashCode();
             return result;
         }
+    }
+
+    public static void outputToken(List<Token> parseRs){
+        System.out.println("---------------------------------------------------------------------------");
+        int line = 0;
+        for(Token token : parseRs){
+            if(token.getLine() > line){
+                line = token.getLine();
+                System.out.println("");
+            }
+            System.out.print(token.toString());
+        }
+        System.out.println("");
     }
 
     /**

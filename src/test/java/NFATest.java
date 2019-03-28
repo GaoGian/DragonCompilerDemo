@@ -147,7 +147,8 @@ public class NFATest {
 
     @Test
     public void express2DFA(){
-        String pattern = "adv|bced";
+        String pattern = "\"(\\S|\\s)*\"";
+//        String pattern = "adv|bced";
 //        String pattern = "(\\d*(\\.\\d+)?)";
 //        String pattern = "([A-Z]+)|(\\d*(\\.\\d+)?)";
 
@@ -167,6 +168,16 @@ public class NFATest {
         // FIXME 正则表达式直接生成DFA还有问题，需要解决
         LexAutomatonTransformer.LexDFACell cell = LexAutomatonTransformer.buildDFA(root);
         LexUtils.outputEchart(cell);
+    }
+
+    @Test
+    public void testLexParser0(){
+        List<String> content = new ArrayList<>();
+        content.add("\"testSimpleJavaMath\"");
+        List<LexExpression.Expression> expressions = new ArrayList<>();
+        expressions.add(new LexExpression.Expression("\"(\\d|\\w|\\s)*\"", new LexExpression.TokenType("String", true), false));
+
+        LexicalParser.parser(content, expressions);
     }
 
     /**
