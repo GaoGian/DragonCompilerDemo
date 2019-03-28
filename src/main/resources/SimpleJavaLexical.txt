@@ -70,7 +70,8 @@ boolean → default type false false
 && → && operator false false
 
 #标点符号
-. → . punctuation false false
+. → \. punctuation false false
+, → , punctuation false false
 ; → ; punctuation false false
 " → " punctuation false false
 ' → ' punctuation false false
