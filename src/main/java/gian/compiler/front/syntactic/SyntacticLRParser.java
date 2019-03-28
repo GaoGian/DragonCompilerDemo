@@ -904,10 +904,19 @@ public class SyntacticLRParser {
 
                                 // TODO 如果是空产生式需要将转换符替换成 lookforwar集合，每个字符都有单独的转换边到达该项集
                                 // TODO 验证是否会出现 移入/移入 冲突，即 lookforwar集合中的元素和其他项的元素重叠
+                                Set<String> emptyLookforwardSet = new HashSet<>();
                                 if(moveItemCollection.getItemList().size() > 1){
-                                    throw new ParseException("空产生项集存在多个空产生式, 项集：" + moveItemCollection.getNumber());
+                                    for(Item emptyItem : moveItemCollection.getItemList()) {
+                                        for(String lookforward : emptyItem.getLookForwardSymbolSet()){
+                                            if(!emptyLookforwardSet.contains(lookforward)){
+                                                emptyLookforwardSet.add(lookforward);
+                                            }else{
+                                                throw new ParseException("多个空产生式向前看符号有重叠，不能唯一确认, 项集：" + moveItemCollection.getNumber());
+                                            }
+                                        }
+                                    }
                                 }
-                                for(String lookforward : moveItemCollection.getItemList().get(0).getLookForwardSymbolSet()){
+                                for(String lookforward : emptyLookforwardSet){
                                     // TODO 只有不在shiftSymbol可移入符号的向前看符号，才可以进行空产生式移入，避免出现移入/空产生式移入冲突
                                     if(!shiftSymbol.contains(lookforward)) {
                                         SyntaxSymbol lookforwardSymbol = new SyntaxSymbol(lookforward, true);
@@ -939,7 +948,16 @@ public class SyntacticLRParser {
                     // TODO 似乎不用做太多操作
                 } else if (reduceItemList.size() > 1) {
                     // FIXME 验证调整成LR后同一项集是否会存在多个归约项
-                    throw new ParseException("存在 规约/规约 冲突，项集：" + itemCollection.getNumber());
+                    Set<String> reduceLookforwardSet = new HashSet<>();
+                    for(Item reduceItem : reduceItemList){
+                        for(String lookforward : reduceItem.getLookForwardSymbolSet()){
+                            if(!reduceLookforwardSet.contains(lookforward)){
+                                reduceLookforwardSet.add(lookforward);
+                            }else{
+                                throw new ParseException("多个归约项向前看符号存在重叠，不能唯一确认，可能存在 规约/规约 冲突，项集：" + itemCollection.getNumber());
+                            }
+                        }
+                    }
                 } else {
                     for (Item reduceItem : reduceItemList) {
 

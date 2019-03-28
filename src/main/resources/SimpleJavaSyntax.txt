@@ -68,14 +68,14 @@ elseStatement → ◀else▶ statement | ε
 #表达式
 parExpression → ◀(▶ expression ◀)▶
 #表达式
-expression → variableDeclaratorId | targetVariableDeclaratorId ◀.▶ methodIdentifier ◀(▶ expressionList ◀)▶ | targetVariableDeclaratorId ◀.▶ variableDeclaratorId | expression ◀[▶ expression ◀]▶ | expression ◀(▶ expressionList ◀)▶ | ◀new▶ classIdentifier ◀(▶ expressionList ◀)▶ | expression ◀+▶ expression | expression ◀-▶ expression | term | ◀String▶
+expression → targetVariableDeclaratorId ◀.▶ methodIdentifier ◀(▶ expressionList ◀)▶ | targetVariableDeclaratorId ◀.▶ variableDeclaratorId | expression ◀[▶ expression ◀]▶ | expression ◀(▶ expressionList ◀)▶ | ◀new▶ classIdentifier ◀(▶ expressionList ◀)▶ | expression ◀+▶ expression | expression ◀-▶ expression | term | ◀String▶
 expressionList → expression expressionListRest | ε
 expressionListRest → ◀,▶ expression expressionListRest | ε
 #引用对象声明
 targetVariableDeclaratorId → variableDeclaratorId | ◀this▶
 #乘除表达式因子
-term → term ◀*▶ factor | term ◀/▶ factor | factor | ◀Number▶ | ◀Digit▶
-factor → variableDeclaratorId
+term → term ◀*▶ factor | term ◀/▶ factor | factor
+factor → variableDeclaratorId | ◀Number▶ | ◀Digit▶
 
 #for循环条件表达式
 forControl → forInit ◀;▶ parExpression ◀;▶ forUpdate
