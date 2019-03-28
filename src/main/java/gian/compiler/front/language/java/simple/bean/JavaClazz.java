@@ -10,20 +10,20 @@ import java.util.Map;
  */
 public class JavaClazz {
 
-    private String packageName;
-    private List<String> importList = new ArrayList<>();
-    private Map<String, String> importMap = new HashMap<>();
+    protected String packageName;
+    protected List<String> importList = new ArrayList<>();
+    protected Map<String, String> importMap = new HashMap<>();
 
-    private String permission;
+    protected String permission;
 
-    private String clazzName;
-    private String clazzAllName;
+    protected String clazzName;
+    protected String clazzAllName;
 
-    private Map<String, String> extendInfo = new HashMap<>();
+    protected Map<String, String> extendInfo = new HashMap<>();
 
-    private List<ClazzField> fieldList = new ArrayList<>();
-    private List<ClazzConstructor> constructorList = new ArrayList<>();
-    private List<ClazzMethod> methodList = new ArrayList<>();
+    protected List<ClazzField> fieldList = new ArrayList<>();
+    protected List<ClazzConstructor> constructorList = new ArrayList<>();
+    protected List<ClazzMethod> methodList = new ArrayList<>();
 
     public String getPackageName() {
         return packageName;

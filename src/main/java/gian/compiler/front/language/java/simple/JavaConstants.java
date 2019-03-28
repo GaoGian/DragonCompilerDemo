@@ -17,6 +17,8 @@ public class JavaConstants {
     public static String VARIABLE_TYPE = "variableType";
     public static String CONSTRUCTOR_LIST = "constructorList";
     public static String METHOD_LIST = "methodList";
+    public static String PARAM_LIST = "paramList";
+    public static String CODE = "code";
 
     public static String IMPORT_CLAZZ_ALL_NAME = "importClazzAllName";
 

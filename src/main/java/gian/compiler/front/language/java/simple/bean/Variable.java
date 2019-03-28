@@ -5,8 +5,31 @@ package gian.compiler.front.language.java.simple.bean;
  */
 public class Variable {
 
-    private String type;
-    private String name;
-    private String address;
+    protected VariableType variableType;
+    protected String fieldName;
+    protected String address;
 
+    public VariableType getVariableType() {
+        return variableType;
+    }
+
+    public void setVariableType(VariableType variableType) {
+        this.variableType = variableType;
+    }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
 }

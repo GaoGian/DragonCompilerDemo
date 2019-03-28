@@ -1,8 +1,8 @@
 package gian.compiler.front.language.java.simple.action;
 
 import gian.compiler.front.language.java.simple.JavaConstants;
-import gian.compiler.front.language.java.simple.bean.ClazzField;
-import gian.compiler.front.language.java.simple.bean.VariableType;
+import gian.compiler.front.language.java.simple.bean.ClazzConstructor;
+import gian.compiler.front.language.java.simple.bean.Variable;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
@@ -13,12 +13,11 @@ import java.util.List;
 /**
  * Created by gaojian on 2019/3/28.
  */
-public class FieldDeclarationAction {
+public class ConstructorDeclarationAction {
 
-    public static String product_1 = "fieldDeclaration → modifierDeclaration typeDeclaration variableDeclaratorId ; fieldDeclaration";
+    public static String product_1 = "constructorDeclaration → modifierDeclaration Identifier formalParameters constructorBody constructorDeclaration";
 
     public static class ModifierDeclarationListener extends SyntaxDirectedListener{
-
         public ModifierDeclarationListener(){
             this.matchProductTag = product_1;
             this.matchSymbol = "modifierDeclaration";
@@ -37,13 +36,13 @@ public class FieldDeclarationAction {
         }
     }
 
-    public static class TypeDeclarationListener extends SyntaxDirectedListener{
+    public static class IdentifierListener extends SyntaxDirectedListener{
 
-        public TypeDeclarationListener(){
+        public IdentifierListener(){
             this.matchProductTag = product_1;
-            this.matchSymbol = "typeDeclaration";
+            this.matchSymbol = "Identifier";
             this.matchIndex = 1;
-            this.isLeaf = false;
+            this.isLeaf = true;
         }
 
         @Override
@@ -53,15 +52,16 @@ public class FieldDeclarationAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+
             return null;
         }
     }
 
-    public static class VariableDeclaratorIdListener extends SyntaxDirectedListener{
+    public static class FormalParametersListener extends SyntaxDirectedListener{
 
-        public VariableDeclaratorIdListener(){
+        public FormalParametersListener(){
             this.matchProductTag = product_1;
-            this.matchSymbol = "variableDeclaratorId";
+            this.matchSymbol = "formalParameters";
             this.matchIndex = 2;
             this.isLeaf = false;
         }
@@ -73,23 +73,45 @@ public class FieldDeclarationAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String modifier = (String) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
-            VariableType variableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
-            String variableId = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FIELD_NAME);
+            return null;
+        }
+    }
 
-            ClazzField clazzField = new ClazzField();
-            clazzField.setPermission(modifier);
-            clazzField.setVariableType(variableType);
-            clazzField.setFieldName(variableId);
+    public static class ConstructorBodyListener extends SyntaxDirectedListener{
 
-            List<ClazzField> fieldList = (List<ClazzField>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FIELD_LIST);
-            fieldList.add(clazzField);
+        public ConstructorBodyListener(){
+            this.matchProductTag = product_1;
+            this.matchSymbol = "constructorBody";
+            this.matchIndex = 3;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            String modifier = (String) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
+            String constructorName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
+            List<Variable> paramList = (List<Variable>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PARAM_LIST);
+            List<String> code = (List<String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+
+            ClazzConstructor constructor = new ClazzConstructor();
+            constructor.setPermission(modifier);
+            constructor.setConstructorName(constructorName);
+            constructor.setParamList(paramList);
+            constructor.setCode(code);
+
+            List<ClazzConstructor> constructorList = (List<ClazzConstructor>) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CONSTRUCTOR_LIST);
+            constructorList.add(constructor);
 
             return null;
         }
     }
 
-    public static String product_2 = "fieldDeclaration → ε";
+    public static String product_2 = "constructorDeclaration → ε";
 
     public static class EpsilonListener extends SyntaxDirectedListener{
 

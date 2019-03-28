@@ -24,10 +24,10 @@ public class VariableType {
     public static VariableType BOOLEAN = new VariableType(JavaConstants.VARIABLE_TYPE_BOOLEAN, true, false);
     public static VariableType CLAZZ = new VariableType(JavaConstants.VARIABLE_TYPE_CLAZZ, false, false);
 
-    private String name;
-    private boolean isBaseType;
-    private boolean isArray;
-    private List<Integer> arrayDimension = new ArrayList<>();
+    protected String name;
+    protected boolean isBaseType;
+    protected boolean isArray;
+    protected List<Integer> arrayDimension = new ArrayList<>();
 
     public VariableType(String name, boolean isBaseType, boolean isArray) {
         this.name = name;

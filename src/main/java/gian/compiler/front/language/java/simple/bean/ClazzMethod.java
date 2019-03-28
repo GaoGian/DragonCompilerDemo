@@ -8,11 +8,51 @@ import java.util.List;
  */
 public class ClazzMethod {
 
-    private String permission;
-    private VariableType returnType;
-    private String methodName;
-    private List<Object> paramList = new ArrayList<>();
-    private List<Object> code = new ArrayList<>();
+    protected String permission;
+    protected VariableType returnType;
+    protected String methodName;
+    protected List<Object> paramList = new ArrayList<>();
+    protected List<Object> code = new ArrayList<>();
+
+    public String getPermission() {
+        return permission;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
+
+    public VariableType getReturnType() {
+        return returnType;
+    }
+
+    public void setReturnType(VariableType returnType) {
+        this.returnType = returnType;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public List<Object> getParamList() {
+        return paramList;
+    }
+
+    public void setParamList(List<Object> paramList) {
+        this.paramList = paramList;
+    }
+
+    public List<Object> getCode() {
+        return code;
+    }
+
+    public void setCode(List<Object> code) {
+        this.code = code;
+    }
 
     @Override
     public boolean equals(Object o) {

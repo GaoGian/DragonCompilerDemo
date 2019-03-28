@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class ClassDeclarationAction {
 
-    public static String product = "modifierDeclaration class Identifier extendsInfo classBody";
+    public static String product = "classDeclaration → modifierDeclaration class Identifier extendsInfo classBody";
 
     public static class ModifierDeclarationListener extends SyntaxDirectedListener{
 

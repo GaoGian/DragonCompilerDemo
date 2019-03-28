@@ -5,9 +5,7 @@ package gian.compiler.front.language.java.simple.bean;
  */
 public class ClazzField extends Variable {
 
-    private String permission;
-    private VariableType variableType;
-    private String fieldName;
+    protected String permission;
 
     public String getPermission() {
         return permission;
@@ -17,19 +15,4 @@ public class ClazzField extends Variable {
         this.permission = permission;
     }
 
-    public VariableType getVariableType() {
-        return variableType;
-    }
-
-    public void setVariableType(VariableType variableType) {
-        this.variableType = variableType;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
-    }
 }
