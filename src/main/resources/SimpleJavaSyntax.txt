@@ -61,16 +61,18 @@ parExpression → expressionTerm ◀&#124;&#124;▶ expressionTerm | expressionT
 expressionTerm → expressionFactor ◀>▶ expressionFactor | expressionFactor ◀>=▶ expressionFactor | expressionFactor ◀<▶ expressionFactor | expressionFactor ◀<=▶ expressionFactor
 expressionFactor → expression ◀==▶ expression | expression ◀!=▶ expression | expression
 #表达式
-expression → targetVariable arrayRest | targetVariable ◀(▶ expressionList ◀)▶ methodRefRest | ◀new▶ ◀Identifier▶ ◀(▶ expressionList ◀)▶ methodRefRest | computeExpression | ◀String▶ | ◀true▶ | ◀false▶
+expression → targetVariable | identifierReference ◀(▶ expressionList ◀)▶ methodRefRest | ◀new▶ ◀Identifier▶ ◀(▶ expressionList ◀)▶ methodRefRest | computeExpression | ◀String▶ | ◀true▶ | ◀false▶
 expressionList → expression expressionListRest | ε
 expressionListRest → ◀,▶ expression expressionListRest | ε
 
-#引用链声明
+#方法引用链声明
 methodRefRest → ◀.▶ ◀Identifier▶ arrayRest methodRefRest | ◀.▶ ◀Identifier▶ ◀(▶ expressionList ◀)▶ methodRefRest | ε
-
-#引用声明
-targetVariable → ◀Identifier▶ variableDeclaratorIdRest | ◀this▶ ◀.▶ ◀Identifier▶ variableDeclaratorIdRest
-variableDeclaratorIdRest → arrayRest ◀.▶ ◀Identifier▶ variableDeclaratorIdRest | ε
+#纯变量引用链声明
+targetVariable → ◀Identifier▶ arrayRest targetVariableRest | ◀this▶ ◀.▶ ◀Identifier▶ arrayRest targetVariableRest
+targetVariableRest → ◀.▶ ◀Identifier▶ arrayRest targetVariableRest | ε
+#变量+方法引用链声明
+identifierReference → ◀Identifier▶ identifierDeclaratorIdRest | ◀this▶ ◀.▶ ◀Identifier▶ identifierDeclaratorIdRest
+identifierDeclaratorIdRest → arrayRest ◀.▶ ◀Identifier▶ identifierDeclaratorIdRest | ε
 arrayRest → [ ◀Digit▶ ] arrayRest | ε
 
 #计算公式
