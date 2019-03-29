@@ -10,6 +10,8 @@ extends → extends keyword false false
 super → super keyword false false
 this → this keyword false false
 new → new keyword false false
+true → true keyword false false
+false → false keyword false false
 
 #权限相关
 public → public keyword false false

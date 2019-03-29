@@ -946,7 +946,7 @@ public class SyntacticLRParser {
 
                 if (reduceItemList.size() == 0) {
                     // TODO 似乎不用做太多操作
-                } else if (reduceItemList.size() > 1) {
+                } else {
                     // FIXME 验证调整成LR后同一项集是否会存在多个归约项
                     Set<String> reduceLookforwardSet = new HashSet<>();
                     for(Item reduceItem : reduceItemList){
@@ -958,9 +958,8 @@ public class SyntacticLRParser {
                             }
                         }
                     }
-                } else {
-                    for (Item reduceItem : reduceItemList) {
 
+                    for (Item reduceItem : reduceItemList) {
                         Map<String, Object> actionInfo = new LinkedHashMap<>();
                         // 2、如果[A→α·]在I[i]中，那么对于FOLLOW(A)中的所有a，那么将ACTION[i,a]设置为“归约A→α”。A不是^S
                         // 归约操作
@@ -978,8 +977,8 @@ public class SyntacticLRParser {
                             }
                         }
                     }
-
                 }
+
             }
 
             // 5、状态i对于各个非终结符A的GOTO转换使用下列规则构造：如果GOTO(I[i],A)=I[j]，那么GOTO[i,A]=j

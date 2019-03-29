@@ -35,6 +35,29 @@ public class JavaConstants {
     public static String VARIABLE_TYPE_VOID = "void";
     public static String VARIABLE_TYPE_CLAZZ = "clazz";     // 说明是class类型
 
-
+    public static String JAVA_KEYWORD_PACKAGE = "package";
+    public static String JAVA_KEYWORD_IMPORT = "import";
+    public static String JAVA_KEYWORD_CLASS = "class";
+    public static String JAVA_KEYWORD_EXTENDS = "extends";
+    public static String JAVA_KEYWORD_SUPER = "super";
+    public static String JAVA_KEYWORD_THIS = "this";
+    public static String JAVA_KEYWORD_NEW = "new";
+    public static String JAVA_KEYWORD_TRUE = "true";
+    public static String JAVA_KEYWORD_FALSE = "false";
+    public static String JAVA_KEYWORD_PUBLIC = "public";
+    public static String JAVA_KEYWORD_PROTECTED = "protected";
+    public static String JAVA_KEYWORD_PRIVATE = "private";
+    public static String JAVA_KEYWORD_STATIC = "static";
+    public static String JAVA_KEYWORD_IF = "if";
+    public static String JAVA_KEYWORD_ELSE = "else";
+    public static String JAVA_KEYWORD_FOR = "for";
+    public static String JAVA_KEYWORD_DO = "do";
+    public static String JAVA_KEYWORD_WHILE = "while";
+    public static String JAVA_KEYWORD_SWITCH = "switch";
+    public static String JAVA_KEYWORD_RETURN = "return";
+    public static String JAVA_KEYWORD_BREAK = "break";
+    public static String JAVA_KEYWORD_CONTINUE = "continue";
+    public static String JAVA_KEYWORD_CASE = "case";
+    public static String JAVA_KEYWORD_DEFAULT = "default";
 
 }
