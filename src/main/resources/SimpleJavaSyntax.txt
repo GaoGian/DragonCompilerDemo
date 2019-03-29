@@ -51,11 +51,9 @@ localVariableDeclarationStatement → typeDeclaration ◀Identifier▶ variableI
 variableInitializer → ◀=▶ expression | ε
 
 #方法语句
-statement → ◀if▶ ◀(▶ parExpression ◀)▶ block elseIfStatement elseStatement | ◀for▶ ◀(▶ forControl ◀)▶ block | ◀while▶ ◀(▶ parExpression ◀)▶ block | ◀do▶ block ◀while▶ ◀(▶ parExpression ◀)▶ ◀;▶ | ◀switch▶ ◀(▶ parExpression ◀)▶ switchBlock | targetVariable ◀=▶ expression ◀;▶ | ◀return▶ expression ◀;▶ | ◀break▶ ◀;▶ | ◀continue▶ ◀;▶ | expression ◀;▶
-#else if 部分
-elseIfStatement → ◀else▶ ◀if▶ block elseIfStatement | ε
+statement → ◀if▶ ◀(▶ parExpression ◀)▶ block elseStatement | ◀for▶ ◀(▶ forControl ◀)▶ block | ◀while▶ ◀(▶ parExpression ◀)▶ block | ◀do▶ block ◀while▶ ◀(▶ parExpression ◀)▶ ◀;▶ | ◀switch▶ ◀(▶ parExpression ◀)▶ switchBlock | targetVariable ◀=▶ expression ◀;▶ | ◀return▶ expression ◀;▶ | ◀break▶ ◀;▶ | ◀continue▶ ◀;▶ | expression ◀;▶
 #else 部分
-elseStatement → ◀else▶ block | ε
+elseStatement → ◀else▶ block | ◀else▶ ◀if▶ block elseIfStatement | ε
 #表达式 ‘|’ 替换成 ‘&#124;’
 parExpression → expressionTerm ◀&#124;&#124;▶ expressionTerm | expressionTerm ◀&&▶ expressionTerm | expressionTerm
 expressionTerm → expressionFactor ◀>▶ expressionFactor | expressionFactor ◀>=▶ expressionFactor | expressionFactor ◀<▶ expressionFactor | expressionFactor ◀<=▶ expressionFactor | expressionFactor
