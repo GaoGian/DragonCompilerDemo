@@ -30,7 +30,7 @@ typeComponent → ◀[▶ ◀]▶ typeComponent | ε
 #构造体声明
 constructorDeclaration → modifierDeclaration ◀Identifier▶ formalParameters constructorBody
 constructorBody → ◀{▶ explicitConstructorInvocation blockStatement ◀}▶
-explicitConstructorInvocation → ◀super▶ ◀(▶ expressionList ◀)▶
+explicitConstructorInvocation → ◀super▶ ◀(▶ expressionList ◀)▶ ◀;▶ | ε
 
 #方法声明
 methodDeclaration → modifierDeclaration typeDeclaration ◀Identifier▶ formalParameters methodBody | modifierDeclaration ◀void▶ ◀Identifier▶ formalParameters methodBody
@@ -51,14 +51,14 @@ localVariableDeclarationStatement → typeDeclaration ◀Identifier▶ variableI
 variableInitializer → ◀=▶ expression | ε
 
 #方法语句
-statement → ◀if▶ ◀(▶ parExpression ◀)▶ block elseIfStatement elseStatement | ◀for▶ ◀(▶ forControl ◀)▶ block | ◀while▶ ◀(▶ parExpression ◀)▶ block | ◀do▶ block ◀while▶ ◀(▶ parExpression ◀)▶ ◀;▶ | ◀switch▶ ◀(▶ parExpression ◀)▶ switchBlock | ◀return▶ expression ◀;▶ | ◀break▶ ◀;▶ | ◀continue▶ ◀;▶ | expression ◀;▶
+statement → ◀if▶ ◀(▶ parExpression ◀)▶ block elseIfStatement elseStatement | ◀for▶ ◀(▶ forControl ◀)▶ block | ◀while▶ ◀(▶ parExpression ◀)▶ block | ◀do▶ block ◀while▶ ◀(▶ parExpression ◀)▶ ◀;▶ | ◀switch▶ ◀(▶ parExpression ◀)▶ switchBlock | targetVariable ◀=▶ expression ◀;▶ | ◀return▶ expression ◀;▶ | ◀break▶ ◀;▶ | ◀continue▶ ◀;▶ | expression ◀;▶
 #else if 部分
 elseIfStatement → ◀else▶ ◀if▶ block elseIfStatement | ε
 #else 部分
 elseStatement → ◀else▶ block | ε
 #表达式 ‘|’ 替换成 ‘&#124;’
-parExpression → expressionTerm ◀&#124;&#124;▶ expressionTerm | expressionTerm ◀&&▶ expressionTerm | expression
-expressionTerm → expressionFactor ◀>▶ expressionFactor | expressionFactor ◀>=▶ expressionFactor | expressionFactor ◀<▶ expressionFactor | expressionFactor ◀<=▶ expressionFactor
+parExpression → expressionTerm ◀&#124;&#124;▶ expressionTerm | expressionTerm ◀&&▶ expressionTerm | expressionTerm
+expressionTerm → expressionFactor ◀>▶ expressionFactor | expressionFactor ◀>=▶ expressionFactor | expressionFactor ◀<▶ expressionFactor | expressionFactor ◀<=▶ expressionFactor | expressionFactor
 expressionFactor → expression ◀==▶ expression | expression ◀!=▶ expression | expression
 #表达式
 expression → targetVariable | identifierReference ◀(▶ expressionList ◀)▶ methodRefRest | ◀new▶ ◀Identifier▶ ◀(▶ expressionList ◀)▶ methodRefRest | computeExpression | ◀String▶ | ◀true▶ | ◀false▶
@@ -68,7 +68,7 @@ expressionListRest → ◀,▶ expression expressionListRest | ε
 #方法引用链声明
 methodRefRest → ◀.▶ ◀Identifier▶ arrayRest methodRefRest | ◀.▶ ◀Identifier▶ ◀(▶ expressionList ◀)▶ methodRefRest | ε
 #纯变量引用链声明
-targetVariable → ◀Identifier▶ arrayRest targetVariableRest | ◀this▶ ◀.▶ ◀Identifier▶ arrayRest targetVariableRest
+targetVariable → ◀Identifier▶ arrayRest targetVariableRest | ◀this▶ ◀.▶ ◀Identifier▶ arrayRest targetVariableRest | ◀this▶
 targetVariableRest → ◀.▶ ◀Identifier▶ arrayRest targetVariableRest | ε
 #变量+方法引用链声明
 identifierReference → ◀Identifier▶ identifierDeclaratorIdRest | ◀this▶ ◀.▶ ◀Identifier▶ identifierDeclaratorIdRest

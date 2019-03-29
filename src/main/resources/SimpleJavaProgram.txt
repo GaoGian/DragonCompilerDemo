@@ -5,6 +5,17 @@ public class SimpleJavaProgram{
     public SimpleJavaProgram tempClazz = new SimpleJavaMath(false, "tempClazz");
     public boolean[] array;
     public int[][] mathElemet;
+    public SimpleJavaProgram(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+    public SimpleJavaProgram getMyself(boolean ifMyself, String name){
+        if(ifMyself == true){
+            return this;
+        }else{
+            return name;
+        }
+    }
     public void test(){
         int x = 2;
         int y = 10;
