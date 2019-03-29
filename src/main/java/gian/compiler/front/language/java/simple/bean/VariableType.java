@@ -22,6 +22,7 @@ public class VariableType {
     public static VariableType CHAR = new VariableType(JavaConstants.VARIABLE_TYPE_CHAR, true, false);
     public static VariableType BYTE = new VariableType(JavaConstants.VARIABLE_TYPE_BYTE, true, false);
     public static VariableType BOOLEAN = new VariableType(JavaConstants.VARIABLE_TYPE_BOOLEAN, true, false);
+    public static VariableType VOID = new VariableType(JavaConstants.VARIABLE_TYPE_VOID, true, false);
     public static VariableType CLAZZ = new VariableType(JavaConstants.VARIABLE_TYPE_CLAZZ, false, false);
 
     protected String name;

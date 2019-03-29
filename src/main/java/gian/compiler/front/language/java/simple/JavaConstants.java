@@ -32,6 +32,7 @@ public class JavaConstants {
     public static String VARIABLE_TYPE_CHAR = "char";
     public static String VARIABLE_TYPE_BYTE = "byte";
     public static String VARIABLE_TYPE_BOOLEAN = "boolean";
+    public static String VARIABLE_TYPE_VOID = "void";
     public static String VARIABLE_TYPE_CLAZZ = "clazz";     // 说明是class类型
 
 

@@ -19,10 +19,10 @@ modifierDeclaration → ◀public▶ | ◀protected▶ | ◀private▶ | ◀stat
 
 #类体
 classBody → ◀{▶ classBodyDeclaration ◀}▶
-classBodyDeclaration → fieldDeclaration constructorDeclaration methodDeclaration
+classBodyDeclaration → fieldDeclaration classBodyDeclaration | constructorDeclaration classBodyDeclaration | methodDeclaration classBodyDeclaration | ε
 
 #类属性声明
-fieldDeclaration → modifierDeclaration typeDeclaration variableDeclaratorId ◀;▶ fieldDeclaration | ε
+fieldDeclaration → modifierDeclaration typeDeclaration variableDeclaratorId ◀;▶
 
 #变量类型声明
 typeDeclaration → baseTypeDeclaration typeComponent
@@ -35,12 +35,12 @@ typeComponent → ◀[▶ ◀]▶ typeComponent | ε
 variableDeclaratorId → ◀Identifier▶
 
 #构造体声明
-constructorDeclaration → modifierDeclaration classIdentifier formalParameters constructorBody constructorDeclaration | ε
+constructorDeclaration → modifierDeclaration classIdentifier formalParameters constructorBody
 constructorBody → ◀{▶ explicitConstructorInvocation blockStatement ◀}▶
 explicitConstructorInvocation → ◀super▶ ◀(▶ expressionList ◀)▶
 
 #方法声明
-methodDeclaration → modifierDeclaration typeDeclaration methodIdentifier formalParameters methodBody methodDeclaration | ε
+methodDeclaration → modifierDeclaration typeDeclaration methodIdentifier formalParameters methodBody | modifierDeclaration ◀void▶ methodIdentifier formalParameters methodBody
 #方法名
 methodIdentifier → ◀Identifier▶
 #方法变量声明
@@ -55,8 +55,7 @@ block → ◀{▶ blockStatement ◀}▶
 #代码语句
 blockStatement → localVariableDeclarationStatement statement
 #局部变量声明
-localVariableDeclarationStatement → localVariableDeclaration localVariableDeclarationStatement
-localVariableDeclaration → typeDeclaration variableDeclaratorId variableInitializer ◀;▶ | ε
+localVariableDeclarationStatement → typeDeclaration variableDeclaratorId variableInitializer ◀;▶ localVariableDeclarationStatement | ε
 #局部变量初始化
 variableInitializer → ◀=▶ expression | ε
 
@@ -85,7 +84,7 @@ factor → ◀(▶ expression ◀)▶ | ◀Number▶ | ◀Digit▶
 
 #for循环条件表达式
 forControl → forInit ◀;▶ parExpression ◀;▶ forUpdate
-forInit → localVariableDeclaration
+forInit → localVariableDeclarationStatement
 forUpdate → expression
 
 #switch
