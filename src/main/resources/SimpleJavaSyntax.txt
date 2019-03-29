@@ -5,7 +5,7 @@ javaLanguage → packageDeclaration importDeclaration classDeclaration
 packageDeclaration → ◀package▶ qualifiedName ◀;▶ | ε
 importDeclaration → ◀import▶ qualifiedName ◀;▶ importDeclaration | ε
 qualifiedName → ◀Identifier▶ IdentifierRepeat
-IdentifierRepeat → ◀.▶ ◀Identifier▶ | ε
+IdentifierRepeat → ◀.▶ ◀Identifier▶ IdentifierRepeat | ε
 
 #类声明
 classDeclaration → modifierDeclaration ◀class▶ classIdentifier extendsInfo classBody
@@ -56,10 +56,9 @@ block → ◀{▶ blockStatement ◀}▶
 blockStatement → localVariableDeclarationStatement statement
 #局部变量声明
 localVariableDeclarationStatement → localVariableDeclaration localVariableDeclarationStatement
-localVariableDeclarationStatementRest → ◀;▶ localVariableDeclarationStatementRest | ε
-localVariableDeclaration → typeDeclaration variableDeclaratorId variableInitializer | ε
+localVariableDeclaration → typeDeclaration variableDeclaratorId variableInitializer ◀;▶ | ε
 #局部变量初始化
-variableInitializer → ◀=▶ expression | ◀String▶ | ε
+variableInitializer → ◀=▶ expression | ε
 
 #方法语句
 statement → block | ◀if▶ ◀(▶ parExpression ◀)▶ statement elseStatement | ◀for▶ ◀(▶ forControl ◀)▶ statement | ◀while▶ ◀(▶ parExpression ◀)▶ statement | ◀do▶ statement ◀while▶ ◀(▶ parExpression ◀)▶ ◀;▶ | ◀switch▶ ◀(▶ parExpression ◀)▶ switchBlock | ◀return▶ expression ◀;▶ | ◀break▶ ◀;▶ | ◀continue▶ ◀;▶ | statementExpression
@@ -70,20 +69,19 @@ parExpression → expressionTerm ◀&#124;&#124;▶ expressionTerm | expressionT
 expressionTerm → expressionFactor ◀>▶ expressionFactor | expressionFactor ◀>=▶ expressionFactor | expressionFactor ◀<▶ expressionFactor | expressionFactor ◀<=▶ expressionFactor
 expressionFactor → expression ◀==▶ expression | expression ◀!=▶ expression | expression
 #表达式
-expression → targetVariable | targetVariable ◀.▶ methodIdentifier ◀(▶ expressionList ◀)▶ | methodIdentifier ◀(▶ expressionList ◀)▶ | ◀new▶ classIdentifier ◀(▶ expressionList ◀)▶ | computeExpression
+expression → targetVariable | ◀this▶ ◀.▶ targetVariable | targetVariable ◀(▶ expressionList ◀)▶ | ◀new▶ classIdentifier ◀(▶ expressionList ◀)▶ | computeExpression | ◀String▶
 expressionList → expression expressionListRest | ε
 expressionListRest → ◀,▶ expression expressionListRest | ε
-#计算公式
-computeExpression → expression ◀+▶ expression | expression ◀-▶ expression | term
 
-#引用对象声明
-targetVariable → variableDeclaratorId variableDeclaratorIdRest arrayRest | ◀this▶
+#引用声明
+targetVariable → variableDeclaratorId variableDeclaratorIdRest |
 variableDeclaratorIdRest → ◀.▶ variableDeclaratorId variableDeclaratorIdRest | ε
-arrayRest → ◀[▶ expression ◀]▶
 
+#计算公式
+computeExpression → expression ◀+▶ term | expression ◀-▶ term | term
 #乘除表达式因子
 term → term ◀*▶ factor | term ◀/▶ factor | factor
-factor → variableDeclaratorId | ◀Number▶ | ◀Digit▶
+factor → ◀(▶ expression ◀)▶ | ◀Number▶ | ◀Digit▶
 
 #for循环条件表达式
 forControl → forInit ◀;▶ parExpression ◀;▶ forUpdate

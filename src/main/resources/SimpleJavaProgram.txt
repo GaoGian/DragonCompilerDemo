@@ -1,6 +1,6 @@
-package com.gian.compiler.language.java.simple
+package com.gian.compiler.language.java.simple;
 
-import com.gian.compiler.language.java.simple.SimpleJavaMath
+import com.gian.compiler.language.java.simple.SimpleJavaMath;
 
 public class SimpleJavaProgram{
 

@@ -878,7 +878,9 @@ public class SyntacticLRParser {
                         // 可直接进行移入操作
                         ItemCollection moveItemCollection = moveItemCollectionMap.get(terminalSymbol);
                         Map<String, Object> actionInfo = new LinkedHashMap<>();
-                        if (moveItemCollection instanceof ItemCollection.AcceptItemCollection) {
+                        if(moveItemCollection == null){
+                            continue;
+                        }else if(moveItemCollection instanceof ItemCollection.AcceptItemCollection) {
                             // 3、如果[^S→S·]在I[i]中，那么将ACTION[i,$]设置为“接受”
                             // 接收操作
                             actionInfo.put(LexConstants.SYNTAX_LR_ACTION_TYPE, LexConstants.SYNTAX_LR_ACTION_ACCEPT);
@@ -905,14 +907,12 @@ public class SyntacticLRParser {
                                 // TODO 如果是空产生式需要将转换符替换成 lookforwar集合，每个字符都有单独的转换边到达该项集
                                 // TODO 验证是否会出现 移入/移入 冲突，即 lookforwar集合中的元素和其他项的元素重叠
                                 Set<String> emptyLookforwardSet = new HashSet<>();
-                                if(moveItemCollection.getItemList().size() > 1){
-                                    for(Item emptyItem : moveItemCollection.getItemList()) {
-                                        for(String lookforward : emptyItem.getLookForwardSymbolSet()){
-                                            if(!emptyLookforwardSet.contains(lookforward)){
-                                                emptyLookforwardSet.add(lookforward);
-                                            }else{
-                                                throw new ParseException("多个空产生式向前看符号有重叠，不能唯一确认, 项集：" + moveItemCollection.getNumber());
-                                            }
+                                for(Item emptyItem : moveItemCollection.getItemList()) {
+                                    for(String lookforward : emptyItem.getLookForwardSymbolSet()){
+                                        if(!emptyLookforwardSet.contains(lookforward)){
+                                            emptyLookforwardSet.add(lookforward);
+                                        }else{
+                                            throw new ParseException("多个空产生式向前看符号有重叠，不能唯一确认, 项集：" + moveItemCollection.getNumber());
                                         }
                                     }
                                 }
