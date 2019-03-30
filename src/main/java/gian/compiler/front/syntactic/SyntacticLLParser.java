@@ -30,8 +30,9 @@ public class SyntacticLLParser {
         // 解析成终结符/非终结符
         Map<String, List<List<String>>> syntaxMap = new LinkedHashMap<>();
         for(String syntax : syntaxs){
-            String head = syntax.split("→")[0];
-            String bodys = syntax.split("→")[1];
+            syntax = syntax.replaceAll("\\s+", " ");
+            String head = syntax.split("→")[0].trim();
+            String bodys = syntax.split("→")[1].trim();
 
             String[] products = bodys.split("\\|");
             for(String body : products){
@@ -43,10 +44,10 @@ public class SyntacticLLParser {
 
                 if(syntaxMap.get(head.trim()) == null){
                     List<List<String>> bodyList = new ArrayList<>();
-                    bodyList.add(Arrays.asList(symbols));
+                    bodyList.add(symbolList);
                     syntaxMap.put(head.trim(), bodyList);
                 }else{
-                    syntaxMap.get(head.trim()).add(Arrays.asList(symbols));
+                    syntaxMap.get(head.trim()).add(symbolList);
                 }
             }
 

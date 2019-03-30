@@ -11,8 +11,8 @@ public class ClazzMethod {
     protected String permission;
     protected VariableType returnType;
     protected String methodName;
-    protected List<Object> paramList = new ArrayList<>();
-    protected List<Object> code = new ArrayList<>();
+    protected List<Variable> paramList = new ArrayList<>();
+    protected List<String> code = new ArrayList<>();
 
     public String getPermission() {
         return permission;
@@ -38,19 +38,19 @@ public class ClazzMethod {
         this.methodName = methodName;
     }
 
-    public List<Object> getParamList() {
+    public List<Variable> getParamList() {
         return paramList;
     }
 
-    public void setParamList(List<Object> paramList) {
+    public void setParamList(List<Variable> paramList) {
         this.paramList = paramList;
     }
 
-    public List<Object> getCode() {
+    public List<String> getCode() {
         return code;
     }
 
-    public void setCode(List<Object> code) {
+    public void setCode(List<String> code) {
         this.code = code;
     }
 

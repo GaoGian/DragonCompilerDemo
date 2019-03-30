@@ -22,7 +22,7 @@ classBodyDeclaration → fieldDeclaration classBodyDeclaration | constructorDecl
 #类属性声明
 fieldDeclaration → modifierDeclaration typeDeclaration ◀Identifier▶ variableInitializer ◀;▶
 
-#变量类型声明
+#变量类型声明（这里拆开写主要是避免和“变量引用产生式”出现移入/规约冲突）
 typeDeclaration → ◀boolean▶ typeComponent | ◀char▶ typeComponent | ◀byte▶ typeComponent | ◀short▶ typeComponent | ◀int▶ typeComponent | ◀long▶ typeComponent | ◀float▶ typeComponent | ◀double▶ typeComponent | ◀Identifier▶ typeComponent
 #数组声明
 typeComponent → ◀[▶ ◀]▶ typeComponent | ε

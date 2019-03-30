@@ -24,6 +24,7 @@ public class LexicalParser {
         // 解析成终结符/非终结符
         List<LexExpression.Expression> lexExpressionList = new ArrayList<>();
         for(String lexical : lexicalContent) {
+            lexical = lexical.replaceAll("\\s+", " ");
             String lexicalHead = lexical.split("→")[0].trim();
             String lexicalBody = lexical.split("→")[1].trim();
             String[] lexElements = lexicalBody.split(" ");

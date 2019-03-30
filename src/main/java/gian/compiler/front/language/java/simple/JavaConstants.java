@@ -16,12 +16,19 @@ public class JavaConstants {
     public static String CLAZZ_NAME = "extendClazzName";
     public static String FIELD_LIST = "fieldList";
     public static String FIELD_NAME = "fieldName";
+    // 变量基本类型
+    public static String VARIABLE_BASE_TYPE = "variableBaseType";
+    // 变量类型
     public static String VARIABLE_TYPE = "variableType";
+    // 方法返回类型
+    public static String METHOD_RETURN_TYPE = "methodReturnType";
     public static String CONSTRUCTOR_LIST = "constructorList";
     public static String METHOD_LIST = "methodList";
     public static String PARAM_LIST = "paramList";
     public static String CODE = "code";
     public static String ENV = "env";
+    // 中间代码行号
+    public static String CODE_LABEL = "label";
 
     public static String IMPORT_CLAZZ_ALL_NAME = "importClazzAllName";
     public static String VARIABLE_INIT_INFO = "variableInitInfo";
@@ -31,6 +38,7 @@ public class JavaConstants {
     public static String CLASS_ENV = "classEnv";
     // 类静态作用域，用于查找静态变量
     public static String CLASS_STATIC_ENG = "classStaticEnv";
+
 
     // 数据类型
     public static String VARIABLE_TYPE_INT = "int";
@@ -71,15 +79,15 @@ public class JavaConstants {
     public static String JAVA_KEYWORD_DEFAULT = "default";
 
     // SimpleJava数据类型
-    public static VariableType INT = new VariableType(JavaConstants.VARIABLE_TYPE_INT, true, false);
-    public static VariableType LONG = new VariableType(JavaConstants.VARIABLE_TYPE_LONG, true, false);
-    public static VariableType SHORT = new VariableType(JavaConstants.VARIABLE_TYPE_SHORT, true, false);
-    public static VariableType FLOAT = new VariableType(JavaConstants.VARIABLE_TYPE_FLOAT, true, false);
-    public static VariableType DOUBLE = new VariableType(JavaConstants.VARIABLE_TYPE_DOUBLE, true, false);
-    public static VariableType CHAR = new VariableType(JavaConstants.VARIABLE_TYPE_CHAR, true, false);
-    public static VariableType BYTE = new VariableType(JavaConstants.VARIABLE_TYPE_BYTE, true, false);
-    public static VariableType BOOLEAN = new VariableType(JavaConstants.VARIABLE_TYPE_BOOLEAN, true, false);
-    public static VariableType VOID = new VariableType(JavaConstants.VARIABLE_TYPE_VOID, true, false);
-    public static VariableType CLAZZ = new VariableType(JavaConstants.VARIABLE_TYPE_CLAZZ, false, false);
+    public static VariableType INT = new VariableType(JavaConstants.VARIABLE_TYPE_INT, null, false);
+    public static VariableType LONG = new VariableType(JavaConstants.VARIABLE_TYPE_LONG, null, false);
+    public static VariableType SHORT = new VariableType(JavaConstants.VARIABLE_TYPE_SHORT, null, false);
+    public static VariableType FLOAT = new VariableType(JavaConstants.VARIABLE_TYPE_FLOAT, null, false);
+    public static VariableType DOUBLE = new VariableType(JavaConstants.VARIABLE_TYPE_DOUBLE, null, false);
+    public static VariableType CHAR = new VariableType(JavaConstants.VARIABLE_TYPE_CHAR, null, false);
+    public static VariableType BYTE = new VariableType(JavaConstants.VARIABLE_TYPE_BYTE, null, false);
+    public static VariableType BOOLEAN = new VariableType(JavaConstants.VARIABLE_TYPE_BOOLEAN, null, false);
+    public static VariableType CLAZZ = new VariableType(JavaConstants.VARIABLE_TYPE_CLAZZ, null, false);
+    public static VariableType VOID = new VariableType(JavaConstants.VARIABLE_TYPE_VOID, true);
 
 }

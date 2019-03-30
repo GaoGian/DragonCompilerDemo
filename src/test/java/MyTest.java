@@ -1,3 +1,4 @@
+import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxSymbol;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.internal.objects.Global;
@@ -51,6 +52,22 @@ public class MyTest {
 
         System.out.println(list1.equals(list2));
 
+    }
+
+    @Test
+    public void test23(){
+        String syntax = "parExpression → expressionTerm ◀&#124;&#124;▶ expressionTerm | expressionTerm ◀&&▶ expressionTerm | expressionTerm";
+        String head = syntax.split("→")[0];
+        String bodys = syntax.split("→")[1];
+
+        String[] products = bodys.split("\\|");
+        for(String body : products) {
+            String[] symbols = body.trim().split(" ");
+            for (String symbol : symbols) {
+                System.out.println(symbol.replace(LexConstants.MONTANT_UNICODE, LexConstants.MONTANT_STRING));
+            }
+
+        }
     }
 
     @Test

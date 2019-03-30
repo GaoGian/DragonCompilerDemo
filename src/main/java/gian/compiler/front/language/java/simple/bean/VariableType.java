@@ -15,19 +15,18 @@ import java.util.List;
 public class VariableType {
 
     protected String name;
-    protected boolean isBaseType;
+    protected boolean isVoid;
     protected boolean isArray;
-    protected List<Integer> arrayDimension = new ArrayList<>();
+    // 如果是数组的话代表下一维度
+    protected VariableType arrayDimension;
 
-    public VariableType(String name, boolean isBaseType, boolean isArray) {
+    public VariableType(String name, boolean isVoid) {
         this.name = name;
-        this.isBaseType = isBaseType;
-        this.isArray = isArray;
+        this.isVoid = isVoid;
     }
 
-    public VariableType(String name, boolean isBaseType, boolean isArray, List<Integer> arrayDimension) {
+    public VariableType(String name, VariableType arrayDimension, boolean isArray) {
         this.name = name;
-        this.isBaseType = isBaseType;
         this.isArray = isArray;
         this.arrayDimension = arrayDimension;
     }
@@ -40,12 +39,12 @@ public class VariableType {
         this.name = name;
     }
 
-    public boolean isBaseType() {
-        return isBaseType;
+    public boolean isVoid() {
+        return isVoid;
     }
 
-    public void setBaseType(boolean baseType) {
-        isBaseType = baseType;
+    public void setVoid(boolean aVoid) {
+        isVoid = aVoid;
     }
 
     public boolean isArray() {
@@ -56,11 +55,12 @@ public class VariableType {
         isArray = array;
     }
 
-    public List<Integer> getArrayDimension() {
+    public VariableType getArrayDimension() {
         return arrayDimension;
     }
 
-    public void setArrayDimension(List<Integer> arrayDimension) {
+    public void setArrayDimension(VariableType arrayDimension) {
         this.arrayDimension = arrayDimension;
     }
+
 }
