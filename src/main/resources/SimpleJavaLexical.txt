@@ -48,7 +48,7 @@ void → void type false false
 Identifier → [A-Za-z]\w* Identifier true false
 Digit → \d+ Digit true false
 Number → \d+(\.\d+)? Number true false
-String → "(\d|\w|\s)*" String true false
+String → "[^"]*" String true false
 
 #分界符
 { → \{ separator false false

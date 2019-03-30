@@ -167,7 +167,7 @@ public class LexicalParser {
                         endIndex++;
                     }
                 } catch (Exception e){
-                    throw new ParseException("line: " + line + ", index: " + endIndex + ", error: " + e.getMessage());
+                    throw new ParseException("lineIndex: " + lineIndex + ", index: " + endIndex + ", line" + line + ", error: " + e.getMessage());
                 }
 
             }

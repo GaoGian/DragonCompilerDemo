@@ -44,16 +44,16 @@ methodBody → block
 #代码块
 block → ◀{▶ blockStatement ◀}▶
 #代码语句
-blockStatement → localVariableDeclarationStatement blockStatement | statement blockStatement | ε
+blockStatement → localVariableDeclarationStatement ◀;▶ blockStatement | statement blockStatement | ε
 #局部变量声明
-localVariableDeclarationStatement → typeDeclaration ◀Identifier▶ variableInitializer ◀;▶
+localVariableDeclarationStatement → typeDeclaration ◀Identifier▶ variableInitializer
 #局部变量初始化
 variableInitializer → ◀=▶ expression | ε
 
 #方法语句
-statement → ◀if▶ ◀(▶ parExpression ◀)▶ block elseStatement | ◀for▶ ◀(▶ forControl ◀)▶ block | ◀while▶ ◀(▶ parExpression ◀)▶ block | ◀do▶ block ◀while▶ ◀(▶ parExpression ◀)▶ ◀;▶ | ◀switch▶ ◀(▶ parExpression ◀)▶ switchBlock | targetVariable ◀=▶ expression ◀;▶ | ◀return▶ expression ◀;▶ | ◀break▶ ◀;▶ | ◀continue▶ ◀;▶ | expression ◀;▶
+statement → ◀if▶ ◀(▶ parExpression ◀)▶ block elseStatement | ◀for▶ ◀(▶ forControl ◀)▶ block | ◀while▶ ◀(▶ parExpression ◀)▶ block | ◀do▶ block ◀while▶ ◀(▶ parExpression ◀)▶ ◀;▶ | ◀switch▶ ◀(▶ expression ◀)▶ switchBlock | targetVariable ◀=▶ expression ◀;▶ | ◀return▶ expression ◀;▶ | ◀break▶ ◀;▶ | ◀continue▶ ◀;▶ | expression ◀;▶
 #else 部分
-elseStatement → ◀else▶ block | ◀else▶ ◀if▶ block elseIfStatement | ε
+elseStatement → ◀else▶ block | ◀else▶ ◀if▶ ◀(▶ parExpression ◀)▶ block elseStatement | ε
 #表达式 ‘|’ 替换成 ‘&#124;’
 parExpression → expressionTerm ◀&#124;&#124;▶ expressionTerm | expressionTerm ◀&&▶ expressionTerm | expressionTerm
 expressionTerm → expressionFactor ◀>▶ expressionFactor | expressionFactor ◀>=▶ expressionFactor | expressionFactor ◀<▶ expressionFactor | expressionFactor ◀<=▶ expressionFactor | expressionFactor
@@ -74,7 +74,7 @@ identifierDeclaratorIdRest → arrayRest ◀.▶ ◀Identifier▶ identifierDecl
 arrayRest → [ ◀Digit▶ ] arrayRest | ε
 
 #计算公式
-computeExpression → expression ◀+▶ term | expression ◀-▶ term | term
+computeExpression → expression ◀+▶ term | expression ◀-▶ term | term | ◀Identifier▶ ◀++▶ | ◀Identifier▶ ◀--▶
 #乘除表达式因子
 term → term ◀*▶ factor | term ◀/▶ factor | factor
 factor → ◀(▶ expression ◀)▶ | ◀Number▶ | ◀Digit▶
@@ -85,9 +85,10 @@ forInit → localVariableDeclarationStatement
 forUpdate → expression
 
 #switch
-switchBlock → ◀{▶ switchBlockStatementGroup switchLabel ◀}▶
-switchBlockStatementGroup → switchLabel blockStatement
-switchLabel → ◀case▶ ◀Digit▶ ◀:▶ | ◀case▶ ◀Number▶ ◀:▶ | ◀case▶ ◀String▶ ◀:▶ | ◀default▶ ◀:▶
+switchBlock → ◀{▶ switchBlockStatementGroup defaultSwitchLabel ◀}▶
+switchBlockStatementGroup → switchLabel blockStatement switchBlockStatementGroup | ε
+switchLabel → ◀case▶ ◀Digit▶ ◀:▶ | ◀case▶ ◀Number▶ ◀:▶ | ◀case▶ ◀String▶ ◀:▶
+defaultSwitchLabel → ◀default▶ ◀:▶ blockStatement
 
 
 
