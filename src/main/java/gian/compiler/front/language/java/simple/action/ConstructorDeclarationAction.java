@@ -15,11 +15,11 @@ import java.util.List;
  */
 public class ConstructorDeclarationAction {
 
-    public static String product_1 = "constructorDeclaration → modifierDeclaration Identifier formalParameters constructorBody constructorDeclaration";
+    public static String product = "constructorDeclaration → modifierDeclaration Identifier formalParameters constructorBody";
 
     public static class ModifierDeclarationListener extends SyntaxDirectedListener{
         public ModifierDeclarationListener(){
-            this.matchProductTag = product_1;
+            this.matchProductTag = product;
             this.matchSymbol = "modifierDeclaration";
             this.matchIndex = 0;
             this.isLeaf = false;
@@ -39,7 +39,7 @@ public class ConstructorDeclarationAction {
     public static class IdentifierListener extends SyntaxDirectedListener{
 
         public IdentifierListener(){
-            this.matchProductTag = product_1;
+            this.matchProductTag = product;
             this.matchSymbol = "Identifier";
             this.matchIndex = 1;
             this.isLeaf = true;
@@ -60,7 +60,7 @@ public class ConstructorDeclarationAction {
     public static class FormalParametersListener extends SyntaxDirectedListener{
 
         public FormalParametersListener(){
-            this.matchProductTag = product_1;
+            this.matchProductTag = product;
             this.matchSymbol = "formalParameters";
             this.matchIndex = 2;
             this.isLeaf = false;
@@ -80,7 +80,7 @@ public class ConstructorDeclarationAction {
     public static class ConstructorBodyListener extends SyntaxDirectedListener{
 
         public ConstructorBodyListener(){
-            this.matchProductTag = product_1;
+            this.matchProductTag = product;
             this.matchSymbol = "constructorBody";
             this.matchIndex = 3;
             this.isLeaf = false;
@@ -107,28 +107,6 @@ public class ConstructorDeclarationAction {
             List<ClazzConstructor> constructorList = (List<ClazzConstructor>) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CONSTRUCTOR_LIST);
             constructorList.add(constructor);
 
-            return null;
-        }
-    }
-
-    public static String product_2 = "constructorDeclaration → ε";
-
-    public static class EpsilonListener extends SyntaxDirectedListener{
-
-        public EpsilonListener(){
-            this.matchProductTag = product_2;
-            this.matchSymbol = "ε";
-            this.matchIndex = 0;
-            this.isLeaf = true;
-        }
-
-        @Override
-        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-
-        @Override
-        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             return null;
         }
     }

@@ -22,10 +22,13 @@ public class SyntaxDirectedContext {
     protected List<SyntaxTree.SyntaxTreeNode> brotherNodeList;
 
     // 存放属性的地方，以父节点作为key存储分层域
-    Map<SyntaxTree.SyntaxTreeNode, Map<String, Object>> propertyMap = new HashMap<>();
+    protected Map<SyntaxTree.SyntaxTreeNode, Map<String, Object>> propertyMap = new HashMap<>();
 
     // 存放全局属性
-    Map<String, Object> globalPropertyMap = new HashMap<>();
+    protected Map<String, Object> globalPropertyMap = new HashMap<>();
+
+    // TODO 需要记录语义动作对应的程序位置
+    protected Map<String, Object> programInfo = new HashMap<>();
 
     public SyntaxDirectedContext(SyntaxTree syntaxTree) {
         this.syntaxTree = syntaxTree;
@@ -85,5 +88,13 @@ public class SyntaxDirectedContext {
 
     public void setGlobalPropertyMap(Map<String, Object> globalPropertyMap) {
         this.globalPropertyMap = globalPropertyMap;
+    }
+
+    public Map<String, Object> getProgramInfo() {
+        return programInfo;
+    }
+
+    public void setProgramInfo(Map<String, Object> programInfo) {
+        this.programInfo = programInfo;
     }
 }

@@ -57,6 +57,10 @@ public class LexConstants {
     public static final String SYNTAX_DIRECT_PROPERTY_INH = "INH";
     public static final String SYNTAX_DIRECT_PROPERTY_SYN = "SYN";
 
+    // 语义动作对应的程序位置信息
+    public static final String PROGRAM_LINE = "programLine";
+    public static final String PROGRAM_INDEX = "programIndex";
+
     // #表达式 ‘|’ 替换成 ‘&#124;’
     public static final String MONTANT_STRING = "|";
     public static final String MONTANT_UNICODE = "&#124;";

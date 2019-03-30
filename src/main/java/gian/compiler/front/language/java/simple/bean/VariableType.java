@@ -14,17 +14,6 @@ import java.util.List;
  */
 public class VariableType {
 
-    public static VariableType INT = new VariableType(JavaConstants.VARIABLE_TYPE_INT, true, false);
-    public static VariableType LONG = new VariableType(JavaConstants.VARIABLE_TYPE_LONG, true, false);
-    public static VariableType SHORT = new VariableType(JavaConstants.VARIABLE_TYPE_SHORT, true, false);
-    public static VariableType FLOAT = new VariableType(JavaConstants.VARIABLE_TYPE_FLOAT, true, false);
-    public static VariableType DOUBLE = new VariableType(JavaConstants.VARIABLE_TYPE_DOUBLE, true, false);
-    public static VariableType CHAR = new VariableType(JavaConstants.VARIABLE_TYPE_CHAR, true, false);
-    public static VariableType BYTE = new VariableType(JavaConstants.VARIABLE_TYPE_BYTE, true, false);
-    public static VariableType BOOLEAN = new VariableType(JavaConstants.VARIABLE_TYPE_BOOLEAN, true, false);
-    public static VariableType VOID = new VariableType(JavaConstants.VARIABLE_TYPE_VOID, true, false);
-    public static VariableType CLAZZ = new VariableType(JavaConstants.VARIABLE_TYPE_CLAZZ, false, false);
-
     protected String name;
     protected boolean isBaseType;
     protected boolean isArray;

@@ -17,7 +17,10 @@ import java.util.List;
  */
 public class ClassBodyDeclarationAction {
 
-    public static String product_1 = "classBodyDeclaration → fieldDeclaration constructorDeclaration methodDeclaration";
+    public static String product_1 = "classBodyDeclaration → fieldDeclaration classBodyDeclaration";
+    public static String product_2 = "classBodyDeclaration → constructorDeclaration classBodyDeclaration";
+    public static String product_3 = "classBodyDeclaration → methodDeclaration classBodyDeclaration";
+
     public static class FieldDeclarationListener extends SyntaxDirectedListener{
 
         public FieldDeclarationListener(){
@@ -29,16 +32,14 @@ public class ClassBodyDeclarationAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            List<ClazzField> fieldList = new ArrayList<>();
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FIELD_LIST, fieldList);
-
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             List<ClazzField> fieldList = (List<ClazzField>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FIELD_LIST);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FIELD_LIST, fieldList);
+
+            ((List<ClazzField>) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FIELD_LIST)).addAll(fieldList);
 
             return null;
         }
@@ -47,24 +48,21 @@ public class ClassBodyDeclarationAction {
     public static class ConstructorDeclarationListener extends SyntaxDirectedListener{
 
         public ConstructorDeclarationListener(){
-            this.matchProductTag = product_1;
+            this.matchProductTag = product_2;
             this.matchSymbol = "constructorDeclaration";
-            this.matchIndex = 1;
+            this.matchIndex = 0;
             this.isLeaf = false;
         }
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            List<ClazzConstructor> constructorList = new ArrayList<>();
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CONSTRUCTOR_LIST, constructorList);
-
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             List<ClazzConstructor> constructorList = (List<ClazzConstructor>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CONSTRUCTOR_LIST);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CONSTRUCTOR_LIST, constructorList);
+            ((List<ClazzConstructor>) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CONSTRUCTOR_LIST)).addAll(constructorList);
 
             return null;
         }
@@ -73,49 +71,21 @@ public class ClassBodyDeclarationAction {
     public static class MethodDeclarationListener extends SyntaxDirectedListener{
 
         public MethodDeclarationListener(){
-            this.matchProductTag = product_1;
+            this.matchProductTag = product_3;
             this.matchSymbol = "methodDeclaration";
-            this.matchIndex = 2;
+            this.matchIndex = 0;
             this.isLeaf = false;
         }
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            List<ClazzMethod> methodList = new ArrayList<>();
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.METHOD_LIST, methodList);
-
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             List<ClazzMethod> methodList = (List<ClazzMethod>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.METHOD_LIST);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.METHOD_LIST, methodList);
-
-            return null;
-        }
-    }
-
-    public static String product_2 = "classBodyDeclaration → ε";
-    public static class EpsilonListener extends SyntaxDirectedListener{
-
-        public EpsilonListener(){
-            this.matchProductTag = product_2;
-            this.matchSymbol = "ε";
-            this.matchIndex = 0;
-            this.isLeaf = true;
-        }
-
-        @Override
-        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-
-        @Override
-        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FIELD_LIST, new ArrayList<>());
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CONSTRUCTOR_LIST, new ArrayList<>());
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.METHOD_LIST, new ArrayList<>());
+            ((List<ClazzMethod>) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.METHOD_LIST)).addAll(methodList);
 
             return null;
         }

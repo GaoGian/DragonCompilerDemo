@@ -8,6 +8,7 @@ public class Variable {
     protected VariableType variableType;
     protected String fieldName;
     protected String address;
+    protected VariableInitInfo variableInitInfo;
 
     public VariableType getVariableType() {
         return variableType;
@@ -31,5 +32,13 @@ public class Variable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public VariableInitInfo getVariableInitInfo() {
+        return variableInitInfo;
+    }
+
+    public void setVariableInitInfo(VariableInitInfo variableInitInfo) {
+        this.variableInitInfo = variableInitInfo;
     }
 }
