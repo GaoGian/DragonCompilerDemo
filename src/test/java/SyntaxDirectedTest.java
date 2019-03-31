@@ -60,12 +60,12 @@ public class SyntaxDirectedTest {
     @Test
     public void testSyntaxTree(){
         List<Token> tokens = new ArrayList<>();
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token("+", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token("*", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token("+", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token("*", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token(LexConstants.SYNTAX_END, TestLexExpression.END));
 
         List<String> syntaxs = new ArrayList<>();
         syntaxs.add("E → E + T | T ");
@@ -81,19 +81,19 @@ public class SyntaxDirectedTest {
     @Test
     public void testSyntaxTree1(){
         System.out.println("------------------------------SyntaxTree----------------------------------");
-        SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
+        SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR("syntaxContentFile.txt", "compilerCode.txt", TestLexExpression.expressions, true);
         LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true), 300, 500);
     }
 
     @Test
     public void testSyntaxDirectActionTree(){
         List<Token> tokens = new ArrayList<>();
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token("*", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token("+", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token("*", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token("+", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token(LexConstants.SYNTAX_END, TestLexExpression.END));
 
         List<String> syntaxs = new ArrayList<>();
         syntaxs.add("L → E");
@@ -271,14 +271,14 @@ public class SyntaxDirectedTest {
     @Test
     public void testSyntaxDirectType(){
         List<Token> tokens = new ArrayList<>();
-        tokens.add(new Token("int", LexExpression.TokenType.TYPE));
-        tokens.add(new Token("[", LexExpression.TokenType.SEPARATOR));
-        tokens.add(new Token("2", LexExpression.TokenType.DIGIT));
-        tokens.add(new Token("]", LexExpression.TokenType.SEPARATOR));
-        tokens.add(new Token("[", LexExpression.TokenType.SEPARATOR));
-        tokens.add(new Token("3", LexExpression.TokenType.DIGIT));
-        tokens.add(new Token("]", LexExpression.TokenType.SEPARATOR));
-        tokens.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
+        tokens.add(new Token("int", TestLexExpression.TYPE));
+        tokens.add(new Token("[", TestLexExpression.SEPARATOR));
+        tokens.add(new Token("2", TestLexExpression.DIGIT));
+        tokens.add(new Token("]", TestLexExpression.SEPARATOR));
+        tokens.add(new Token("[", TestLexExpression.SEPARATOR));
+        tokens.add(new Token("3", TestLexExpression.DIGIT));
+        tokens.add(new Token("]", TestLexExpression.SEPARATOR));
+        tokens.add(new Token(LexConstants.SYNTAX_END, TestLexExpression.END));
 
         List<String> syntaxs = new ArrayList<>();
         syntaxs.add("L → T");

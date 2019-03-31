@@ -185,7 +185,7 @@ public class NFATest {
      */
     @Test
     public void testLexParser(){
-        List<Token> parseRs = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
+        List<Token> parseRs = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), TestLexExpression.expressions);
         System.out.println("---------------------------------------------------------------------------");
         int line = 0;
         for(Token token : parseRs){

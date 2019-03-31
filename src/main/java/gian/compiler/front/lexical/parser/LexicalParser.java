@@ -177,7 +177,7 @@ public class LexicalParser {
         }
 
         // 在末尾添加上结束符
-        parseResult.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END, 1, parseResult.get(parseResult.size()-1).getLine() + 1));
+        parseResult.add(new Token(LexConstants.SYNTAX_END, new LexExpression.TokenType(LexConstants.SYNTAX_END), 1, parseResult.get(parseResult.size()-1).getLine() + 1));
 
         return parseResult;
     }

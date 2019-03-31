@@ -197,12 +197,12 @@ public class SyntaxTest {
     public void testSyntaxPredict2(){
 
         List<Token> tokens = new ArrayList<>();
-        tokens.add(new Token("id", LexExpression.TokenType.KEYWORD));
-        tokens.add(new Token("+", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.KEYWORD));
-        tokens.add(new Token("*", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.KEYWORD));
-        tokens.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
+        tokens.add(new Token("id", TestLexExpression.KEYWORD));
+        tokens.add(new Token("+", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.KEYWORD));
+        tokens.add(new Token("*", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.KEYWORD));
+        tokens.add(new Token(LexConstants.SYNTAX_END, TestLexExpression.END));
 
         System.out.println("-------------------------------预测分析表----------------------------------");
 
@@ -283,7 +283,7 @@ public class SyntaxTest {
         // TODO 文法中的终结符需要和 LexExpression 元字符进行匹配，然后在判断输入符是否是对应的LexExpression的符号（验证正则表达式是否匹配，已经TokenType是否一致）
         // TODO 需要区分关键字和ID类别的终结符
         /** 一般情况下词法分析是在文法分析过程中进行的，根据语义返回识别的符号，这里由于分开处理，所以需要进行额外的关联映射 **/
-        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
+        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), TestLexExpression.expressions);
         int line = 0;
         for(Token token : tokens){
             if(token.getLine() > line){
@@ -311,7 +311,7 @@ public class SyntaxTest {
 
     @Test
     public void testSyntaxPredict4(){
-        SyntacticLLParser.syntaxParseByLL("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
+        SyntacticLLParser.syntaxParseByLL("syntaxContentFile.txt", "compilerCode.txt", TestLexExpression.expressions, true);
     }
 
     @Test
@@ -401,12 +401,12 @@ public class SyntaxTest {
     @Test
     public void testLR0parse(){
         List<Token> tokens = new ArrayList<>();
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token("*", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token("+", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token("*", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token("+", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token(LexConstants.SYNTAX_END, TestLexExpression.END));
 
 
         List<String> syntaxs = new ArrayList<>();
@@ -445,7 +445,7 @@ public class SyntaxTest {
         List<String> syntaxs = ParseUtils.getFile("syntaxContentFile.txt", true);
 
         // 解析目标语言文件生成词法单元数据
-        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
+        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), TestLexExpression.expressions);
 
         List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
@@ -515,12 +515,12 @@ public class SyntaxTest {
     @Test
     public void testSLRPredictMap(){
         List<Token> tokens = new ArrayList<>();
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token("*", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token("+", LexExpression.TokenType.OPERATOR));
-        tokens.add(new Token("id", LexExpression.TokenType.ID));
-        tokens.add(new Token(LexConstants.SYNTAX_END, LexExpression.TokenType.END));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token("*", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token("+", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token(LexConstants.SYNTAX_END, TestLexExpression.END));
 
         List<String> syntaxs = new ArrayList<>();
         syntaxs.add("E → E + T | T ");
@@ -568,7 +568,7 @@ public class SyntaxTest {
         List<String> syntaxs = ParseUtils.getFile("syntaxContentFile.txt", true);
 
         // 解析目标语言文件生成词法单元数据
-        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
+        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), TestLexExpression.expressions);
 
         List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
@@ -609,7 +609,7 @@ public class SyntaxTest {
      */
     @Test
     public void testSLRPredictMap3(){
-        SyntacticLRParser.syntaxParseSLR("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
+        SyntacticLRParser.syntaxParseSLR("syntaxContentFile.txt", "compilerCode.txt", TestLexExpression.expressions, true);
     }
 
     @Test
@@ -636,7 +636,7 @@ public class SyntaxTest {
         List<String> syntaxs = ParseUtils.getFile("syntaxContentFile.txt", true);
 
         // 解析目标语言文件生成词法单元数据
-        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), LexExpression.expressions);
+        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), TestLexExpression.expressions);
 
         List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
 
@@ -662,7 +662,7 @@ public class SyntaxTest {
      */
     @Test
     public void testLRItemCollection2(){
-        SyntacticLRParser.syntaxParseLR("syntaxContentFile.txt", "compilerCode.txt", LexExpression.expressions, true);
+        SyntacticLRParser.syntaxParseLR("syntaxContentFile.txt", "compilerCode.txt", TestLexExpression.expressions, true);
     }
 
 }
