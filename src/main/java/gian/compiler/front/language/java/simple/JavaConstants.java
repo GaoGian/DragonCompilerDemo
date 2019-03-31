@@ -84,16 +84,4 @@ public class JavaConstants {
     public static String JAVA_KEYWORD_CASE = "case";
     public static String JAVA_KEYWORD_DEFAULT = "default";
 
-    // SimpleJava数据类型
-    public static VariableType INT = new VariableType(JavaConstants.VARIABLE_TYPE_INT, null, false);
-    public static VariableType LONG = new VariableType(JavaConstants.VARIABLE_TYPE_LONG, null, false);
-    public static VariableType SHORT = new VariableType(JavaConstants.VARIABLE_TYPE_SHORT, null, false);
-    public static VariableType FLOAT = new VariableType(JavaConstants.VARIABLE_TYPE_FLOAT, null, false);
-    public static VariableType DOUBLE = new VariableType(JavaConstants.VARIABLE_TYPE_DOUBLE, null, false);
-    public static VariableType CHAR = new VariableType(JavaConstants.VARIABLE_TYPE_CHAR, null, false);
-    public static VariableType BYTE = new VariableType(JavaConstants.VARIABLE_TYPE_BYTE, null, false);
-    public static VariableType BOOLEAN = new VariableType(JavaConstants.VARIABLE_TYPE_BOOLEAN, null, false);
-    public static VariableType CLAZZ = new VariableType(JavaConstants.VARIABLE_TYPE_CLAZZ, null, false);
-    public static VariableType VOID = new VariableType(JavaConstants.VARIABLE_TYPE_VOID, true);
-
 }
