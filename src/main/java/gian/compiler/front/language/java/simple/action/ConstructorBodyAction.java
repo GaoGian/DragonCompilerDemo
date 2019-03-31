@@ -2,9 +2,13 @@ package gian.compiler.front.language.java.simple.action;
 
 import gian.compiler.front.language.java.simple.JavaConstants;
 import gian.compiler.front.language.java.simple.env.JavaEnvironment;
+import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by gaojian on 2019/3/30.
@@ -33,6 +37,9 @@ public class ConstructorBodyAction {
             JavaEnvironment env = new JavaEnvironment(preEnv);
             context.getGlobalPropertyMap().put(JavaConstants.CURRENT_ENV, env);
 
+            List<String> code = new ArrayList<>();
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
+
             return null;
         }
     }
@@ -49,6 +56,11 @@ public class ConstructorBodyAction {
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // TODO
+            List<String> refCode = (List<String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_CODE_INDEX);
+            if(refCode != null) {
+                ((List<String>) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE)).addAll(refCode);
+            }
+
             return null;
         }
 
@@ -77,6 +89,11 @@ public class ConstructorBodyAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // TODO
+            List<String> code = (List<String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            if(code != null) {
+                ((List<String>) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE)).addAll(code);
+            }
+
             return null;
         }
     }

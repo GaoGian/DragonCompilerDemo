@@ -29,9 +29,15 @@ public class JavaConstants {
     public static String ENV = "env";
     // 中间代码行号
     public static String CODE_LABEL = "label";
+    // 引用的code位置信息
+    public static String REF_CODE_INDEX = "refCodeIndex";
+    // 传递的参数变量名称
+    public static String CALL_PARAM_LIST = "callParamList";
 
     public static String IMPORT_CLAZZ_ALL_NAME = "importClazzAllName";
     public static String VARIABLE_INIT_INFO = "variableInitInfo";
+    // 当前解析类名称
+    public static String CURRENT_CLAZZ_NAME = "currentClazzName";
     // 当前作用域
     public static String CURRENT_ENV = "currentEnv";
     // 类实例作用域，用于 this.xxx 查找变量

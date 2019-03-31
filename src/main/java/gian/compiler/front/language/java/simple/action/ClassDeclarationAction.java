@@ -77,6 +77,8 @@ public class ClassDeclarationAction {
             Map<String, JavaClazz> clazzMap = (Map<String, JavaClazz>) context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP);
             clazzMap.put(clazzName, clazz);
 
+            context.getGlobalPropertyMap().put(JavaConstants.CURRENT_CLAZZ_NAME, clazz);
+
             return null;
         }
     }

@@ -5,7 +5,7 @@ package gian.compiler.front.language.java.simple.bean;
  */
 public class VariableInitInfo {
 
-    // 初始化动作code的行号
+    // FIXME 初始化动作code的行号
     protected Integer initCodeIndex;
     protected VariableType initVariableType;
 
