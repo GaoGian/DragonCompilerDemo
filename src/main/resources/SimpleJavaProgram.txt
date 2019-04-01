@@ -4,7 +4,7 @@ public class SimpleJavaProgram{
     public boolean isBoolean = false;
     public SimpleJavaProgram tempClazz = new SimpleJavaMath(false, "tempClazz");
     public boolean[] array;
-    public int[][] mathElemet;
+    public int[][] mathElemet = new int[2][5];
     public SimpleJavaProgram(int x, int y){
         this.x = x;
         this.y = y;
@@ -76,6 +76,10 @@ public class SimpleJavaProgram{
         int t2 = matherSelf.mathElemet[1][3].self.add();
         int t2 = matherSelf.mathElemet[1][3].self.add().idea;
         int t2 = matherSelf.mathElemet[1][3].self.add().idea();
+        int t4 = matherSelf.mathElemet[1][3] + t2;
+        matherSelf.mathElemet[1][3] = matherSelf.mathElemet[1][3];
+        matherSelf.mathElemet[1][3] = matherSelf.mathElemet[1][3] * t2;
+        matherSelf.mathElemet[1][3] = matherSelf.mathElemet[1][3] * matherSelf.mathElemet[1];
     }
 }
 

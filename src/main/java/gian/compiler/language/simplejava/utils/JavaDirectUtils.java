@@ -99,6 +99,15 @@ public class JavaDirectUtils {
         return new Rel(rel, lvariable, rvariable);
     }
 
+    public static Expr term(Variable lvariable, Variable rvariable, String op){
+        if(op != null){
+            Expr expr = new Arith(op, lvariable, rvariable);
+            return expr;
+        }else{
+            return lvariable;
+        }
+    }
+
     public static Expr factor(Token token){
         Variable variable = null;
         if(token.getType().isRexgexToken()) {
@@ -108,15 +117,6 @@ public class JavaDirectUtils {
             variable = new Variable(token.getToken(), variableType);
         }
         return variable;
-    }
-
-    public static Expr term(Variable lvariable, Variable rvariable, String op){
-        if(op != null){
-            Expr expr = new Arith(op, lvariable, rvariable);
-            return expr;
-        }else{
-            return lvariable;
-        }
     }
 
     public static void error(String s){

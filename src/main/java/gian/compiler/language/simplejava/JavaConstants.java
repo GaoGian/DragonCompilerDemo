@@ -14,6 +14,8 @@ public class JavaConstants {
     public final static String CLAZZ_NAME = "extendClazzName";
     public final static String FIELD_LIST = "fieldList";
     public final static String FIELD_NAME = "fieldName";
+    // 表达式变量
+    public final static String VARIABLE = "variable";
     // 变量基本类型
     public final static String VARIABLE_BASE_TYPE = "variableBaseType";
     // 变量类型
