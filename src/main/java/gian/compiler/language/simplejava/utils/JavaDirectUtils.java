@@ -6,6 +6,7 @@ import gian.compiler.language.simplejava.bean.VariableArrayType;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.exception.JavaDirectException;
+import gian.compiler.language.simplejava.inter.Constant;
 import gian.compiler.language.simplejava.inter.expression.*;
 import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.language.simplejava.inter.statement.*;
@@ -70,12 +71,12 @@ public class JavaDirectUtils {
         VariableType variableType = variable.getVariableType();
 
         if(!(variableType instanceof VariableArrayType)){
-            Expr width = new Expr(String.valueOf(variableType.getWidth()), VariableType.INT);
+            Expr width = new Constant(String.valueOf(variableType.getWidth()), VariableType.INT);
             Expr index = new Arith(JavaConstants.JAVA_OPERATOR_MULIT, factor, width);
 
             return new Access(variable, index, variableType);
         }else{
-            Expr width = new Expr(String.valueOf(((VariableArrayType) variableType).getBaseVariableType().getWidth()), VariableType.INT);
+            Expr width = new Constant(String.valueOf(((VariableArrayType) variableType).getBaseVariableType().getWidth()), VariableType.INT);
             Expr index_1 = new Arith(JavaConstants.JAVA_OPERATOR_MULIT, factor, width);
             Expr index_2 = new Arith(JavaConstants.JAVA_OPERATOR_ADD, array.index, index_1);
 
