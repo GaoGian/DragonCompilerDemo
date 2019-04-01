@@ -13,35 +13,6 @@ import java.util.*;
 public class LexicalParser {
 
     /**
-     * 读取词法文件，生成词法规则
-     * 词法规则格式：expressName → regexStr type isRegex isEmpty
-     * regexStr：匹配正则表达式
-     * type：类型名称
-     * isRegex：是否根据字面量匹配
-     * isEmpty：是否需要识别，为空的话就跳过
-     */
-    public static List<LexExpression.Expression> readExpressionFile(List<String> lexicalContent){
-        // 解析成终结符/非终结符
-        List<LexExpression.Expression> lexExpressionList = new ArrayList<>();
-        for(String lexical : lexicalContent) {
-            lexical = lexical.replaceAll("\\s+", " ");
-            String lexicalHead = lexical.split("→")[0].trim();
-            String lexicalBody = lexical.split("→")[1].trim();
-            String[] lexElements = lexicalBody.split(" ");
-            String regex = lexElements[0];
-            String type = lexElements[1];
-            Boolean isRexgexToken = Boolean.valueOf(lexElements[2]);
-            Boolean isEmpty = Boolean.valueOf(lexElements[3]);
-
-            LexExpression.Expression lexExpression = new LexExpression.Expression(regex, new LexExpression.TokenType(type, isRexgexToken), isEmpty);
-            lexExpressionList.add(lexExpression);
-
-        }
-
-        return lexExpressionList;
-    }
-
-    /**
      * 根据词法规则解析目标文件内容
      *
      * */

@@ -203,7 +203,7 @@ public class NFATest {
     public void testLexExpressionParse(){
         // 读取文法文件
         List<String> lexicalContent = ParseUtils.getFile("SimpleJavaLexical.txt", true);
-        List<LexExpression.Expression> lexExpressionList = LexicalParser.readExpressionFile(lexicalContent);
+        List<LexExpression.Expression> lexExpressionList = ParseUtils.readExpressionFile(lexicalContent);
 
         for(LexExpression.Expression expression : lexExpressionList){
             System.out.println(expression.getType().getType() + " → " + expression.getExpression() + " " + expression.getType().getType() + " " + expression.getType().isRexgexToken() + " " + expression.isEmpty());

@@ -27,7 +27,7 @@ public class SyntaxTest {
         syntaxs.add("stmt → if expr then stmt else stmt | if stmt then stmt | begin stmtList end");
         syntaxs.add("stmtList → stmt ; stmtList | stmt | ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
             System.out.println(syntaxSymbol);
@@ -44,7 +44,7 @@ public class SyntaxTest {
         syntaxs.add("T → T + F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         // 消除前
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -69,7 +69,7 @@ public class SyntaxTest {
 //        syntaxs.add("stmt → if expr then stmt else stmt | if expr then stmt");
         syntaxs.add("T → a * F | a * F - F");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         // 提取前
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -94,7 +94,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | T * F - F ");
         syntaxs.add("F → id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         // 消除前
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -131,7 +131,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         // 消除前
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -178,7 +178,7 @@ public class SyntaxTest {
 //        syntaxs.add("S' → e S | ε ");
 //        syntaxs.add("E → b ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         SyntacticLLParser.eliminateLeftRecursion(syntaxSymbols);
 
@@ -213,7 +213,7 @@ public class SyntaxTest {
         syntaxs.add("F → ( E ) | id ");
 
         System.out.println("----------------------------消除左递归，提取公因式------------------------------");
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
         SyntacticLLParser.eliminateLeftRecursion(syntaxSymbols);
         // 提取后
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
@@ -248,7 +248,7 @@ public class SyntaxTest {
         System.out.println("----------------------------文法解析------------------------------");
         // TODO 修改终结符的识别方式，需要和词法规则联系起来
         // TODO 终结符有几类：关键字、符号、变量、值
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
         // 消除前
         for(SyntaxSymbol syntaxSymbol : syntaxSymbols) {
             System.out.println(syntaxSymbol);
@@ -321,7 +321,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         ItemCollection startItemCollection = SyntacticLRParser.getStartItemCollection(syntaxSymbols, 0);
@@ -345,7 +345,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         ItemCollection startItemCollection = SyntacticLRParser.getStartItemCollection(syntaxSymbols, 0);
@@ -375,7 +375,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -414,7 +414,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -447,7 +447,7 @@ public class SyntaxTest {
         // 解析目标语言文件生成词法单元数据
         List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), TestLexExpression.expressions);
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -480,7 +480,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -527,7 +527,7 @@ public class SyntaxTest {
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -570,7 +570,7 @@ public class SyntaxTest {
         // 解析目标语言文件生成词法单元数据
         List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), TestLexExpression.expressions);
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------startItemCollection----------------------------------");
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -619,7 +619,7 @@ public class SyntaxTest {
         syntaxs.add("S → C C ");
         syntaxs.add("C → c C | d ");
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         Map<Integer, ItemCollection> allLRItemCollectionMap = SyntacticLRParser.getLRItemCollectionMap(syntaxSymbols);
 
@@ -638,7 +638,7 @@ public class SyntaxTest {
         // 解析目标语言文件生成词法单元数据
         List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), TestLexExpression.expressions);
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
 
         System.out.println("-------------------------------LR ItemCollectionNode----------------------------------");

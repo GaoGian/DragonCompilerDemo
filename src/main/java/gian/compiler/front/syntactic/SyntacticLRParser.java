@@ -293,7 +293,7 @@ public class SyntacticLRParser {
                                          Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap,
                                          Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap){
 
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         // 获取初始项集节点
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -566,7 +566,7 @@ public class SyntacticLRParser {
         // 读取文法文件
         List<String> syntaxs = ParseUtils.getFile(syntaxFile, isClassPath);
         // 解析文法文件
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         // 生成所有项集
         AtomicInteger itemCollectionNo = new AtomicInteger(0);
@@ -1092,7 +1092,7 @@ public class SyntacticLRParser {
     }
 
     public static SyntaxTree syntaxParseLR(List<String> syntaxs, List<Token> tokens){
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         // 生成所有 LR ItemCollection 集合
         Map<Integer, ItemCollection> allLRItemCollectionMap = SyntacticLRParser.getLRItemCollectionMap(syntaxSymbols);
@@ -1109,7 +1109,7 @@ public class SyntacticLRParser {
     public static SyntaxTree syntaxParseLR(String lexicalFile, String syntaxFile, String targetProgarmFile, boolean isClassPath){
         // 读取词法文件
         List<String> lexicalContent = ParseUtils.getFile(lexicalFile, isClassPath);
-        List<LexExpression.Expression> expressions = LexicalParser.readExpressionFile(lexicalContent);
+        List<LexExpression.Expression> expressions = ParseUtils.readExpressionFile(lexicalContent);
 
         return syntaxParseLR(syntaxFile, targetProgarmFile, expressions, isClassPath);
     }
@@ -1120,7 +1120,7 @@ public class SyntacticLRParser {
 
         // 解析目标语言文件生成词法单元数据
         List<Token> tokens = LexicalParser.parser(ParseUtils.getFile(targetProgarmFile, isClassPath), expressions);
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         // 生成所有 LR ItemCollection 集合
         Map<Integer, ItemCollection> allLRItemCollectionMap = SyntacticLRParser.getLRItemCollectionMap(syntaxSymbols);

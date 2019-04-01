@@ -22,7 +22,7 @@ public class SimpleJavaTest {
     @Test
     public void testSimpleJava(){
         // 读取词法文件
-        List<LexExpression.Expression> expressions = LexicalParser.readExpressionFile(ParseUtils.getFile("SimpleJavaLexical.txt", true));
+        List<LexExpression.Expression> expressions = ParseUtils.readExpressionFile(ParseUtils.getFile("SimpleJavaLexical.txt", true));
         // 解析目标语言文件生成词法单元数据
         List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("SimpleJavaProgram.txt", true), expressions);
         System.out.println("-------------------------------SimpleJavaProgram Tokens----------------------------------");
@@ -30,7 +30,7 @@ public class SimpleJavaTest {
 
         // 读取文法文件
         List<String> syntaxs = ParseUtils.getFile("SimpleJavaSyntax.txt", true);
-        List<SyntaxSymbol> syntaxSymbols = SyntacticLLParser.parseSyntaxSymbol(syntaxs);
+        List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
         System.out.println("-------------------------------LR ItemCollectionNode----------------------------------");
         Map<Integer, ItemCollection> allLRItemCollectionMap = SyntacticLRParser.getLRItemCollectionMap(syntaxSymbols);
