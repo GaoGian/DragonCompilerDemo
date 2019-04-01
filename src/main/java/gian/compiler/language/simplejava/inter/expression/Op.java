@@ -12,6 +12,7 @@ public class Op extends Expr {
         super(tok, p);
     }
 
+    @Override
     public Expr reduce(){
         Expr x = gen();
         Temp t = new Temp(type);

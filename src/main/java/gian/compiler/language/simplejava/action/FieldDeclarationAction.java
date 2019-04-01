@@ -112,10 +112,8 @@ public class FieldDeclarationAction {
                 throw new ClazzTransformException("初始化类型不匹配");
             }
 
-            ClazzField clazzField = new ClazzField();
+            ClazzField clazzField = new ClazzField(variableId, variableType);
             clazzField.setPermission(modifier);
-            clazzField.setVariableType(variableType);
-            clazzField.setFieldName(variableId);
             clazzField.setVariableInitInfo(variableInitInfo);
 
             // TODO 将声明的变量存入到类实例作用域内

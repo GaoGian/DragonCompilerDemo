@@ -17,6 +17,7 @@ public class Temp extends Expr {
         number = JavaDirectGlobalProperty.tempCout.getAndIncrement();
     }
 
+    @Override
     public String toString(){
         return JavaConstants.CODE_TEMP_STR + number;
     }

@@ -14,6 +14,7 @@ public class Break extends Stmt {
         stmt = Stmt.Enclosing;
     }
 
+    @Override
     public void gen(int b, int a){
         emit("goto L" + stmt.after);
     }

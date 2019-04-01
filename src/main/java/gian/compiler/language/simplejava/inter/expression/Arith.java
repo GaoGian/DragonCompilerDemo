@@ -19,10 +19,12 @@ public class Arith extends Op {
         }
     }
 
+    @Override
     public Expr gen(){
         return new Arith(op, expr1.reduce(), expr2.reduce());
     }
 
+    @Override
     public String toString(){
         return expr1.toString() + " " + op.toString() + " " + expr2.toString();
     }

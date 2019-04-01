@@ -69,7 +69,7 @@ public class MethodDeclarationAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            VariableType voidReturnType = new VariableType(JavaConstants.VARIABLE_TYPE_VOID, true);
+            VariableType voidReturnType = new VariableType(JavaConstants.VARIABLE_TYPE_VOID, VariableType.VOID.getWidth());
             currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.METHOD_RETURN_TYPE, voidReturnType);
 
             return null;
@@ -79,7 +79,7 @@ public class MethodDeclarationAction {
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
 
             String modifier = (String) context.getBrotherNodeList().get(currentIndex - 4).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
-            VariableType voidReturnType = new VariableType(JavaConstants.VARIABLE_TYPE_VOID, true);
+            VariableType voidReturnType = new VariableType(JavaConstants.VARIABLE_TYPE_VOID, VariableType.VOID.getWidth());
             String methodId = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
             List<Variable> paramList = (List<Variable>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PARAM_LIST);
             List<String> code = (List<String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);

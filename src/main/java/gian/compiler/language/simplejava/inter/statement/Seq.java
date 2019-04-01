@@ -12,6 +12,7 @@ public class Seq extends Stmt {
         stmt2 = s2;
     }
 
+    @Override
     public void gen(int b, int a){
         if(stmt1 == Stmt.Null){
             stmt2.gen(b, a);

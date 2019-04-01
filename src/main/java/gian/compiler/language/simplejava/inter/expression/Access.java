@@ -1,6 +1,7 @@
 package gian.compiler.language.simplejava.inter.expression;
 
 import gian.compiler.language.simplejava.JavaConstants;
+import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
 
 /**
@@ -9,10 +10,10 @@ import gian.compiler.language.simplejava.bean.VariableType;
  */
 public class Access extends Op {
 
-    public VariableType array;
+    public Variable array;
     public Expr index;
 
-    public Access(VariableType a, Expr i, VariableType p){
+    public Access(Variable a, Expr i, VariableType p){
         super(JavaConstants.ARRAY_TAG, p);
         array = a;
         index = i;

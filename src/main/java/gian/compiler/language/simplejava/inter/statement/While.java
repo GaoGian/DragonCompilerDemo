@@ -25,6 +25,7 @@ public class While extends Stmt {
         }
     }
 
+    @Override
     public void gen(int b, int a){
         after = a;
         expr.jumping(0, a);

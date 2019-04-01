@@ -7,6 +7,10 @@ public class ClazzField extends Variable {
 
     protected String permission;
 
+    public ClazzField(String fieldName, VariableType variableType){
+        super(fieldName, variableType);
+    }
+
     public String getPermission() {
         return permission;
     }

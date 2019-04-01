@@ -47,7 +47,7 @@ block → ◀{▶ blockStatement ◀}▶
 blockStatement → localVariableDeclarationStatement ◀;▶ blockStatement | statement blockStatement | ε
 #局部变量声明
 localVariableDeclarationStatement → typeDeclaration ◀Identifier▶ variableInitializer
-#局部变量初始化
+#局部变量初始化    TODO 增加数组初始化文法
 variableInitializer → ◀=▶ expression | ε
 
 #方法语句

@@ -5,17 +5,25 @@ package gian.compiler.language.simplejava.bean;
  */
 public class VariableArrayType extends VariableType {
 
-    public VariableType of;
+    public VariableType baseVariableType;
     public int size = 1;
 
-    public VariableArrayType(int sz, VariableArrayType p){
-        super("[]", false);
-        size = sz;
-        of = p;
+    public VariableArrayType(int sz, VariableType baseVariableType){
+        super("[]", sz * baseVariableType.width);
+        this.size = sz;
+        this.baseVariableType = baseVariableType;
+    }
+
+    public VariableType getBaseVariableType() {
+        return baseVariableType;
+    }
+
+    public void setBaseVariableType(VariableType baseVariableType) {
+        this.baseVariableType = baseVariableType;
     }
 
     public String toString(){
-        return "[" + size + "]" + of.toString();
+        return "[" + size + "]" + baseVariableType.toString();
     }
 
 }

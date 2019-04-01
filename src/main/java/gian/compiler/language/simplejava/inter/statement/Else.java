@@ -20,6 +20,7 @@ public class Else extends Stmt {
         }
     }
 
+    @Override
     public void gen(int b, int a){
         int label1 = newlabel();
         int label2 = newlabel();

@@ -30,6 +30,7 @@ public class Logical extends Expr {
         }
     }
 
+    @Override
     public Expr gen(){
         int f = newlabel();
         int a = newlabel();
