@@ -7,31 +7,24 @@ import gian.compiler.language.simplejava.inter.expression.Expr;
 /**
  * Created by tingyun on 2018/7/20.
  */
-public class While extends Stmt {
+public class If extends Stmt {
 
-    public Expr expr;
-    public Stmt stmt;
+    Expr expr;
+    Stmt stmt;
 
-    public While(){
-        expr = null;
-        stmt = null;
-    }
-
-    public void init(Expr x, Stmt s){
+    public If(Expr x, Stmt s){
         expr = x;
         stmt = s;
         if(expr.getType() != VariableType.BOOLEAN){
-            expr.error("boolean required in while");
+            expr.error("boolean required in if");
         }
     }
 
     public void gen(int b, int a){
-        after = a;
-        expr.jumping(0, a);
         int label = newlabel();
+        expr.jumping(0, a);
         emitlabel(label);
-        stmt.gen(label, b);
-        emit("goto L" + b);
+        stmt.gen(label, a);
     }
 
 }

@@ -25,8 +25,6 @@ public class JavaConstants {
     public static String PARAM_LIST = "paramList";
     public static String CODE = "code";
     public static String ENV = "env";
-    // 中间代码行号
-    public static String CODE_LABEL = "label";
     // 引用的code位置信息
     public static String REF_CODE_INDEX = "refCodeIndex";
     // 传递的参数变量名称
@@ -42,6 +40,14 @@ public class JavaConstants {
     public static String CLASS_ENV = "classEnv";
     // 类静态作用域，用于查找静态变量
     public static String CLASS_STATIC_ENG = "classStaticEnv";
+
+    //-------------------------------- 中间码 ---------------------------------//
+    // 临时存储变量
+    public static String CODE_TEMP_STR = "t";
+    // 中间代码行号
+    public static String CODE_LABEL = "label";
+    // 数组标识
+    public static String ARRAY_TAG = "[]";
 
 
     // 数据类型

@@ -7,12 +7,21 @@ import gian.compiler.language.simplejava.inter.AstNode;
  */
 public class Stmt extends AstNode {
 
-    public int after = 0;
+    public static Stmt Null = new Stmt();
+    public static Stmt Enclosing = Stmt.Null;
 
-    public Stmt(Integer lexline){
-        super(lexline);
-    }
+    protected Integer after = 0;
+
+    public Stmt(){}
 
     public void gen(int b, int a){}
+
+    public Integer getAfter() {
+        return after;
+    }
+
+    public void setAfter(Integer after) {
+        this.after = after;
+    }
 
 }

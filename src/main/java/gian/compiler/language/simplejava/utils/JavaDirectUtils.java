@@ -45,7 +45,7 @@ public class JavaDirectUtils {
     }
 
     public static void error(String s){
-        throw new JavaDirectException("near line " + JavaDirectGlobalProperty.line + ": " + s);
+        throw new JavaDirectException("near line " + JavaDirectGlobalProperty.lexline + ": " + s);
     }
 
 }

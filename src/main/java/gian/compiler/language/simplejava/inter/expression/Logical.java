@@ -1,4 +1,4 @@
-package gian.compiler.language.simplejava.inter.logical;
+package gian.compiler.language.simplejava.inter.expression;
 
 
 import gian.compiler.language.simplejava.bean.VariableType;
@@ -10,12 +10,10 @@ import gian.compiler.language.simplejava.inter.expression.Temp;
  */
 public class Logical extends Expr {
 
-    public String op;
     public Expr expr1, expr2;
 
-    public Logical(Integer lexline, VariableType type, String op, Expr x1, Expr x2){
-        super(lexline, type);
-        this.op = op;
+    public Logical(String op, Expr x1, Expr x2){
+        super(op, null);
         expr1 = x1;
         expr2 = x2;
         type = check(expr1.getType(), expr2.getType());
@@ -35,7 +33,7 @@ public class Logical extends Expr {
     public Expr gen(){
         int f = newlabel();
         int a = newlabel();
-        Temp temp = new Temp(this.lexline, type);
+        Temp temp = new Temp(type);
         this.jumping(0, f);
         emit(temp.toString() + " = true");
         emit("goto L" + a);

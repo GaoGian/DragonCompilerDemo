@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class JavaDirectGlobalProperty {
 
     public static JavaEnvironment topEnv = new JavaEnvironment();
-    public static Integer line;
+    public static Integer lexline;
     public static AtomicInteger lable = new AtomicInteger(0);
     public static AtomicInteger tempCout = new AtomicInteger(0);
 

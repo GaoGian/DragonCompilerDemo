@@ -28,6 +28,7 @@ public class VariableType {
     protected boolean isArray;
     // 如果是数组的话代表下一维度
     protected VariableType arrayDimension;
+    protected int width;
 
     public VariableType(String name, boolean isVoid) {
         this.name = name;
@@ -38,6 +39,28 @@ public class VariableType {
         this.name = name;
         this.isArray = isArray;
         this.arrayDimension = arrayDimension;
+    }
+
+    // 类型自动转换
+    public static boolean numeric(VariableType p){
+        if(p == VariableType.CHAR || p == VariableType.INT || p == VariableType.FLOAT){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    // 类型转换
+    public static VariableType max(VariableType p1, VariableType p2){
+        if(!numeric(p1) || !numeric(p2)){
+            return null;
+        }else if(p1 == VariableType.FLOAT || p2 == VariableType.FLOAT){
+            return VariableType.FLOAT;
+        }else if(p1 == VariableType.INT || p2 == VariableType.INT){
+            return VariableType.INT;
+        }else{
+            return VariableType.CHAR;
+        }
     }
 
     public String getName() {
@@ -72,4 +95,11 @@ public class VariableType {
         this.arrayDimension = arrayDimension;
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
 }

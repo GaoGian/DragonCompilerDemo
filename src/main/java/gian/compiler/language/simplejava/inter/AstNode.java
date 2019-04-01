@@ -11,8 +11,8 @@ public class AstNode {
 
     protected Integer lexline = 0;
 
-    public AstNode(Integer lexline){
-        this.lexline = lexline;
+    public AstNode(){
+        this.lexline = JavaDirectGlobalProperty.lexline;
     }
 
     public void error(String s){

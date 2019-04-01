@@ -8,10 +8,11 @@ import gian.compiler.language.simplejava.inter.AstNode;
  */
 public class Expr extends AstNode {
 
+    protected String op;
     protected VariableType type;
 
-    public Expr(Integer lexline, VariableType type){
-        super(lexline);
+    public Expr(String op, VariableType type){
+        this.op = op;
         this.type = type;
     }
 
@@ -40,9 +41,18 @@ public class Expr extends AstNode {
         }
     }
 
-//    public String toString(){
-//        return op.toString();
-//    }
+    @Override
+    public String toString(){
+        return op.toString();
+    }
+
+    public String getOp() {
+        return op;
+    }
+
+    public void setOp(String op) {
+        this.op = op;
+    }
 
     public VariableType getType() {
         return type;
@@ -51,4 +61,5 @@ public class Expr extends AstNode {
     public void setType(VariableType type) {
         this.type = type;
     }
+
 }
