@@ -2,6 +2,7 @@ import com.alibaba.fastjson.JSON;
 import gian.compiler.front.lexical.parser.LexExpression;
 import gian.compiler.front.lexical.parser.LexicalParser;
 import gian.compiler.front.lexical.parser.Token;
+import gian.compiler.utils.ParseChartUtils;
 import gian.compiler.utils.ParseUtils;
 import lex.test.LexUtils;
 import gian.compiler.front.lexical.transform.regex.LexAutomatonTransformer;
@@ -118,7 +119,7 @@ public class NFATest {
 
         System.out.println("-------------------------使用Echarts显示-------------------------------------");
 
-        LexUtils.outputEchart(lexCell);
+        ParseChartUtils.outputEchart(lexCell);
     }
 
     @Test
@@ -131,17 +132,17 @@ public class NFATest {
 
         System.out.println("-------------------------originCell  NFA-------------------------------------");
         LexAutomatonTransformer.LexCell originCell = LexAutomatonTransformer.express2NFA(pattern);
-        LexUtils.outputEchart(originCell);
+        ParseChartUtils.outputEchart(originCell);
 
         System.out.println("-------------------------NFA 2 DFA-------------------------------------");
         // FIXME 生成的DFA单元需要表示出接受态，方便DFA最小化使用
         LexAutomatonTransformer.LexDFACell lexCell = LexAutomatonTransformer.tranNFA2DFA(originCell);
-        LexUtils.outputEchart(lexCell);
+        ParseChartUtils.outputEchart(lexCell);
 
         System.out.println("-------------------------最小化 DFA 显示-------------------------------------");
         // FIXME DFA 最小化需要处理多个接受态的情况
         LexAutomatonTransformer.LexCell lexMinCell = LexAutomatonTransformer.minimizeDFA(lexCell);
-        LexUtils.outputEchart(lexMinCell);
+        ParseChartUtils.outputEchart(lexMinCell);
 
     }
 
@@ -167,7 +168,7 @@ public class NFATest {
 
         // FIXME 正则表达式直接生成DFA还有问题，需要解决
         LexAutomatonTransformer.LexDFACell cell = LexAutomatonTransformer.buildDFA(root);
-        LexUtils.outputEchart(cell);
+        ParseChartUtils.outputEchart(cell);
     }
 
     @Test

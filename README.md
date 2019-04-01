@@ -7,13 +7,15 @@
 2、正则表达式 --> NFA --> DFA
 3、词法分析
 4、LL文法消除左递归、提取公因式
-5、LL文法解析
-6、LR(0)、LR(1)文法解析
+5、LL文法解析(试验) --> SyntacticLLParser.syntaxParseByLL()
+6、LR(1)文法解析(可用) --> SyntacticLRParser.syntaxParseLR()
 7、语义动作监听器
 8、中间码生成
 9、SimplerJava翻译
+    @词法文件 --> src/resources/SimpleJavaLexical.txt
+    @文法文件 --> src/resources/SimpleJavaSyntax.txt
 
-## 查看功能
+## 查看功能 --> ParseChartUtils
 1、NFA、DFA关系转换图
 2、LR文法项集状态图
 3、LR分析表

@@ -7,6 +7,7 @@ import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedParser;
+import gian.compiler.utils.ParseChartUtils;
 import lex.test.LexUtils;
 import org.junit.Test;
 
@@ -18,13 +19,13 @@ import java.util.*;
 public class SyntaxDirectedTest {
 
     // 匹配语法分析树
-    public static LexUtils.UniversalTreeNode.UniversalTreeNodeMatcher getDirectTreeMatcher(){
-        return new LexUtils.UniversalTreeNode.UniversalTreeNodeMatcher<SyntaxTree.SyntaxTreeNode>(){
+    public static ParseChartUtils.UniversalTreeNode.UniversalTreeNodeMatcher getDirectTreeMatcher(){
+        return new ParseChartUtils.UniversalTreeNode.UniversalTreeNodeMatcher<SyntaxTree.SyntaxTreeNode>(){
             @Override
-            public List<LexUtils.UniversalTreeNode> getChildTreeNode(SyntaxTree.SyntaxTreeNode targetNode) {
-                List<LexUtils.UniversalTreeNode> matchSubTreeNodeList = new ArrayList<>();
+            public List<ParseChartUtils.UniversalTreeNode> getChildTreeNode(SyntaxTree.SyntaxTreeNode targetNode) {
+                List<ParseChartUtils.UniversalTreeNode> matchSubTreeNodeList = new ArrayList<>();
                 for(SyntaxTree.SyntaxTreeNode childNode : targetNode.getSubProductNodeList()){
-                    matchSubTreeNodeList.add(new LexUtils.UniversalTreeNode(childNode, this, true));
+                    matchSubTreeNodeList.add(new ParseChartUtils.UniversalTreeNode(childNode, this, true));
                 }
                 return matchSubTreeNodeList;
             }
@@ -32,24 +33,24 @@ public class SyntaxDirectedTest {
     }
 
     // 匹配注释语法分析树
-    public static LexUtils.UniversalTreeNode.UniversalTreeNodeMatcher getDirectActionTreeMatcher(Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap){
-        return new LexUtils.UniversalTreeNode.UniversalTreeNodeMatcher<SyntaxTree.SyntaxTreeNode>(){
+    public static ParseChartUtils.UniversalTreeNode.UniversalTreeNodeMatcher getDirectActionTreeMatcher(Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap){
+        return new ParseChartUtils.UniversalTreeNode.UniversalTreeNodeMatcher<SyntaxTree.SyntaxTreeNode>(){
             @Override
-            public List<LexUtils.UniversalTreeNode> getChildTreeNode(SyntaxTree.SyntaxTreeNode targetNode) {
-                List<LexUtils.UniversalTreeNode> matchSubTreeNodeList = new ArrayList<>();
+            public List<ParseChartUtils.UniversalTreeNode> getChildTreeNode(SyntaxTree.SyntaxTreeNode targetNode) {
+                List<ParseChartUtils.UniversalTreeNode> matchSubTreeNodeList = new ArrayList<>();
                 for(int i=0; i<targetNode.getSubProductNodeList().size(); i++){
                     SyntaxTree.SyntaxTreeNode childNode = targetNode.getSubProductNodeList().get(i);
                     SyntaxDirectedListener childDirectAction = syntaxDirectActionMap.get(childNode.getNumber());
                     if(childDirectAction != null){
                         // 加入预处理语义动作节点
                         SyntaxTree.SyntaxTreeNode enterDirectActionNode = new SyntaxTree.SyntaxTreeNode(targetNode.getNumber()*100+i, true, new SyntaxSymbol(childDirectAction.enterSyntaxSymbol(null, null, null), true));
-                        matchSubTreeNodeList.add(new LexUtils.UniversalTreeNode(enterDirectActionNode, this, true) );
+                        matchSubTreeNodeList.add(new ParseChartUtils.UniversalTreeNode(enterDirectActionNode, this, true) );
                     }
-                    matchSubTreeNodeList.add(new LexUtils.UniversalTreeNode(childNode, this, true));
+                    matchSubTreeNodeList.add(new ParseChartUtils.UniversalTreeNode(childNode, this, true));
                     if(childDirectAction != null){
                         // 加入综合记录语义动作节点
                         SyntaxTree.SyntaxTreeNode exitDirectActionNode = new SyntaxTree.SyntaxTreeNode(targetNode.getNumber()*1000+i, true, new SyntaxSymbol(childDirectAction.exitSyntaxSymbol(null, null, null), true));
-                        matchSubTreeNodeList.add(new LexUtils.UniversalTreeNode(exitDirectActionNode, this, true) );
+                        matchSubTreeNodeList.add(new ParseChartUtils.UniversalTreeNode(exitDirectActionNode, this, true) );
                     }
                 }
                 return matchSubTreeNodeList;
@@ -74,7 +75,7 @@ public class SyntaxDirectedTest {
 
         System.out.println("------------------------------SyntaxTree----------------------------------");
         SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR(syntaxs, tokens);
-        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true));
+        ParseChartUtils.outputUniversalTreeEchart(new ParseChartUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true));
 
     }
 
@@ -82,7 +83,7 @@ public class SyntaxDirectedTest {
     public void testSyntaxTree1(){
         System.out.println("------------------------------SyntaxTree----------------------------------");
         SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR("syntaxContentFile.txt", "compilerCode.txt", TestLexExpression.expressions, true);
-        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true), 300, 500);
+        ParseChartUtils.outputUniversalTreeEchart(new ParseChartUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true), 300, 500);
     }
 
     @Test
@@ -264,7 +265,7 @@ public class SyntaxDirectedTest {
         SyntaxTree annotionSyntaxTree = SyntaxDirectedParser.syntaxDirectedParser(syntaxTree, syntaxDirectedListenerList);
 
         System.out.println("------------------------------SyntaxDirectActionTree----------------------------------");
-        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(annotionSyntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true));
+        ParseChartUtils.outputUniversalTreeEchart(new ParseChartUtils.UniversalTreeNode(annotionSyntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true));
 
     }
 
@@ -289,7 +290,7 @@ public class SyntaxDirectedTest {
 
         System.out.println("------------------------------SyntaxTree----------------------------------");
         SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR(syntaxs, tokens);
-        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true), 300, 500);
+        ParseChartUtils.outputUniversalTreeEchart(new ParseChartUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true), 300, 500);
 
         System.out.println("------------------------------SyntaxTree DirectAction----------------------------------");
         SyntaxDirectedListener L_to_T_0_Listener = new SyntaxDirectedListener("L → T", 0, "T", false) {
@@ -449,7 +450,7 @@ public class SyntaxDirectedTest {
         SyntaxTree annotionSyntaxTree = SyntaxDirectedParser.syntaxDirectedParser(syntaxTree, syntaxDirectedListenerList);
 
         System.out.println("------------------------------SyntaxDirectActionTree----------------------------------");
-        LexUtils.outputUniversalTreeEchart(new LexUtils.UniversalTreeNode(annotionSyntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true));
+        ParseChartUtils.outputUniversalTreeEchart(new ParseChartUtils.UniversalTreeNode(annotionSyntaxTree.getSyntaxTreeRoot(), getDirectTreeMatcher(), true));
 
     }
 

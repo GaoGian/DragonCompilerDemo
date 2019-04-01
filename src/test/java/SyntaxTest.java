@@ -8,6 +8,7 @@ import gian.compiler.front.syntactic.element.Item;
 import gian.compiler.front.syntactic.element.ItemCollection;
 import gian.compiler.front.syntactic.element.SyntaxProduct;
 import gian.compiler.front.syntactic.element.SyntaxSymbol;
+import gian.compiler.utils.ParseChartUtils;
 import gian.compiler.utils.ParseUtils;
 import lex.test.LexUtils;
 import org.junit.Test;
@@ -190,7 +191,7 @@ public class SyntaxTest {
 
         Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticLLParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
 
-        LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
+        ParseChartUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
     }
 
     @Test
@@ -226,7 +227,7 @@ public class SyntaxTest {
 
         Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticLLParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
 
-        LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
+        ParseChartUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
 
         System.out.println("-------------------------------LL(1)语法分析----------------------------------");
 
@@ -276,7 +277,7 @@ public class SyntaxTest {
 
         Map<SyntaxSymbol, Map<String, Set<SyntaxProduct>>> syntaxPredictMap = SyntacticLLParser.syntaxPredictMap(syntaxFirstMap, syntaxFollowMap);
 
-        LexUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
+        ParseChartUtils.outputLL1SyntaxPredict(syntaxFirstMap, syntaxFollowMap, syntaxPredictMap);
 
         System.out.println("------------------------------解析测试代码----------------------------------");
         System.out.println("------------------------------原样显示代码----------------------------------");
@@ -393,7 +394,7 @@ public class SyntaxTest {
 
         // 显示LR0自动机
         System.out.println("LR(O) 项集数量：" + allItemCollectionMap.size());
-        LexUtils.outputSyntaxEchart(startItemCollection);
+        ParseChartUtils.outputSyntaxEchart(startItemCollection);
 
 
     }
@@ -430,7 +431,7 @@ public class SyntaxTest {
         Map<ItemCollection, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
         SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
         // 显示LR0自动机
-        LexUtils.outputSyntaxEchart(startItemCollection);
+        ParseChartUtils.outputSyntaxEchart(startItemCollection);
 
         System.out.println("-------------------------------LR0 parse----------------------------------");
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
@@ -463,7 +464,7 @@ public class SyntaxTest {
         Map<ItemCollection, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
         SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
         // 显示LR0自动机
-        LexUtils.outputSyntaxEchart(startItemCollection, 3600, 300);
+        ParseChartUtils.outputSyntaxEchart(startItemCollection, 3600, 300);
 
         System.out.println("-------------------------------LR0 parse----------------------------------");
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
@@ -496,7 +497,7 @@ public class SyntaxTest {
         Map<ItemCollection, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
         SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
         // 显示LR0自动机
-        LexUtils.outputSyntaxEchart(startItemCollection, 300, 100);
+        ParseChartUtils.outputSyntaxEchart(startItemCollection, 300, 100);
 
         System.out.println("-------------------------------product number----------------------------------");
         for(SyntaxProduct syntaxProduct : syntaxProducts){
@@ -508,7 +509,7 @@ public class SyntaxTest {
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
         Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
-        LexUtils.outputLRPredictMap(predictSLRMap);
+        ParseChartUtils.outputLRPredictMap(predictSLRMap);
 
     }
 
@@ -543,7 +544,7 @@ public class SyntaxTest {
         Map<ItemCollection, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
         SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
         // 显示LR0自动机
-        LexUtils.outputSyntaxEchart(startItemCollection, 300, 100);
+        ParseChartUtils.outputSyntaxEchart(startItemCollection, 300, 100);
 
         System.out.println("-------------------------------product number----------------------------------");
         for(SyntaxProduct syntaxProduct : syntaxProducts){
@@ -555,7 +556,7 @@ public class SyntaxTest {
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
         Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
-        LexUtils.outputLRPredictMap(predictSLRMap);
+        ParseChartUtils.outputLRPredictMap(predictSLRMap);
 
         System.out.println("-------------------------------SLRPredictMap----------------------------------");
         SyntacticLRParser.syntaxParseLR(startItemCollection, tokens, predictSLRMap);
@@ -586,7 +587,7 @@ public class SyntaxTest {
         Map<ItemCollection, ItemCollection> allItemCollectionMap = new LinkedHashMap<>();
         SyntacticLRParser.getLR0ItemCollectionNodes(startItemCollection.getItemList().get(0).getSyntaxProduct(), startItemCollection, allGotoSymtaxSymbol, symbolProductMap, itemCollectionNo, allItemCollectionMap);
         // 显示LR0自动机
-        LexUtils.outputSyntaxEchart(startItemCollection, 3600, 300);
+        ParseChartUtils.outputSyntaxEchart(startItemCollection, 3600, 300);
 
         System.out.println("-------------------------------product number----------------------------------");
         for(SyntaxProduct syntaxProduct : syntaxProducts){
@@ -598,7 +599,7 @@ public class SyntaxTest {
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
         Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictSLRMap = SyntacticLRParser.predictLRMap(startItemCollection, syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
-        LexUtils.outputLRPredictMap(predictSLRMap);
+        ParseChartUtils.outputLRPredictMap(predictSLRMap);
 
         System.out.println("-------------------------------SLRPredictMap----------------------------------");
         SyntacticLRParser.syntaxParseLR(startItemCollection, tokens, predictSLRMap);
@@ -625,7 +626,7 @@ public class SyntaxTest {
 
         System.out.println("-------------------------------ItemCollectionNode----------------------------------");
         // 显示LR0自动机
-        LexUtils.outputSyntaxEchart(allLRItemCollectionMap.get(0), 300, -200, true);
+        ParseChartUtils.outputSyntaxEchart(allLRItemCollectionMap.get(0), 300, -200, true);
 
     }
 
@@ -644,14 +645,14 @@ public class SyntaxTest {
         System.out.println("-------------------------------LR ItemCollectionNode----------------------------------");
         Map<Integer, ItemCollection> allLRItemCollectionMap = SyntacticLRParser.getLRItemCollectionMap(syntaxSymbols);
         // 显示LR0自动机
-        LexUtils.outputSyntaxEchart(allLRItemCollectionMap.get(0), 3600, -600, true);
+        ParseChartUtils.outputSyntaxEchart(allLRItemCollectionMap.get(0), 3600, -600, true);
 
         System.out.println("-------------------------------Create LR PredictMap----------------------------------");
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Set<String>>> syntaxFirstMap = SyntacticLLParser.syntaxFirst(syntaxSymbols);
         Map<SyntaxSymbol, Map<List<SyntaxSymbol>, Map<Integer, Set<String>>>> syntaxFollowMap = SyntacticLLParser.syntaxFollow(syntaxSymbols, syntaxFirstMap);
         Map<ItemCollection, Map<String, Map<SyntaxSymbol, List<Map<String, Object>>>>> predictLRMap = SyntacticLRParser.predictLRMap(allLRItemCollectionMap.get(0), syntaxSymbols, syntaxFirstMap, syntaxFollowMap);
         // 显示SLR分析表
-        LexUtils.outputLRPredictMap(predictLRMap);
+        ParseChartUtils.outputLRPredictMap(predictLRMap);
 
         System.out.println("------------------------------LRPredictMap----------------------------------");
         SyntacticLRParser.syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
