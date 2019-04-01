@@ -1,6 +1,7 @@
 package gian.compiler.language.simplejava.action;
 
 import gian.compiler.language.simplejava.JavaConstants;
+import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.env.JavaEnvironment;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
@@ -34,8 +35,7 @@ public class ClassBodyAction {
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // TODO 生成作用域
             JavaEnvironment environment = new JavaEnvironment();
-            context.getGlobalPropertyMap().put(JavaConstants.CURRENT_ENV, environment);
-            context.getGlobalPropertyMap().put(JavaConstants.CLASS_ENV, environment);
+            JavaDirectGlobalProperty.topEnv = environment;
 
             return null;
         }
@@ -83,8 +83,7 @@ public class ClassBodyAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // TODO 移除作用域
-            context.getGlobalPropertyMap().remove(JavaConstants.CURRENT_ENV);
-            context.getGlobalPropertyMap().remove(JavaConstants.CLASS_ENV);
+            JavaDirectGlobalProperty.topEnv = null;
 
             return null;
         }

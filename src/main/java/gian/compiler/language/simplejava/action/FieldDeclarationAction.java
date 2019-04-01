@@ -4,6 +4,7 @@ import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.bean.ClazzField;
 import gian.compiler.language.simplejava.bean.VariableInitInfo;
 import gian.compiler.language.simplejava.bean.VariableType;
+import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.env.JavaEnvironment;
 import gian.compiler.language.simplejava.exception.ClazzTransformException;
 import gian.compiler.front.lexical.transform.LexConstants;
@@ -118,7 +119,7 @@ public class FieldDeclarationAction {
             clazzField.setVariableInitInfo(variableInitInfo);
 
             // TODO 将声明的变量存入到类实例作用域内
-            JavaEnvironment environment = (JavaEnvironment) context.getGlobalPropertyMap().get(JavaConstants.CURRENT_ENV);
+            JavaEnvironment environment = JavaDirectGlobalProperty.topEnv;
             environment.getPropertyMap().put(clazzField.getFieldName(), clazzField);
 
             List<ClazzField> fieldList = (List<ClazzField>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FIELD_LIST);

@@ -1,6 +1,7 @@
 package gian.compiler.language.simplejava.action;
 
 import gian.compiler.language.simplejava.JavaConstants;
+import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.env.JavaEnvironment;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
@@ -33,9 +34,8 @@ public class ConstructorBodyAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            JavaEnvironment preEnv = (JavaEnvironment) context.getGlobalPropertyMap().get(JavaConstants.CURRENT_ENV);
-            JavaEnvironment env = new JavaEnvironment(preEnv);
-            context.getGlobalPropertyMap().put(JavaConstants.CURRENT_ENV, env);
+            JavaEnvironment preEnv = JavaDirectGlobalProperty.topEnv;
+            JavaDirectGlobalProperty.topEnv = new JavaEnvironment(preEnv);
 
             List<String> code = new ArrayList<>();
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
@@ -114,9 +114,7 @@ public class ConstructorBodyAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            JavaEnvironment env = (JavaEnvironment) context.getGlobalPropertyMap().get(JavaConstants.CURRENT_ENV);
-            JavaEnvironment preEnv = env.getPreEnv();
-            context.getGlobalPropertyMap().put(JavaConstants.CURRENT_ENV, preEnv);
+            JavaDirectGlobalProperty.topEnv = JavaDirectGlobalProperty.topEnv.getPreEnv();
 
             return null;
         }
