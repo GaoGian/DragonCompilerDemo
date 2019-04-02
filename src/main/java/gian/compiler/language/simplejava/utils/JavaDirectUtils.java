@@ -113,9 +113,15 @@ public class JavaDirectUtils {
         }
     }
 
-    public static Expr factor(String variableName){
+    public static Variable factor(String variableName){
         // TODO 需要考虑变量引用链的情况
         Variable variable = JavaDirectGlobalProperty.topEnv.getPropertyMap().get(variableName);
+        return variable;
+    }
+
+    public static Variable variableDeclarate(String variableName, VariableType variableType){
+        Variable variable = new Variable(variableName, variableType);
+        JavaDirectGlobalProperty.topEnv.getPropertyMap().put(variableName, variable);
         return variable;
     }
 

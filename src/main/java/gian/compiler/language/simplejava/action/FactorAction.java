@@ -117,9 +117,9 @@ public class FactorAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            // TODO 需要考虑引用链及数组元素的情况
+            // FIXME 需要考虑引用链及数组元素的情况
             Variable variable = (Variable) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE);
-            Expr factor = JavaDirectUtils.factor(variable.getFieldName());
+            Variable factor = JavaDirectUtils.factor(variable.getFieldName());
             currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, factor);
 
             return null;

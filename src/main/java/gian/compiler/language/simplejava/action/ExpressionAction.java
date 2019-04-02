@@ -5,6 +5,7 @@ import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.language.simplejava.JavaConstants;
+import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.inter.Constant;
 import gian.compiler.language.simplejava.inter.expression.Expr;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
@@ -142,7 +143,7 @@ public class ExpressionAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             String variableName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
-            Expr variable = JavaDirectUtils.factor(variableName);
+            Variable variable = JavaDirectUtils.factor(variableName);
 
             Expr incExpr = JavaDirectUtils.term(variable, Constant.DIGIT_ONE, JavaConstants.JAVA_OPERATOR_ADD);
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, incExpr);
@@ -168,7 +169,7 @@ public class ExpressionAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             String variableName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
-            Expr variable = JavaDirectUtils.factor(variableName);
+            Variable variable = JavaDirectUtils.factor(variableName);
 
             Expr decExpr = JavaDirectUtils.term(variable, Constant.DIGIT_ONE, JavaConstants.JAVA_OPERATOR_REDUCE);
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, decExpr);

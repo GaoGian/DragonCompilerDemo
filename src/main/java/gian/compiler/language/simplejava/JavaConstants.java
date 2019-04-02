@@ -16,6 +16,8 @@ public class JavaConstants {
     public final static String FIELD_NAME = "fieldName";
     // 表达式变量
     public final static String VARIABLE = "variable";
+    // 表达式变量名称
+    public final static String VARIABLE_NAME = "variableName";
     // 变量基本类型
     public final static String VARIABLE_BASE_TYPE = "variableBaseType";
     // 变量类型

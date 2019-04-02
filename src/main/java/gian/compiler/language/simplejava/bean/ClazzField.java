@@ -3,12 +3,14 @@ package gian.compiler.language.simplejava.bean;
 /**
  * Created by gaojian on 2019/3/27.
  */
-public class ClazzField extends Variable {
+public class ClazzField{
 
     protected String permission;
+    protected Variable variable;
 
-    public ClazzField(String fieldName, VariableType variableType){
-        super(fieldName, variableType);
+    public ClazzField(String permission, Variable variable){
+        this.permission = permission;
+        this.variable = variable;
     }
 
     public String getPermission() {
@@ -19,4 +21,11 @@ public class ClazzField extends Variable {
         this.permission = permission;
     }
 
+    public Variable getVariable() {
+        return variable;
+    }
+
+    public void setVariable(Variable variable) {
+        this.variable = variable;
+    }
 }

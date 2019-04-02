@@ -10,7 +10,6 @@ public class Variable extends Expr {
     protected VariableType variableType;
     protected String fieldName;
     protected String address;
-    protected VariableInitInfo variableInitInfo;
 
     public Variable(String fieldName, VariableType variableType) {
         super(fieldName, variableType);
@@ -42,11 +41,4 @@ public class Variable extends Expr {
         this.address = address;
     }
 
-    public VariableInitInfo getVariableInitInfo() {
-        return variableInitInfo;
-    }
-
-    public void setVariableInitInfo(VariableInitInfo variableInitInfo) {
-        this.variableInitInfo = variableInitInfo;
-    }
 }
