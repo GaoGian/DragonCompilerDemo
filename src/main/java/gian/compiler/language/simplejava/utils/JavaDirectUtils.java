@@ -8,7 +8,6 @@ import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.exception.JavaDirectException;
 import gian.compiler.language.simplejava.inter.Constant;
 import gian.compiler.language.simplejava.inter.expression.*;
-import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.language.simplejava.inter.statement.*;
 
 /**
@@ -43,6 +42,14 @@ public class JavaDirectUtils {
         Do doNode = new Do();
         doNode.init(stmt, expr);
         return doNode;
+    }
+
+    public static Break breakNode(){
+        return new Break();
+    }
+
+    public static Continue continueNode(){
+        return new Continue();
     }
 
     public static Stmt arrayAssign(String variableName, Access arrayInfo, Expr assign){
@@ -83,18 +90,18 @@ public class JavaDirectUtils {
 
     }
 
-    public static Expr or(Expr lvariable, Expr rvariable){     // 判断布尔值表达式
-        Expr expr = new Or(JavaConstants.JAVA_OPERATOR_OR, lvariable, rvariable);
+    public static Expr or(Expr expr1, Expr expr2){     // 判断布尔值表达式
+        Expr expr = new Or(JavaConstants.JAVA_OPERATOR_OR, expr1, expr2);
         return expr;
     }
 
-    public static Expr and(Expr lvariable, Expr rvariable){
-        Expr expr = new And(JavaConstants.JAVA_OPERATOR_JOIN, lvariable, rvariable);
+    public static Expr and(Expr expr1, Expr expr2){
+        Expr expr = new And(JavaConstants.JAVA_OPERATOR_JOIN, expr1, expr2);
         return expr;
     }
 
-    public static Expr rel(Expr lvariable, Expr rvariable, String rel){
-        return new Rel(rel, lvariable, rvariable);
+    public static Expr rel(Expr lexpr, Expr rexpr, String rel){
+        return new Rel(rel, lexpr, rexpr);
     }
 
     public static Expr term(Expr lvariable, Expr rvariable, String op){

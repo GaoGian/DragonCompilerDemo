@@ -50,7 +50,10 @@ public class JavaConstants {
     public final static String CODE_LABEL = "label";
     // 数组标识
     public final static String ARRAY_TAG = "[]";
-
+    // while节点
+    public final static String WHILE_NODE = "whileNode";
+    // do节点
+    public final static String DO_NODE = "doNode";
 
     // 数据类型
     public final static String VARIABLE_TYPE_INT = "int";

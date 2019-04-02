@@ -8,7 +8,6 @@ import gian.compiler.language.simplejava.inter.AstNode;
 public class Stmt extends AstNode {
 
     public static Stmt Null = new Stmt();
-    public static Stmt Enclosing = Stmt.Null;
 
     protected Integer after = 0;
 

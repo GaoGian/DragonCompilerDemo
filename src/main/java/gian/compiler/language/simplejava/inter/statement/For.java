@@ -19,7 +19,7 @@ public class For extends Stmt {
 
     @Override
     public void gen(int b, int a){
-        // TODO 调整控制逻辑
+        // FIXME 调整控制逻辑
         after = a;
         int label = newlabel();
         init.gen(b, label);

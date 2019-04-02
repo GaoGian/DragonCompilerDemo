@@ -3,13 +3,13 @@ package gian.compiler.language.simplejava.inter.statement;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 
 /**
- * Created by tingyun on 2018/7/20.
+ * Created by gaojian on 2019/4/2.
  */
-public class Break extends Stmt {
+public class Continue extends Stmt {
 
     public Stmt stmt;
 
-    public Break(){
+    public Continue(){
         if(JavaDirectGlobalProperty.cycleEnclosingStack.top() == null){
             error("unenclosed break");
         }
@@ -18,6 +18,7 @@ public class Break extends Stmt {
 
     @Override
     public void gen(int b, int a){
+        // FIXME 需要设置当前行，不是after
         emit("goto L" + stmt.after);
     }
 
