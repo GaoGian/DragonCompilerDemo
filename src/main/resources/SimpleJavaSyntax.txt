@@ -48,7 +48,7 @@ blockStatement → localVariableDeclarationStatement ◀;▶ blockStatement | st
 #局部变量声明
 localVariableDeclarationStatement → typeDeclaration ◀Identifier▶ variableInitializer
 #局部变量初始化    TODO 增加数组初始化文法
-variableInitializer → ◀=▶ expression | = ◀new▶ arrayBaseType [ ◀Digit▶ ] arrayRest | ε
+variableInitializer → ◀=▶ expression | ◀=▶ ◀new▶ arrayBaseType ◀[▶ ◀Digit▶ ◀]▶ arrayRest | ε
 #数组基本数据类型
 arrayBaseType → ◀boolean▶ | ◀char▶ | ◀byte▶ | ◀short▶ | ◀int▶ | ◀long▶ | ◀float▶ | ◀double▶ | ◀Identifier▶
 
@@ -74,7 +74,7 @@ targetVariableRest → ◀.▶ ◀Identifier▶ arrayRest targetVariableRest | �
 #变量/方法引用链声明
 identifierReference → ◀Identifier▶ identifierDeclaratorIdRest | ◀this▶ ◀.▶ ◀Identifier▶ identifierDeclaratorIdRest
 identifierDeclaratorIdRest → arrayRest ◀.▶ ◀Identifier▶ identifierDeclaratorIdRest | ε
-arrayRest → [ ◀Digit▶ ] arrayRest | ε
+arrayRest → ◀[▶ ◀Digit▶ ◀]▶ arrayRest | ε
 
 #计算公式
 #乘除表达式因子
