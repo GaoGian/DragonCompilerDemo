@@ -11,6 +11,8 @@ public class Constant extends Expr {
 
     public static final Constant True = new Constant(JavaConstants.JAVA_KEYWORD_TRUE, VariableType.BOOLEAN);
     public static final Constant False = new Constant(JavaConstants.JAVA_KEYWORD_FALSE, VariableType.BOOLEAN);
+    // 自增、自减操作
+    public static final Constant DIGIT_ONE = new Constant("1", VariableType.INT);
 
     public Constant(String tok, VariableType p){
         super(tok, p);

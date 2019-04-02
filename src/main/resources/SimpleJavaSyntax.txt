@@ -53,11 +53,12 @@ variableInitializer → ◀=▶ expression | = new arrayBaseType [ ◀Digit▶ ]
 arrayBaseType → ◀boolean▶ | ◀char▶ | ◀byte▶ | ◀short▶ | ◀int▶ | ◀long▶ | ◀float▶ | ◀double▶ | ◀Identifier▶
 
 #方法语句
-statement → ◀if▶ ◀(▶ parExpression ◀)▶ block elseStatement | ◀for▶ ◀(▶ forControl ◀)▶ block | ◀while▶ ◀(▶ parExpression ◀)▶ block | ◀do▶ block ◀while▶ ◀(▶ parExpression ◀)▶ ◀;▶ | ◀switch▶ ◀(▶ expression ◀)▶ switchBlock | targetVariable ◀=▶ expression ◀;▶ | ◀return▶ expression ◀;▶ | ◀break▶ ◀;▶ | ◀continue▶ ◀;▶ | expression ◀;▶
+statement → ◀if▶ ◀(▶ parExpression ◀)▶ block elseStatement | ◀for▶ ◀(▶ forControl ◀)▶ block | ◀while▶ ◀(▶ parExpression ◀)▶ block | ◀do▶ block ◀while▶ ◀(▶ parExpression ◀)▶ ◀;▶ | ◀switch▶ ◀(▶ expression ◀)▶ switchBlock | refVariable ◀=▶ expression ◀;▶ | ◀return▶ expression ◀;▶ | ◀break▶ ◀;▶ | ◀continue▶ ◀;▶ | expression ◀;▶
 #else 部分
 elseStatement → ◀else▶ block | ◀else▶ ◀if▶ ◀(▶ parExpression ◀)▶ block elseStatement | ε
-#表达式 ‘|’ 替换成 ‘&#124;’
-parExpression → expressionTerm ◀&#124;&#124;▶ expressionTerm | expressionTerm ◀&&▶ expressionTerm | expressionTerm
+#表达式 (‘|’ 替换成 ‘&#124;’)
+parExpression → expressionTermRest ◀&#124;&#124;▶ expressionTermRest | expressionTermRest
+expressionTermRest → expressionTerm ◀&&▶ expressionTerm | expressionTerm
 expressionTerm → expressionFactor ◀>▶ expressionFactor | expressionFactor ◀>=▶ expressionFactor | expressionFactor ◀<▶ expressionFactor | expressionFactor ◀<=▶ expressionFactor | expressionFactor
 expressionFactor → expression ◀==▶ expression | expression ◀!=▶ expression | expression
 #表达式

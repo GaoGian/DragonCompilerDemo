@@ -80,6 +80,12 @@ public class VariableType {
             return CLAZZ;
         }else if(JavaConstants.VARIABLE_TYPE_VOID.equals(typeName)){
             return VOID;
+        }else if(JavaConstants.VARIABLE_TYPE_NUMBER.equals(typeName)){
+            return FLOAT;
+        }else if(JavaConstants.VARIABLE_TYPE_DIGIT.equals(typeName)){
+            return INT;
+        }else if(JavaConstants.VARIABLE_TYPE_STRING.equals(typeName)){
+            return STRING;
         }
 
         return variableType;
@@ -94,7 +100,8 @@ public class VariableType {
     public static VariableType CHAR = new VariableType(JavaConstants.VARIABLE_TYPE_CHAR, 4);
     public static VariableType BYTE = new VariableType(JavaConstants.VARIABLE_TYPE_BYTE, 1);
     public static VariableType BOOLEAN = new VariableType(JavaConstants.VARIABLE_TYPE_BOOLEAN, 2);
-    public static VariableType CLAZZ = new VariableType(JavaConstants.VARIABLE_TYPE_CLAZZ, 4);
     public static VariableType VOID = new VariableType(JavaConstants.VARIABLE_TYPE_VOID, 0);
+    public static VariableType CLAZZ = new VariableType(JavaConstants.VARIABLE_TYPE_CLAZZ, 2);      // 指针引用
+    public static VariableType STRING = new VariableType(JavaConstants.VARIABLE_TYPE_STRING, 2);    // 指针引用
 
 }

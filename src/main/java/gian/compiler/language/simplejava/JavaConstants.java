@@ -62,7 +62,11 @@ public class JavaConstants {
     public final static String VARIABLE_TYPE_BYTE = "byte";
     public final static String VARIABLE_TYPE_BOOLEAN = "boolean";
     public final static String VARIABLE_TYPE_VOID = "void";
+
     public final static String VARIABLE_TYPE_CLAZZ = "Identifier";     // 说明是class类型
+    public final static String VARIABLE_TYPE_DIGIT = "Number";
+    public final static String VARIABLE_TYPE_NUMBER = "Digit";
+    public final static String VARIABLE_TYPE_STRING = "String";
 
     // 关键词
     public final static String JAVA_KEYWORD_PACKAGE = "package";

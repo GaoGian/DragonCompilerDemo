@@ -8,6 +8,10 @@ import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
+import gian.compiler.language.simplejava.inter.AstNode;
+import gian.compiler.language.simplejava.inter.Constant;
+import gian.compiler.language.simplejava.inter.expression.Expr;
+import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 /**
  * Created by gaojian on 2019/4/1.
@@ -32,8 +36,8 @@ public class FactorAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Variable variable = (Variable) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE, variable);
+            Expr expr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE, expr);
 
             return null;
         }
@@ -58,8 +62,10 @@ public class FactorAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             String value = currentTreeNode.getIdToken().getToken();
-            Variable variable = new Variable(value, VariableType.DOUBLE);
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE, variable);
+            Constant constant = JavaDirectUtils.constant(value, currentTreeNode.getIdToken().getType().getType());
+
+            // 设置code
+            currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, constant);
 
             return null;
         }
@@ -84,8 +90,10 @@ public class FactorAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             String value = currentTreeNode.getIdToken().getToken();
-            Variable variable = new Variable(value, VariableType.INT);
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE, variable);
+            Constant constant = JavaDirectUtils.constant(value, currentTreeNode.getIdToken().getType().getType());
+
+            // 设置code
+            currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, constant);
 
             return null;
         }
@@ -109,8 +117,10 @@ public class FactorAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            // TODO 需要考虑引用链及数组元素的情况
             Variable variable = (Variable) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE, variable);
+            Expr factor = JavaDirectUtils.factor(variable.getFieldName());
+            currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, factor);
 
             return null;
         }

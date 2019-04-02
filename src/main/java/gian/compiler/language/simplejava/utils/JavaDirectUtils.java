@@ -17,8 +17,6 @@ import gian.compiler.language.simplejava.inter.statement.*;
  */
 public class JavaDirectUtils {
 
-
-
     public Stmt stmts(Stmt stmt, Stmt stmts){
         return new Seq(stmt, stmts);    // 这里通过递归，逐个解析后续语句
     }
@@ -85,21 +83,21 @@ public class JavaDirectUtils {
 
     }
 
-    public static Expr or(Variable lvariable, Variable rvariable){     // 判断布尔值表达式
+    public static Expr or(Expr lvariable, Expr rvariable){     // 判断布尔值表达式
         Expr expr = new Or(JavaConstants.JAVA_OPERATOR_OR, lvariable, rvariable);
         return expr;
     }
 
-    public static Expr and(Variable lvariable, Variable rvariable){
+    public static Expr and(Expr lvariable, Expr rvariable){
         Expr expr = new And(JavaConstants.JAVA_OPERATOR_JOIN, lvariable, rvariable);
         return expr;
     }
 
-    public static Expr rel(Variable lvariable, Variable rvariable, String rel){
+    public static Expr rel(Expr lvariable, Expr rvariable, String rel){
         return new Rel(rel, lvariable, rvariable);
     }
 
-    public static Expr term(Variable lvariable, Variable rvariable, String op){
+    public static Expr term(Expr lvariable, Expr rvariable, String op){
         if(op != null){
             Expr expr = new Arith(op, lvariable, rvariable);
             return expr;
@@ -108,15 +106,14 @@ public class JavaDirectUtils {
         }
     }
 
-    public static Expr factor(Token token){
-        Variable variable = null;
-        if(token.getType().isRexgexToken()) {
-            variable = JavaDirectGlobalProperty.topEnv.getPropertyMap().get(token.getToken());
-        }else{
-            VariableType variableType = VariableType.getVariableTypeMap(token.getType().getType());
-            variable = new Variable(token.getToken(), variableType);
-        }
+    public static Expr factor(String variableName){
+        // TODO 需要考虑变量引用链的情况
+        Variable variable = JavaDirectGlobalProperty.topEnv.getPropertyMap().get(variableName);
         return variable;
+    }
+
+    public static Constant constant(String name, String typeName){
+        return new Constant(name, VariableType.getVariableTypeMap(typeName));
     }
 
     public static void error(String s){
