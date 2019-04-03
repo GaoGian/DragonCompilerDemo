@@ -13,10 +13,10 @@
 * AST、中间码生成（伪代码）
 
 ## 查看功能 --> ParseChartUtils
-* 1、NFA、DFA关系转换图
-* 2、LR文法项集状态图
-* 3、LR分析表
-* 4、语法分析树、注释语法树、抽象语法树结构图
+* NFA、DFA关系转换图
+* LR文法项集状态图
+* LR分析表
+* 语法分析树、注释语法树、抽象语法树结构图
 
 # SimpleJava
 * 代码目录 --> src/java/gian/compiler/language/simplejava/*
