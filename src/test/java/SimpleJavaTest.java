@@ -53,7 +53,7 @@ public class SimpleJavaTest {
 
     @Test
     public void testSimpleJava1(){
-        SyntacticLRParser.syntaxParseLR("SimpleJavaLexical.txt", "SimpleJavaSyntax.txt", "SimpleJavaProgram.txt", true);
+        SyntacticLRParser.syntaxParseLR("SimpleJavaLexical.txt", "SimpleJavaSyntax.txt", "SimpleJavaMath.txt", true);
 
     }
 
