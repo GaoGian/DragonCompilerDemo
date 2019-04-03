@@ -9,9 +9,8 @@
 * LL文法消除左递归、提取公因式
 * LL文法解析(试验) --> SyntacticLLParser.syntaxParseByLL()
 * LR(1)文法解析(可用) --> SyntacticLRParser.syntaxParseLR()
-* 语义动作监听器
-* 中间码生成
-* 9、SimplerJava翻译
+* 语法分析树、语义动作监听器
+* AST、中间码生成（伪代码）
 
 ## 查看功能 --> ParseChartUtils
 * 1、NFA、DFA关系转换图
