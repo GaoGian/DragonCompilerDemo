@@ -12,7 +12,7 @@ public class Return extends Expr {
     public Expr expr;
 
     public Return(Expr expr){
-        super(expr.getOp(), expr.getType());
+        super(expr.getType());
         // TODO 需要加入返回类型校验
         if(JavaDirectGlobalProperty.methodVariableType == null){
             error("undeclaret return type");
@@ -22,7 +22,6 @@ public class Return extends Expr {
         this.expr = expr;
     }
 
-    @Override
     public Expr reduce(){
         Expr x = this.expr.gen();
         Temp t = new Temp(type);

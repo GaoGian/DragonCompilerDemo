@@ -20,11 +20,11 @@ public class Access extends Op {
     }
 
     public Expr gen(){
-        return new Access(array, index.reduce(), type);
+        return new Access(array, index, type);
     }
 
     public void jumping(int t, int f){
-        emitjumps(reduce().toString(), t, f);
+//        emitjumps(reduce().toString(), t, f);
     }
 
     public String toString(){

@@ -1,5 +1,6 @@
 package gian.compiler.language.simplejava.action;
 
+import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.bean.VariableArrayType;
 import gian.compiler.language.simplejava.bean.VariableType;
@@ -35,8 +36,8 @@ public class TypeComponentAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // TODO 调整数组处理顺序，方便生成数组节点
-            String baseType = (String) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
             VariableType variableType = (VariableType) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
+            // FIXME 单独处理数组声明
             VariableArrayType arrayType = new VariableArrayType(0, variableType);
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_TYPE, arrayType);
 
@@ -62,8 +63,8 @@ public class TypeComponentAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String baseType = (String) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
-            VariableType variableType = VariableType.getVariableTypeMap(baseType);
+            Token baseType = (Token) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
+            VariableType variableType = new VariableType(baseType.getToken(), VariableType.getVariableTypeWidth(baseType.getType().getType()));
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_TYPE, variableType);
 
             return null;

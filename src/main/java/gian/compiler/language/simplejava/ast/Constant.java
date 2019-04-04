@@ -15,11 +15,7 @@ public class Constant extends Expr {
     public static final Constant DIGIT_ONE = new Constant("1", VariableType.INT);
 
     public Constant(String tok, VariableType p){
-        super(tok, p);
-    }
-
-    public Constant(int i){
-        super(String.valueOf(i), VariableType.INT);
+        super(p);
     }
 
     public void jumping(int t, int f){

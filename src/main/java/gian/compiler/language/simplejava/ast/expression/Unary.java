@@ -18,14 +18,14 @@ public class Unary extends Op {
         }
     }
 
-    @Override
-    public Expr gen(){
-        return new Unary(op, expr.reduce());
-    }
+//    @Override
+//    public Expr gen(){
+//        return new Unary(op, expr.reduce());
+//    }
 
-    @Override
-    public String toString(){
-        return op.toString() + " " + expr.toString();
-    }
+//    @Override
+//    public String toString(){
+//        return op.toString() + " " + expr.toString();
+//    }
 
 }

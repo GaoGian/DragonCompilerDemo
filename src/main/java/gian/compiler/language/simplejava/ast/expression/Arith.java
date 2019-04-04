@@ -21,12 +21,12 @@ public class Arith extends Op {
 
     @Override
     public Expr gen(){
-        return new Arith(op, expr1.reduce(), expr2.reduce());
+        return new Arith("", expr1, expr2);
     }
 
     @Override
     public String toString(){
-        return expr1.toString() + " " + op.toString() + " " + expr2.toString();
+        return expr1.toString() + " " + expr2.toString();
     }
 
 }

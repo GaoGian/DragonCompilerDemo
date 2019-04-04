@@ -9,6 +9,7 @@ import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -90,4 +91,12 @@ public class ClassBodyDeclarationAction {
         }
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new FieldDeclarationListener());
+        allListener.add(new ConstructorDeclarationListener());
+        allListener.add(new MethodDeclarationListener());
+
+        return null;
+    }
 }

@@ -6,10 +6,13 @@ import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.env.JavaEnvironment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by gaojian on 2019/4/1.
  */
-public class BlockAction {
+public class BlockAction{
 
     public static String product = "block → { blockStatement }";
 
@@ -58,6 +61,14 @@ public class BlockAction {
             return null;
         }
 
+    }
+
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new BlockEnterListener());
+        allListener.add(new BlockExitListener());
+
+        return allListener;
     }
 
 }

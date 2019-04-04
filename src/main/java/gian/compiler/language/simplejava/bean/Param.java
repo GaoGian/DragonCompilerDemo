@@ -11,7 +11,7 @@ public class Param extends Expr {
     public VariableType type;
 
     public Param(String fieldName, VariableType variableType) {
-        super(fieldName, variableType);
+        super(variableType);
         this.type = variableType;
         this.name = fieldName;
     }

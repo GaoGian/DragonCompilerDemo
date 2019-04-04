@@ -58,37 +58,36 @@ public class VariableType {
     }
 
 
-    public static VariableType getVariableTypeMap(String typeName){
-        VariableType variableType = null;
+    public static Integer getVariableTypeWidth(String typeName){
         if(JavaConstants.VARIABLE_TYPE_INT.equals(typeName)){
-            return INT;
+            return INT.getWidth();
         }else if(JavaConstants.VARIABLE_TYPE_INT.equals(typeName)){
-            return LONG;
+            return LONG.getWidth();
         }else if(JavaConstants.VARIABLE_TYPE_SHORT.equals(typeName)){
-            return SHORT;
+            return SHORT.getWidth();
         }else if(JavaConstants.VARIABLE_TYPE_FLOAT.equals(typeName)){
-            return FLOAT;
+            return FLOAT.getWidth();
         }else if(JavaConstants.VARIABLE_TYPE_DOUBLE.equals(typeName)){
-            return DOUBLE;
+            return DOUBLE.getWidth();
         }else if(JavaConstants.VARIABLE_TYPE_CHAR.equals(typeName)){
-            return CHAR;
+            return CHAR.getWidth();
         }else if(JavaConstants.VARIABLE_TYPE_BYTE.equals(typeName)){
-            return BYTE;
+            return BYTE.getWidth();
         }else if(JavaConstants.VARIABLE_TYPE_BOOLEAN.equals(typeName)){
-            return BOOLEAN;
+            return BOOLEAN.getWidth();
         }else if(JavaConstants.VARIABLE_TYPE_CLAZZ.equals(typeName)){
-            return CLAZZ;
+            return CLAZZ.getWidth();
         }else if(JavaConstants.VARIABLE_TYPE_VOID.equals(typeName)){
-            return VOID;
+            return VOID.getWidth();
         }else if(JavaConstants.VARIABLE_TYPE_NUMBER.equals(typeName)){
-            return FLOAT;
+            return FLOAT.getWidth();
         }else if(JavaConstants.VARIABLE_TYPE_DIGIT.equals(typeName)){
-            return INT;
+            return INT.getWidth();
         }else if(JavaConstants.VARIABLE_TYPE_STRING.equals(typeName)){
-            return STRING;
+            return STRING.getWidth();
         }
 
-        return variableType;
+        return null;
     }
 
     // SimpleJava数据类型

@@ -10,6 +10,7 @@ import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,28 +20,6 @@ import java.util.Map;
 public class ClassDeclarationAction {
 
     public static String product = "classDeclaration → modifierDeclaration class Identifier extendsInfo classBody";
-
-    public static class ModifierDeclarationListener extends SyntaxDirectedListener{
-
-        public ModifierDeclarationListener(){
-            this.matchProductTag = product;
-            this.matchSymbol = "modifierDeclaration";
-            this.matchIndex = 0;
-            this.isLeaf = false;
-        }
-
-        @Override
-        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-
-        @Override
-        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            // 该节点是终结符节点，有终结符进行赋值
-            return null;
-        }
-
-    }
 
     public static class IdentifierListener extends SyntaxDirectedListener{
 
@@ -140,5 +119,13 @@ public class ClassDeclarationAction {
         }
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new IdentifierListener());
+        allListener.add(new ExtendsInfoListener());
+        allListener.add(new ClassBodyListener());
+
+        return allListener;
+    }
 
 }

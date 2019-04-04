@@ -1,14 +1,18 @@
 package gian.compiler.language.simplejava.utils;
 
+import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.language.simplejava.JavaConstants;
+import gian.compiler.language.simplejava.ast.Constant;
+import gian.compiler.language.simplejava.ast.ref.SuperInitRefNode;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableArrayType;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.exception.JavaDirectException;
-import gian.compiler.language.simplejava.ast.Constant;
 import gian.compiler.language.simplejava.ast.expression.*;
 import gian.compiler.language.simplejava.ast.statement.*;
+
+import java.util.List;
 
 /**
  * 生成AST节点
@@ -76,12 +80,12 @@ public class JavaDirectUtils {
         VariableType variableType = variable.getType();
 
         if(!(variableType instanceof VariableArrayType)){
-            Expr width = new Constant(String.valueOf(variableType.getWidth()), VariableType.INT);
+            Expr width = new Temp(variableType);
             Expr index = new Arith(JavaConstants.JAVA_OPERATOR_MULIT, factor, width);
 
             return new Access(variable, index, variableType);
         }else{
-            Expr width = new Constant(String.valueOf(((VariableArrayType) variableType).getBaseVariableType().getWidth()), VariableType.INT);
+            Expr width = new Temp(variableType);
             Expr index_1 = new Arith(JavaConstants.JAVA_OPERATOR_MULIT, factor, width);
             Expr index_2 = new Arith(JavaConstants.JAVA_OPERATOR_ADD, array.index, index_1);
 
@@ -119,10 +123,22 @@ public class JavaDirectUtils {
         return variable;
     }
 
+    public static NewArray newArray(VariableType baseType, VariableArrayType variableArrayType){
+        return new NewArray(baseType, variableArrayType);
+    }
+
     public static Variable variableDeclarate(String variableName, VariableType variableType){
         Variable variable = new Variable(variableName, variableType, null);
         JavaDirectGlobalProperty.topEnv.getPropertyMap().put(variableName, variable);
         return variable;
+    }
+
+    public static Constant constant(Token token){
+        return new Constant(token.getToken(), new VariableType(token.getToken(), VariableType.getVariableTypeWidth(token.getType().getType())));
+    }
+
+    public static SuperInitRefNode superInitRefNode(List<Variable> paramList){
+        return new SuperInitRefNode(paramList);
     }
 
     public static void error(String s){

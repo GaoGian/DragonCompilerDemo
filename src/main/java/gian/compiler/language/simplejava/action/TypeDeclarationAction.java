@@ -1,5 +1,6 @@
 package gian.compiler.language.simplejava.action;
 
+import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.front.lexical.transform.LexConstants;
@@ -204,7 +205,7 @@ public class TypeDeclarationAction {
     }
 
     private static void setBaseType(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex){
-        String baseType = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
+        Token baseType = context.getBrotherNodeList().get(currentIndex - 1).getIdToken();
         currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.VARIABLE_BASE_TYPE, baseType);
     }
 

@@ -1,5 +1,6 @@
 package gian.compiler.language.simplejava.action;
 
+import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
@@ -195,9 +196,8 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String value = currentTreeNode.getIdToken().getToken();
-            String typeName = currentTreeNode.getIdToken().getType().getType();
-            Constant constant = JavaDirectUtils.constant(value, typeName);
+            Token token = currentTreeNode.getIdToken();
+            Constant constant = JavaDirectUtils.constant(token);
 
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, constant);
 

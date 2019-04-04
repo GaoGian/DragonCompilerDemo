@@ -26,7 +26,7 @@ public class For extends Stmt {
         emitlabel(label);
         label = newlabel();
         update.gen(b ,label);
-        control.jumping(b, 0);
+//        control.jumping(b, 0);
     }
 
 

@@ -9,6 +9,7 @@ import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by gaojian on 2019/3/28.
@@ -89,4 +90,12 @@ public class ClassBodyAction {
         }
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new ClassBodyEnterListener());
+        allListener.add(new ClassBodyDeclarationListener());
+        allListener.add(new ClassBodyExitListener());
+
+        return allListener;
+    }
 }

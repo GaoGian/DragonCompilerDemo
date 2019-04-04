@@ -1,10 +1,12 @@
 package gian.compiler.language.simplejava.action;
 
+import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.language.simplejava.JavaConstants;
+import gian.compiler.language.simplejava.ast.ref.FieldRefNode;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.ast.Constant;
 import gian.compiler.language.simplejava.ast.expression.Expr;
@@ -58,8 +60,8 @@ public class FactorAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String value = currentTreeNode.getIdToken().getToken();
-            Constant constant = JavaDirectUtils.constant(value, currentTreeNode.getIdToken().getType().getType());
+            Token token = currentTreeNode.getIdToken();
+            Constant constant = JavaDirectUtils.constant(token);
 
             // 设置code
             currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, constant);
@@ -86,8 +88,8 @@ public class FactorAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String value = currentTreeNode.getIdToken().getToken();
-            Constant constant = JavaDirectUtils.constant(value, currentTreeNode.getIdToken().getType().getType());
+            Token token = currentTreeNode.getIdToken();
+            Constant constant = JavaDirectUtils.constant(token);
 
             // 设置code
             currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, constant);
@@ -115,9 +117,8 @@ public class FactorAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // FIXME 需要考虑引用链及数组元素的情况
-            Variable variable = (Variable) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE);
-            Variable factor = JavaDirectUtils.factor(variable.getFieldName());
-            currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, factor);
+            FieldRefNode variableRef = (FieldRefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, variableRef);
 
             return null;
         }

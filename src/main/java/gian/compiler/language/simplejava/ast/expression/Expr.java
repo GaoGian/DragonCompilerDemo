@@ -1,5 +1,6 @@
 package gian.compiler.language.simplejava.ast.expression;
 
+import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.ast.AstNode;
 
@@ -8,7 +9,8 @@ import gian.compiler.language.simplejava.ast.AstNode;
  */
 public class Expr extends AstNode {
 
-    protected VariableType type;
+    public Variable variable;
+    public VariableType type;
 
     public Expr(VariableType type){
         this.type = type;

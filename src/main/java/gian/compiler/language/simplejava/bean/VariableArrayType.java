@@ -6,6 +6,7 @@ package gian.compiler.language.simplejava.bean;
 public class VariableArrayType extends VariableType {
 
     public VariableType baseVariableType;
+    // TODO 如果是0，说明是数组变量声明
     public int size;
 
     public VariableArrayType(int sz, VariableType baseVariableType){

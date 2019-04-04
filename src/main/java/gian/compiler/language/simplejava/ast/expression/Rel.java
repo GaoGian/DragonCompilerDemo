@@ -23,12 +23,12 @@ public class Rel extends Logical {
         }
     }
 
-    @Override
-    public void jumping(int t, int f){
-        Expr a = expr1.reduce();
-        Expr b = expr2.reduce();
-        String test = a.toString() + " " + op.toString() + " " + b.toString();
-        emitjumps(test, t, f);
-    }
+//    @Override
+//    public void jumping(int t, int f){
+//        Expr a = expr1.reduce();
+//        Expr b = expr2.reduce();
+//        String test = a.toString() + " " + op.toString() + " " + b.toString();
+//        emitjumps(test, t, f);
+//    }
 
 }

@@ -11,7 +11,7 @@ public class Logical extends Expr {
     public Expr expr1, expr2;
 
     public Logical(String op, Expr x1, Expr x2){
-        super(op, null);
+        super( null);
         expr1 = x1;
         expr2 = x2;
         type = check(expr1.getType(), expr2.getType());
@@ -33,7 +33,7 @@ public class Logical extends Expr {
         int f = newlabel();
         int a = newlabel();
         Temp temp = new Temp(type);
-        this.jumping(0, f);
+//        this.jumping(0, f);
         emit(temp.toString() + " = true");
         emit("goto L" + a);
         emitlabel(f);
@@ -42,9 +42,9 @@ public class Logical extends Expr {
         return temp;
     }
 
-    @Override
-    public String toString(){
-        return expr1.toString() + " " + op.toString() + " " + expr2.toString();
-    }
+//    @Override
+//    public String toString(){
+//        return expr1.toString() + " " + op.toString() + " " + expr2.toString();
+//    }
 
 }

@@ -9,10 +9,9 @@ import gian.compiler.language.simplejava.bean.VariableType;
 public class Op extends Expr {
 
     public Op(String tok, VariableType p){
-        super(tok, p);
+        super(p);
     }
 
-    @Override
     public Expr reduce(){
         Expr x = gen();
         Temp t = new Temp(type);
