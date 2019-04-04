@@ -2,7 +2,7 @@ package gian.compiler.language.simplejava.env;
 
 import gian.compiler.front.lexical.transform.MyStack;
 import gian.compiler.language.simplejava.bean.VariableType;
-import gian.compiler.language.simplejava.inter.statement.Stmt;
+import gian.compiler.language.simplejava.ast.statement.Stmt;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

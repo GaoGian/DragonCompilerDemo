@@ -6,9 +6,9 @@ import gian.compiler.language.simplejava.bean.VariableArrayType;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.exception.JavaDirectException;
-import gian.compiler.language.simplejava.inter.Constant;
-import gian.compiler.language.simplejava.inter.expression.*;
-import gian.compiler.language.simplejava.inter.statement.*;
+import gian.compiler.language.simplejava.ast.Constant;
+import gian.compiler.language.simplejava.ast.expression.*;
+import gian.compiler.language.simplejava.ast.statement.*;
 
 /**
  * 生成AST节点
@@ -73,7 +73,7 @@ public class JavaDirectUtils {
     }
 
     public static Access array(Variable variable, Expr factor, Access array){
-        VariableType variableType = variable.getVariableType();
+        VariableType variableType = variable.getType();
 
         if(!(variableType instanceof VariableArrayType)){
             Expr width = new Constant(String.valueOf(variableType.getWidth()), VariableType.INT);
@@ -120,13 +120,9 @@ public class JavaDirectUtils {
     }
 
     public static Variable variableDeclarate(String variableName, VariableType variableType){
-        Variable variable = new Variable(variableName, variableType);
+        Variable variable = new Variable(variableName, variableType, null);
         JavaDirectGlobalProperty.topEnv.getPropertyMap().put(variableName, variable);
         return variable;
-    }
-
-    public static Constant constant(String name, String typeName){
-        return new Constant(name, VariableType.getVariableTypeMap(typeName));
     }
 
     public static void error(String s){

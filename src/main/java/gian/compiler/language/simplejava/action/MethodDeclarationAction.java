@@ -3,13 +3,12 @@ package gian.compiler.language.simplejava.action;
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.bean.ClazzMethod;
 import gian.compiler.language.simplejava.bean.Param;
-import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
-import gian.compiler.language.simplejava.inter.AstNode;
+import gian.compiler.language.simplejava.ast.AstNode;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ import java.util.List;
  */
 public class MethodDeclarationAction {
 
-    public static String product_1 = "methodDeclaration → modifierDeclaration typeDeclaration ◀Identifier▶ formalParameters methodBody";
+    public static String product_1 = "methodDeclaration → modifierDeclaration typeDeclaration Identifier formalParameters methodBody";
 
     public static class MethodBodyLietener extends SyntaxDirectedListener{
 
@@ -58,7 +57,7 @@ public class MethodDeclarationAction {
         }
     }
 
-    public static String product_2 = "methodDeclaration → modifierDeclaration ◀void▶ ◀Identifier▶ formalParameters methodBody";
+    public static String product_2 = "methodDeclaration → modifierDeclaration void Identifier formalParameters methodBody";
 
     public static class VoidMethodBodyLietener extends SyntaxDirectedListener{
 

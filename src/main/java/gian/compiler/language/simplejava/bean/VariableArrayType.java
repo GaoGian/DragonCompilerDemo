@@ -6,7 +6,7 @@ package gian.compiler.language.simplejava.bean;
 public class VariableArrayType extends VariableType {
 
     public VariableType baseVariableType;
-    public int size = 1;
+    public int size;
 
     public VariableArrayType(int sz, VariableType baseVariableType){
         super("[]", sz * baseVariableType.width);

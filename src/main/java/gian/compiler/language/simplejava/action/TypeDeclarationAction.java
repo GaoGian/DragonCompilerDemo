@@ -12,15 +12,15 @@ import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
  */
 public class TypeDeclarationAction {
 
-    public static String product_1 = "typeDeclaration → ◀boolean▶ typeComponent";
-    public static String product_2 = "typeDeclaration → ◀char▶ typeComponent";
-    public static String product_3 = "typeDeclaration → ◀byte▶ typeComponent";
-    public static String product_4 = "typeDeclaration → ◀short▶ typeComponent";
-    public static String product_5 = "typeDeclaration → ◀int▶ typeComponent";
-    public static String product_6 = "typeDeclaration → ◀long▶ typeComponent";
-    public static String product_7 = "typeDeclaration → ◀float▶ typeComponent";
-    public static String product_8 = "typeDeclaration → ◀double▶ typeComponent";
-    public static String product_9 = "typeDeclaration → ◀Identifier▶ typeComponent";
+    public static String product_1 = "typeDeclaration → boolean typeComponent";
+    public static String product_2 = "typeDeclaration → char typeComponent";
+    public static String product_3 = "typeDeclaration → byte typeComponent";
+    public static String product_4 = "typeDeclaration → short typeComponent";
+    public static String product_5 = "typeDeclaration → int typeComponent";
+    public static String product_6 = "typeDeclaration → long typeComponent";
+    public static String product_7 = "typeDeclaration → float typeComponent";
+    public static String product_8 = "typeDeclaration → double typeComponent";
+    public static String product_9 = "typeDeclaration → Identifier typeComponent";
 
     public static class BooleanTypeListener extends SyntaxDirectedListener{
 

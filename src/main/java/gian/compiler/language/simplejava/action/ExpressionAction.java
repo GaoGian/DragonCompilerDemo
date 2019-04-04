@@ -6,8 +6,8 @@ import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.bean.Variable;
-import gian.compiler.language.simplejava.inter.Constant;
-import gian.compiler.language.simplejava.inter.expression.Expr;
+import gian.compiler.language.simplejava.ast.Constant;
+import gian.compiler.language.simplejava.ast.expression.Expr;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 /**

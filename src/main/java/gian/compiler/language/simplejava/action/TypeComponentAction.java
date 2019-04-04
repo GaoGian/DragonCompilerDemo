@@ -13,7 +13,7 @@ import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
  */
 public class TypeComponentAction {
 
-    public static String product_1 = "typeComponent → ◀[▶ ◀]▶ typeComponent | ε";
+    public static String product_1 = "typeComponent → [ ] typeComponent | ε";
 
     public static class ArrayTypeComponentListener extends SyntaxDirectedListener{
 

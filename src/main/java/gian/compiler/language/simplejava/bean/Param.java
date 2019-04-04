@@ -1,6 +1,6 @@
 package gian.compiler.language.simplejava.bean;
 
-import gian.compiler.language.simplejava.inter.expression.Expr;
+import gian.compiler.language.simplejava.ast.expression.Expr;
 
 /**
  * Created by gaojian on 2019/4/4.

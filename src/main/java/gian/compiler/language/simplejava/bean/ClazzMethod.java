@@ -1,6 +1,6 @@
 package gian.compiler.language.simplejava.bean;
 
-import gian.compiler.language.simplejava.inter.AstNode;
+import gian.compiler.language.simplejava.ast.AstNode;
 
 import java.util.ArrayList;
 import java.util.List;

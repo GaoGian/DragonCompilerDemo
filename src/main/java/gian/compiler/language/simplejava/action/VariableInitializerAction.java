@@ -5,8 +5,10 @@ import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.language.simplejava.JavaConstants;
-import gian.compiler.language.simplejava.inter.expression.Expr;
-import gian.compiler.language.simplejava.inter.statement.Stmt;
+import gian.compiler.language.simplejava.bean.VariableArrayType;
+import gian.compiler.language.simplejava.bean.VariableType;
+import gian.compiler.language.simplejava.ast.expression.Expr;
+import gian.compiler.language.simplejava.ast.statement.Stmt;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 /**
@@ -45,18 +47,29 @@ public class VariableInitializerAction {
     public static class ArrayVariableInitListener extends SyntaxDirectedListener{
         public ArrayVariableInitListener(){
             this.matchProductTag = product_1;
-            this.matchSymbol = "expression";
-            this.matchIndex = 1;
+            this.matchSymbol = "arrayRest";
+            this.matchIndex = 5;
             this.isLeaf = false;
         }
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            String baseTypeName = context.getBrotherNodeList().get(currentIndex - 4).getIdToken().getToken();
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.VARIABLE_BASE_TYPE, baseTypeName);
+
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            String variableId = (String) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_NAME);
+            String size = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
+            VariableType variableType = (VariableType) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
+            VariableArrayType arrayType = new VariableArrayType(Integer.valueOf(size), variableType);
+            JavaDirectUtils.variableDeclarate(variableId, arrayType);
+
+            Stmt assign = JavaDirectUtils.assign(variableId, expr);
+
             return null;
         }
     }
