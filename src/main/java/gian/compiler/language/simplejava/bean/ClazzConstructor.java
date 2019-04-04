@@ -1,5 +1,7 @@
 package gian.compiler.language.simplejava.bean;
 
+import gian.compiler.language.simplejava.inter.AstNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +13,9 @@ public class ClazzConstructor {
     protected String permission;
     protected String constructorName;
 
-    protected List<Variable> paramList = new ArrayList<>();
+    protected List<Param> paramList = new ArrayList<>();
 
-    protected List<String> code = new ArrayList<>();
+    protected AstNode code;
 
     public String getPermission() {
         return permission;
@@ -31,19 +33,19 @@ public class ClazzConstructor {
         this.constructorName = constructorName;
     }
 
-    public List<Variable> getParamList() {
+    public List<Param> getParamList() {
         return paramList;
     }
 
-    public void setParamList(List<Variable> paramList) {
+    public void setParamList(List<Param> paramList) {
         this.paramList = paramList;
     }
 
-    public List<String> getCode() {
+    public AstNode getCode() {
         return code;
     }
 
-    public void setCode(List<String> code) {
+    public void setCode(AstNode code) {
         this.code = code;
     }
 }

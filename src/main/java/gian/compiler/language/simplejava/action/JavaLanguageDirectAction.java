@@ -1,7 +1,7 @@
 package gian.compiler.language.simplejava.action;
 
 import gian.compiler.language.simplejava.JavaConstants;
-import gian.compiler.language.simplejava.bean.JavaClazz;
+import gian.compiler.language.simplejava.bean.Clazz;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
@@ -32,7 +32,7 @@ public class JavaLanguageDirectAction {
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // key: 类全名, value: clazz
-            Map<String, JavaClazz> clazzMap = new HashMap<>();
+            Map<String, Clazz> clazzMap = new HashMap<>();
             context.getGlobalPropertyMap().put(JavaConstants.CLAZZ_MAP, clazzMap);
 
             return null;

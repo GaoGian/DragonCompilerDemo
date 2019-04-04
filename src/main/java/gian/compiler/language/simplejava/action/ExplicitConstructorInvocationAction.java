@@ -1,7 +1,7 @@
 package gian.compiler.language.simplejava.action;
 
 import gian.compiler.language.simplejava.JavaConstants;
-import gian.compiler.language.simplejava.bean.JavaClazz;
+import gian.compiler.language.simplejava.bean.Clazz;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.exception.SuperClazzNotFoundException;
 import gian.compiler.front.lexical.transform.LexConstants;
@@ -36,7 +36,7 @@ public class ExplicitConstructorInvocationAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            JavaClazz clazz = (JavaClazz) context.getGlobalPropertyMap().get(JavaConstants.CURRENT_CLAZZ_NAME);
+            Clazz clazz = (Clazz) context.getGlobalPropertyMap().get(JavaConstants.CURRENT_CLAZZ_NAME);
             Map<String, String> extendInfo = clazz.getExtendInfo();
 
             if(extendInfo != null){

@@ -1,16 +1,19 @@
 package gian.compiler.language.simplejava.bean;
 
+import gian.compiler.language.simplejava.inter.AstNode;
+
 /**
  * Created by gaojian on 2019/3/27.
  */
-public class ClazzField{
+public class ClazzField extends Variable{
 
     protected String permission;
-    protected Variable variable;
+    public AstNode code;
 
-    public ClazzField(String permission, Variable variable){
+    public ClazzField(String permission, String name, VariableType type, AstNode code){
+        super(name, type);
         this.permission = permission;
-        this.variable = variable;
+        this.code = code;
     }
 
     public String getPermission() {
@@ -21,11 +24,12 @@ public class ClazzField{
         this.permission = permission;
     }
 
-    public Variable getVariable() {
-        return variable;
+    public AstNode getCode() {
+        return code;
     }
 
-    public void setVariable(Variable variable) {
-        this.variable = variable;
+    public void setCode(AstNode code) {
+        this.code = code;
     }
+
 }

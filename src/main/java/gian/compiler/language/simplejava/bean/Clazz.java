@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by gaojian on 2019/3/27.
  */
-public class JavaClazz {
+public class Clazz {
 
     protected String packageName;
     protected List<String> importList = new ArrayList<>();

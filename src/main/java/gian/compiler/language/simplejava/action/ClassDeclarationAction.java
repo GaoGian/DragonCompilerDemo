@@ -4,7 +4,7 @@ import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.bean.ClazzConstructor;
 import gian.compiler.language.simplejava.bean.ClazzField;
 import gian.compiler.language.simplejava.bean.ClazzMethod;
-import gian.compiler.language.simplejava.bean.JavaClazz;
+import gian.compiler.language.simplejava.bean.Clazz;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
@@ -66,14 +66,14 @@ public class ClassDeclarationAction {
             List<String> importList = (List<String>) context.getGlobalPropertyMap().get(JavaConstants.IMPORT_LIST);
             Map<String, String> importMap = (Map<String, String>) context.getGlobalPropertyMap().get(JavaConstants.IMPORT_MAP);
 
-            JavaClazz clazz = new JavaClazz();
+            Clazz clazz = new Clazz();
             clazz.setClazzName(clazzName);
             clazz.setClazzAllName(clazzAllName);
             clazz.setPermission(modifier);
             clazz.setImportList(importList);
             clazz.setImportMap(importMap);
 
-            Map<String, JavaClazz> clazzMap = (Map<String, JavaClazz>) context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP);
+            Map<String, Clazz> clazzMap = (Map<String, Clazz>) context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP);
             clazzMap.put(clazzName, clazz);
 
             context.getGlobalPropertyMap().put(JavaConstants.CURRENT_CLAZZ_NAME, clazz);
@@ -100,8 +100,8 @@ public class ClassDeclarationAction {
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             Map<String, String> extendInfo = (Map<String, String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.EXTEND_INFO);
             String clazzName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
-            Map<String, JavaClazz> clazzMap = (Map<String, JavaClazz>) context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP);
-            JavaClazz clazz = clazzMap.get(clazzName);
+            Map<String, Clazz> clazzMap = (Map<String, Clazz>) context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP);
+            Clazz clazz = clazzMap.get(clazzName);
             clazz.setExtendInfo(extendInfo);
 
             return null;
@@ -129,8 +129,8 @@ public class ClassDeclarationAction {
             List<ClazzMethod> methodList = (List<ClazzMethod>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.METHOD_LIST);
 
             String clazzName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
-            Map<String, JavaClazz> clazzMap = (Map<String, JavaClazz>) context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP);
-            JavaClazz clazz = clazzMap.get(clazzName);
+            Map<String, Clazz> clazzMap = (Map<String, Clazz>) context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP);
+            Clazz clazz = clazzMap.get(clazzName);
 
             clazz.setFieldList(fieldList);
             clazz.setConstructorList(constructorList);

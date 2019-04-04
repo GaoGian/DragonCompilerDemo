@@ -19,7 +19,7 @@ public class VariableType {
         this.width = width;
     }
 
-    // 数值类型是否等价
+    // TODO 数值类型是否等价
     public static boolean numeric(VariableType p){
         if(p == VariableType.CHAR || p == VariableType.INT || p == VariableType.FLOAT){
             return true;
@@ -28,7 +28,7 @@ public class VariableType {
         }
     }
 
-    // 类型转换
+    // TODO 类型转换
     public static VariableType max(VariableType p1, VariableType p2){
         if(!numeric(p1) || !numeric(p2)){
             return null;

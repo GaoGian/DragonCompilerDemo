@@ -2,11 +2,13 @@ package gian.compiler.language.simplejava.action;
 
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.bean.ClazzConstructor;
+import gian.compiler.language.simplejava.bean.Param;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
+import gian.compiler.language.simplejava.inter.AstNode;
 
 import java.util.List;
 
@@ -95,8 +97,8 @@ public class ConstructorDeclarationAction {
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             String modifier = (String) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
             String constructorName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
-            List<Variable> paramList = (List<Variable>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PARAM_LIST);
-            List<String> code = (List<String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            List<Param> paramList = (List<Param>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PARAM_LIST);
+            AstNode code = (AstNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
             ClazzConstructor constructor = new ClazzConstructor();
             constructor.setPermission(modifier);

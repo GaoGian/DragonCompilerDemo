@@ -1,36 +1,15 @@
 package gian.compiler.language.simplejava.bean;
 
-import gian.compiler.language.simplejava.inter.expression.Expr;
-
 /**
  * Created by gaojian on 2019/3/27.
  */
-public class Variable extends Expr {
+public class Variable extends Param {
 
-    protected VariableType variableType;
-    protected String fieldName;
+    // TODO 存储地址，暂时用不到
     protected String address;
 
     public Variable(String fieldName, VariableType variableType) {
         super(fieldName, variableType);
-        this.variableType = variableType;
-        this.fieldName = fieldName;
-    }
-
-    public VariableType getVariableType() {
-        return variableType;
-    }
-
-    public void setVariableType(VariableType variableType) {
-        this.variableType = variableType;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public void setFieldName(String fieldName) {
-        this.fieldName = fieldName;
     }
 
     public String getAddress() {

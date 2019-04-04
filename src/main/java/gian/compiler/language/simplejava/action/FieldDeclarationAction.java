@@ -3,7 +3,6 @@ package gian.compiler.language.simplejava.action;
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.bean.ClazzField;
 import gian.compiler.language.simplejava.bean.Variable;
-import gian.compiler.language.simplejava.bean.VariableInitInfo;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.env.JavaEnvironment;
@@ -12,6 +11,7 @@ import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
+import gian.compiler.language.simplejava.inter.AstNode;
 import gian.compiler.language.simplejava.inter.expression.Expr;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
@@ -110,14 +110,11 @@ public class FieldDeclarationAction {
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
 
             String modifier = (String) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
+            VariableType variableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
             String variableId = currentTreeNode.getIdToken().getToken();
-            Object initCode = currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            if(initCode != null) {
-                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, initCode);
-            }
+            AstNode code = (AstNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
-            Variable variable = JavaDirectUtils.factor(variableId);
-            ClazzField clazzField = new ClazzField(modifier, variable);
+            ClazzField clazzField = new ClazzField(modifier, variableId, variableType, code);
 
             List<ClazzField> fieldList = (List<ClazzField>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FIELD_LIST);
             fieldList.add(clazzField);

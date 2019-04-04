@@ -22,6 +22,7 @@ public class VariableArrayType extends VariableType {
         this.baseVariableType = baseVariableType;
     }
 
+    @Override
     public String toString(){
         return "[" + size + "]" + baseVariableType.toString();
     }
