@@ -40,7 +40,7 @@ public class VariableInitializerAction {
         }
     }
 
-    public static String product_2 = "= new arrayBaseType [ Digit ] arraySize";
+    public static String product_2 = "variableInitializer → = new arrayBaseType [ Digit ] arraySize";
     public static class ArrayVariableInitListener extends SyntaxDirectedListener{
         public ArrayVariableInitListener(){
             this.matchProductTag = product_2;

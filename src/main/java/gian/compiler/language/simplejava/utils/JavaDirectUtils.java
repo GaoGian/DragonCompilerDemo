@@ -2,12 +2,15 @@ package gian.compiler.language.simplejava.utils;
 
 import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.language.simplejava.JavaConstants;
+import gian.compiler.language.simplejava.ast.AstNode;
 import gian.compiler.language.simplejava.ast.Constant;
 import gian.compiler.language.simplejava.ast.ref.SuperInitRefNode;
+import gian.compiler.language.simplejava.bean.ClazzField;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableArrayType;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
+import gian.compiler.language.simplejava.env.JavaEnvironment;
 import gian.compiler.language.simplejava.exception.JavaDirectException;
 import gian.compiler.language.simplejava.ast.expression.*;
 import gian.compiler.language.simplejava.ast.statement.*;
@@ -57,7 +60,7 @@ public class JavaDirectUtils {
     }
 
     public static Stmt arrayAssign(String variableName, Access arrayInfo, Expr assign){
-        Variable id = JavaDirectGlobalProperty.topEnv.getPropertyMap().get(variableName);
+        Variable id = JavaDirectUtils.findVariable(variableName);
         if(id == null){
             error(variableName + " undeclared");
         }
@@ -67,7 +70,7 @@ public class JavaDirectUtils {
     }
 
     public static Stmt assign(String variableName, Expr assign){
-        Variable id = JavaDirectGlobalProperty.topEnv.getPropertyMap().get(variableName);
+        Variable id = JavaDirectUtils.findVariable(variableName);
         if(id == null){
             error(variableName + " undeclared");
         }
@@ -119,8 +122,7 @@ public class JavaDirectUtils {
 
     public static Variable factor(String variableName){
         // TODO 需要考虑变量引用链的情况
-        Variable variable = JavaDirectGlobalProperty.topEnv.getPropertyMap().get(variableName);
-        return variable;
+        return JavaDirectUtils.findVariable(variableName);
     }
 
     public static NewArray newArray(VariableType baseType, VariableArrayType variableArrayType){
@@ -133,12 +135,31 @@ public class JavaDirectUtils {
         return variable;
     }
 
+    public static ClazzField variableDeclarate(String permission, String variableName, VariableType variableType, AstNode code){
+        ClazzField clazzField = new ClazzField(permission, variableName, variableType, code);
+        JavaDirectGlobalProperty.topEnv.getPropertyMap().put(variableName, clazzField);
+        return clazzField;
+    }
+
+    public static Variable findVariable(String variableName){
+        return JavaDirectGlobalProperty.topEnv.findVariable(variableName);
+    }
+
     public static Constant constant(Token token){
         return new Constant(token.getToken(), new VariableType(token.getToken(), VariableType.getVariableTypeWidth(token.getType().getType())));
     }
 
     public static SuperInitRefNode superInitRefNode(List<Variable> paramList){
         return new SuperInitRefNode(paramList);
+    }
+
+    public static void nestEnv(){
+        JavaEnvironment preEnv = JavaDirectGlobalProperty.topEnv;
+        JavaDirectGlobalProperty.topEnv = new JavaEnvironment(preEnv);
+    }
+
+    public static void exitEnv(){
+        JavaDirectGlobalProperty.topEnv = JavaDirectGlobalProperty.topEnv.getPreEnv();
     }
 
     public static void error(String s){

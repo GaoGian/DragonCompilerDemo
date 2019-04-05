@@ -9,6 +9,7 @@ import gian.compiler.language.simplejava.ast.statement.Seq;
 import gian.compiler.language.simplejava.ast.statement.Stmt;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.env.JavaEnvironment;
+import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +36,7 @@ public class BlockAction{
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            JavaEnvironment preEnv = JavaDirectGlobalProperty.topEnv;
-            JavaDirectGlobalProperty.topEnv = new JavaEnvironment(preEnv);
+            JavaDirectUtils.nestEnv();
 
             return null;
         }
@@ -79,7 +79,7 @@ public class BlockAction{
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            JavaDirectGlobalProperty.topEnv = JavaDirectGlobalProperty.topEnv.getPreEnv();
+            JavaDirectUtils.exitEnv();
 
             return null;
         }

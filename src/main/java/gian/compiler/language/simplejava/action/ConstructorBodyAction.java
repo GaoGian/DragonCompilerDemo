@@ -39,8 +39,7 @@ public class ConstructorBodyAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            JavaEnvironment preEnv = JavaDirectGlobalProperty.topEnv;
-            JavaDirectGlobalProperty.topEnv = new JavaEnvironment(preEnv);
+            JavaDirectUtils.nestEnv();
 
             List<String> code = new ArrayList<>();
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
@@ -94,7 +93,7 @@ public class ConstructorBodyAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            JavaDirectGlobalProperty.topEnv = JavaDirectGlobalProperty.topEnv.getPreEnv();
+            JavaDirectUtils.exitEnv();
 
             return null;
         }

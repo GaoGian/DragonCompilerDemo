@@ -15,9 +15,50 @@ import gian.compiler.language.simplejava.utils.JavaDirectUtils;
  */
 public class StatementAction {
 
-    // TODO
+    // TODO 需要处理控制流
     public static String product_1 = "statement → if ( parExpression ) block elseStatement";
     public static String product_2 = "for ( forControl ) block";
+    public static class ForEnterListener extends SyntaxDirectedListener{
+        public ForEnterListener(){
+            this.matchProductTag = product_2;
+            this.matchSymbol = "for";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            JavaDirectUtils.nestEnv();
+
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+    }
+
+    public static class ForExitListener extends SyntaxDirectedListener{
+        public ForExitListener(){
+            this.matchProductTag = product_2;
+            this.matchSymbol = "block";
+            this.matchIndex = 4;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            JavaDirectUtils.exitEnv();
+
+            return null;
+        }
+    }
 
     public static String product_3 = "while ( parExpression ) block";
     public static class WhileListener extends SyntaxDirectedListener{
