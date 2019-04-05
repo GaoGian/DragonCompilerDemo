@@ -1,0 +1,630 @@
+Classfile /E:/Code/GitPrj/Simplejava/target/classes/com/gian/compiler/language/java/simple/SimpleJavaProgram.class
+  Last modified 2019-4-3; size 2676 bytes
+  MD5 checksum 64d17dd3ee965a870b1604924d84346d
+  Compiled from "SimpleJavaProgram.java"
+public class com.gian.compiler.language.java.simple.SimpleJavaProgram
+  minor version: 0
+  major version: 50
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+    #1 = Methodref          #25.#69       // java/lang/Object."<init>":()V
+    #2 = Fieldref           #12.#70       // com/gian/compiler/language/java/simple/SimpleJavaProgram.isBoolean:Z
+    #3 = Class              #71           // com/gian/compiler/language/java/simple/SimpleJavaMath
+    #4 = String             #72           // tempClazz
+    #5 = Methodref          #3.#73        // com/gian/compiler/language/java/simple/SimpleJavaMath."<init>":(ZLjava/lang/String;)V
+    #6 = Fieldref           #12.#74       // com/gian/compiler/language/java/simple/SimpleJavaProgram.matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+    #7 = Fieldref           #12.#75       // com/gian/compiler/language/java/simple/SimpleJavaProgram.x:I
+    #8 = Fieldref           #12.#76       // com/gian/compiler/language/java/simple/SimpleJavaProgram.y:I
+    #9 = String             #77           // SimpleJavaProgram
+   #10 = Fieldref           #12.#78       // com/gian/compiler/language/java/simple/SimpleJavaProgram.name:Ljava/lang/String;
+   #11 = String             #79           // SimpleJavaMath
+   #12 = Class              #80           // com/gian/compiler/language/java/simple/SimpleJavaProgram
+   #13 = Methodref          #12.#69       // com/gian/compiler/language/java/simple/SimpleJavaProgram."<init>":()V
+   #14 = Methodref          #12.#81       // com/gian/compiler/language/java/simple/SimpleJavaProgram."<init>":(II)V
+   #15 = Methodref          #82.#83       // java/lang/String.length:()I
+   #16 = String             #84           // i >= 20
+   #17 = Fieldref           #3.#85        // com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+   #18 = Fieldref           #3.#86        // com/gian/compiler/language/java/simple/SimpleJavaMath.maths:[[Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+   #19 = Fieldref           #3.#87        // com/gian/compiler/language/java/simple/SimpleJavaMath.mather:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+   #20 = Methodref          #3.#88        // com/gian/compiler/language/java/simple/SimpleJavaMath.add:(II)I
+   #21 = Fieldref           #3.#89        // com/gian/compiler/language/java/simple/SimpleJavaMath.self:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+   #22 = Methodref          #3.#90        // com/gian/compiler/language/java/simple/SimpleJavaMath.getSelf:()Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+   #23 = Fieldref           #3.#78        // com/gian/compiler/language/java/simple/SimpleJavaMath.name:Ljava/lang/String;
+   #24 = String             #91           // testSimpleJavaMath
+   #25 = Class              #92           // java/lang/Object
+   #26 = Utf8               isBoolean
+   #27 = Utf8               Z
+   #28 = Utf8               matherSelf
+   #29 = Utf8               Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+   #30 = Utf8               array
+   #31 = Utf8               [Z
+   #32 = Utf8               x
+   #33 = Utf8               I
+   #34 = Utf8               y
+   #35 = Utf8               name
+   #36 = Utf8               Ljava/lang/String;
+   #37 = Utf8               <init>
+   #38 = Utf8               ()V
+   #39 = Utf8               Code
+   #40 = Utf8               LineNumberTable
+   #41 = Utf8               LocalVariableTable
+   #42 = Utf8               this
+   #43 = Utf8               Lcom/gian/compiler/language/java/simple/SimpleJavaProgram;
+   #44 = Utf8               (II)V
+   #45 = Utf8               getMyself
+   #46 = Utf8               (ZLjava/lang/String;)Lcom/gian/compiler/language/java/simple/SimpleJavaProgram;
+   #47 = Utf8               ifMyself
+   #48 = Utf8               StackMapTable
+   #49 = Utf8               getMatherSelf
+   #50 = Utf8               ()Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+   #51 = Utf8               t2
+   #52 = Utf8               t3
+   #53 = Utf8               t4
+   #54 = Utf8               t5
+   #55 = Utf8               t6
+   #56 = Utf8               t7
+   #57 = Utf8               t8
+   #58 = Utf8               t9
+   #59 = Utf8               t16
+   #60 = Utf8               i
+   #61 = Utf8               test
+   #62 = Utf8               z
+   #63 = Utf8               javaMath
+   #64 = Utf8               mathResult
+   #65 = Utf8               tempMather
+   #66 = Utf8               result
+   #67 = Utf8               SourceFile
+   #68 = Utf8               SimpleJavaProgram.java
+   #69 = NameAndType        #37:#38       // "<init>":()V
+   #70 = NameAndType        #26:#27       // isBoolean:Z
+   #71 = Utf8               com/gian/compiler/language/java/simple/SimpleJavaMath
+   #72 = Utf8               tempClazz
+   #73 = NameAndType        #37:#93       // "<init>":(ZLjava/lang/String;)V
+   #74 = NameAndType        #28:#29       // matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+   #75 = NameAndType        #32:#33       // x:I
+   #76 = NameAndType        #34:#33       // y:I
+   #77 = Utf8               SimpleJavaProgram
+   #78 = NameAndType        #35:#36       // name:Ljava/lang/String;
+   #79 = Utf8               SimpleJavaMath
+   #80 = Utf8               com/gian/compiler/language/java/simple/SimpleJavaProgram
+   #81 = NameAndType        #37:#44       // "<init>":(II)V
+   #82 = Class              #94           // java/lang/String
+   #83 = NameAndType        #95:#96       // length:()I
+   #84 = Utf8               i >= 20
+   #85 = NameAndType        #97:#98       // mathElemet:[[I
+   #86 = NameAndType        #99:#100      // maths:[[Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+   #87 = NameAndType        #101:#29      // mather:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+   #88 = NameAndType        #102:#103     // add:(II)I
+   #89 = NameAndType        #104:#29      // self:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+   #90 = NameAndType        #105:#50      // getSelf:()Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+   #91 = Utf8               testSimpleJavaMath
+   #92 = Utf8               java/lang/Object
+   #93 = Utf8               (ZLjava/lang/String;)V
+   #94 = Utf8               java/lang/String
+   #95 = Utf8               length
+   #96 = Utf8               ()I
+   #97 = Utf8               mathElemet
+   #98 = Utf8               [[I
+   #99 = Utf8               maths
+  #100 = Utf8               [[Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+  #101 = Utf8               mather
+  #102 = Utf8               add
+  #103 = Utf8               (II)I
+  #104 = Utf8               self
+  #105 = Utf8               getSelf
+{
+  public boolean isBoolean;
+    descriptor: Z
+    flags: ACC_PUBLIC
+
+  public com.gian.compiler.language.java.simple.SimpleJavaMath matherSelf;
+    descriptor: Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+    flags: ACC_PUBLIC
+
+  public boolean[] array;
+    descriptor: [Z
+    flags: ACC_PUBLIC
+
+  public int x;
+    descriptor: I
+    flags: ACC_PUBLIC
+
+  public int y;
+    descriptor: I
+    flags: ACC_PUBLIC
+
+  public java.lang.String name;
+    descriptor: Ljava/lang/String;
+    flags: ACC_PUBLIC
+
+  public com.gian.compiler.language.java.simple.SimpleJavaProgram();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=5, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: aload_0
+         5: iconst_0
+         6: putfield      #2                  // Field isBoolean:Z
+         9: aload_0
+        10: new           #3                  // class com/gian/compiler/language/java/simple/SimpleJavaMath
+        13: dup
+        14: iconst_0
+        15: ldc           #4                  // String tempClazz
+        17: invokespecial #5                  // Method com/gian/compiler/language/java/simple/SimpleJavaMath."<init>":(ZLjava/lang/String;)V
+        20: putfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+        23: aload_0
+        24: iconst_5
+        25: putfield      #7                  // Field x:I
+        28: aload_0
+        29: bipush        6
+        31: putfield      #8                  // Field y:I
+        34: aload_0
+        35: ldc           #9                  // String SimpleJavaProgram
+        37: putfield      #10                 // Field name:Ljava/lang/String;
+        40: return
+      LineNumberTable:
+        line 13: 0
+        line 6: 4
+        line 7: 9
+        line 9: 23
+        line 10: 28
+        line 11: 34
+        line 13: 40
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      41     0  this   Lcom/gian/compiler/language/java/simple/SimpleJavaProgram;
+
+  public com.gian.compiler.language.java.simple.SimpleJavaProgram(int, int);
+    descriptor: (II)V
+    flags: ACC_PUBLIC
+    Code:
+      stack=5, locals=3, args_size=3
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: aload_0
+         5: iconst_0
+         6: putfield      #2                  // Field isBoolean:Z
+         9: aload_0
+        10: new           #3                  // class com/gian/compiler/language/java/simple/SimpleJavaMath
+        13: dup
+        14: iconst_0
+        15: ldc           #4                  // String tempClazz
+        17: invokespecial #5                  // Method com/gian/compiler/language/java/simple/SimpleJavaMath."<init>":(ZLjava/lang/String;)V
+        20: putfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+        23: aload_0
+        24: iconst_5
+        25: putfield      #7                  // Field x:I
+        28: aload_0
+        29: bipush        6
+        31: putfield      #8                  // Field y:I
+        34: aload_0
+        35: ldc           #9                  // String SimpleJavaProgram
+        37: putfield      #10                 // Field name:Ljava/lang/String;
+        40: aload_0
+        41: iload_1
+        42: putfield      #7                  // Field x:I
+        45: aload_0
+        46: iload_2
+        47: putfield      #8                  // Field y:I
+        50: return
+      LineNumberTable:
+        line 15: 0
+        line 6: 4
+        line 7: 9
+        line 9: 23
+        line 10: 28
+        line 11: 34
+        line 16: 40
+        line 17: 45
+        line 18: 50
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      51     0  this   Lcom/gian/compiler/language/java/simple/SimpleJavaProgram;
+            0      51     1     x   I
+            0      51     2     y   I
+
+  public com.gian.compiler.language.java.simple.SimpleJavaProgram getMyself(boolean, java.lang.String);
+    descriptor: (ZLjava/lang/String;)Lcom/gian/compiler/language/java/simple/SimpleJavaProgram;
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=3, args_size=3
+         0: iload_1
+         1: iconst_1
+         2: if_icmpne     7
+         5: aload_0
+         6: areturn
+         7: aload_2
+         8: ldc           #11                 // String SimpleJavaMath
+        10: if_acmpne     21
+        13: new           #12                 // class com/gian/compiler/language/java/simple/SimpleJavaProgram
+        16: dup
+        17: invokespecial #13                 // Method "<init>":()V
+        20: areturn
+        21: new           #12                 // class com/gian/compiler/language/java/simple/SimpleJavaProgram
+        24: dup
+        25: bipush        10
+        27: bipush        20
+        29: invokespecial #14                 // Method "<init>":(II)V
+        32: areturn
+      LineNumberTable:
+        line 21: 0
+        line 22: 5
+        line 23: 7
+        line 24: 13
+        line 26: 21
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      33     0  this   Lcom/gian/compiler/language/java/simple/SimpleJavaProgram;
+            0      33     1 ifMyself   Z
+            0      33     2  name   Ljava/lang/String;
+      StackMapTable: number_of_entries = 2
+        frame_type = 7 /* same */
+        frame_type = 13 /* same */
+
+  public com.gian.compiler.language.java.simple.SimpleJavaMath getMatherSelf();
+    descriptor: ()Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+    flags: ACC_PUBLIC
+    Code:
+      stack=4, locals=11, args_size=1
+         0: iconst_0
+         1: istore_1
+         2: iload_1
+         3: aload_0
+         4: getfield      #10                 // Field name:Ljava/lang/String;
+         7: invokevirtual #15                 // Method java/lang/String.length:()I
+        10: if_icmple     271
+        13: iload_1
+        14: bipush        20
+        16: if_icmplt     30
+        19: new           #3                  // class com/gian/compiler/language/java/simple/SimpleJavaMath
+        22: dup
+        23: iconst_0
+        24: ldc           #16                 // String i >= 20
+        26: invokespecial #5                  // Method com/gian/compiler/language/java/simple/SimpleJavaMath."<init>":(ZLjava/lang/String;)V
+        29: areturn
+        30: iload_1
+        31: bipush        10
+        33: if_icmplt     265
+        36: iload_1
+        37: bipush        6
+        39: if_icmpne     36
+        42: aload_0
+        43: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+        46: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+        49: iconst_1
+        50: aaload
+        51: iconst_3
+        52: iaload
+        53: lookupswitch  { // 2
+
+                       1: 80
+
+                       2: 227
+                 default: 243
+            }
+        80: aload_0
+        81: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+        84: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+        87: iconst_1
+        88: aaload
+        89: iconst_3
+        90: iaload
+        91: istore_2
+        92: aload_0
+        93: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+        96: getfield      #18                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.maths:[[Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+        99: iconst_1
+       100: aaload
+       101: iconst_3
+       102: aaload
+       103: getfield      #19                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mather:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       106: astore_3
+       107: aload_0
+       108: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       111: getfield      #18                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.maths:[[Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       114: iconst_1
+       115: aaload
+       116: iconst_3
+       117: aaload
+       118: iconst_4
+       119: iconst_5
+       120: invokevirtual #20                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.add:(II)I
+       123: istore        4
+       125: aload_0
+       126: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       129: getfield      #18                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.maths:[[Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       132: iconst_1
+       133: aaload
+       134: iconst_3
+       135: aaload
+       136: aload_0
+       137: getfield      #7                  // Field x:I
+       140: aload_0
+       141: getfield      #8                  // Field y:I
+       144: invokevirtual #20                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.add:(II)I
+       147: istore        5
+       149: aload_0
+       150: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       153: getfield      #18                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.maths:[[Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       156: iconst_1
+       157: aaload
+       158: iconst_3
+       159: aaload
+       160: getfield      #21                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.self:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       163: aload_0
+       164: getfield      #7                  // Field x:I
+       167: bipush        10
+       169: invokevirtual #20                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.add:(II)I
+       172: istore        6
+       174: aload_0
+       175: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       178: getfield      #18                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.maths:[[Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       181: iconst_1
+       182: aaload
+       183: iconst_3
+       184: aaload
+       185: getfield      #21                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.self:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       188: invokevirtual #22                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.getSelf:()Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       191: getfield      #23                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.name:Ljava/lang/String;
+       194: astore        7
+       196: aload_0
+       197: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       200: getfield      #18                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.maths:[[Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       203: iconst_1
+       204: aaload
+       205: iconst_3
+       206: aaload
+       207: getfield      #21                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.self:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       210: invokevirtual #22                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.getSelf:()Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       213: aload_0
+       214: getfield      #7                  // Field x:I
+       217: bipush        10
+       219: invokevirtual #20                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.add:(II)I
+       222: istore        8
+       224: goto          256
+       227: aload_0
+       228: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       231: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+       234: iconst_1
+       235: aaload
+       236: iconst_3
+       237: iaload
+       238: istore        9
+       240: goto          256
+       243: aload_0
+       244: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       247: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+       250: iconst_1
+       251: aaload
+       252: iconst_3
+       253: iaload
+       254: istore        10
+       256: iload_1
+       257: bipush        10
+       259: if_icmplt     42
+       262: goto          36
+       265: iinc          1, 1
+       268: goto          2
+       271: aload_0
+       272: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       275: getfield      #18                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.maths:[[Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       278: iconst_1
+       279: aaload
+       280: iconst_3
+       281: aaload
+       282: getfield      #21                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.self:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       285: invokevirtual #22                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.getSelf:()Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       288: areturn
+      LineNumberTable:
+        line 32: 0
+        line 33: 13
+        line 34: 19
+        line 35: 30
+        line 37: 36
+        line 39: 42
+        line 41: 80
+        line 42: 92
+        line 43: 107
+        line 44: 125
+        line 45: 149
+        line 46: 174
+        line 47: 196
+        line 48: 224
+        line 50: 227
+        line 51: 240
+        line 53: 243
+        line 55: 256
+        line 32: 265
+        line 63: 271
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+           92     164     2    t2   I
+          107     149     3    t3   Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+          125     131     4    t4   I
+          149     107     5    t5   I
+          174      82     6    t6   I
+          196      60     7    t7   Ljava/lang/String;
+          224      32     8    t8   I
+          240      16     9    t9   I
+          256       0    10   t16   I
+            2     269     1     i   I
+            0     289     0  this   Lcom/gian/compiler/language/java/simple/SimpleJavaProgram;
+      StackMapTable: number_of_entries = 10
+        frame_type = 252 /* append */
+          offset_delta = 2
+          locals = [ int ]
+        frame_type = 27 /* same */
+        frame_type = 5 /* same */
+        frame_type = 5 /* same */
+        frame_type = 37 /* same */
+        frame_type = 251 /* same_frame_extended */
+          offset_delta = 146
+        frame_type = 15 /* same */
+        frame_type = 12 /* same */
+        frame_type = 8 /* same */
+        frame_type = 250 /* chop */
+          offset_delta = 5
+
+  public void test();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=5, locals=11, args_size=1
+         0: iconst_2
+         1: istore_1
+         2: bipush        10
+         4: istore_2
+         5: iconst_3
+         6: istore_3
+         7: ldc           #24                 // String testSimpleJavaMath
+         9: astore        4
+        11: new           #3                  // class com/gian/compiler/language/java/simple/SimpleJavaMath
+        14: dup
+        15: iconst_0
+        16: aload         4
+        18: invokespecial #5                  // Method com/gian/compiler/language/java/simple/SimpleJavaMath."<init>":(ZLjava/lang/String;)V
+        21: astore        5
+        23: aload         5
+        25: getfield      #19                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mather:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+        28: iload_1
+        29: iload_2
+        30: invokevirtual #20                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.add:(II)I
+        33: istore        6
+        35: new           #3                  // class com/gian/compiler/language/java/simple/SimpleJavaMath
+        38: dup
+        39: iconst_0
+        40: aload         4
+        42: invokespecial #5                  // Method com/gian/compiler/language/java/simple/SimpleJavaMath."<init>":(ZLjava/lang/String;)V
+        45: getfield      #19                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mather:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+        48: astore        7
+        50: aload         5
+        52: getfield      #19                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mather:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+        55: aload_0
+        56: getfield      #7                  // Field x:I
+        59: iload_2
+        60: invokevirtual #20                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.add:(II)I
+        63: pop
+        64: aload         5
+        66: getfield      #19                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mather:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+        69: aload         5
+        71: getfield      #19                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mather:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+        74: iload_1
+        75: iload_2
+        76: invokevirtual #20                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.add:(II)I
+        79: aload         5
+        81: getfield      #19                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mather:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+        84: iload_1
+        85: iload_2
+        86: invokevirtual #20                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.add:(II)I
+        89: invokevirtual #20                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.add:(II)I
+        92: pop
+        93: aload         5
+        95: iload_1
+        96: iload_2
+        97: invokevirtual #20                 // Method com/gian/compiler/language/java/simple/SimpleJavaMath.add:(II)I
+       100: istore        8
+       102: aload_0
+       103: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       106: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+       109: iconst_1
+       110: aaload
+       111: iconst_3
+       112: iaload
+       113: istore        9
+       115: aload_0
+       116: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       119: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+       122: iconst_1
+       123: aaload
+       124: iconst_3
+       125: iaload
+       126: iload         9
+       128: iadd
+       129: istore        10
+       131: aload_0
+       132: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       135: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+       138: iconst_1
+       139: aaload
+       140: iconst_3
+       141: aload_0
+       142: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       145: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+       148: iconst_1
+       149: aaload
+       150: iconst_3
+       151: iaload
+       152: iastore
+       153: aload_0
+       154: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       157: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+       160: iconst_1
+       161: aaload
+       162: iconst_3
+       163: aload_0
+       164: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       167: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+       170: iconst_1
+       171: aaload
+       172: iconst_3
+       173: iaload
+       174: iload         9
+       176: imul
+       177: iastore
+       178: aload_0
+       179: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       182: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+       185: iconst_1
+       186: aaload
+       187: iconst_3
+       188: aload_0
+       189: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       192: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+       195: iconst_1
+       196: aaload
+       197: iconst_3
+       198: iaload
+       199: aload_0
+       200: getfield      #6                  // Field matherSelf:Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+       203: getfield      #17                 // Field com/gian/compiler/language/java/simple/SimpleJavaMath.mathElemet:[[I
+       206: iconst_1
+       207: aaload
+       208: iconst_2
+       209: iaload
+       210: imul
+       211: iastore
+       212: return
+      LineNumberTable:
+        line 67: 0
+        line 68: 2
+        line 69: 5
+        line 71: 7
+        line 72: 11
+        line 73: 23
+        line 74: 35
+        line 75: 50
+        line 76: 64
+        line 77: 93
+        line 78: 102
+        line 79: 115
+        line 80: 131
+        line 81: 153
+        line 82: 178
+        line 83: 212
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0     213     0  this   Lcom/gian/compiler/language/java/simple/SimpleJavaProgram;
+            2     211     1     x   I
+            5     208     2     y   I
+            7     206     3     z   I
+           11     202     4  name   Ljava/lang/String;
+           23     190     5 javaMath   Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+           35     178     6 mathResult   I
+           50     163     7 tempMather   Lcom/gian/compiler/language/java/simple/SimpleJavaMath;
+          102     111     8 result   I
+          115      98     9    t2   I
+          131      82    10    t9   I
+}
+SourceFile: "SimpleJavaProgram.java"

@@ -19,7 +19,10 @@ public class ConstructorRefNode extends RefNode {
 
     @Override
     public String toString(){
-        return this.caller + "." + this.callName + "(" + this.paramList.toString() + ")";
+        StringBuilder str = new StringBuilder(this.caller + "." + this.callName + "(" + this.paramList.toString() + ")");
+        str.append(next.toString());
+
+        return str.toString();
     }
 
 

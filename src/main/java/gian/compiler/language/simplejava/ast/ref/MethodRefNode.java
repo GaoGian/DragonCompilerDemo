@@ -19,7 +19,7 @@ public class MethodRefNode extends RefNode {
 
     @Override
     public String toString(){
-        return this.caller + "." + this.callName + "(" + this.paramList.toString() + ")";
+        return this.caller + "." + this.callName + "(" + this.paramList.toString() + ")" + next.toString();
     }
 
 }

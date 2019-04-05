@@ -1,8 +1,12 @@
 package gian.compiler.language.simplejava.action;
 
+import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
+import gian.compiler.language.simplejava.JavaConstants;
+import gian.compiler.language.simplejava.ast.statement.Seq;
+import gian.compiler.language.simplejava.ast.statement.Stmt;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.env.JavaEnvironment;
 
@@ -17,7 +21,6 @@ public class BlockAction{
     public static String product = "block → { blockStatement }";
 
     public static class BlockEnterListener extends SyntaxDirectedListener{
-
         public BlockEnterListener(){
             this.matchProductTag = product;
             this.matchSymbol = "{";
@@ -40,8 +43,28 @@ public class BlockAction{
 
     }
 
-    public static class BlockExitListener extends SyntaxDirectedListener{
+    public static class BlockStatementListener extends SyntaxDirectedListener{
+        public BlockStatementListener(){
+            this.matchProductTag = product;
+            this.matchSymbol = "blockStatement";
+            this.matchIndex = 1;
+            this.isLeaf = false;
+        }
 
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            Stmt code = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
+            return null;
+        }
+    }
+
+    public static class BlockExitListener extends SyntaxDirectedListener{
         public BlockExitListener(){
             this.matchProductTag = product;
             this.matchSymbol = "}";
@@ -63,9 +86,71 @@ public class BlockAction{
 
     }
 
+    public static String product_1 = "blockStatement → localVariableDeclarationStatement ◀;▶ blockStatement";
+    public static class LocalVariableDeclListener extends SyntaxDirectedListener{
+        public LocalVariableDeclListener(){
+            this.matchProductTag = product_1;
+            this.matchSymbol = "blockStatement";
+            this.matchIndex = 2;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            Stmt localVariableDeclStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt blockCode = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt stmt = null;
+            if(blockCode != null){
+                stmt = new Seq(localVariableDeclStmt, blockCode);
+            }else{
+                stmt = localVariableDeclStmt;
+            }
+
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stmt);
+
+            return null;
+        }
+    }
+
+    public static String product_2 = "blockStatement → statement blockStatement";
+    public static class StatementListener extends SyntaxDirectedListener{
+        public StatementListener(){
+            this.matchProductTag = product_1;
+            this.matchSymbol = "blockStatement";
+            this.matchIndex = 1;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            Stmt stateStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt blockCode = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt stmt = null;
+            if(blockCode != null){
+                stmt = new Seq(stateStmt, blockCode);
+            }else{
+                stmt = stateStmt;
+            }
+
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stmt);
+            return null;
+        }
+    }
+
     public static List<SyntaxDirectedListener> getAllListener() {
         List<SyntaxDirectedListener> allListener = new ArrayList<>();
         allListener.add(new BlockEnterListener());
+        allListener.add(new BlockStatementListener());
         allListener.add(new BlockExitListener());
 
         return allListener;

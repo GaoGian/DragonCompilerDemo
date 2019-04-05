@@ -43,7 +43,7 @@ public class VariableInitializerAction {
     public static String product_2 = "= new arrayBaseType [ Digit ] arraySize";
     public static class ArrayVariableInitListener extends SyntaxDirectedListener{
         public ArrayVariableInitListener(){
-            this.matchProductTag = product_1;
+            this.matchProductTag = product_2;
             this.matchSymbol = "arraySize";
             this.matchIndex = 5;
             this.isLeaf = false;
@@ -70,6 +70,187 @@ public class VariableInitializerAction {
         }
     }
 
+    public static String product_12 = "arrayBaseType → boolean | char | byte | short | int | long | float | double | Identifier";
+    public static class BooleanArrayListener extends SyntaxDirectedListener{
+        public BooleanArrayListener(){
+            this.matchProductTag = product_12;
+            this.matchSymbol = "boolean";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            return null;
+        }
+    }
+    public static String product_13 = "arrayBaseType → char";
+    public static class CharArrayListener extends SyntaxDirectedListener{
+        public CharArrayListener(){
+            this.matchProductTag = product_13;
+            this.matchSymbol = "char";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            return null;
+        }
+    }
+    public static String product_14 = "arrayBaseType → byte";
+    public static class ByteArrayListener extends SyntaxDirectedListener{
+        public ByteArrayListener(){
+            this.matchProductTag = product_14;
+            this.matchSymbol = "byte";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            return null;
+        }
+    }
+    public static String product_15 = "arrayBaseType → short";
+    public static class ShortArrayListener extends SyntaxDirectedListener{
+        public ShortArrayListener(){
+            this.matchProductTag = product_15;
+            this.matchSymbol = "short";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            return null;
+        }
+    }
+    public static String product_16 = "arrayBaseType → int";
+    public static class IntArrayListener extends SyntaxDirectedListener{
+        public IntArrayListener(){
+            this.matchProductTag = product_16;
+            this.matchSymbol = "int";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            return null;
+        }
+    }
+    public static String product_17 = "arrayBaseType → long";
+    public static class LongArrayListener extends SyntaxDirectedListener{
+        public LongArrayListener(){
+            this.matchProductTag = product_17;
+            this.matchSymbol = "int";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            return null;
+        }
+    }
+    public static String product_18 = "arrayBaseType → float";
+    public static class FloatArrayListener extends SyntaxDirectedListener{
+        public FloatArrayListener(){
+            this.matchProductTag = product_18;
+            this.matchSymbol = "float";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            return null;
+        }
+    }
+    public static String product_19 = "arrayBaseType → double";
+    public static class DoubleArrayListener extends SyntaxDirectedListener{
+        public DoubleArrayListener(){
+            this.matchProductTag = product_19;
+            this.matchSymbol = "double";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            return null;
+        }
+    }
+    public static String product_20 = "arrayBaseType → Identifier";
+    public static class ClazzArrayListener extends SyntaxDirectedListener{
+        public ClazzArrayListener(){
+            this.matchProductTag = product_20;
+            this.matchSymbol = "Identifier";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            return null;
+        }
+    }
+    
     public static String product_3 = "arraySize → [ Digit ] arraySize";
     public static class ArraySizeListener extends SyntaxDirectedListener{
         public ArraySizeListener(){
@@ -116,7 +297,7 @@ public class VariableInitializerAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             String baseTypeName = (String) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
-            VariableType baseType = VariableType.getVariableTypeWidth(baseTypeName);
+            VariableType baseType = new VariableType(baseTypeName, VariableType.getVariableTypeWidth(baseTypeName));
 
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_TYPE, baseType);
 

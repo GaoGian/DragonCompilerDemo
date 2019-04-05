@@ -13,6 +13,11 @@ public class JavaConstants {
     public final static String EXTEND_INFO = "extendInfo";
     public final static String CLAZZ_NAME = "extendClazzName";
     public final static String FIELD_LIST = "fieldList";
+    public final static String FIELD = "field";
+    public final static String CONSTRUCTOR_LIST = "constructorList";
+    public final static String CONSTRUCTOR = "constructor";
+    public final static String METHOD_LIST = "methodList";
+    public final static String METHOD = "method";
     public final static String FIELD_NAME = "fieldName";
     // 表达式变量
     public final static String VARIABLE = "variable";
@@ -24,8 +29,6 @@ public class JavaConstants {
     public final static String VARIABLE_TYPE = "variableType";
     // 方法返回类型
     public final static String METHOD_RETURN_TYPE = "methodReturnType";
-    public final static String CONSTRUCTOR_LIST = "constructorList";
-    public final static String METHOD_LIST = "methodList";
     public final static String PARAM_LIST = "paramList";
     public final static String CODE = "code";
     public final static String ENV = "env";

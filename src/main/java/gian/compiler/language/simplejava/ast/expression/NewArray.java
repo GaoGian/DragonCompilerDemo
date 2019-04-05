@@ -19,7 +19,17 @@ public class NewArray extends AstNode {
 
     @Override
     public String toString(){
-        return "new " + this.baseType.getName() + this.variableArrayType.toString();
+        StringBuilder str = new StringBuilder();
+        str.append("new " + this.baseType.getName());
+        VariableType elementType = this.variableArrayType;
+        while (elementType instanceof VariableArrayType){
+            VariableArrayType arrayType = (VariableArrayType) elementType;
+            str.append("[" + arrayType.getSize() + "]");
+
+            elementType = arrayType.getBaseVariableType();
+        }
+
+        return str.toString();
     }
 
 }

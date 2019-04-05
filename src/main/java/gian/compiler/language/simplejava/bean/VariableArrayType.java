@@ -23,6 +23,14 @@ public class VariableArrayType extends VariableType {
         this.baseVariableType = baseVariableType;
     }
 
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
     @Override
     public String toString(){
         return "[" + size + "]" + baseVariableType.toString();

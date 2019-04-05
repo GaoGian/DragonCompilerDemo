@@ -8,7 +8,7 @@ public class FieldRefNode extends RefNode {
 
     @Override
     public String toString(){
-        return this.caller + "." + this.callName;
+        return this.caller + "." + this.callName + next.toString();
     }
 
 }
