@@ -4,7 +4,7 @@ import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.ast.AstNode;
 import gian.compiler.language.simplejava.ast.Constant;
-import gian.compiler.language.simplejava.ast.ref.SuperInitRefNode;
+import gian.compiler.language.simplejava.ast.ref.*;
 import gian.compiler.language.simplejava.bean.ClazzField;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableArrayType;
@@ -161,10 +161,6 @@ public class JavaDirectUtils {
         return new Constant(token.getToken(), new VariableType(token.getToken(), VariableType.getVariableTypeWidth(token.getType().getType())));
     }
 
-    public static SuperInitRefNode superInitRefNode(List<Variable> paramList){
-        return new SuperInitRefNode(paramList);
-    }
-
     public static void nestEnv(){
         JavaEnvironment preEnv = JavaDirectGlobalProperty.topEnv;
         JavaDirectGlobalProperty.topEnv = new JavaEnvironment(preEnv);
@@ -172,6 +168,51 @@ public class JavaDirectUtils {
 
     public static void exitEnv(){
         JavaDirectGlobalProperty.topEnv = JavaDirectGlobalProperty.topEnv.getPreEnv();
+    }
+
+    public static SuperInitRefNode superInitRefNode(List<Variable> paramList){
+        return new SuperInitRefNode(paramList);
+    }
+
+    public static MethodRefNode methodRefNode(String callName, List<Variable> paramList){
+        return new MethodRefNode(callName, paramList);
+    }
+
+    public static ConstructorRefNode constructorRefNode(String newClassName, List<Variable> paramList){
+        return new ConstructorRefNode(newClassName, paramList);
+    }
+
+    public static FieldRefNode fieldRefNode(String fieldName){
+        return new FieldRefNode(fieldName);
+    }
+
+    public static ThisRefNode thisRefNode(){
+        return new ThisRefNode();
+    }
+
+    public static ArrayElementRefNode arrayElementRefNode(String callName, List<Expr> index){
+        return new ArrayElementRefNode(callName, index);
+    }
+
+    public static StringJoin stringJoin(Expr expr1, Expr expr2){
+        return new StringJoin(expr1, expr2);
+    }
+
+    public static void updateLastRef(RefNode preRefCall, RefNode updateRefNode){
+        getLastRef(preRefCall).getPreRef().setNextRef(updateRefNode);
+    }
+
+    public static void appendRef(RefNode preRefCall, RefNode nextRef){
+        getLastRef(preRefCall).setNextRef(nextRef);
+    }
+
+    // 获取引用链最后一个引用
+    public static RefNode getLastRef(RefNode refCall){
+        if(refCall.getNextRef() != null){
+            return getLastRef(refCall.getNextRef());
+        }else{
+            return refCall;
+        }
     }
 
     public static void error(String s){

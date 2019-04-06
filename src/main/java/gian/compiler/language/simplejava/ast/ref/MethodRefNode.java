@@ -11,15 +11,17 @@ import java.util.List;
  */
 public class MethodRefNode extends RefNode {
 
+    public String callName;
     public List<Variable> paramList = new ArrayList<>();
 
-    public MethodRefNode(List<Variable> paramList){
+    public MethodRefNode(String callName, List<Variable> paramList){
+        this.callName = callName;
         this.paramList = paramList;
     }
 
     @Override
     public String toString(){
-        return this.caller + "." + this.callName + "(" + this.paramList.toString() + ")" + next.toString();
+        return this.caller + "." + this.callName + "(" + this.paramList.toString() + ")" + nextRef.toString();
     }
 
 }

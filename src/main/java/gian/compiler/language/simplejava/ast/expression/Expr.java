@@ -12,6 +12,8 @@ public class Expr extends AstNode {
     public Variable variable;
     public VariableType type;
 
+    public Expr(){}
+
     public Expr(VariableType type){
         this.type = type;
     }

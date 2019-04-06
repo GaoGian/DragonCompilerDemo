@@ -6,9 +6,15 @@ package gian.compiler.language.simplejava.ast.ref;
  */
 public class FieldRefNode extends RefNode {
 
+    public String fieldName;
+
+    public FieldRefNode(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
     @Override
     public String toString(){
-        return this.caller + "." + this.callName + next.toString();
+        return this.caller + "." + this.callName + nextRef.toString();
     }
 
 }

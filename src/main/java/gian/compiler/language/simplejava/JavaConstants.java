@@ -32,8 +32,7 @@ public class JavaConstants {
     public final static String PARAM_LIST = "paramList";
     public final static String CODE = "code";
     public final static String ENV = "env";
-    // 引用的code位置信息
-    public final static String REF_CODE_INDEX = "refCodeIndex";
+
     // 传递的参数变量名称
     public final static String CALL_PARAM_LIST = "callParamList";
 
@@ -69,6 +68,12 @@ public class JavaConstants {
     public final static String FOR_UPDATE_CODE = "forUpdateCode";
     // expression结果
     public final static String EXPR_RESULT = "exprResult";
+    // 引用链
+    public final static String REF_CALL = "refCall";
+    // 数组位置
+    public final static String REF_ARRAY_INDEX = "refArrayIndex";
+    // 引用的变量
+    public final static String REF_VARIABLE = "refVariable";
     //-------------------------------- 中间码 ---------------------------------//
 
     // 数据类型

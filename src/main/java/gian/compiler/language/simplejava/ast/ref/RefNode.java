@@ -1,5 +1,6 @@
 package gian.compiler.language.simplejava.ast.ref;
 
+import gian.compiler.language.simplejava.ast.expression.Expr;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.ast.AstNode;
@@ -7,7 +8,7 @@ import gian.compiler.language.simplejava.ast.AstNode;
 /**
  * Created by gaojian on 2019/4/4.
  */
-public class RefNode extends AstNode {
+public class RefNode extends Expr {
 
     // 调用者
     public Variable caller;
@@ -17,7 +18,15 @@ public class RefNode extends AstNode {
     public Variable resultVariable;
     public VariableType resultType;
 
-    public RefNode next;
+    public RefNode preRef;
+    public RefNode nextRef;
+
+    //TODO 需要调整
+    public RefNode(){}
+
+    public RefNode(VariableType type){
+        super(type);
+    }
 
     public Variable getCaller() {
         return caller;
@@ -51,11 +60,19 @@ public class RefNode extends AstNode {
         this.resultType = resultType;
     }
 
-    public RefNode getNext() {
-        return next;
+    public RefNode getPreRef() {
+        return preRef;
     }
 
-    public void setNext(RefNode next) {
-        this.next = next;
+    public void setPreRef(RefNode preRef) {
+        this.preRef = preRef;
+    }
+
+    public RefNode getNextRef() {
+        return nextRef;
+    }
+
+    public void setNextRef(RefNode nextRef) {
+        this.nextRef = nextRef;
     }
 }

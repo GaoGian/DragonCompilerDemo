@@ -1,5 +1,7 @@
 package gian.compiler.language.simplejava.ast.ref;
 
+import gian.compiler.language.simplejava.ast.expression.Expr;
+
 import java.util.List;
 
 /**
@@ -7,23 +9,29 @@ import java.util.List;
  */
 public class ArrayElementRefNode extends RefNode {
 
-    public List<Integer> arrayIndex;
+    public String callName;
+    public List<Expr> arrayIndex;
 
-    public List<Integer> getArrayIndex() {
+    public ArrayElementRefNode(String callName, List<Expr> arrayIndex) {
+        this.callName = callName;
+        this.arrayIndex = arrayIndex;
+    }
+
+    public List<Expr> getArrayIndex() {
         return arrayIndex;
     }
 
-    public void setArrayIndex(List<Integer> arrayIndex) {
+    public void setArrayIndex(List<Expr> arrayIndex) {
         this.arrayIndex = arrayIndex;
     }
 
     @Override
     public String toString(){
         StringBuffer str = new StringBuffer();
-        for(Integer index : arrayIndex){
+        for(Expr index : arrayIndex){
             str.append("[" + index + "]");
         }
-        str.append(next.toString());
+        str.append(nextRef.toString());
 
         return str.toString();
     }

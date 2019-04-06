@@ -11,16 +11,18 @@ import java.util.List;
  */
 public class ConstructorRefNode extends RefNode {
 
+    public String newClassName;
     public List<Variable> paramList = new ArrayList<>();
 
-    public ConstructorRefNode(List<Variable> paramList){
+    public ConstructorRefNode(String newClassName, List<Variable> paramList){
+        this.newClassName = newClassName;
         this.paramList = paramList;
     }
 
     @Override
     public String toString(){
         StringBuilder str = new StringBuilder(this.caller + "." + this.callName + "(" + this.paramList.toString() + ")");
-        str.append(next.toString());
+        str.append(nextRef.toString());
 
         return str.toString();
     }
