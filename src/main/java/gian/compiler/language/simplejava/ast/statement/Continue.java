@@ -19,7 +19,7 @@ public class Continue extends Stmt {
     @Override
     public void gen(int b, int a){
         // FIXME 需要设置当前行，不是after
-        emit("goto L" + stmt.after);
+        emit("goto L" + stmt.current);
     }
 
 }

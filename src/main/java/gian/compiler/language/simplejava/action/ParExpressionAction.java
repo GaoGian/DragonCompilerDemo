@@ -115,7 +115,7 @@ public class ParExpressionAction {
         }
     }
 
-    public static String product_5 = "expressionTerm → expressionFactor > expressionFactor";
+    public static String product_5 = "expressionTerm → expressionFactor < expressionFactor";
     public static class LtExprListener extends SyntaxDirectedListener{
         public LtExprListener(){
             this.matchProductTag = product_5;
@@ -136,7 +136,7 @@ public class ParExpressionAction {
         }
     }
 
-    public static String product_6 = "expressionTerm → expressionFactor >= expressionFactor";
+    public static String product_6 = "expressionTerm → expressionFactor <= expressionFactor";
     public static class LeExprListener extends SyntaxDirectedListener{
         public LeExprListener(){
             this.matchProductTag = product_6;
@@ -157,7 +157,7 @@ public class ParExpressionAction {
         }
     }
 
-    public static String product_7 = "expressionTerm → expressionFactor < expressionFactor";
+    public static String product_7 = "expressionTerm → expressionFactor > expressionFactor";
     public static class GtExprListener extends SyntaxDirectedListener{
         public GtExprListener(){
             this.matchProductTag = product_7;
@@ -178,7 +178,7 @@ public class ParExpressionAction {
         }
     }
 
-    public static String product_8 = "expressionTerm → expressionFactor <= expressionFactor";
+    public static String product_8 = "expressionTerm → expressionFactor >= expressionFactor";
     public static class GeExprListener extends SyntaxDirectedListener{
         public GeExprListener(){
             this.matchProductTag = product_8;
@@ -217,6 +217,71 @@ public class ParExpressionAction {
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             Expr parExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, parExpr);
+
+            return null;
+        }
+    }
+
+    public static String product_10_1 = "expressionFactor → expression ◀==▶ expression";
+    public static class EqListener extends SyntaxDirectedListener{
+        public EqListener(){
+            this.matchProductTag = product_10_1;
+            this.matchSymbol = "expression";
+            this.matchIndex = 2;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            setRelExpr(context, currentTreeNode, currentIndex);
+            return null;
+        }
+    }
+
+    public static String product_10_2 = "expressionFactor → expression ◀!=▶ expression";
+    public static class NeListener extends SyntaxDirectedListener{
+        public NeListener(){
+            this.matchProductTag = product_10_2;
+            this.matchSymbol = "expression";
+            this.matchIndex = 2;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            setRelExpr(context, currentTreeNode, currentIndex);
+            return null;
+        }
+    }
+
+    public static String product_10_3 = "expressionFactor → expression";
+    public static class ExprFactorListener extends SyntaxDirectedListener{
+        public ExprFactorListener(){
+            this.matchProductTag = product_10_3;
+            this.matchSymbol = "expression";
+            this.matchIndex = 0;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            Expr expr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, expr);
 
             return null;
         }

@@ -59,6 +59,17 @@ public class JavaConstants {
     public final static String WHILE_NODE = "whileNode";
     // do节点
     public final static String DO_NODE = "doNode";
+    // for节点
+    public final static String FOR_NODE = "forNode";
+    // forInit
+    public final static String FOR_INIT_CODE = "forInitCode";
+    // forControl
+    public final static String FOR_CONTROL_CODE = "forControlCode";
+    // forUpdate
+    public final static String FOR_UPDATE_CODE = "forUpdateCode";
+    // expression结果
+    public final static String EXPR_RESULT = "exprResult";
+    //-------------------------------- 中间码 ---------------------------------//
 
     // 数据类型
     public final static String VARIABLE_TYPE_INT = "int";

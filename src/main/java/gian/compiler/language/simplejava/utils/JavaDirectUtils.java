@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class JavaDirectUtils {
 
-    public Stmt stmts(Stmt stmt, Stmt stmts){
+    public static Seq stmts(Stmt stmt, Stmt stmts){
         return new Seq(stmt, stmts);    // 这里通过递归，逐个解析后续语句
     }
 
@@ -31,12 +31,20 @@ public class JavaDirectUtils {
         return new Switch(expr, stmt);
     }
 
-    public static For forNode(Stmt init, Expr control, Stmt update){
-        return new For(init, control, update);
+    public static Case caseNode(Expr expr, Stmt stmt){
+        return new Case(expr, stmt);
+    }
+
+    public static For forNode(Stmt init, Expr control, Stmt update, Stmt blockStmt){
+        return new For(init, control, update, blockStmt);
     }
 
     public static If ifNode(Expr expr, Stmt stmt){
         return new If(expr, stmt);
+    }
+
+    public static Else elseNode(Expr expr, Stmt trueStmt, Stmt falseStmt){
+        return new Else(expr, trueStmt, falseStmt);
     }
 
     public static While whileNode(Expr expr, Stmt stmt){
@@ -57,6 +65,10 @@ public class JavaDirectUtils {
 
     public static Continue continueNode(){
         return new Continue();
+    }
+
+    public static Return returnNode(Expr expr){
+        return new Return(expr);
     }
 
     public static Stmt arrayAssign(String variableName, Access arrayInfo, Expr assign){

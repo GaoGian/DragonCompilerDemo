@@ -10,11 +10,13 @@ public class For extends Stmt {
     public Stmt init;
     public Expr control;
     public Stmt update;
+    public Stmt blockStmt;
 
-    public For(Stmt init, Expr control, Stmt update) {
+    public For(Stmt init, Expr control, Stmt update, Stmt blockStmt) {
         this.init = init;
         this.control = control;
         this.update = update;
+        this.blockStmt = blockStmt;
     }
 
     @Override
@@ -25,8 +27,11 @@ public class For extends Stmt {
         init.gen(b, label);
         emitlabel(label);
         label = newlabel();
-        update.gen(b ,label);
 //        control.jumping(b, 0);
+        label = newlabel();
+        blockStmt.gen(b, label);
+        label = newlabel();
+        update.gen(b ,label);
     }
 
 
