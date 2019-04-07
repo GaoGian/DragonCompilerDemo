@@ -1,5 +1,7 @@
 package gian.compiler.language.simplejava.ast.expression;
 
+import gian.compiler.language.simplejava.bean.Variable;
+
 /**
  * Created by tingyun on 2018/7/20.
  */
@@ -9,14 +11,10 @@ public class And extends Logical {
         super(tok, x1, x2);
     }
 
-//    @Override
-//    public void jumping(int t, int f){
-//        int label = f != 0 ? f : newlabel();
-//        expr1.jumping(0, label);
-//        expr2.jumping(t, f);
-//        if(f == 0){
-//            emitlabel(label);
-//        }
-//    }
+    @Override
+    protected Variable gen(){
+        // TODO
+        return null;
+    }
 
 }

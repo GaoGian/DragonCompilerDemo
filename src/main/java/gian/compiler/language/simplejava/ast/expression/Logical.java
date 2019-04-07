@@ -1,7 +1,6 @@
 package gian.compiler.language.simplejava.ast.expression;
 
 
-import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
 
 /**
@@ -18,9 +17,9 @@ public abstract class Logical extends Expr {
         this.expr1 = x1;
         this.expr2 = x2;
 
-        this.returnType = check(expr1.gen().getDeclType(), expr2.gen().getDeclType());
+        this.returnType = check(expr1.execute().getDeclType(), expr2.execute().getDeclType());
         if(this.returnType == null){
-//            error("type error");
+            error("type error");
         }
     }
 

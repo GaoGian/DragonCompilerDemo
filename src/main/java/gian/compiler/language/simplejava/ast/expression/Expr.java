@@ -8,10 +8,20 @@ import gian.compiler.language.simplejava.bean.Variable;
  */
 public abstract class Expr extends Stmt {
 
+    protected Variable result;
+
+    public Variable execute(){
+        if(this.result == null){
+            this.result = this.gen();
+        }
+
+        return this.result;
+    }
+
     /**
      * 执行表达式并返回执行结果引用
      * @return
      */
-    public abstract Variable gen();
+    protected abstract Variable gen();
 
 }

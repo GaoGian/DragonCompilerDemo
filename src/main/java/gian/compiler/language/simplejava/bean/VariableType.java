@@ -20,8 +20,8 @@ public class VariableType {
     }
 
     // TODO 数值类型是否等价
-    public static boolean numeric(VariableType p){
-        if(p == VariableType.CHAR || p == VariableType.INT || p == VariableType.FLOAT){
+    public static boolean numeric(VariableType type){
+        if(type == VariableType.CHAR || type == VariableType.INT || type == VariableType.FLOAT){
             return true;
         }else{
             return false;

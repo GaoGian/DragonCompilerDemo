@@ -28,6 +28,12 @@ public class RefNode extends Expr {
 
     }
 
+    @Override
+    protected Variable gen(){
+        //TODO
+        return null;
+    }
+
     public Variable getCaller() {
         return caller;
     }

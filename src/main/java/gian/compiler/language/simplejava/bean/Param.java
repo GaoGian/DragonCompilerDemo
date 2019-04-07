@@ -19,7 +19,7 @@ public class Param extends Expr {
     }
 
     @Override
-    public Variable gen(){
+    protected Variable gen(){
         throw new JavaDirectException("参数声明没有真实引用");
     }
 

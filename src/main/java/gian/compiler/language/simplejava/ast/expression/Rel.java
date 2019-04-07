@@ -1,5 +1,6 @@
 package gian.compiler.language.simplejava.ast.expression;
 
+import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableArrayType;
 import gian.compiler.language.simplejava.bean.VariableType;
 
@@ -13,6 +14,12 @@ public class Rel extends Logical {
     }
 
     @Override
+    protected Variable gen(){
+        // TODO
+        return null;
+    }
+
+    @Override
     public VariableType check(VariableType p1, VariableType p2){
         if(p1 instanceof VariableArrayType || p2 instanceof VariableArrayType){
             return null;
@@ -23,12 +30,5 @@ public class Rel extends Logical {
         }
     }
 
-//    @Override
-//    public void jumping(int t, int f){
-//        Expr a = expr1.reduce();
-//        Expr b = expr2.reduce();
-//        String test = a.toString() + " " + op.toString() + " " + b.toString();
-//        emitjumps(test, t, f);
-//    }
 
 }
