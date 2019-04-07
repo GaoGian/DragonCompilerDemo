@@ -46,7 +46,7 @@ public class ExpressionAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             RefNode refCall = (RefNode) context.getBrotherNodeList().get(currentIndex - 4).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, refCall);
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -66,7 +66,7 @@ public class ExpressionAction {
             String fieldName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
             FieldRefNode fieldRefNode = JavaDirectUtils.fieldRefNode(fieldName);
             
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, fieldRefNode);
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, fieldRefNode);
 
             return null;
         }
@@ -99,7 +99,7 @@ public class ExpressionAction {
 
             thisRefNode.setNextRef(fieldRefNode);
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, thisRefNode);
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, thisRefNode);
 
             return null;
         }
@@ -114,7 +114,6 @@ public class ExpressionAction {
     }
 
     public static String product_1_3_1 = "identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest";
-
     public static class RefCallRestListener extends SyntaxDirectedListener{
         public RefCallRestListener(){
             this.matchProductTag = product_1_3_1;
@@ -125,7 +124,7 @@ public class ExpressionAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            RefNode refCall = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
 
             // 将变量引用替换成数组引元素用
             List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
@@ -140,7 +139,7 @@ public class ExpressionAction {
 
             JavaDirectUtils.appendRef(refCall, fieldRefNode);
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -170,7 +169,7 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
 
             return null;
@@ -269,13 +268,243 @@ public class ExpressionAction {
 
     // TODO
     public static String product_2_1_1 = "methodRefRest → . Identifier arrayRest methodRefRest";
+    public static class MethodRefVariableListener extends SyntaxDirectedListener{
+        public MethodRefVariableListener(){
+            this.matchProductTag = product_2_1_1;
+            this.matchSymbol = "methodRefRest";
+            this.matchIndex = 3;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            RefNode preRef = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
+            String callName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
+            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
+            if(arrayIndex != null){
+                JavaDirectUtils.appendRef(preRef, JavaDirectUtils.arrayElementRefNode(callName, arrayIndex));
+            }else{
+                JavaDirectUtils.appendRef(preRef, JavaDirectUtils.fieldRefNode(callName));
+            }
+
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, preRef);
+
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+
+            return null;
+        }
+    }
+
     public static String product_2_1_2 = "methodRefRest → . Identifier ( expressionList ) methodRefRest";
+    public static class MethodRefMethodListener extends SyntaxDirectedListener{
+        public MethodRefMethodListener(){
+            this.matchProductTag = product_2_1_2;
+            this.matchSymbol = "methodRefRest";
+            this.matchIndex = 5;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            RefNode preRef = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
+            String callName = context.getBrotherNodeList().get(currentIndex - 4).getIdToken().getToken();
+            List<Variable> paramList = (List<Variable>) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+
+            JavaDirectUtils.appendRef(preRef, JavaDirectUtils.methodRefNode(callName, paramList));
+
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, preRef);
+
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+
+            return null;
+        }
+    }
+
     public static String product_2_1_3 = "methodRefRest → ε";
+    public static class MethodRefEndListener extends SyntaxDirectedListener{
+        public MethodRefEndListener(){
+            this.matchProductTag = product_2_1_3;
+            this.matchSymbol = "ε";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            RefNode refCall = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            return null;
+        }
+    }
+
     public static String product_2_2_1 = "refVariable → Identifier arrayRest targetVariableRest";
+    public static class RefVariableListener extends SyntaxDirectedListener{
+        public RefVariableListener(){
+            this.matchProductTag = product_2_2_1;
+            this.matchSymbol = "targetVariableRest";
+            this.matchIndex = 2;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            String callName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
+            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
+            RefNode refCall = null;
+            if(arrayIndex != null){
+                refCall = JavaDirectUtils.arrayElementRefNode(callName, arrayIndex);
+            }else{
+                refCall = JavaDirectUtils.fieldRefNode(callName);
+            }
+
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, refCall);
+
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+
+            return null;
+        }
+    }
+
     public static String product_2_2_2 = "refVariable → this . Identifier arrayRest targetVariableRest";
+    public static class ThisRefVariableListener extends SyntaxDirectedListener{
+        public ThisRefVariableListener(){
+            this.matchProductTag = product_2_2_2;
+            this.matchSymbol = "targetVariableRest";
+            this.matchIndex = 4;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            RefNode thisRef = JavaDirectUtils.thisRefNode();
+
+            String callName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
+            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
+
+            if(arrayIndex != null){
+                JavaDirectUtils.appendRef(thisRef, JavaDirectUtils.arrayElementRefNode(callName, arrayIndex));
+            }else{
+                JavaDirectUtils.appendRef(thisRef, JavaDirectUtils.fieldRefNode(callName));
+            }
+
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, thisRef);
+
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+
+            return null;
+        }
+    }
+
     public static String product_2_2_3 = "refVariable → this";
+    public static class ThisRefListener extends SyntaxDirectedListener{
+        public ThisRefListener(){
+            this.matchProductTag = product_2_2_3;
+            this.matchSymbol = "this";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            RefNode thisRef = JavaDirectUtils.thisRefNode();
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, thisRef);
+
+            return null;
+        }
+    }
+
     public static String product_2_3_1 = "targetVariableRest → . Identifier arrayRest targetVariableRest";
+    public static class TargetVariableRefListener extends SyntaxDirectedListener{
+        public TargetVariableRefListener(){
+            this.matchProductTag = product_2_3_1;
+            this.matchSymbol = "targetVariableRest";
+            this.matchIndex = 3;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            RefNode preRef = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
+
+            String callName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
+            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
+            if(arrayIndex != null){
+                JavaDirectUtils.appendRef(preRef, JavaDirectUtils.arrayElementRefNode(callName, arrayIndex));
+            }else{
+                JavaDirectUtils.appendRef(preRef, JavaDirectUtils.fieldRefNode(callName));
+            }
+
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, preRef);
+
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+
+            return null;
+        }
+    }
+
     public static String product_2_3_2 = "targetVariableRest → ε";
+    public static class TargetVariableRefEndListener extends SyntaxDirectedListener{
+        public TargetVariableRefEndListener(){
+            this.matchProductTag = product_2_3_2;
+            this.matchSymbol = "ε";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            RefNode refCall = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+
+            return null;
+        }
+    }
+
 
     public static String product_3 = "expression → expression + term";
     public static class AddListener extends SyntaxDirectedListener{
@@ -637,7 +866,7 @@ public class ExpressionAction {
     public static String product_13 = "expressionListRest → , expression expressionListRest";
     public static class ExpressionListRestListener extends SyntaxDirectedListener{
         public ExpressionListRestListener(){
-            this.matchProductTag = product_11;
+            this.matchProductTag = product_13;
             this.matchSymbol = "expressionListRest";
             this.matchIndex = 2;
             this.isLeaf = false;
