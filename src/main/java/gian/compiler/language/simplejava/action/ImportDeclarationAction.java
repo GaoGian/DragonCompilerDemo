@@ -6,6 +6,7 @@ import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,6 @@ import java.util.Map;
 public class ImportDeclarationAction {
 
     public static String product_1 = "importDeclaration → import qualifiedName ; importDeclaration";
-
     // 引入包声明
     public static class ImportListener extends SyntaxDirectedListener{
 
@@ -123,4 +123,13 @@ public class ImportDeclarationAction {
         }
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new ImportListener());
+        allListener.add(new QualifiedNameListener());
+        allListener.add(new QualifiedNameRepeatListener());
+        allListener.add(new QualifiedNameRepeatEndListener());
+
+        return allListener;
+    }
 }

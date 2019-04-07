@@ -1,6 +1,7 @@
 package gian.compiler.language.simplejava.ast.ref;
 
 
+import gian.compiler.language.simplejava.ast.expression.Expr;
 import gian.compiler.language.simplejava.bean.Variable;
 
 import java.util.ArrayList;
@@ -12,9 +13,9 @@ import java.util.List;
 public class ConstructorRefNode extends RefNode {
 
     public String newClassName;
-    public List<Variable> paramList = new ArrayList<>();
+    public List<Expr> paramList = new ArrayList<>();
 
-    public ConstructorRefNode(String newClassName, List<Variable> paramList){
+    public ConstructorRefNode(String newClassName, List<Expr> paramList){
         this.newClassName = newClassName;
         this.paramList = paramList;
     }

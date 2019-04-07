@@ -1,6 +1,6 @@
 package gian.compiler.language.simplejava.ast.ref;
 
-import gian.compiler.language.simplejava.bean.Variable;
+import gian.compiler.language.simplejava.ast.expression.Expr;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +12,9 @@ import java.util.List;
 public class MethodRefNode extends RefNode {
 
     public String callName;
-    public List<Variable> paramList = new ArrayList<>();
+    public List<Expr> paramList = new ArrayList<>();
 
-    public MethodRefNode(String callName, List<Variable> paramList){
+    public MethodRefNode(String callName, List<Expr> paramList){
         this.callName = callName;
         this.paramList = paramList;
     }

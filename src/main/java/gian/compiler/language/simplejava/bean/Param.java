@@ -1,19 +1,26 @@
 package gian.compiler.language.simplejava.bean;
 
 import gian.compiler.language.simplejava.ast.expression.Expr;
+import gian.compiler.language.simplejava.exception.JavaDirectException;
 
 /**
+ * 声明的参数
  * Created by gaojian on 2019/4/4.
  */
 public class Param extends Expr {
 
     public String name;
-    public VariableType type;
+    // 参数声明类型
+    public VariableType declType;
 
-    public Param(String fieldName, VariableType variableType) {
-        super(variableType);
-        this.type = variableType;
+    public Param(String fieldName, VariableType declType) {
+        this.declType = declType;
         this.name = fieldName;
+    }
+
+    @Override
+    public Variable gen(){
+        throw new JavaDirectException("参数声明没有真实引用");
     }
 
     public String getName() {
@@ -24,13 +31,17 @@ public class Param extends Expr {
         this.name = name;
     }
 
-    @Override
-    public VariableType getType() {
-        return type;
+    public VariableType getDeclType() {
+        return declType;
+    }
+
+    public void setDeclType(VariableType declType) {
+        this.declType = declType;
     }
 
     @Override
-    public void setType(VariableType type) {
-        this.type = type;
+    public String toString(){
+        return "param: type_" + declType.getName() + "-name_" + this.name;
     }
+
 }

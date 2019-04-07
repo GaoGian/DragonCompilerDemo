@@ -8,6 +8,9 @@ import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.ast.expression.Expr;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by gaojian on 2019/4/2.
  */
@@ -62,7 +65,6 @@ public class ParExpressionAction {
             return null;
         }
     }
-
 
     public static String product_3 = "expressionTermRest → expressionTerm && expressionTerm";
     public static class AndExprListener extends SyntaxDirectedListener{
@@ -200,7 +202,7 @@ public class ParExpressionAction {
     }
 
     public static String product_9 = "expressionTerm → expressionFactor";
-    public class RelExprListener extends SyntaxDirectedListener{
+    public static class RelExprListener extends SyntaxDirectedListener{
         public RelExprListener(){
             this.matchProductTag = product_9;
             this.matchSymbol = "expressionFactor";
@@ -294,6 +296,25 @@ public class ParExpressionAction {
 
         Expr orExpr = JavaDirectUtils.rel(expr1, expr2, operate);
         context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, orExpr);
+    }
+
+
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new OrExprListener());
+        allListener.add(new OrParExprListener());
+        allListener.add(new AndExprListener());
+        allListener.add(new AndExprRestListener());
+        allListener.add(new LtExprListener());
+        allListener.add(new LeExprListener());
+        allListener.add(new GtExprListener());
+        allListener.add(new GeExprListener());
+        allListener.add(new RelExprListener());
+        allListener.add(new EqListener());
+        allListener.add(new NeListener());
+        allListener.add(new ExprFactorListener());
+
+        return allListener;
     }
 
 }

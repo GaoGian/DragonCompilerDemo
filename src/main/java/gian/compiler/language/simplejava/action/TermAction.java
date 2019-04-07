@@ -9,13 +9,15 @@ import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.ast.expression.Expr;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by gaojian on 2019/4/2.
  */
 public class TermAction {
 
     public static String product_1 = "term → term * factor";
-
     public static class MultiFactorListener extends SyntaxDirectedListener{
 
         public MultiFactorListener(){
@@ -44,7 +46,6 @@ public class TermAction {
     }
 
     public static String product_2 = "term → term / factor";
-
     public static class DivFactorListener extends SyntaxDirectedListener{
 
         public DivFactorListener(){
@@ -73,7 +74,6 @@ public class TermAction {
     }
 
     public static String product_3 = "term → factor";
-
     public static class FactorAction extends SyntaxDirectedListener{
 
         public FactorAction(){
@@ -98,4 +98,12 @@ public class TermAction {
 
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new MultiFactorListener());
+        allListener.add(new DivFactorListener());
+        allListener.add(new FactorAction());
+
+        return allListener;
+    }
 }

@@ -2,8 +2,7 @@ package gian.compiler.language.simplejava.utils;
 
 import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.language.simplejava.JavaConstants;
-import gian.compiler.language.simplejava.ast.AstNode;
-import gian.compiler.language.simplejava.ast.Constant;
+import gian.compiler.language.simplejava.ast.expression.Constant;
 import gian.compiler.language.simplejava.ast.ref.*;
 import gian.compiler.language.simplejava.bean.*;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
@@ -125,7 +124,7 @@ public class JavaDirectUtils {
         return variable;
     }
 
-    public static ClazzField variableDeclarate(String permission, String variableName, VariableType variableType, Expr code){
+    public static ClazzField variableDeclarate(String permission, String variableName, VariableType variableType, Stmt code){
         ClazzField clazzField = new ClazzField(permission, variableName, variableType, code);
         JavaDirectGlobalProperty.topEnv.getPropertyMap().put(variableName, clazzField);
         return clazzField;
@@ -148,15 +147,15 @@ public class JavaDirectUtils {
         JavaDirectGlobalProperty.topEnv = JavaDirectGlobalProperty.topEnv.getPreEnv();
     }
 
-    public static SuperInitRefNode superInitRefNode(List<Variable> paramList){
+    public static SuperInitRefNode superInitRefNode(List<Expr> paramList){
         return new SuperInitRefNode(paramList);
     }
 
-    public static MethodRefNode methodRefNode(String callName, List<Variable> paramList){
+    public static MethodRefNode methodRefNode(String callName, List<Expr> paramList){
         return new MethodRefNode(callName, paramList);
     }
 
-    public static ConstructorRefNode constructorRefNode(String newClassName, List<Variable> paramList){
+    public static ConstructorRefNode constructorRefNode(String newClassName, List<Expr> paramList){
         return new ConstructorRefNode(newClassName, paramList);
     }
 

@@ -18,9 +18,6 @@ import java.util.List;
 public class ClassBodyDeclarationAction {
 
     public static String product_1 = "classBodyDeclaration → fieldDeclaration classBodyDeclaration";
-    public static String product_2 = "classBodyDeclaration → constructorDeclaration classBodyDeclaration";
-    public static String product_3 = "classBodyDeclaration → methodDeclaration classBodyDeclaration";
-
     public static class FieldDeclarationListener extends SyntaxDirectedListener{
 
         public FieldDeclarationListener(){
@@ -45,6 +42,7 @@ public class ClassBodyDeclarationAction {
         }
     }
 
+    public static String product_2 = "classBodyDeclaration → constructorDeclaration classBodyDeclaration";
     public static class ConstructorDeclarationListener extends SyntaxDirectedListener{
 
         public ConstructorDeclarationListener(){
@@ -68,6 +66,7 @@ public class ClassBodyDeclarationAction {
         }
     }
 
+    public static String product_3 = "classBodyDeclaration → methodDeclaration classBodyDeclaration";
     public static class MethodDeclarationListener extends SyntaxDirectedListener{
 
         public MethodDeclarationListener(){

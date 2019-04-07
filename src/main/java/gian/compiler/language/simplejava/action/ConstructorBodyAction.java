@@ -2,6 +2,7 @@ package gian.compiler.language.simplejava.action;
 
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.ast.AstNode;
+import gian.compiler.language.simplejava.ast.expression.Expr;
 import gian.compiler.language.simplejava.ast.ref.SuperInitRefNode;
 import gian.compiler.language.simplejava.ast.statement.Stmt;
 import gian.compiler.language.simplejava.bean.Variable;
@@ -108,7 +109,7 @@ public class ConstructorBodyAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            List<Variable> paramList = (List<Variable>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+            List<Expr> paramList = (List<Expr>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
             SuperInitRefNode superInitRefNode = JavaDirectUtils.superInitRefNode(paramList);
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, superInitRefNode);
 

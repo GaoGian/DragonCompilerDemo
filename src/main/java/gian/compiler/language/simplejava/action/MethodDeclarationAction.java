@@ -11,6 +11,7 @@ import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.language.simplejava.ast.AstNode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -120,4 +121,12 @@ public class MethodDeclarationAction {
         }
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new MethodBodyLietener());
+        allListener.add(new VoidMethodBodyLietener());
+        allListener.add(new MethodBodyListener());
+
+        return allListener;
+    }
 }

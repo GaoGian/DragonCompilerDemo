@@ -128,4 +128,12 @@ public class FormalParametersAction {
         }
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new ParameterListener());
+        allListener.add(new ParameterDeclsListener());
+        allListener.add(new ParameterDeclsRestListener());
+        allListener.add(new ParameterDeclsRestEndListener());
+        return allListener;
+    }
 }

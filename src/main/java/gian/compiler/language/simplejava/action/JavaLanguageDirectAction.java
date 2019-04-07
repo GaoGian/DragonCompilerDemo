@@ -75,4 +75,11 @@ public class JavaLanguageDirectAction {
 
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new PackageDeclarationListener());
+        allListener.add(new ImportDeclarationListener());
+
+        return allListener;
+    }
 }

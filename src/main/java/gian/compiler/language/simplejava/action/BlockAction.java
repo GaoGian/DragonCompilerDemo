@@ -152,6 +152,8 @@ public class BlockAction{
         allListener.add(new BlockEnterListener());
         allListener.add(new BlockStatementListener());
         allListener.add(new BlockExitListener());
+        allListener.add(new LocalVariableDeclListener());
+        allListener.add(new StatementListener());
 
         return allListener;
     }

@@ -9,7 +9,7 @@ import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.ast.expression.StringJoin;
 import gian.compiler.language.simplejava.ast.ref.*;
 import gian.compiler.language.simplejava.bean.Variable;
-import gian.compiler.language.simplejava.ast.Constant;
+import gian.compiler.language.simplejava.ast.expression.Constant;
 import gian.compiler.language.simplejava.ast.expression.Expr;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
@@ -33,7 +33,7 @@ public class ExpressionAction {
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             RefNode refCall = (RefNode) context.getBrotherNodeList().get(currentIndex - 4).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            List<Variable> paramList = (List<Variable>) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+            List<Expr> paramList = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
 
             // TODO 这里由于文法“#变量/方法引用链声明”，因此不确定最后一个引用是否是变量引用，需要根据后续情况进行替换
             MethodRefNode methodRefNode = JavaDirectUtils.methodRefNode(JavaDirectUtils.getLastRef(refCall).getCallName(), paramList);
@@ -248,7 +248,7 @@ public class ExpressionAction {
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             String newClassName = context.getBrotherNodeList().get(currentIndex - 4).getIdToken().getToken();
-            List<Variable> paramList = (List<Variable>) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+            List<Expr> paramList = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
             // TODO 这里由于文法“#变量/方法引用链声明”，因此不确定最后一个引用是否是变量引用，需要根据后续情况进行替换
             ConstructorRefNode constructorRefNode = JavaDirectUtils.constructorRefNode(newClassName, paramList);
 
@@ -266,7 +266,6 @@ public class ExpressionAction {
         }
     }
 
-    // TODO
     public static String product_2_1_1 = "methodRefRest → . Identifier arrayRest methodRefRest";
     public static class MethodRefVariableListener extends SyntaxDirectedListener{
         public MethodRefVariableListener(){
@@ -314,7 +313,7 @@ public class ExpressionAction {
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             RefNode preRef = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
             String callName = context.getBrotherNodeList().get(currentIndex - 4).getIdToken().getToken();
-            List<Variable> paramList = (List<Variable>) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+            List<Expr> paramList = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
 
             JavaDirectUtils.appendRef(preRef, JavaDirectUtils.methodRefNode(callName, paramList));
 
@@ -504,7 +503,6 @@ public class ExpressionAction {
             return null;
         }
     }
-
 
     public static String product_3 = "expression → expression + term";
     public static class AddListener extends SyntaxDirectedListener{
@@ -849,10 +847,10 @@ public class ExpressionAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             Expr expr1 = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            List<Variable> restParamList = (List<Variable>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+            List<Expr> restParamList = (List<Expr>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
 
-            List<Variable> paramList = new ArrayList<>();
-            paramList.add(expr1.variable);
+            List<Expr> paramList = new ArrayList<>();
+            paramList.add(expr1);
             if(restParamList != null){
                 paramList.addAll(paramList);
             }
@@ -880,10 +878,10 @@ public class ExpressionAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             Expr expr1 = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            List<Variable> restParamList = (List<Variable>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+            List<Expr> restParamList = (List<Expr>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
 
-            List<Variable> paramList = new ArrayList<>();
-            paramList.add(expr1.variable);
+            List<Expr> paramList = new ArrayList<>();
+            paramList.add(expr1);
             if(restParamList != null){
                 paramList.addAll(paramList);
             }
@@ -894,5 +892,39 @@ public class ExpressionAction {
         }
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new MethodCallListener());
+        allListener.add(new LocalFieldCallListener());
+        allListener.add(new ThisFieldCallListener());
+        allListener.add(new RefCallRestListener());
+        allListener.add(new RefEmptyRestCallListener());
+        allListener.add(new ArrayRefCallListener());
+        allListener.add(new ArrayExprRefCallListener());
+        allListener.add(new NewVariableListener());
+        allListener.add(new MethodRefVariableListener());
+        allListener.add(new MethodRefMethodListener());
+        allListener.add(new MethodRefEndListener());
+        allListener.add(new RefVariableListener());
+        allListener.add(new ThisRefVariableListener());
+        allListener.add(new ThisRefListener());
+        allListener.add(new TargetVariableRefListener());
+        allListener.add(new TargetVariableRefEndListener());
+        allListener.add(new AddListener());
+        allListener.add(new ReduceListener());
+        allListener.add(new TermListener());
+        allListener.add(new VariableIncListener());
+        allListener.add(new VariableDecListener());
+        allListener.add(new StringListener());
+        allListener.add(new StringJoinRefVariableListener());
+        allListener.add(new StringJoinNumberListener());
+        allListener.add(new StringJoinDigitListener());
+        allListener.add(new StringJoinStringListener());
+        allListener.add(new FalseListener());
+        allListener.add(new TrueListener());
+        allListener.add(new ExpressionListListener());
+        allListener.add(new ExpressionListRestListener());
+        return allListener;
+    }
 
 }

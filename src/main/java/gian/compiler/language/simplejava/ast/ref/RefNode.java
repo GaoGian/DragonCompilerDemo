@@ -25,7 +25,7 @@ public class RefNode extends Expr {
     public RefNode(){}
 
     public RefNode(VariableType type){
-        super(type);
+
     }
 
     public Variable getCaller() {

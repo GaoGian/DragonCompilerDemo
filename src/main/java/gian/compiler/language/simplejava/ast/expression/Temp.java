@@ -6,20 +6,18 @@ import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 
 /**
+ * 用于存储表达式返回的临时变量
  * Created by tingyun on 2018/7/20.
  */
 public class Temp extends Variable {
 
-    public int number = 0;
-
-    public Temp(VariableType p){
-        super(JavaConstants.CODE_TEMP_STR, p, null);
-        this.number = JavaDirectGlobalProperty.tempCout.getAndIncrement();
+    public Temp(VariableType type){
+        super(JavaConstants.CODE_TEMP_STR + JavaDirectGlobalProperty.tempCout.getAndIncrement(), type, null);
     }
 
     @Override
     public String toString(){
-        return JavaConstants.CODE_TEMP_STR + number;
+        return this.getName();
     }
 
 }

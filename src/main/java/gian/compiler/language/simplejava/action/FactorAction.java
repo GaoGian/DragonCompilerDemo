@@ -7,10 +7,12 @@ import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.ast.ref.FieldRefNode;
-import gian.compiler.language.simplejava.bean.Variable;
-import gian.compiler.language.simplejava.ast.Constant;
+import gian.compiler.language.simplejava.ast.expression.Constant;
 import gian.compiler.language.simplejava.ast.expression.Expr;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by gaojian on 2019/4/1.
@@ -18,7 +20,6 @@ import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 public class FactorAction {
 
     public static String product_1 = "factor → ( expression )";
-
     public static class ExpressionListener extends SyntaxDirectedListener{
 
         public ExpressionListener(){
@@ -43,7 +44,6 @@ public class FactorAction {
     }
 
     public static String product_2 = "factor → Number";
-
     public static class NumberListener extends SyntaxDirectedListener{
 
         public NumberListener(){
@@ -71,7 +71,6 @@ public class FactorAction {
     }
 
     public static String product_3 = "factor → Digit";
-
     public static class DigitListener extends SyntaxDirectedListener{
 
         public DigitListener(){
@@ -99,7 +98,6 @@ public class FactorAction {
     }
 
     public static String product_4 = "factor → refVariable";
-
     public static class RefVariableListener extends SyntaxDirectedListener{
 
         public RefVariableListener(){
@@ -124,4 +122,13 @@ public class FactorAction {
         }
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new ExpressionListener());
+        allListener.add(new NumberListener());
+        allListener.add(new DigitListener());
+        allListener.add(new RefVariableListener());
+
+        return allListener;
+    }
 }

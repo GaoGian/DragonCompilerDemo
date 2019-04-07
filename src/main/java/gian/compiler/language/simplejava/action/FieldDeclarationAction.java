@@ -12,6 +12,7 @@ import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.language.simplejava.ast.AstNode;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,7 +44,7 @@ public class FieldDeclarationAction {
             String variableId = currentTreeNode.getIdToken().getToken();
             Expr initCode = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
-            ClazzField clazzField = JavaDirectUtils.variableDeclarate(modifier, variableId, variableType, initCode);
+            ClazzField clazzField = JavaDirectUtils.variableDeclarate(modifier, variableId, variableType, JavaDirectUtils.assign(variableId, initCode));
 
             List<ClazzField> fieldList = (List<ClazzField>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FIELD_LIST);
             fieldList.add(clazzField);
@@ -52,4 +53,9 @@ public class FieldDeclarationAction {
         }
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new FieldDeclListener());
+        return allListener;
+    }
 }

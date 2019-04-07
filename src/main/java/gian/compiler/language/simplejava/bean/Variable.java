@@ -7,8 +7,8 @@ import gian.compiler.language.simplejava.ast.statement.Stmt;
  */
 public class Variable extends Param {
 
-    // TODO 存储地址，暂时用不到
-    protected String address;
+    // TODO 实际引用的变量（可能是表达式临时变量，可以包括地址等信息）
+    public Variable refVariable;
     public Stmt code;
 
     public Variable(String fieldName, VariableType variableType, Stmt code) {
@@ -16,12 +16,17 @@ public class Variable extends Param {
         this.code = code;
     }
 
-    public String getAddress() {
-        return address;
+    @Override
+    public Variable gen(){
+        return this;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public Variable getRefVariable() {
+        return refVariable;
+    }
+
+    public void setRefVariable(Variable refVariable) {
+        this.refVariable = refVariable;
     }
 
     public Stmt getCode() {
@@ -30,6 +35,11 @@ public class Variable extends Param {
 
     public void setCode(Stmt code) {
         this.code = code;
+    }
+
+    @Override
+    public String toString(){
+        return "variable: type_" + declType.getName() + "-name_" + this.name;
     }
 
 }

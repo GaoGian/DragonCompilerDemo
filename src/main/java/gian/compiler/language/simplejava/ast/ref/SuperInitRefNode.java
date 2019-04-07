@@ -1,5 +1,6 @@
 package gian.compiler.language.simplejava.ast.ref;
 
+import gian.compiler.language.simplejava.ast.expression.Expr;
 import gian.compiler.language.simplejava.bean.Variable;
 
 import java.util.ArrayList;
@@ -10,9 +11,9 @@ import java.util.List;
  */
 public class SuperInitRefNode extends RefNode {
 
-    public List<Variable> paramList = new ArrayList<>();
+    public List<Expr> paramList = new ArrayList<>();
 
-    public SuperInitRefNode(List<Variable> paramList){
+    public SuperInitRefNode(List<Expr> paramList){
         this.paramList = paramList;
     }
 

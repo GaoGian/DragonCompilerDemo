@@ -12,6 +12,9 @@ import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.ast.expression.Expr;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by gaojian on 2019/4/2.
  */
@@ -314,4 +317,22 @@ public class VariableInitializerAction {
         }
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new VariableAssignListener());
+        allListener.add(new ArrayVariableInitListener());
+        allListener.add(new BooleanArrayListener());
+        allListener.add(new CharArrayListener());
+        allListener.add(new ByteArrayListener());
+        allListener.add(new ShortArrayListener());
+        allListener.add(new IntArrayListener());
+        allListener.add(new LongArrayListener());
+        allListener.add(new FloatArrayListener());
+        allListener.add(new DoubleArrayListener());
+        allListener.add(new ClazzArrayListener());
+        allListener.add(new ArraySizeListener());
+        allListener.add(new BaseTypeListener());
+
+        return allListener;
+    }
 }

@@ -6,6 +6,9 @@ import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by gaojian on 2019/3/28.
  */
@@ -83,5 +86,10 @@ public class ModifierDeclarationAction {
         }
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new PublicListener());
 
+        return allListener;
+    }
 }

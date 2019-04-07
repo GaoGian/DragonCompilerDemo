@@ -9,6 +9,9 @@ import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Gian on 2019/3/30.
  */
@@ -270,4 +273,20 @@ public class TypeDeclarationAction {
         return null;
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new BooleanTypeListener());
+        allListener.add(new CharTypeListener());
+        allListener.add(new ByteTypeListener());
+        allListener.add(new ShortTypeListener());
+        allListener.add(new IntTypeListener());
+        allListener.add(new LongTypeListener());
+        allListener.add(new FloatTypeListener());
+        allListener.add(new DoubleTypeListener());
+        allListener.add(new ClassTypeListener());
+        allListener.add(new ArrayTypeComponentListener());
+        allListener.add(new TypeComponentEmptyListener());
+
+        return allListener;
+    }
 }

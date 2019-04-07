@@ -11,6 +11,7 @@ import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,4 +53,10 @@ public class LocalVariableDeclarationStatementAction {
         }
     }
 
+    public static List<SyntaxDirectedListener> getAllListener() {
+        List<SyntaxDirectedListener> allListener = new ArrayList<>();
+        allListener.add(new LocalVariableDeclListener());
+
+        return allListener;
+    }
 }
