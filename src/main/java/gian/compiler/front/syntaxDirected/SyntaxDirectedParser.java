@@ -37,7 +37,7 @@ public class SyntaxDirectedParser {
 
     // 深度遍历语法树，执行相关语义动作
     // TODO 上下文环境是否需要按照作用域进行分层？？或者单独设置环境变量
-    public static SyntaxTree.SyntaxTreeNode executeSyntaxTreeDirectAction(SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex,
+    private static SyntaxTree.SyntaxTreeNode executeSyntaxTreeDirectAction(SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex,
                                                      SyntaxDirectedContext context, Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap){
 
         // 生成注释语法分析树节点
@@ -52,6 +52,13 @@ public class SyntaxDirectedParser {
 
         // 获取匹配语义动作
         SyntaxDirectedListener syntaxDirectedListener = syntaxDirectActionMap.get(currentTreeNode.getNumber());
+
+        if(syntaxDirectedListener != null){
+            if(currentTreeNode.isLeafNode() || currentTreeNode.isIdNode()) {
+                syntaxDirectedListener.lexline = currentTreeNode.getIdToken().getLine();
+                syntaxDirectedListener.lexindex = currentTreeNode.getIdToken().getIndex();
+            }
+        }
 
         // 执行预处理语义动作
         if(syntaxDirectedListener != null) {
@@ -92,9 +99,8 @@ public class SyntaxDirectedParser {
         return annotionNode;
     }
 
-
     // 匹配语法分析树节点语义动作
-    public static Map<Integer, SyntaxDirectedListener> matchSyntaxTreeNodeDirectAction(SyntaxTree.SyntaxTreeNode syntaxTreeNode, Integer syntaxTreeNodeIndex,
+    private static Map<Integer, SyntaxDirectedListener> matchSyntaxTreeNodeDirectAction(SyntaxTree.SyntaxTreeNode syntaxTreeNode, Integer syntaxTreeNodeIndex,
                                                        List<SyntaxDirectedListener> syntaxDirectedListenerList, Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap){
 
         // TODO 这里暂时不处理增广文法根节点，将增广文法节点的语义动作下移到文法其实节点
@@ -122,11 +128,17 @@ public class SyntaxDirectedParser {
         return syntaxDirectActionMap;
     }
 
-    public static void setDirectedContextInfo(SyntaxDirectedContext context, Integer currentIndex, SyntaxTree.SyntaxTreeNode currentNode){
+    private static void setDirectedContextInfo(SyntaxDirectedContext context, Integer currentIndex, SyntaxTree.SyntaxTreeNode currentNode){
         context.setCurrentNodeIndex(currentIndex);
         context.setCurrentNode(currentNode);
         context.setParentNode(currentNode.getParentNode());
         context.setBrotherNodeList(currentNode.getParentNode().getSubProductNodeList());
+
+        if(currentNode.isLeafNode() || currentNode.isIdNode()){
+            context.setLine(currentNode.getIdToken().getLine());
+            context.setLine(currentNode.getIdToken().getIndex());
+        }
+
     }
 
 }

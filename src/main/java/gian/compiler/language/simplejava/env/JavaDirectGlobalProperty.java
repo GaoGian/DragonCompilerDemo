@@ -1,6 +1,7 @@
 package gian.compiler.language.simplejava.env;
 
 import gian.compiler.front.lexical.transform.MyStack;
+import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.ast.statement.Stmt;
 
@@ -12,7 +13,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class JavaDirectGlobalProperty {
 
     public static JavaEnvironment topEnv;
-    public static Integer lexline;
+    public static Integer lexline = SyntaxDirectedListener.lexline;
+    public static Integer lexindex = SyntaxDirectedListener.lexindex;
     public static AtomicInteger lable = new AtomicInteger(0);
     public static AtomicInteger tempCout = new AtomicInteger(0);
 

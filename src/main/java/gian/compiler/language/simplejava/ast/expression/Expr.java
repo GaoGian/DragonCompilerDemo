@@ -3,31 +3,17 @@ package gian.compiler.language.simplejava.ast.expression;
 import gian.compiler.language.simplejava.ast.statement.Stmt;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
+import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 /**
  * Created by gaojian on 2019/3/31.
  */
-public class Expr extends Stmt {
+public abstract class Expr extends Stmt {
 
-    public Variable variable;
-    public VariableType type;
+    public abstract Temp gen();
 
-    public Expr(){}
-
-    public Expr(VariableType type){
-        this.type = type;
-    }
-
-    public Expr gen(){
-        return this;
-    }
-
-    public VariableType getType() {
-        return type;
-    }
-
-    public void setType(VariableType type) {
-        this.type = type;
+    public Temp newTemp(){
+        return new Temp();
     }
 
 }

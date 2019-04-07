@@ -76,16 +76,6 @@ public class JavaDirectUtils {
         return new Return(expr);
     }
 
-    public static Stmt arrayAssign(String variableName, Access arrayInfo, Expr assign){
-        Variable id = JavaDirectUtils.findVariable(variableName);
-        if(id == null){
-            error(variableName + " undeclared");
-        }
-
-        Stmt stmt = new SetElem(arrayInfo, assign);
-        return stmt;
-    }
-
     public static Stmt assign(String variableName, Expr assign){
         Variable id = JavaDirectUtils.findVariable(variableName);
         if(id == null){
@@ -96,23 +86,6 @@ public class JavaDirectUtils {
         return stmt;
     }
 
-    public static Access array(Variable variable, Expr factor, Access array){
-        VariableType variableType = variable.getType();
-
-        if(!(variableType instanceof VariableArrayType)){
-            Expr width = new Temp(variableType);
-            Expr index = new Arith(JavaConstants.JAVA_OPERATOR_MULIT, factor, width);
-
-            return new Access(variable, index, variableType);
-        }else{
-            Expr width = new Temp(variableType);
-            Expr index_1 = new Arith(JavaConstants.JAVA_OPERATOR_MULIT, factor, width);
-            Expr index_2 = new Arith(JavaConstants.JAVA_OPERATOR_ADD, array.index, index_1);
-
-            return new Access(variable, index_2, ((VariableArrayType) variableType).getBaseVariableType());
-        }
-
-    }
 
     public static Expr or(Expr expr1, Expr expr2){     // 判断布尔值表达式
         Expr expr = new Or(JavaConstants.JAVA_OPERATOR_OR, expr1, expr2);

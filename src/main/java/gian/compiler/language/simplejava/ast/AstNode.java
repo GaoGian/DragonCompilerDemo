@@ -3,25 +3,22 @@ package gian.compiler.language.simplejava.ast;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.exception.JavaDirectException;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 抽象语法树节点
  * Created by gaojian on 2019/3/31.
  */
 public class AstNode {
 
-    public Integer lexline = 0;
-
-    public List<AstNode> chileNode = new ArrayList<>();
+    public int lexline = 0;
+    public int lexindex = 0;
 
     public AstNode(){
         this.lexline = JavaDirectGlobalProperty.lexline;
+        this.lexindex = JavaDirectGlobalProperty.lexindex;
     }
 
     public void error(String s){
-        throw new JavaDirectException("near line" + lexline + ": " + s);
+        throw new JavaDirectException("near line: " + lexline + ", lexindex: " + lexindex + ", msg: " + s);
     }
 
     public int newlabel(){
@@ -36,11 +33,4 @@ public class AstNode {
         System.out.println("\t" + s);
     }
 
-    public List<AstNode> getChileNode() {
-        return chileNode;
-    }
-
-    public void setChileNode(List<AstNode> chileNode) {
-        this.chileNode = chileNode;
-    }
 }

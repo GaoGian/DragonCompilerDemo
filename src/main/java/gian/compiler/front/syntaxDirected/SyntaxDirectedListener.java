@@ -17,6 +17,9 @@ public abstract class SyntaxDirectedListener {
     // 是否是匹配叶子节点（终结符）
     protected Boolean isLeaf;
 
+    public static Integer lexline;
+    public static Integer lexindex;
+
     public SyntaxDirectedListener(){}
 
     public SyntaxDirectedListener(String matchProductTag, Integer matchIndex, String matchSymbol, Boolean isLeaf){

@@ -5,22 +5,22 @@ package gian.compiler.language.simplejava.bean;
  */
 public class VariableArrayType extends VariableType {
 
-    public VariableType baseVariableType;
+    public VariableType elementType;
     // TODO 如果是0，说明是数组变量声明
     public int size;
 
-    public VariableArrayType(int sz, VariableType baseVariableType){
-        super("[]", sz * baseVariableType.width);
-        this.size = sz;
-        this.baseVariableType = baseVariableType;
+    public VariableArrayType(int size, VariableType elementType){
+        super("[]", size * elementType.width);
+        this.size = size;
+        this.elementType = elementType;
     }
 
     public VariableType getBaseVariableType() {
-        return baseVariableType;
+        return elementType;
     }
 
     public void setBaseVariableType(VariableType baseVariableType) {
-        this.baseVariableType = baseVariableType;
+        this.elementType = baseVariableType;
     }
 
     public int getSize() {
@@ -33,7 +33,7 @@ public class VariableArrayType extends VariableType {
 
     @Override
     public String toString(){
-        return "[" + size + "]" + baseVariableType.toString();
+        return "[" + size + "]" + elementType.toString();
     }
 
 }

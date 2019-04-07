@@ -28,7 +28,8 @@ public class SyntaxDirectedContext {
     protected Map<String, Object> globalPropertyMap = new HashMap<>();
 
     // TODO 需要记录语义动作对应的程序位置
-    protected Map<String, Object> programInfo = new HashMap<>();
+    protected Integer line;
+    protected Integer index;
 
     public SyntaxDirectedContext(SyntaxTree syntaxTree) {
         this.syntaxTree = syntaxTree;
@@ -90,11 +91,19 @@ public class SyntaxDirectedContext {
         this.globalPropertyMap = globalPropertyMap;
     }
 
-    public Map<String, Object> getProgramInfo() {
-        return programInfo;
+    public Integer getLine() {
+        return line;
     }
 
-    public void setProgramInfo(Map<String, Object> programInfo) {
-        this.programInfo = programInfo;
+    public void setLine(Integer line) {
+        this.line = line;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 }
