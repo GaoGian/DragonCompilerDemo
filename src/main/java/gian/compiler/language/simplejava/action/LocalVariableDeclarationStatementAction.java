@@ -42,9 +42,11 @@ public class LocalVariableDeclarationStatementAction {
             if (initCode != null) {
                 Stmt assign = JavaDirectUtils.assign(variableId, initCode);
                 variable.setCode(assign);
+                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, assign);
+            }else{
+                // TODO 这里需要修改
+                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, variable);
             }
-
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE, variable);
 
             return null;
         }

@@ -12,7 +12,16 @@ public class For extends Stmt {
     public Stmt update;
     public Stmt blockStmt;
 
+    public For(){}
+
     public For(Stmt init, Expr control, Stmt update, Stmt blockStmt) {
+        this.init = init;
+        this.control = control;
+        this.update = update;
+        this.blockStmt = blockStmt;
+    }
+
+    public void init(Stmt init, Expr control, Stmt update, Stmt blockStmt){
         this.init = init;
         this.control = control;
         this.update = update;

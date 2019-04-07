@@ -2,6 +2,7 @@ package gian.compiler.language.simplejava.action;
 
 import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.language.simplejava.JavaConstants;
+import gian.compiler.language.simplejava.bean.VariableArrayType;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
@@ -201,6 +202,59 @@ public class TypeDeclarationAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             return getVariableType(context, currentTreeNode, currentIndex);
+        }
+    }
+
+    public static String product_11 = "typeComponent → [ ] typeComponent | ε";
+    public static class ArrayTypeComponentListener extends SyntaxDirectedListener{
+        public ArrayTypeComponentListener(){
+            this.matchProductTag = product_11;
+            this.matchSymbol = "typeComponent";
+            this.matchIndex = 2;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            String baseType = (String) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.VARIABLE_BASE_TYPE, baseType);
+
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            // TODO 调整数组处理顺序，方便生成数组节点
+            VariableType variableType = (VariableType) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
+            // FIXME 单独处理数组声明
+            VariableArrayType arrayType = new VariableArrayType(0, variableType);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_TYPE, arrayType);
+
+            return null;
+        }
+    }
+
+    public static String product_12 = "typeComponent → ε";
+    public static class TypeComponentEmptyListener extends SyntaxDirectedListener{
+        public TypeComponentEmptyListener(){
+            this.matchProductTag = product_12;
+            this.matchSymbol = "ε";
+            this.matchIndex = 0;
+            this.isLeaf = true;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            Token baseType = (Token) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
+            VariableType variableType = new VariableType(baseType.getToken(), VariableType.getVariableTypeWidth(baseType.getType().isRexgexToken() ? baseType.getType().getType() : baseType.getToken()));
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_TYPE, variableType);
+
+            return null;
         }
     }
 

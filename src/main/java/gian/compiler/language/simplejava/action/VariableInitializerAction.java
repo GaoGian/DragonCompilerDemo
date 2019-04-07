@@ -51,8 +51,9 @@ public class VariableInitializerAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            // FIXME
             Token baseType = context.getBrotherNodeList().get(currentIndex - 4).getIdToken();
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.VARIABLE_BASE_TYPE, baseType.getType().isRexgexToken() ? baseType.getType().getType() : baseType.getToken());
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.VARIABLE_BASE_TYPE, baseType);
 
             return null;
         }
@@ -70,7 +71,7 @@ public class VariableInitializerAction {
         }
     }
 
-    public static String product_12 = "arrayBaseType → boolean | char | byte | short | int | long | float | double | Identifier";
+    public static String product_12 = "arrayBaseType → boolean";
     public static class BooleanArrayListener extends SyntaxDirectedListener{
         public BooleanArrayListener(){
             this.matchProductTag = product_12;
@@ -90,6 +91,7 @@ public class VariableInitializerAction {
             return null;
         }
     }
+
     public static String product_13 = "arrayBaseType → char";
     public static class CharArrayListener extends SyntaxDirectedListener{
         public CharArrayListener(){
@@ -110,6 +112,7 @@ public class VariableInitializerAction {
             return null;
         }
     }
+
     public static String product_14 = "arrayBaseType → byte";
     public static class ByteArrayListener extends SyntaxDirectedListener{
         public ByteArrayListener(){
@@ -130,6 +133,7 @@ public class VariableInitializerAction {
             return null;
         }
     }
+
     public static String product_15 = "arrayBaseType → short";
     public static class ShortArrayListener extends SyntaxDirectedListener{
         public ShortArrayListener(){
@@ -150,6 +154,7 @@ public class VariableInitializerAction {
             return null;
         }
     }
+
     public static String product_16 = "arrayBaseType → int";
     public static class IntArrayListener extends SyntaxDirectedListener{
         public IntArrayListener(){
@@ -170,6 +175,7 @@ public class VariableInitializerAction {
             return null;
         }
     }
+
     public static String product_17 = "arrayBaseType → long";
     public static class LongArrayListener extends SyntaxDirectedListener{
         public LongArrayListener(){
@@ -190,6 +196,7 @@ public class VariableInitializerAction {
             return null;
         }
     }
+
     public static String product_18 = "arrayBaseType → float";
     public static class FloatArrayListener extends SyntaxDirectedListener{
         public FloatArrayListener(){
@@ -210,6 +217,7 @@ public class VariableInitializerAction {
             return null;
         }
     }
+
     public static String product_19 = "arrayBaseType → double";
     public static class DoubleArrayListener extends SyntaxDirectedListener{
         public DoubleArrayListener(){
@@ -230,6 +238,7 @@ public class VariableInitializerAction {
             return null;
         }
     }
+
     public static String product_20 = "arrayBaseType → Identifier";
     public static class ClazzArrayListener extends SyntaxDirectedListener{
         public ClazzArrayListener(){
@@ -262,8 +271,8 @@ public class VariableInitializerAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String baseTypeName = (String) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.VARIABLE_BASE_TYPE, baseTypeName);
+            Token baseType = (Token) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.VARIABLE_BASE_TYPE, baseType);
 
             return null;
         }
@@ -296,10 +305,10 @@ public class VariableInitializerAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String baseTypeName = (String) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
-            VariableType baseType = new VariableType(baseTypeName, VariableType.getVariableTypeWidth(baseTypeName));
+            Token baseType = (Token) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
+            VariableType variableType = new VariableType(baseType.getToken(), VariableType.getVariableTypeWidth(baseType.getType().isRexgexToken() ? baseType.getType().getType() : baseType.getToken()));
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_TYPE, baseType);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_TYPE, variableType);
 
             return null;
         }

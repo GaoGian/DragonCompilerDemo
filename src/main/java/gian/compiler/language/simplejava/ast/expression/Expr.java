@@ -1,13 +1,13 @@
 package gian.compiler.language.simplejava.ast.expression;
 
+import gian.compiler.language.simplejava.ast.statement.Stmt;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
-import gian.compiler.language.simplejava.ast.AstNode;
 
 /**
  * Created by gaojian on 2019/3/31.
  */
-public class Expr extends AstNode {
+public class Expr extends Stmt {
 
     public Variable variable;
     public VariableType type;

@@ -222,7 +222,7 @@ public class ParExpressionAction {
         }
     }
 
-    public static String product_10_1 = "expressionFactor → expression ◀==▶ expression";
+    public static String product_10_1 = "expressionFactor → expression == expression";
     public static class EqListener extends SyntaxDirectedListener{
         public EqListener(){
             this.matchProductTag = product_10_1;
@@ -243,7 +243,7 @@ public class ParExpressionAction {
         }
     }
 
-    public static String product_10_2 = "expressionFactor → expression ◀!=▶ expression";
+    public static String product_10_2 = "expressionFactor → expression != expression";
     public static class NeListener extends SyntaxDirectedListener{
         public NeListener(){
             this.matchProductTag = product_10_2;

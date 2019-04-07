@@ -134,7 +134,7 @@ public class ExpressionAction {
             }
 
             String callName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
-            // FIXME 这里不清楚是否是方法名称，交由上层文法判断
+            // TODO 这里不清楚是变量名称还是方法名称，先处理成变量引用，交由上层文法判断，如果是方法引用再做替换处理
             FieldRefNode fieldRefNode = JavaDirectUtils.fieldRefNode(callName);
 
             JavaDirectUtils.appendRef(refCall, fieldRefNode);
@@ -693,7 +693,7 @@ public class ExpressionAction {
         }
     }
     
-    public static String product_8_2 = "+ Number stringRest";
+    public static String product_8_2 = "expression → + Number stringRest";
     public static class StringJoinNumberListener extends SyntaxDirectedListener{
         public StringJoinNumberListener(){
             this.matchProductTag = product_8_2;
@@ -724,7 +724,7 @@ public class ExpressionAction {
         }
     }
 
-    public static String product_8_3 = "+ Digit stringRest";
+    public static String product_8_3 = "expression → + Digit stringRest";
     public static class StringJoinDigitListener extends SyntaxDirectedListener{
         public StringJoinDigitListener(){
             this.matchProductTag = product_8_3;

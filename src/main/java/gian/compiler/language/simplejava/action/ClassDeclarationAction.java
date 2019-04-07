@@ -11,6 +11,7 @@ import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,75 +22,9 @@ public class ClassDeclarationAction {
 
     public static String product = "classDeclaration → modifierDeclaration class Identifier extendsInfo classBody";
 
-    public static class IdentifierListener extends SyntaxDirectedListener{
+    public static class ClassDeclListener extends SyntaxDirectedListener{
 
-        public IdentifierListener(){
-            this.matchProductTag = product;
-            this.matchSymbol = "Identifier";
-            this.matchIndex = 2;
-            this.isLeaf = true;
-        }
-
-        @Override
-        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-
-        @Override
-        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String clazzName = currentTreeNode.getIdToken().getToken();
-            String packageName = (String) context.getGlobalPropertyMap().get(JavaConstants.PACKAGE_NAME);
-            String clazzAllName = packageName + "." + clazzName;
-
-            String modifier = (String) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
-            List<String> importList = (List<String>) context.getGlobalPropertyMap().get(JavaConstants.IMPORT_LIST);
-            Map<String, String> importMap = (Map<String, String>) context.getGlobalPropertyMap().get(JavaConstants.IMPORT_MAP);
-
-            Clazz clazz = new Clazz();
-            clazz.setClazzName(clazzName);
-            clazz.setClazzAllName(clazzAllName);
-            clazz.setPermission(modifier);
-            clazz.setImportList(importList);
-            clazz.setImportMap(importMap);
-
-            Map<String, Clazz> clazzMap = (Map<String, Clazz>) context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP);
-            clazzMap.put(clazzName, clazz);
-
-            context.getGlobalPropertyMap().put(JavaConstants.CURRENT_CLAZZ_NAME, clazz);
-
-            return null;
-        }
-    }
-
-    public static class ExtendsInfoListener extends SyntaxDirectedListener{
-
-        public ExtendsInfoListener(){
-            this.matchProductTag = product;
-            this.matchSymbol = "extendsInfo";
-            this.matchIndex = 3;
-            this.isLeaf = false;
-        }
-
-        @Override
-        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-
-        @Override
-        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Map<String, String> extendInfo = (Map<String, String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.EXTEND_INFO);
-            String clazzName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
-            Map<String, Clazz> clazzMap = (Map<String, Clazz>) context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP);
-            Clazz clazz = clazzMap.get(clazzName);
-            clazz.setExtendInfo(extendInfo);
-
-            return null;
-        }
-    }
-
-    public static class ClassBodyListener extends SyntaxDirectedListener{
-
-        public ClassBodyListener(){
+        public ClassDeclListener(){
             this.matchProductTag = product;
             this.matchSymbol = "classBody";
             this.matchIndex = 4;
@@ -103,27 +38,70 @@ public class ClassDeclarationAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            String modifier = (String) context.getBrotherNodeList().get(currentIndex - 4).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
+            String clazzName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
+            String packageName = (String) context.getGlobalPropertyMap().get(JavaConstants.PACKAGE_NAME);
+            String clazzAllName = packageName + "." + clazzName;
+            Map<String, String> extendInfo = (Map<String, String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.EXTEND_INFO);
+
+            List<String> importList = (List<String>) context.getGlobalPropertyMap().get(JavaConstants.IMPORT_LIST);
+            Map<String, String> importMap = (Map<String, String>) context.getGlobalPropertyMap().get(JavaConstants.IMPORT_MAP);
+
             List<ClazzField> fieldList = (List<ClazzField>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FIELD_LIST);
             List<ClazzConstructor> constructorList = (List<ClazzConstructor>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CONSTRUCTOR_LIST);
             List<ClazzMethod> methodList = (List<ClazzMethod>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.METHOD_LIST);
 
-            String clazzName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
-            Map<String, Clazz> clazzMap = (Map<String, Clazz>) context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP);
-            Clazz clazz = clazzMap.get(clazzName);
-
+            Clazz clazz = new Clazz();
+            clazz.setClazzName(clazzName);
+            clazz.setClazzAllName(clazzAllName);
+            clazz.setPermission(modifier);
+            clazz.setImportList(importList);
+            clazz.setImportMap(importMap);
+            clazz.setExtendInfo(extendInfo);
             clazz.setFieldList(fieldList);
             clazz.setConstructorList(constructorList);
             clazz.setMethodList(methodList);
+
+            Map<String, Clazz> clazzMap = (Map<String, Clazz>) context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP);
+            clazzMap.put(clazzName, clazz);
 
             return null;
         }
     }
 
+    public static String product_1 = "extendsInfo → extends classIdentifier";
+    public static class ClassExtendListener extends SyntaxDirectedListener{
+
+        public ClassExtendListener(){
+            this.matchProductTag = product_1;
+            this.matchSymbol = "classIdentifier";
+            this.matchIndex = 1;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            String extendClazzName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CLAZZ_NAME);
+            Map<String, String> extendInfo = new HashMap<>();
+            extendInfo.put(JavaConstants.CLAZZ_NAME, extendClazzName);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.EXTEND_INFO, extendInfo);
+
+            return null;
+        }
+    }
+
+    // 不需要处理
+    public static String product_2 = "extendsInfo → ε";
+
     public static List<SyntaxDirectedListener> getAllListener() {
         List<SyntaxDirectedListener> allListener = new ArrayList<>();
-        allListener.add(new IdentifierListener());
-        allListener.add(new ExtendsInfoListener());
-        allListener.add(new ClassBodyListener());
+        allListener.add(new ClassDeclListener());
+        allListener.add(new ClassExtendListener());
 
         return allListener;
     }

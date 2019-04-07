@@ -40,10 +40,6 @@ public class ConstructorBodyAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             JavaDirectUtils.nestEnv();
-
-            List<String> code = new ArrayList<>();
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
-
             return null;
         }
     }
@@ -67,10 +63,7 @@ public class ConstructorBodyAction {
             SuperInitRefNode superInitRefNode = (SuperInitRefNode) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             Stmt stmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
-            // TODO 待优化
-            AstNode code = new AstNode();
-            code.getChileNode().add(superInitRefNode);
-            code.getChileNode().add(stmt);
+            Stmt code = JavaDirectUtils.stmts(superInitRefNode, stmt);
 
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
 

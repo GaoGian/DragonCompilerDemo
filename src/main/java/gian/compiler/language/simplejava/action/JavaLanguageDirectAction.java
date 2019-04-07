@@ -70,40 +70,9 @@ public class JavaLanguageDirectAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            // 交由ImportDeclarationListener处理
-//            List<String> importList = (List<String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get("importList");
-//            Map<String, String> importMap = (Map<String, String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get("importMap");
-//
-//            context.getGlobalPropertyMap().put("importList", importList);
-//            context.getGlobalPropertyMap().put("importMap", importMap);
-
             return null;
         }
 
     }
-
-    // 类声明
-    public static class ClassDeclarationListener extends SyntaxDirectedListener{
-
-        public ClassDeclarationListener(){
-            this.matchProductTag = product;
-            this.matchSymbol = "classDeclaration";
-            this.matchIndex = 2;
-            this.isLeaf = false;
-        }
-
-        @Override
-        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-
-            return null;
-        }
-
-        @Override
-        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-
-    }
-
 
 }

@@ -13,7 +13,7 @@ classDeclaration → modifierDeclaration ◀class▶ ◀Identifier▶ extendsInf
 extendsInfo → ◀extends▶ ◀Identifier▶ | ε
 
 #权限
-modifierDeclaration → ◀public▶ | ◀protected▶ | ◀private▶ | ◀static▶
+modifierDeclaration → ◀public▶ | ◀protected▶ | ◀private▶
 
 #类体
 classBody → ◀{▶ classBodyDeclaration ◀}▶
@@ -94,7 +94,7 @@ forUpdate → expression
 switchBlock → ◀{▶ switchBlockStatementGroup defaultSwitchLabel ◀}▶
 switchBlockStatementGroup → switchLabel blockStatement switchBlockStatementGroup | ε
 switchLabel → ◀case▶ ◀Digit▶ ◀:▶ | ◀case▶ ◀Number▶ ◀:▶ | ◀case▶ ◀String▶ ◀:▶
-defaultSwitchLabel → ◀default▶ ◀:▶ blockStatement
+defaultSwitchLabel → ◀default▶ ◀:▶ blockStatement | ε
 
 
 

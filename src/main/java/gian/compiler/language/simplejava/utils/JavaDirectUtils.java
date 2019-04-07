@@ -5,10 +5,7 @@ import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.ast.AstNode;
 import gian.compiler.language.simplejava.ast.Constant;
 import gian.compiler.language.simplejava.ast.ref.*;
-import gian.compiler.language.simplejava.bean.ClazzField;
-import gian.compiler.language.simplejava.bean.Variable;
-import gian.compiler.language.simplejava.bean.VariableArrayType;
-import gian.compiler.language.simplejava.bean.VariableType;
+import gian.compiler.language.simplejava.bean.*;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.env.JavaEnvironment;
 import gian.compiler.language.simplejava.exception.JavaDirectException;
@@ -23,8 +20,16 @@ import java.util.List;
  */
 public class JavaDirectUtils {
 
-    public static Seq stmts(Stmt stmt, Stmt stmts){
-        return new Seq(stmt, stmts);    // 这里通过递归，逐个解析后续语句
+    public static Stmt stmts(Stmt stmt, Stmt stmts){
+        if(stmt != null && stmts != null) {
+            return new Seq(stmt, stmts);    // 这里通过递归，逐个解析后续语句
+        }else if(stmt != null && stmts == null){
+            return stmt;
+        }else if(stmt == null && stmts != null){
+            return stmts;
+        }else{
+            throw new JavaDirectException("没有语义动作");
+        }
     }
 
     public static Switch switchNode(Expr expr, Stmt stmt){
@@ -147,7 +152,7 @@ public class JavaDirectUtils {
         return variable;
     }
 
-    public static ClazzField variableDeclarate(String permission, String variableName, VariableType variableType, AstNode code){
+    public static ClazzField variableDeclarate(String permission, String variableName, VariableType variableType, Expr code){
         ClazzField clazzField = new ClazzField(permission, variableName, variableType, code);
         JavaDirectGlobalProperty.topEnv.getPropertyMap().put(variableName, clazzField);
         return clazzField;
@@ -213,6 +218,10 @@ public class JavaDirectUtils {
         }else{
             return refCall;
         }
+    }
+
+    public static Param getParam(String paramName, VariableType variableType){
+        return new Param(paramName, variableType);
     }
 
     public static void error(String s){

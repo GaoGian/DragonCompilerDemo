@@ -86,7 +86,7 @@ public class BlockAction{
 
     }
 
-    public static String product_1 = "blockStatement → localVariableDeclarationStatement ◀;▶ blockStatement";
+    public static String product_1 = "blockStatement → localVariableDeclarationStatement ; blockStatement";
     public static class LocalVariableDeclListener extends SyntaxDirectedListener{
         public LocalVariableDeclListener(){
             this.matchProductTag = product_1;
@@ -133,13 +133,13 @@ public class BlockAction{
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Stmt stateStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt statement = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             Stmt blockCode = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             Stmt stmt = null;
             if(blockCode != null){
-                stmt = new Seq(stateStmt, blockCode);
+                stmt = new Seq(statement, blockCode);
             }else{
-                stmt = stateStmt;
+                stmt = statement;
             }
 
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stmt);

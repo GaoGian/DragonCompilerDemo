@@ -18,66 +18,6 @@ public class ConstructorDeclarationAction {
 
     public static String product = "constructorDeclaration → modifierDeclaration Identifier formalParameters constructorBody";
 
-    public static class ModifierDeclarationListener extends SyntaxDirectedListener{
-        public ModifierDeclarationListener(){
-            this.matchProductTag = product;
-            this.matchSymbol = "modifierDeclaration";
-            this.matchIndex = 0;
-            this.isLeaf = false;
-        }
-
-        @Override
-        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-
-        @Override
-        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-    }
-
-    public static class IdentifierListener extends SyntaxDirectedListener{
-
-        public IdentifierListener(){
-            this.matchProductTag = product;
-            this.matchSymbol = "Identifier";
-            this.matchIndex = 1;
-            this.isLeaf = true;
-        }
-
-        @Override
-        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-
-        @Override
-        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-
-            return null;
-        }
-    }
-
-    public static class FormalParametersListener extends SyntaxDirectedListener{
-
-        public FormalParametersListener(){
-            this.matchProductTag = product;
-            this.matchSymbol = "formalParameters";
-            this.matchIndex = 2;
-            this.isLeaf = false;
-        }
-
-        @Override
-        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-
-        @Override
-        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-    }
-
     public static class ConstructorBodyListener extends SyntaxDirectedListener{
 
         public ConstructorBodyListener(){

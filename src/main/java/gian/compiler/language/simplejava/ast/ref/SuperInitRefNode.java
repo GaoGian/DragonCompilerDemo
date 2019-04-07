@@ -1,6 +1,5 @@
 package gian.compiler.language.simplejava.ast.ref;
 
-import gian.compiler.language.simplejava.ast.AstNode;
 import gian.compiler.language.simplejava.bean.Variable;
 
 import java.util.ArrayList;
@@ -9,7 +8,7 @@ import java.util.List;
 /**
  * Created by gaojian on 2019/4/4.
  */
-public class SuperInitRefNode extends AstNode {
+public class SuperInitRefNode extends RefNode {
 
     public List<Variable> paramList = new ArrayList<>();
 

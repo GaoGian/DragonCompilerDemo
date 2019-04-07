@@ -83,29 +83,5 @@ public class ModifierDeclarationAction {
         }
     }
 
-    public static String product_4 = "modifierDeclaration → static";
-    public static class StaticListener extends SyntaxDirectedListener{
-
-        public StaticListener(){
-            this.matchProductTag = product_4;
-            this.matchSymbol = "static";
-            this.matchIndex = 0;
-            this.isLeaf = true;
-        }
-
-        @Override
-        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-
-        @Override
-        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String modifier = currentTreeNode.getIdToken().getToken();
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.MODIFIER, modifier);
-
-            return null;
-        }
-    }
-
 
 }

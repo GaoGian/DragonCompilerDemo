@@ -37,6 +37,7 @@ public class JavaConstants {
     public final static String CALL_PARAM_LIST = "callParamList";
 
     public final static String IMPORT_CLAZZ_ALL_NAME = "importClazzAllName";
+    public final static String IMPORT_CLAZZ_QUALIFIE_DNAME = "importQualifiedName";
     public final static String VARIABLE_INIT_INFO = "variableInitInfo";
     // 当前解析类名称
     public final static String CURRENT_CLAZZ_NAME = "currentClazzName";
@@ -54,6 +55,8 @@ public class JavaConstants {
     public final static String CODE_LABEL = "label";
     // 数组标识
     public final static String ARRAY_TAG = "[]";
+    // switch节点
+    public final static String SWITCH_NODE = "switchNode";
     // while节点
     public final static String WHILE_NODE = "whileNode";
     // do节点

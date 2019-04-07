@@ -10,7 +10,14 @@ public class Switch extends Stmt {
     public Expr expr;
     public Stmt stmt;
 
-    public Switch(Expr expr, Stmt stmt) {
+    public Switch(){}
+
+    public Switch(Expr expr, Stmt stmt){
+        this.expr = expr;
+        this.stmt = stmt;
+    }
+
+    public void init(Expr expr, Stmt stmt) {
         this.expr = expr;
         this.stmt = stmt;
     }

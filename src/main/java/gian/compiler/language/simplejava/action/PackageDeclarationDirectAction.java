@@ -38,27 +38,7 @@ public class PackageDeclarationDirectAction {
 
     }
 
+    // TODO 不需要处理
     public static String product_2 = "packageDeclaration → ε";
 
-    // 空包声明
-    public static class EpsilonListener extends SyntaxDirectedListener{
-
-        public EpsilonListener(){
-            this.matchProductTag = product_2;
-            this.matchSymbol = "ε";
-            this.matchIndex = 0;
-            this.isLeaf = true;
-        }
-
-        @Override
-        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-
-        @Override
-        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.PACKAGE_NAME, "");
-            return null;
-        }
-    }
 }

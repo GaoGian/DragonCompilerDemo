@@ -17,9 +17,9 @@ public class ImportDeclarationAction {
     public static String product_1 = "importDeclaration → import qualifiedName ; importDeclaration";
 
     // 引入包声明
-    public static class QualifiedNameListener extends SyntaxDirectedListener{
+    public static class ImportListener extends SyntaxDirectedListener{
 
-        public QualifiedNameListener(){
+        public ImportListener(){
             this.matchProductTag = product_1;
             this.matchSymbol = "qualifiedName";
             this.matchIndex = 1;
@@ -47,34 +47,63 @@ public class ImportDeclarationAction {
 
     }
 
-    // 后续包声明
-    public static class ImportDeclarationListener extends SyntaxDirectedListener{
+    // 不需要处理
+    public static String product_1_2 = "importDeclaration → ε";
 
-        public ImportDeclarationListener(){
-            this.matchProductTag = product_1;
-            this.matchSymbol = "importDeclaration";
-            this.matchIndex = 3;
+    public static String product_2_1 = "qualifiedName → Identifier IdentifierRepeat";
+    public static class QualifiedNameListener extends SyntaxDirectedListener{
+        public QualifiedNameListener(){
+            this.matchProductTag = product_2_1;
+            this.matchSymbol = "IdentifierRepeat";
+            this.matchIndex = 1;
             this.isLeaf = false;
         }
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            String qualifiedName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.IMPORT_CLAZZ_QUALIFIE_DNAME, qualifiedName);
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            String importClazzAllName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.IMPORT_CLAZZ_ALL_NAME);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.IMPORT_CLAZZ_ALL_NAME, importClazzAllName);
             return null;
         }
     }
 
-    public static String product_2 = "importDeclaration → ε";
+    public static String product_2_2 = "IdentifierRepeat → . Identifier IdentifierRepeat";
+    public static class QualifiedNameRepeatListener extends SyntaxDirectedListener{
+        public QualifiedNameRepeatListener(){
+            this.matchProductTag = product_2_2;
+            this.matchSymbol = "IdentifierRepeat";
+            this.matchIndex = 2;
+            this.isLeaf = false;
+        }
 
-    // 无引入声明
-    public static class EpsilonListener extends SyntaxDirectedListener{
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            String preQuailifiedName = (String) context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.IMPORT_CLAZZ_QUALIFIE_DNAME);
+            String qualifiedName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.IMPORT_CLAZZ_QUALIFIE_DNAME, preQuailifiedName + "." +qualifiedName);
 
-        public EpsilonListener(){
-            this.matchProductTag = product_2;
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            String importClazzAllName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.IMPORT_CLAZZ_ALL_NAME);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.IMPORT_CLAZZ_ALL_NAME, importClazzAllName);
+            return null;
+        }
+    }
+
+    public static String product_2_3 = "IdentifierRepeat → ε";
+    public static class QualifiedNameRepeatEndListener extends SyntaxDirectedListener{
+        public QualifiedNameRepeatEndListener(){
+            this.matchProductTag = product_2_3;
             this.matchSymbol = "ε";
             this.matchIndex = 0;
             this.isLeaf = true;
@@ -87,9 +116,11 @@ public class ImportDeclarationAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            String importClazzAllName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.IMPORT_CLAZZ_QUALIFIE_DNAME);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.IMPORT_CLAZZ_ALL_NAME, importClazzAllName);
+
             return null;
         }
-
     }
 
 }

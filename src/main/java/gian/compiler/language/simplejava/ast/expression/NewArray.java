@@ -1,13 +1,12 @@
 package gian.compiler.language.simplejava.ast.expression;
 
-import gian.compiler.language.simplejava.ast.AstNode;
 import gian.compiler.language.simplejava.bean.VariableArrayType;
 import gian.compiler.language.simplejava.bean.VariableType;
 
 /**
  * Created by gaojian on 2019/4/4.
  */
-public class NewArray extends AstNode {
+public class NewArray extends Expr {
 
     public VariableType baseType;
     public VariableArrayType variableArrayType;
