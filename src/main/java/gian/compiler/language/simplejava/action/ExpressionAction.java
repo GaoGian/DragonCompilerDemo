@@ -92,7 +92,7 @@ public class ExpressionAction {
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
 
-            ThisRefNode thisRefNode = JavaDirectUtils.thisRefNode();
+            ThisRefNode thisRefNode = JavaDirectUtils.thisRefNode(context);
 
             String fieldName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
             FieldRefNode fieldRefNode = JavaDirectUtils.fieldRefNode(fieldName);
@@ -398,7 +398,7 @@ public class ExpressionAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode thisRef = JavaDirectUtils.thisRefNode();
+            RefNode thisRef = JavaDirectUtils.thisRefNode(context);
 
             String callName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
             List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
@@ -439,7 +439,7 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode thisRef = JavaDirectUtils.thisRefNode();
+            RefNode thisRef = JavaDirectUtils.thisRefNode(context);
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, thisRef);
 
             return null;
@@ -738,8 +738,8 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Token number = context.getBrotherNodeList().get(currentIndex - 1).getIdToken();
-            Constant constant = JavaDirectUtils.constant(number);
+            Token digit = context.getBrotherNodeList().get(currentIndex - 1).getIdToken();
+            Constant constant = JavaDirectUtils.constant(digit);
 
             Expr nextExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             if(nextExpr != null){
@@ -769,8 +769,8 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Token number = context.getBrotherNodeList().get(currentIndex - 1).getIdToken();
-            Constant constant = JavaDirectUtils.constant(number);
+            Token str = context.getBrotherNodeList().get(currentIndex - 1).getIdToken();
+            Constant constant = JavaDirectUtils.constant(str);
 
             Expr nextExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             if(nextExpr != null){

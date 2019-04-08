@@ -1,5 +1,6 @@
 package gian.compiler.language.simplejava.ast.expression;
 
+import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
 
 /**
@@ -17,7 +18,7 @@ public class StringJoin extends Expr {
     }
 
     @Override
-    public String toString(){
+    public String code(){
         return this.expr1 + " <join> " + this.expr2;
     }
 

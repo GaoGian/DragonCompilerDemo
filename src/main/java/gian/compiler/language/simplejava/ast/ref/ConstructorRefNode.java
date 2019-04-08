@@ -2,7 +2,10 @@ package gian.compiler.language.simplejava.ast.ref;
 
 
 import gian.compiler.language.simplejava.ast.expression.Expr;
+import gian.compiler.language.simplejava.ast.expression.Temp;
 import gian.compiler.language.simplejava.bean.Variable;
+import gian.compiler.language.simplejava.bean.VariableType;
+import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,16 +19,25 @@ public class ConstructorRefNode extends RefNode {
     public List<Expr> paramList = new ArrayList<>();
 
     public ConstructorRefNode(String newClassName, List<Expr> paramList){
+        // TODO 需要携带类型信息
+        super(null);
         this.newClassName = newClassName;
         this.paramList = paramList;
     }
 
     @Override
-    public String toString(){
-        StringBuilder str = new StringBuilder(this.caller + "." + this.callName + "(" + this.paramList.toString() + ")");
-        str.append(nextRef.toString());
+    public Variable execute(Variable preResult){
+        int lable = newlabel();
+        emitlabel(lable);
+        Temp temp = JavaDirectUtils.temp(this.type);
+        emit(temp.getName() + " = " + " <new> " + this.code());
 
-        return str.toString();
+        return temp;
+    }
+
+    @Override
+    public String code(){
+        return this.newClassName + "(" + this.paramList.toString() + ")";
     }
 
 

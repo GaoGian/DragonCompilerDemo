@@ -19,7 +19,7 @@ public class Clazz {
     protected String clazzName;
     protected String clazzAllName;
 
-    protected Map<String, String> extendInfo = new HashMap<>();
+    protected String extendClazzName;
 
     protected List<ClazzField> fieldList = new ArrayList<>();
     protected List<ClazzConstructor> constructorList = new ArrayList<>();
@@ -73,12 +73,12 @@ public class Clazz {
         this.clazzAllName = clazzAllName;
     }
 
-    public Map<String, String> getExtendInfo() {
-        return extendInfo;
+    public String getExtendInfo() {
+        return this.extendClazzName;
     }
 
-    public void setExtendInfo(Map<String, String> extendInfo) {
-        this.extendInfo = extendInfo;
+    public void setExtendInfo(String extendClazzName) {
+        this.extendClazzName = extendClazzName;
     }
 
     public List<ClazzField> getFieldList() {

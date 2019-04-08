@@ -2,6 +2,7 @@ package gian.compiler.language.simplejava.ast.expression;
 
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
+import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 /**
  * Created by tingyun on 2018/7/20.
@@ -14,23 +15,18 @@ public class Arith extends Expr {
     public VariableType returnType;
 
     public Arith(String tok, Expr expr1, Expr expr2){
+        super(VariableType.max(expr1.getType(), expr2.getType()));
         this.operator = tok;
         this.expr1 = expr1;
         this.expr2 = expr2;
-        this.returnType = VariableType.max(this.expr1.execute().getDeclType(), this.expr2.execute().getDeclType());
+        this.returnType = VariableType.max(this.expr1.getType(), this.expr2.getType());
         if(this.returnType == null){
             error("type error");
         }
     }
 
     @Override
-    protected Variable gen(){
-        // TODO
-        return null;
-    }
-
-    @Override
-    public String toString(){
+    public String code(){
         return expr1.toString() + " " + expr2.toString();
     }
 

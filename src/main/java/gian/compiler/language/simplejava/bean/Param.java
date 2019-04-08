@@ -14,13 +14,14 @@ public class Param extends Expr {
     public VariableType declType;
 
     public Param(String fieldName, VariableType declType) {
+        super(declType);
         this.declType = declType;
         this.name = fieldName;
     }
 
     @Override
-    protected Variable gen(){
-        throw new JavaDirectException("参数声明没有真实引用");
+    public Variable gen(){
+        throw new JavaDirectException("该对象是参数，不用于生成中间码");
     }
 
     public String getName() {
@@ -40,7 +41,7 @@ public class Param extends Expr {
     }
 
     @Override
-    public String toString(){
+    public String code(){
         return "param: type_" + declType.getName() + "-name_" + this.name;
     }
 

@@ -9,26 +9,8 @@ import gian.compiler.language.simplejava.bean.VariableType;
  */
 public class Rel extends Logical {
 
-    public Rel(String tok, Expr x1, Expr x2){
-        super(tok, x1, x2);
+    public Rel(String rel, Expr x1, Expr x2){
+        super(rel, x1, x2);
     }
-
-    @Override
-    protected Variable gen(){
-        // TODO
-        return null;
-    }
-
-    @Override
-    public VariableType check(VariableType p1, VariableType p2){
-        if(p1 instanceof VariableArrayType || p2 instanceof VariableArrayType){
-            return null;
-        }else if(p1 == p2){
-            return VariableType.BOOLEAN;
-        }else{
-            return null;
-        }
-    }
-
 
 }

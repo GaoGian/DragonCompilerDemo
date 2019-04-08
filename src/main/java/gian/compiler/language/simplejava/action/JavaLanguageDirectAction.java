@@ -75,10 +75,33 @@ public class JavaLanguageDirectAction {
 
     }
 
+    // 类声明
+    public static class ClassDeclarationListener extends SyntaxDirectedListener{
+        public ClassDeclarationListener(){
+            this.matchProductTag = product;
+            this.matchSymbol = "classDeclaration";
+            this.matchIndex = 2;
+            this.isLeaf = false;
+        }
+
+        @Override
+        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            return null;
+        }
+
+        @Override
+        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CLAZZ_MAP, context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP));
+
+            return null;
+        }
+    }
+
     public static List<SyntaxDirectedListener> getAllListener() {
         List<SyntaxDirectedListener> allListener = new ArrayList<>();
         allListener.add(new PackageDeclarationListener());
         allListener.add(new ImportDeclarationListener());
+        allListener.add(new ClassDeclarationListener());
 
         return allListener;
     }

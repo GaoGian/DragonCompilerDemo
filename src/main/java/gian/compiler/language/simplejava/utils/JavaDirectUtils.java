@@ -1,6 +1,7 @@
 package gian.compiler.language.simplejava.utils;
 
 import gian.compiler.front.lexical.parser.Token;
+import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.ast.expression.Constant;
 import gian.compiler.language.simplejava.ast.ref.*;
@@ -114,10 +115,6 @@ public class JavaDirectUtils {
         return JavaDirectUtils.findVariable(variableName);
     }
 
-    public static NewArray newArray(VariableType baseType, VariableArrayType variableArrayType){
-        return new NewArray(baseType, variableArrayType);
-    }
-
     public static Variable variableDeclarate(String variableName, VariableType variableType){
         Variable variable = new Variable(variableName, variableType, null);
         JavaDirectGlobalProperty.topEnv.getPropertyMap().put(variableName, variable);
@@ -138,6 +135,14 @@ public class JavaDirectUtils {
         return new Constant(token.getToken(), new VariableType(token.getToken(), VariableType.getVariableTypeWidth(token.getType().getType())));
     }
 
+    public static NewArray newArray(VariableType baseType, VariableArrayType variableArrayType){
+        return new NewArray(baseType, variableArrayType);
+    }
+
+    public static Temp temp(VariableType type){
+        return new Temp(type);
+    }
+
     public static void nestEnv(){
         JavaEnvironment preEnv = JavaDirectGlobalProperty.topEnv;
         JavaDirectGlobalProperty.topEnv = new JavaEnvironment(preEnv);
@@ -145,10 +150,6 @@ public class JavaDirectUtils {
 
     public static void exitEnv(){
         JavaDirectGlobalProperty.topEnv = JavaDirectGlobalProperty.topEnv.getPreEnv();
-    }
-
-    public static SuperInitRefNode superInitRefNode(List<Expr> paramList){
-        return new SuperInitRefNode(paramList);
     }
 
     public static MethodRefNode methodRefNode(String callName, List<Expr> paramList){
@@ -163,8 +164,14 @@ public class JavaDirectUtils {
         return new FieldRefNode(fieldName);
     }
 
-    public static ThisRefNode thisRefNode(){
-        return new ThisRefNode();
+    public static ThisRefNode thisRefNode(SyntaxDirectedContext context){
+        String clazzName = (String) context.getGlobalPropertyMap().get(JavaConstants.CURRENT_CLAZZ_NAME);
+        return new ThisRefNode(new VariableType(clazzName, VariableType.getVariableTypeWidth(JavaConstants.VARIABLE_TYPE_CLAZZ)));
+    }
+
+    public static SuperInitRefNode superInitRefNode(SyntaxDirectedContext context, List<Expr> paramList){
+        String extendClazzName = (String) context.getGlobalPropertyMap().get(JavaConstants.EXTEND_INFO);
+        return new SuperInitRefNode(new VariableType(extendClazzName, VariableType.getVariableTypeWidth(JavaConstants.VARIABLE_TYPE_CLAZZ)), paramList);
     }
 
     public static ArrayElementRefNode arrayElementRefNode(String callName, List<Expr> index){
@@ -194,6 +201,10 @@ public class JavaDirectUtils {
 
     public static Param getParam(String paramName, VariableType variableType){
         return new Param(paramName, variableType);
+    }
+
+    public static void setMethodReturnType(VariableType returnVariableType){
+        JavaDirectGlobalProperty.methodVariableType = returnVariableType;
     }
 
     public static void error(String s){

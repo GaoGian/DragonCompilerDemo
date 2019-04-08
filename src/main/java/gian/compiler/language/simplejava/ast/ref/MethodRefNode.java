@@ -1,6 +1,10 @@
 package gian.compiler.language.simplejava.ast.ref;
 
 import gian.compiler.language.simplejava.ast.expression.Expr;
+import gian.compiler.language.simplejava.ast.expression.Temp;
+import gian.compiler.language.simplejava.bean.Variable;
+import gian.compiler.language.simplejava.bean.VariableType;
+import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +19,27 @@ public class MethodRefNode extends RefNode {
     public List<Expr> paramList = new ArrayList<>();
 
     public MethodRefNode(String callName, List<Expr> paramList){
+        super(null);
         this.callName = callName;
         this.paramList = paramList;
     }
 
+    public Variable execute(Variable preResult){
+        int lable = newlabel();
+        emitlabel(lable);
+        Temp temp = JavaDirectUtils.temp(this.type);
+        if(preResult != null) {
+            emit(temp.getName() + " = " + preResult.getName() + " <invoke> " + this.code());
+        }else{
+            emit(temp.getName() + " = " + "<this> <invoke> " + this.code());
+        }
+
+        return temp;
+    }
+
     @Override
-    public String toString(){
-        return this.caller + "." + this.callName + "(" + this.paramList.toString() + ")" + nextRef.toString();
+    public String code(){
+        return this.callName + "(" + this.paramList.toString() + ")";
     }
 
 }

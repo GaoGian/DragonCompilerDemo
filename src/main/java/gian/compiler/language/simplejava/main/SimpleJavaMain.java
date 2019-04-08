@@ -1,13 +1,17 @@
 package gian.compiler.language.simplejava.main;
 
+import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.SyntacticLRParser;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedParser;
+import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.action.*;
+import gian.compiler.language.simplejava.bean.Clazz;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Gian on 2019/4/7.
@@ -46,6 +50,16 @@ public class SimpleJavaMain {
         SyntaxTree annotionSyntaxTree = SyntaxDirectedParser.syntaxDirectedParser(syntaxTree, simpleJavaDirectListeners);
 
         // TODO 获取抽象语法树
+        Map<String, Clazz> clazzMap = (Map<String, Clazz>) annotionSyntaxTree.getSyntaxTreeRoot().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CLAZZ_MAP);
+        for(String className : clazzMap.keySet()){
+            Clazz clazz = clazzMap.get(className);
+            ExecuteClazzAstDirect(clazz);
+        }
+
+    }
+
+    // TODO 根据抽象语法树执行语义动作，生成中间码
+    public static void ExecuteClazzAstDirect(Clazz clazz){
 
     }
 

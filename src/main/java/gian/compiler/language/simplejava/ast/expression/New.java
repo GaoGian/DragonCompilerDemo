@@ -2,6 +2,7 @@ package gian.compiler.language.simplejava.ast.expression;
 
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
+import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,17 +12,17 @@ import java.util.List;
  */
 public class New extends Expr {
 
-    public VariableType variableType;
     public List<Variable> paramList = new ArrayList<>();
 
     public New(VariableType variableType, List<Variable> paramList){
-        this.variableType = variableType;
+        super(variableType);
         this.paramList = paramList;
     }
 
+
     @Override
-    public String toString(){
-        return "new " + this.variableType.getName() + "(" + this.paramList.toString() + ")";
+    public String code(){
+        return "new " + this.type.getName() + "(" + this.paramList.toString() + ")";
     }
 
 }

@@ -17,7 +17,7 @@ public class Variable extends Param {
     }
 
     @Override
-    protected Variable gen(){
+    public Variable gen(){
         return this;
     }
 

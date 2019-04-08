@@ -1,46 +1,38 @@
 package gian.compiler.language.simplejava.ast.ref;
 
 import gian.compiler.language.simplejava.ast.expression.Expr;
+import gian.compiler.language.simplejava.ast.expression.Temp;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
-import gian.compiler.language.simplejava.ast.AstNode;
+import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 /**
  * Created by gaojian on 2019/4/4.
  */
-public class RefNode extends Expr {
+public abstract class RefNode extends Expr {
 
-    // 调用者
-    public Variable caller;
     // 调用名称
     public String callName;
-
-    public Variable resultVariable;
-    public VariableType resultType;
 
     public RefNode preRef;
     public RefNode nextRef;
 
-    //TODO 需要调整
-    public RefNode(){}
-
     public RefNode(VariableType type){
-
+        super(type);
     }
 
     @Override
-    protected Variable gen(){
-        //TODO
-        return null;
+    public Variable gen(){
+        RefNode nextRef = this;
+        Variable temp = null;
+        while(nextRef != null){
+            temp = nextRef.execute(temp);
+            nextRef = this.nextRef;
+        }
+        return temp;
     }
 
-    public Variable getCaller() {
-        return caller;
-    }
-
-    public void setCaller(Variable caller) {
-        this.caller = caller;
-    }
+    public abstract Variable execute(Variable preResult);
 
     public String getCallName() {
         return callName;
@@ -48,22 +40,6 @@ public class RefNode extends Expr {
 
     public void setCallName(String callName) {
         this.callName = callName;
-    }
-
-    public Variable getResultVariable() {
-        return resultVariable;
-    }
-
-    public void setResultVariable(Variable resultVariable) {
-        this.resultVariable = resultVariable;
-    }
-
-    public VariableType getResultType() {
-        return resultType;
-    }
-
-    public void setResultType(VariableType resultType) {
-        this.resultType = resultType;
     }
 
     public RefNode getPreRef() {
@@ -81,4 +57,5 @@ public class RefNode extends Expr {
     public void setNextRef(RefNode nextRef) {
         this.nextRef = nextRef;
     }
+
 }

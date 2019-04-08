@@ -110,7 +110,7 @@ public class ConstructorBodyAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             List<Expr> paramList = (List<Expr>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
-            SuperInitRefNode superInitRefNode = JavaDirectUtils.superInitRefNode(paramList);
+            SuperInitRefNode superInitRefNode = JavaDirectUtils.superInitRefNode(context, paramList);
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, superInitRefNode);
 
             return null;
@@ -133,7 +133,7 @@ public class ConstructorBodyAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            SuperInitRefNode superInitRefNode = JavaDirectUtils.superInitRefNode(new ArrayList<>());
+            SuperInitRefNode superInitRefNode = JavaDirectUtils.superInitRefNode(context, new ArrayList<>());
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, superInitRefNode);
             return null;
         }

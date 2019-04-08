@@ -1,6 +1,10 @@
 package gian.compiler.language.simplejava.ast.ref;
 
 import gian.compiler.language.simplejava.ast.expression.Expr;
+import gian.compiler.language.simplejava.ast.expression.Temp;
+import gian.compiler.language.simplejava.bean.Variable;
+import gian.compiler.language.simplejava.bean.VariableType;
+import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 import java.util.List;
 
@@ -13,26 +17,32 @@ public class ArrayElementRefNode extends RefNode {
     public List<Expr> arrayIndex;
 
     public ArrayElementRefNode(String callName, List<Expr> arrayIndex) {
+        // TODO 需要携带类型信息
+        super(null);
         this.callName = callName;
         this.arrayIndex = arrayIndex;
     }
 
-    public List<Expr> getArrayIndex() {
-        return arrayIndex;
-    }
+    @Override
+    public Variable execute(Variable preResult){
+        int lable = newlabel();
+        emitlabel(lable);
+        Temp temp = JavaDirectUtils.temp(this.type);
+        if(preResult != null) {
+            emit(temp.getName() + " = " + preResult.getName() + " <getField> " + this.callName + " <getArrayElement> " + this.code());
+        }else{
+            emit(temp.getName() + " = " + " <getVariable> " + this.callName + " <getArrayElement> " + this.code());
+        }
 
-    public void setArrayIndex(List<Expr> arrayIndex) {
-        this.arrayIndex = arrayIndex;
+        return temp;
     }
 
     @Override
-    public String toString(){
+    public String code(){
         StringBuffer str = new StringBuffer();
         for(Expr index : arrayIndex){
             str.append("[" + index + "]");
         }
-        str.append(nextRef.toString());
-
         return str.toString();
     }
 

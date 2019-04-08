@@ -42,7 +42,7 @@ public class ClassDeclarationAction {
             String clazzName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
             String packageName = (String) context.getGlobalPropertyMap().get(JavaConstants.PACKAGE_NAME);
             String clazzAllName = packageName + "." + clazzName;
-            Map<String, String> extendInfo = (Map<String, String>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.EXTEND_INFO);
+            String extendClazzName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.EXTEND_INFO);
 
             List<String> importList = (List<String>) context.getGlobalPropertyMap().get(JavaConstants.IMPORT_LIST);
             Map<String, String> importMap = (Map<String, String>) context.getGlobalPropertyMap().get(JavaConstants.IMPORT_MAP);
@@ -57,13 +57,16 @@ public class ClassDeclarationAction {
             clazz.setPermission(modifier);
             clazz.setImportList(importList);
             clazz.setImportMap(importMap);
-            clazz.setExtendInfo(extendInfo);
+            clazz.setExtendInfo(extendClazzName);
             clazz.setFieldList(fieldList);
             clazz.setConstructorList(constructorList);
             clazz.setMethodList(methodList);
 
             Map<String, Clazz> clazzMap = (Map<String, Clazz>) context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP);
             clazzMap.put(clazzName, clazz);
+
+            context.getGlobalPropertyMap().put(JavaConstants.CURRENT_CLAZZ_NAME, clazzName);
+            context.getGlobalPropertyMap().put(JavaConstants.EXTEND_INFO, extendClazzName);
 
             return null;
         }
@@ -87,9 +90,7 @@ public class ClassDeclarationAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             String extendClazzName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CLAZZ_NAME);
-            Map<String, String> extendInfo = new HashMap<>();
-            extendInfo.put(JavaConstants.CLAZZ_NAME, extendClazzName);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.EXTEND_INFO, extendInfo);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.EXTEND_INFO, extendClazzName);
 
             return null;
         }

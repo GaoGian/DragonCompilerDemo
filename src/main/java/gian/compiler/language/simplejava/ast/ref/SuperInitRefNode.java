@@ -2,6 +2,7 @@ package gian.compiler.language.simplejava.ast.ref;
 
 import gian.compiler.language.simplejava.ast.expression.Expr;
 import gian.compiler.language.simplejava.bean.Variable;
+import gian.compiler.language.simplejava.bean.VariableType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,13 +14,21 @@ public class SuperInitRefNode extends RefNode {
 
     public List<Expr> paramList = new ArrayList<>();
 
-    public SuperInitRefNode(List<Expr> paramList){
+    public SuperInitRefNode(VariableType type, List<Expr> paramList){
+        super(type);
         this.paramList = paramList;
     }
 
+    public Variable execute(Variable preResult){
+        int lable = newlabel();
+        emitlabel(lable);
+        emit("<super> " + this.code());
+        return null;
+    }
+
     @Override
-    public String toString(){
-        return "super(" + this.paramList.toString() + ")";
+    public String code(){
+        return "(" + this.paramList.toString() + ")";
     }
 
 }

@@ -9,7 +9,7 @@ import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
-import gian.compiler.language.simplejava.ast.AstNode;
+import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,8 @@ public class MethodDeclarationAction {
             VariableType returnVariableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
 
             currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.METHOD_RETURN_TYPE, returnVariableType);
+
+            JavaDirectUtils.setMethodReturnType(returnVariableType);
 
             return null;
         }
@@ -117,6 +119,7 @@ public class MethodDeclarationAction {
             Stmt code = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
 
+            JavaDirectUtils.setMethodReturnType(null);
             return null;
         }
     }

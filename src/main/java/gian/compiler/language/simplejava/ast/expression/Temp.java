@@ -15,9 +15,4 @@ public class Temp extends Variable {
         super(JavaConstants.CODE_TEMP_STR + JavaDirectGlobalProperty.tempCout.getAndIncrement(), type, null);
     }
 
-    @Override
-    public String toString(){
-        return this.getName();
-    }
-
 }
