@@ -1,5 +1,6 @@
 package gian.compiler.language.simplejava.ast.statement;
 
+import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.ast.expression.Expr;
 
@@ -19,18 +20,21 @@ public class Do extends Stmt {
     public void init(Stmt s, Expr x){
         expr = x;
         stmt = s;
-        if(expr.getType() != VariableType.BOOLEAN){
-            expr.error("boolean required in do");
-        }
+        // TODO 暂时取消类型校验，等到动态加载连接功能完成后再启用
+//        if(expr.getType() != VariableType.BOOLEAN){
+//            expr.error("boolean required in do");
+//        }
     }
 
     @Override
-    public void gen(int b, int a){
-        after = a;
-        int label = newlabel();
-        stmt.gen(b, label);
-        emitlabel(label);
-//        expr.jumping(b, 0);
+    public void gen(String before, String after){
+        String doStart = newlabel();
+        this.current = doStart;
+        this.after = after;
+        emitlabel(doStart);
+        stmt.gen(doStart, after);
+        Variable result = this.expr.gen();
+        emit("<if> " + result.getName() + " <eq> <true> <goto> " + doStart);
     }
 
 }

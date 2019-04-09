@@ -17,8 +17,8 @@ public class Continue extends Stmt {
     }
 
     @Override
-    public void gen(int b, int a){
-        emit("goto L" + stmt.current);
+    public void gen(String before, String after){
+        emit("<goto> " + stmt.current);
     }
 
 }

@@ -9,27 +9,11 @@ public class Stmt extends AstNode {
 
     public static Stmt Null = new Stmt();
 
-    protected Integer current = 0;
-    protected Integer after = 0;
+    protected String current;
+    protected String after;
 
     public Stmt(){}
 
-    public void gen(int b, int a){}
-
-    public Integer getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(Integer current) {
-        this.current = current;
-    }
-
-    public Integer getAfter() {
-        return after;
-    }
-
-    public void setAfter(Integer after) {
-        this.after = after;
-    }
+    public void gen(String before, String after){}
 
 }

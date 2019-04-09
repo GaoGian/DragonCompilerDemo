@@ -32,5 +32,12 @@ public class Set extends Stmt {
         }
     }
 
+    @Override
+    public void gen(String before, String after){
+        String lable = newlabel();
+        emitlabel(lable);
+        Variable result = this.expr.gen();
+        emit("<getField> " + this.id.getName() + " <assign> " + result.getName());
+    }
 
 }

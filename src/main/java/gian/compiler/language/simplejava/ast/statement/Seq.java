@@ -13,16 +13,16 @@ public class Seq extends Stmt {
     }
 
     @Override
-    public void gen(int b, int a){
+    public void gen(String before, String after){
         if(stmt1 == Stmt.Null){
-            stmt2.gen(b, a);
+            stmt2.gen(before, after);
         }else if(stmt2 == Stmt.Null){
-            stmt1.gen(b, a);
+            stmt1.gen(before, after);
         }else{
-            int label = newlabel();
-            stmt1.gen(b, label);
+            String label = newlabel();
+            stmt1.gen(before, label);
             emitlabel(label);
-            stmt2.gen(label, a);
+            stmt2.gen(label, after);
         }
     }
 

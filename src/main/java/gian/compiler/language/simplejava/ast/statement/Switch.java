@@ -23,12 +23,10 @@ public class Switch extends Stmt {
     }
 
     @Override
-    public void gen(int b, int a){
-        // FIXME
-        after = a;
-        int label = newlabel();
+    public void gen(String before, String after){
+        String label = newlabel();
         expr.gen();
-        stmt.gen(b, label);
+        stmt.gen(before, label);
         emitlabel(label);
     }
 

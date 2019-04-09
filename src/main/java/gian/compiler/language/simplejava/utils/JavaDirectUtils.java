@@ -44,12 +44,8 @@ public class JavaDirectUtils {
         return new For(init, control, update, blockStmt);
     }
 
-    public static If ifNode(Expr expr, Stmt stmt){
-        return new If(expr, stmt);
-    }
-
-    public static Else elseNode(Expr expr, Stmt trueStmt, Stmt falseStmt){
-        return new Else(expr, trueStmt, falseStmt);
+    public static IfElse ifElseNode(Expr expr, Stmt trueStmt, Stmt falseStmt){
+        return new IfElse(expr, trueStmt, falseStmt);
     }
 
     public static While whileNode(Expr expr, Stmt stmt){

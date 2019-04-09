@@ -21,12 +21,13 @@ public class AstNode {
         throw new JavaDirectException("near line: " + lexline + ", lexindex: " + lexindex + ", msg: " + s);
     }
 
-    public int newlabel(){
-        return JavaDirectGlobalProperty.lable.getAndIncrement();
+    public String newlabel(){
+        // TODO 需要改成返回对象，并且记录行号标记，方便后续生成真实韩浩
+        return "L" + JavaDirectGlobalProperty.lable.getAndIncrement();
     }
 
-    public void emitlabel(int i){
-        System.out.println("L" + i + ":");
+    public void emitlabel(String lable){
+        System.out.println(lable + ":");
     }
 
     public void emit(String s){

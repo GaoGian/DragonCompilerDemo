@@ -1,6 +1,7 @@
 package gian.compiler.language.simplejava.ast.statement;
 
 import gian.compiler.language.simplejava.ast.expression.Expr;
+import gian.compiler.language.simplejava.bean.Variable;
 
 /**
  * Created by Gian on 2019/4/6.
@@ -16,14 +17,16 @@ public class Case extends Stmt {
     }
 
     @Override
-    public void gen(int b, int a){
-        // FIXME 仿照 IF
-        after = a;
-        int label = newlabel();
-//        expr.jumping();
-        emitlabel(label);
-        label = newlabel();
-        stmt.gen(b, label);
+    public void gen(String before, String after){
+        String lable = newlabel();
+        this.emitlabel(lable);
+        Variable result = this.expr.gen();
+        this.emit("<if> " + result.getName() + " <eq> <false> <goto> " + after);
+
+        String lable2 = newlabel();
+        this.emitlabel(lable2);
+        this.stmt.gen(before, after);
+
     }
 
 }

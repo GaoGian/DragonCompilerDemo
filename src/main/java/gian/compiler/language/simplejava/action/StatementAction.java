@@ -41,13 +41,7 @@ public class StatementAction {
             Stmt ifStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             Stmt elseStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             
-            Stmt stmt = null;
-            // TODO 需要处理控制流
-            if(elseStmt == null){
-                stmt = JavaDirectUtils.ifNode(parExpr, ifStmt);
-            }else{
-                stmt = JavaDirectUtils.elseNode(parExpr, ifStmt, elseStmt);
-            }
+            Stmt stmt = JavaDirectUtils.ifElseNode(parExpr, ifStmt, elseStmt);
             
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stmt);
             
@@ -98,13 +92,7 @@ public class StatementAction {
             Stmt ifStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             Stmt elseStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
-            Stmt stmt = null;
-            // TODO 需要处理控制流
-            if(elseStmt == null){
-                stmt = JavaDirectUtils.ifNode(parExpr, ifStmt);
-            }else{
-                stmt = JavaDirectUtils.elseNode(parExpr, ifStmt, elseStmt);
-            }
+            Stmt stmt = JavaDirectUtils.ifElseNode(parExpr, ifStmt, elseStmt);
 
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stmt);
 

@@ -10,6 +10,7 @@ import gian.compiler.language.simplejava.utils.JavaDirectUtils;
  */
 public abstract class Expr extends Stmt {
 
+    protected Variable result;
     protected VariableType type;
 
     public Expr(VariableType type){
@@ -21,9 +22,12 @@ public abstract class Expr extends Stmt {
      * @return
      */
     public Variable gen(){
-        Temp temp = JavaDirectUtils.temp(type);
-        emit(temp.getName() + " = " + this.code());
-        return temp;
+        if(this.result == null) {
+            this.result = JavaDirectUtils.temp(type);
+            emit(this.result.getName() + " <assign> " + this.code());
+        }
+
+        return this.result;
     }
 
     /**

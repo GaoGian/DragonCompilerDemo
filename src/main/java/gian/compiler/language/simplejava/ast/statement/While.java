@@ -1,6 +1,7 @@
 package gian.compiler.language.simplejava.ast.statement;
 
 
+import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.bean.VariableType;
 import gian.compiler.language.simplejava.ast.expression.Expr;
 
@@ -20,19 +21,22 @@ public class While extends Stmt {
     public void init(Expr x, Stmt s){
         expr = x;
         stmt = s;
-        if(expr.getType() != VariableType.BOOLEAN){
-            expr.error("boolean required in while");
-        }
+        // TODO 暂时取消类型校验，等到动态加载连接功能完成后再启用
+//        if(expr.getType() != VariableType.BOOLEAN){
+//            expr.error("boolean required in while");
+//        }
     }
 
     @Override
-    public void gen(int b, int a){
-        after = a;
-//        expr.jumping(0, a);
-        int label = newlabel();
+    public void gen(String before, String after){
+        String label = newlabel();
         emitlabel(label);
-        stmt.gen(label, b);
-        emit("goto L" + b);
+        this.current = label;
+        this.after = after;
+        Variable result = this.expr.gen();
+        this.emit("<if> " + result.getName() + " <eq> <false> <goto> " + after);
+        stmt.gen(label, after);
+        emit("<goto> " + label);
     }
 
 }

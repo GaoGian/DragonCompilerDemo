@@ -1,5 +1,6 @@
 package gian.compiler.language.simplejava.ast.statement;
 
+import gian.compiler.language.simplejava.ast.expression.Temp;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.ast.expression.Expr;
@@ -19,6 +20,14 @@ public class Return extends Stmt {
             error("no match return type");
         }
         this.expr = expr;
+    }
+
+    @Override
+    public void gen(String before, String after){
+        Variable result = expr.gen();
+        String lable = newlabel();
+        emitlabel(lable);
+        emit("<return> " + result.getName());
     }
 
 }

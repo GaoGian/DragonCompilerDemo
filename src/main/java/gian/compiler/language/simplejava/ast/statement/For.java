@@ -1,15 +1,18 @@
 package gian.compiler.language.simplejava.ast.statement;
 
 import gian.compiler.language.simplejava.ast.expression.Expr;
+import gian.compiler.language.simplejava.bean.Variable;
 
 /**
  * Created by gaojian on 2019/4/1.
  */
 public class For extends Stmt {
 
+    // TODO 这里需要改成表达式
     public Stmt init;
     public Expr control;
     public Stmt update;
+    // TODO 这里需要改成表达式
     public Stmt blockStmt;
 
     public For(){}
@@ -29,18 +32,26 @@ public class For extends Stmt {
     }
 
     @Override
-    public void gen(int b, int a){
-        // FIXME 调整控制逻辑
-        after = a;
-        int label = newlabel();
-        init.gen(b, label);
-        emitlabel(label);
-        label = newlabel();
-//        control.jumping(b, 0);
-        label = newlabel();
-        blockStmt.gen(b, label);
-        label = newlabel();
-        update.gen(b ,label);
+    public void gen(String before, String after){
+        String initLable = newlabel();
+        emitlabel(initLable);
+        this.init.gen(before, after);
+
+        String controlLable = newlabel();
+        emitlabel(controlLable);
+        this.current = controlLable;
+        this.after = after;
+        Variable result = this.control.gen();
+        emit("<if> " + result.getName() + " <eq> <false> <goto> " + after);
+
+        String blockLabel = newlabel();
+        emitlabel(blockLabel);
+        this.blockStmt.gen(controlLable, after);
+
+        String updateLable = newlabel();
+        emitlabel(updateLable);
+        this.update.gen(controlLable, after);
+
     }
 
 
