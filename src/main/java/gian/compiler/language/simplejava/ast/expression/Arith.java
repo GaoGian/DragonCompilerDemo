@@ -15,14 +15,16 @@ public class Arith extends Expr {
     public VariableType returnType;
 
     public Arith(String tok, Expr expr1, Expr expr2){
-        super(VariableType.max(expr1.getType(), expr2.getType()));
+        // TODO 暂时取消类型校验，等到动态加载连接功能完成后再启用
+//        super(VariableType.max(expr1.getType(), expr2.getType()));
+        super(null);
         this.operator = tok;
         this.expr1 = expr1;
         this.expr2 = expr2;
-        this.returnType = VariableType.max(this.expr1.getType(), this.expr2.getType());
-        if(this.returnType == null){
-            error("type error");
-        }
+//        this.returnType = VariableType.max(this.expr1.getType(), this.expr2.getType());
+//        if(this.returnType == null){
+//            error("type error");
+//        }
     }
 
     @Override

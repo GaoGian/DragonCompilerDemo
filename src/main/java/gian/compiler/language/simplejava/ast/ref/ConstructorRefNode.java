@@ -27,8 +27,6 @@ public class ConstructorRefNode extends RefNode {
 
     @Override
     public Variable execute(Variable preResult){
-        int lable = newlabel();
-        emitlabel(lable);
         Temp temp = JavaDirectUtils.temp(this.type);
         emit(temp.getName() + " = " + " <new> " + this.code());
 

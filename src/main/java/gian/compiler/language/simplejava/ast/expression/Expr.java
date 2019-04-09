@@ -21,8 +21,6 @@ public abstract class Expr extends Stmt {
      * @return
      */
     public Variable gen(){
-        int lable = newlabel();
-        emitlabel(lable);
         Temp temp = JavaDirectUtils.temp(type);
         emit(temp.getName() + " = " + this.code());
         return temp;

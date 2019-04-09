@@ -20,8 +20,6 @@ public class SuperInitRefNode extends RefNode {
     }
 
     public Variable execute(Variable preResult){
-        int lable = newlabel();
-        emitlabel(lable);
         emit("<super> " + this.code());
         return null;
     }

@@ -25,8 +25,6 @@ public class MethodRefNode extends RefNode {
     }
 
     public Variable execute(Variable preResult){
-        int lable = newlabel();
-        emitlabel(lable);
         Temp temp = JavaDirectUtils.temp(this.type);
         if(preResult != null) {
             emit(temp.getName() + " = " + preResult.getName() + " <invoke> " + this.code());

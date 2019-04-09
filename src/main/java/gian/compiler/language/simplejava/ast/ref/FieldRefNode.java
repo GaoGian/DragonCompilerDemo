@@ -21,8 +21,6 @@ public class FieldRefNode extends RefNode {
 
     @Override
     public Variable execute(Variable preResult){
-        int lable = newlabel();
-        emitlabel(lable);
         Temp temp = JavaDirectUtils.temp(this.type);
         if(preResult != null) {
             emit(temp.getName() + " = " + preResult.getName() + " <getField> " + this.code());

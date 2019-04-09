@@ -13,12 +13,13 @@ public class Set extends Stmt {
     public Variable id;
     public Expr expr;
 
-    public Set(Variable i, Expr x){
-        id = i;
-        expr = x;
-        if(check(id.getType(), expr.getType()) == null){
-            error("type error");
-        }
+    public Set(Variable variable, Expr expr){
+        id = variable;
+        this.expr = expr;
+        // TODO 暂时取消类型校验，等到动态加载连接功能完成后再启用
+//        if(check(id.getType(), expr.getType()) == null){
+//            error("type error");
+//        }
     }
 
     public VariableType check(VariableType p1, VariableType p2){

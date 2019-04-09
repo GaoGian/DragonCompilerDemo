@@ -11,14 +11,16 @@ public abstract class Logical extends Expr {
     public Expr expr1, expr2;
 
     public Logical(String operator, Expr x1, Expr x2){
-        super(x1.getType());
+        // TODO 暂时取消类型校验，等到动态加载连接功能完成后再启用
+//        super(x1.getType());
+        super(null);
         this.operator = operator;
         this.expr1 = x1;
         this.expr2 = x2;
-        this.type = check(expr1.getType(), expr2.getType());
-        if(this.type == null){
-            error("type error");
-        }
+//        this.type = check(expr1.getType(), expr2.getType());
+//        if(this.type == null){
+//            error("type error");
+//        }
     }
 
     public VariableType check(VariableType p1, VariableType p2){

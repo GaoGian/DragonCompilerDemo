@@ -15,8 +15,6 @@ public class ThisRefNode extends RefNode {
     }
 
     public Variable execute(Variable preResult){
-        int lable = newlabel();
-        emitlabel(lable);
         Temp temp = JavaDirectUtils.temp(this.type);
         emit(temp.getName() + " = <this>");
 
