@@ -75,13 +75,13 @@ public class SyntaxDirectedContext {
         this.brotherNodeList = brotherNodeList;
     }
 
-    public Map<SyntaxTree.SyntaxTreeNode, Map<String, Object>> getPropertyMap() {
-        return propertyMap;
-    }
-
-    public void setPropertyMap(Map<SyntaxTree.SyntaxTreeNode, Map<String, Object>> propertyMap) {
-        this.propertyMap = propertyMap;
-    }
+//    public Map<SyntaxTree.SyntaxTreeNode, Map<String, Object>> getPropertyMap() {
+//        return propertyMap;
+//    }
+//
+//    public void setPropertyMap(Map<SyntaxTree.SyntaxTreeNode, Map<String, Object>> propertyMap) {
+//        this.propertyMap = propertyMap;
+//    }
 
     public Map<String, Object> getGlobalPropertyMap() {
         return globalPropertyMap;

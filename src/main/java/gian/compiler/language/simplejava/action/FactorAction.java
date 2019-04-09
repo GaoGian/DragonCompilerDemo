@@ -9,6 +9,7 @@ import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.ast.ref.FieldRefNode;
 import gian.compiler.language.simplejava.ast.expression.Constant;
 import gian.compiler.language.simplejava.ast.expression.Expr;
+import gian.compiler.language.simplejava.ast.ref.RefNode;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 import java.util.ArrayList;
@@ -36,8 +37,8 @@ public class FactorAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE, expr);
+            Expr expr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, expr);
 
             return null;
         }
@@ -115,8 +116,8 @@ public class FactorAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // FIXME 需要考虑引用链及数组元素的情况
-            FieldRefNode variableRef = (FieldRefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, variableRef);
+            RefNode ref = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, ref);
 
             return null;
         }

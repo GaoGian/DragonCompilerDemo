@@ -11,6 +11,7 @@
 * LR(1)文法解析(可用) --> SyntacticLRParser.syntaxParseLR()
 * 语法分析树、语义动作监听器
 * AST、中间码生成（伪代码）
+* TODO 生成class二进制文件
 
 ## 查看功能 --> ParseChartUtils
 * NFA、DFA关系转换图

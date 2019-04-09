@@ -48,14 +48,13 @@ public class VariableInitializerAction {
         public ArrayVariableInitListener(){
             this.matchProductTag = product_2;
             this.matchSymbol = "arraySize";
-            this.matchIndex = 5;
+            this.matchIndex = 6;
             this.isLeaf = false;
         }
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            // FIXME
-            Token baseType = context.getBrotherNodeList().get(currentIndex - 4).getIdToken();
+            Token baseType = (Token) context.getBrotherNodeList().get(currentIndex - 4).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_BASE_TYPE);
             currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.VARIABLE_BASE_TYPE, baseType);
 
             return null;
@@ -90,7 +89,7 @@ public class VariableInitializerAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            setVariableBaseType(context, currentTreeNode, currentIndex);
             return null;
         }
     }
@@ -111,7 +110,7 @@ public class VariableInitializerAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            setVariableBaseType(context, currentTreeNode, currentIndex);
             return null;
         }
     }
@@ -132,7 +131,7 @@ public class VariableInitializerAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            setVariableBaseType(context, currentTreeNode, currentIndex);
             return null;
         }
     }
@@ -153,7 +152,7 @@ public class VariableInitializerAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            setVariableBaseType(context, currentTreeNode, currentIndex);
             return null;
         }
     }
@@ -174,7 +173,7 @@ public class VariableInitializerAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            setVariableBaseType(context, currentTreeNode, currentIndex);
             return null;
         }
     }
@@ -195,7 +194,7 @@ public class VariableInitializerAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            setVariableBaseType(context, currentTreeNode, currentIndex);
             return null;
         }
     }
@@ -216,7 +215,7 @@ public class VariableInitializerAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            setVariableBaseType(context, currentTreeNode, currentIndex);
             return null;
         }
     }
@@ -237,7 +236,7 @@ public class VariableInitializerAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            setVariableBaseType(context, currentTreeNode, currentIndex);
             return null;
         }
     }
@@ -258,7 +257,7 @@ public class VariableInitializerAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken().getToken());
+            setVariableBaseType(context, currentTreeNode, currentIndex);
             return null;
         }
     }
@@ -315,6 +314,10 @@ public class VariableInitializerAction {
 
             return null;
         }
+    }
+
+    public static void setVariableBaseType(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex){
+        context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_BASE_TYPE, currentTreeNode.getIdToken());
     }
 
     public static List<SyntaxDirectedListener> getAllListener() {

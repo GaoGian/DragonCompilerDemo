@@ -25,7 +25,7 @@ import java.util.Map;
 public class SimpleJavaMain {
 
     public static void main(String[] args){
-        changeOutput(false);
+        changeOutput(true);
 
         // 解析目标程序分析语法树
         SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR("SimpleJavaLexical.txt", "SimpleJavaSyntax.txt", "SimpleJavaMath.txt", true);
@@ -33,11 +33,11 @@ public class SimpleJavaMain {
         // 加载语义动作监听器
         List<SyntaxDirectedListener> simpleJavaDirectListeners = getAllJavaListener();
 
-        // 生成语义式语法树
-        SyntaxTree annotionSyntaxTree = SyntaxDirectedParser.syntaxDirectedParser(syntaxTree, simpleJavaDirectListeners);
+        // 匹配监听器，生成AST
+        SyntaxDirectedParser.syntaxDirectedParser(syntaxTree, simpleJavaDirectListeners);
 
         // TODO 获取抽象语法树
-        Map<String, Clazz> clazzMap = (Map<String, Clazz>) annotionSyntaxTree.getSyntaxTreeRoot().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CLAZZ_MAP);
+        Map<String, Clazz> clazzMap = (Map<String, Clazz>) syntaxTree.getSyntaxTreeRoot().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CLAZZ_MAP);
         for(String className : clazzMap.keySet()){
             Clazz clazz = clazzMap.get(className);
             ExecuteClazzAstDirect(clazz);
@@ -64,6 +64,10 @@ public class SimpleJavaMain {
             System.out.println("import " + importStr);
         }
         System.out.println(clazzPermission + " class " + clazzName + (superType != null ? " extends " + superType : "") + "{");
+
+        for(ClazzField clazzField  : fieldList){
+            System.out.println(clazzField.getPermission() + " " + clazzField.getDeclType().toString() + " " + clazzField.getName());
+        }
 
         for(ClazzConstructor constructor : constructorList){
             System.out.println(constructor.toString());
@@ -126,7 +130,7 @@ public class SimpleJavaMain {
         if(change) {
             PrintStream print = null;
             try {
-                print = new PrintStream("D:\\test.txt");
+                print = new PrintStream("D:\\SimpleJavaMainInfo.log");
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -9,6 +9,7 @@ import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
+import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,9 +48,9 @@ public class ClassDeclarationAction {
             List<String> importList = (List<String>) context.getGlobalPropertyMap().get(JavaConstants.IMPORT_LIST);
             Map<String, String> importMap = (Map<String, String>) context.getGlobalPropertyMap().get(JavaConstants.IMPORT_MAP);
 
-            List<ClazzField> fieldList = (List<ClazzField>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FIELD_LIST);
-            List<ClazzConstructor> constructorList = (List<ClazzConstructor>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CONSTRUCTOR_LIST);
-            List<ClazzMethod> methodList = (List<ClazzMethod>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.METHOD_LIST);
+            List<ClazzField> fieldList = JavaDirectGlobalProperty.fieldList;
+            List<ClazzConstructor> constructorList = JavaDirectGlobalProperty.constructorList;
+            List<ClazzMethod> methodList = JavaDirectGlobalProperty.methodList;
 
             Clazz clazz = new Clazz();
             clazz.setClazzName(clazzName);
@@ -72,14 +73,14 @@ public class ClassDeclarationAction {
         }
     }
 
-    public static String product_1 = "extendsInfo → extends classIdentifier";
+    public static String product_1 = "extendsInfo → extends Identifier";
     public static class ClassExtendListener extends SyntaxDirectedListener{
 
         public ClassExtendListener(){
             this.matchProductTag = product_1;
-            this.matchSymbol = "classIdentifier";
+            this.matchSymbol = "Identifier";
             this.matchIndex = 1;
-            this.isLeaf = false;
+            this.isLeaf = true;
         }
 
         @Override

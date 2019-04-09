@@ -208,7 +208,7 @@ public class TypeDeclarationAction {
         }
     }
 
-    public static String product_11 = "typeComponent → [ ] typeComponent | ε";
+    public static String product_11 = "typeComponent → [ ] typeComponent";
     public static class ArrayTypeComponentListener extends SyntaxDirectedListener{
         public ArrayTypeComponentListener(){
             this.matchProductTag = product_11;
@@ -219,7 +219,7 @@ public class TypeDeclarationAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String baseType = (String) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
+            Token baseType = (Token) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
             currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.VARIABLE_BASE_TYPE, baseType);
 
             return null;

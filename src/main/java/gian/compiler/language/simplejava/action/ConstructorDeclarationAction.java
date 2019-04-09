@@ -9,6 +9,7 @@ import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.language.simplejava.ast.AstNode;
+import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,8 +48,7 @@ public class ConstructorDeclarationAction {
             constructor.setParamList(paramList);
             constructor.setCode(code);
 
-            List<ClazzConstructor> constructorList = (List<ClazzConstructor>) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CONSTRUCTOR_LIST);
-            constructorList.add(constructor);
+            JavaDirectGlobalProperty.constructorList.add(constructor);
 
             return null;
         }

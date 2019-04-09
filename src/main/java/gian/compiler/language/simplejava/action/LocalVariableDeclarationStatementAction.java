@@ -36,7 +36,7 @@ public class LocalVariableDeclarationStatementAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             VariableType variableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
-            String variableId = currentTreeNode.getIdToken().getToken();
+            String variableId = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
             Expr initCode = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
             Variable variable = JavaDirectUtils.variableDeclarate(variableId, variableType);
@@ -45,7 +45,6 @@ public class LocalVariableDeclarationStatementAction {
                 variable.setCode(assign);
                 context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, assign);
             }else{
-                // TODO 这里需要修改
                 context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, variable);
             }
 

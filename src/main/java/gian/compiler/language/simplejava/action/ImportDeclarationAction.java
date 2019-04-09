@@ -85,7 +85,7 @@ public class ImportDeclarationAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String preQuailifiedName = (String) context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.IMPORT_CLAZZ_QUALIFIE_DNAME);
+            String preQuailifiedName = (String) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.IMPORT_CLAZZ_QUALIFIE_DNAME);
             String qualifiedName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
             currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.IMPORT_CLAZZ_QUALIFIE_DNAME, preQuailifiedName + "." +qualifiedName);
 
@@ -116,7 +116,7 @@ public class ImportDeclarationAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String importClazzAllName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.IMPORT_CLAZZ_QUALIFIE_DNAME);
+            String importClazzAllName = (String) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.IMPORT_CLAZZ_QUALIFIE_DNAME);
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.IMPORT_CLAZZ_ALL_NAME, importClazzAllName);
 
             return null;

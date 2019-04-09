@@ -85,7 +85,7 @@ public class ExpressionAction {
         public ThisFieldCallListener(){
             this.matchProductTag = product_1_2;
             this.matchSymbol = "identifierDeclaratorIdRest";
-            this.matchIndex = 2;
+            this.matchIndex = 3;
             this.isLeaf = false;
         }
 
@@ -475,7 +475,7 @@ public class ExpressionAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -855,7 +855,7 @@ public class ExpressionAction {
                 paramList.addAll(paramList);
             }
 
-            context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CALL_PARAM_LIST, paramList);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CALL_PARAM_LIST, paramList);
 
             return null;
         }
@@ -886,7 +886,7 @@ public class ExpressionAction {
                 paramList.addAll(paramList);
             }
 
-            context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CALL_PARAM_LIST, paramList);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CALL_PARAM_LIST, paramList);
 
             return null;
         }

@@ -9,6 +9,7 @@ import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
+import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class MethodDeclarationAction {
             method.setParamList(paramList);
             method.setCode(code);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.METHOD, method);
+            JavaDirectGlobalProperty.methodList.add(method);
 
             return null;
         }
@@ -94,7 +95,7 @@ public class MethodDeclarationAction {
             method.setParamList(paramList);
             method.setCode(code);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.METHOD, method);
+            JavaDirectGlobalProperty.methodList.add(method);
 
             return null;
         }

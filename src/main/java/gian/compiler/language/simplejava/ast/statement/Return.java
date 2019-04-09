@@ -16,9 +16,10 @@ public class Return extends Stmt {
         // TODO 需要加入返回类型校验
         if(JavaDirectGlobalProperty.methodVariableType == null){
             error("undeclaret return type");
-        }else if(!expr.gen().getType().equals(JavaDirectGlobalProperty.methodVariableType)){
-            error("no match return type");
         }
+//        else if(!expr.getType().equals(JavaDirectGlobalProperty.methodVariableType)){
+//            error("no match return type");
+//        }
         this.expr = expr;
     }
 

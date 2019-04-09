@@ -82,6 +82,9 @@ public class JavaDirectUtils {
         return stmt;
     }
 
+    public static Stmt refAssign(RefNode refNode, Expr expr){
+        return new SetRef(refNode, expr);
+    }
 
     public static Expr or(Expr expr1, Expr expr2){     // 判断布尔值表达式
         Expr expr = new Or(JavaConstants.JAVA_OPERATOR_OR, expr1, expr2);

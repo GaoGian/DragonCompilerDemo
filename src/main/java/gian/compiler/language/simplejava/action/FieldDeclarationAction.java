@@ -10,6 +10,7 @@ import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.language.simplejava.ast.AstNode;
+import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.utils.JavaDirectUtils;
 
 import java.util.ArrayList;
@@ -41,13 +42,13 @@ public class FieldDeclarationAction {
 
             String modifier = (String) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
             VariableType variableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
-            String variableId = currentTreeNode.getIdToken().getToken();
+            String variableId = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
             Expr initCode = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
-            ClazzField clazzField = JavaDirectUtils.variableDeclarate(modifier, variableId, variableType, JavaDirectUtils.assign(variableId, initCode));
+            ClazzField clazzField = JavaDirectUtils.variableDeclarate(modifier, variableId, variableType, null);
+            clazzField.setCode(JavaDirectUtils.assign(variableId, initCode));
 
-            List<ClazzField> fieldList = (List<ClazzField>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FIELD_LIST);
-            fieldList.add(clazzField);
+            JavaDirectGlobalProperty.fieldList.add(clazzField);
 
             return null;
         }

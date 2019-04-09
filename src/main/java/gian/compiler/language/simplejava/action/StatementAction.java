@@ -6,6 +6,8 @@ import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.ast.expression.Constant;
+import gian.compiler.language.simplejava.ast.expression.Temp;
+import gian.compiler.language.simplejava.ast.ref.RefNode;
 import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.ast.expression.Expr;
@@ -20,7 +22,6 @@ import java.util.List;
  */
 public class StatementAction {
 
-    // TODO 需要处理控制流
     public static String product_1 = "statement → if ( parExpression ) block elseStatement";
     public static class IfListener extends SyntaxDirectedListener{
         public IfListener(){
@@ -154,26 +155,8 @@ public class StatementAction {
 
             // 跳出当前循环
             JavaDirectGlobalProperty.cycleEnclosingStack.pop();
-            return null;
-        }
-    }
-    public static class ForExitListener extends SyntaxDirectedListener{
-        public ForExitListener(){
-            this.matchProductTag = product_2;
-            this.matchSymbol = "block";
-            this.matchIndex = 4;
-            this.isLeaf = false;
-        }
 
-        @Override
-        public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            return null;
-        }
-
-        @Override
-        public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             JavaDirectUtils.exitEnv();
-
             return null;
         }
     }
@@ -198,9 +181,9 @@ public class StatementAction {
             Expr controlExpr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             Stmt updateStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
-            context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FOR_INIT_CODE, initStmt);
-            context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FOR_CONTROL_CODE, controlExpr);
-            context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FOR_UPDATE_CODE, updateStmt);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FOR_INIT_CODE, initStmt);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FOR_CONTROL_CODE, controlExpr);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FOR_UPDATE_CODE, updateStmt);
 
             return null;
         }
@@ -493,7 +476,7 @@ public class StatementAction {
         }
     }
 
-    public static String product_5_3_1 = "switchLabel → case Digit";
+    public static String product_5_3_1 = "switchLabel → case Digit :";
     public static class CaseDigitListener extends SyntaxDirectedListener{
         public CaseDigitListener(){
             this.matchProductTag = product_5_3_1;
@@ -514,7 +497,7 @@ public class StatementAction {
 
             Expr caseExpr = JavaDirectUtils.rel(result, caseConstant, JavaConstants.JAVA_OPERATOR_EQ);
 
-            context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, caseExpr);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, caseExpr);
 
             return null;
         }
@@ -541,7 +524,7 @@ public class StatementAction {
 
             Expr caseExpr = JavaDirectUtils.rel(result, caseConstant, JavaConstants.JAVA_OPERATOR_EQ);
 
-            context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, caseExpr);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, caseExpr);
 
             return null;
         }
@@ -568,7 +551,7 @@ public class StatementAction {
 
             Expr caseExpr = JavaDirectUtils.rel(result, caseConstant, JavaConstants.JAVA_OPERATOR_EQ);
 
-            context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, caseExpr);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, caseExpr);
 
             return null;
         }
@@ -591,7 +574,7 @@ public class StatementAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             Stmt defaultStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, defaultStmt);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, defaultStmt);
 
             return null;
         }
@@ -613,13 +596,12 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            // TODO 需要根据 refVariable 的监听器修改
-            Variable variable = (Variable) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE);
+            RefNode refVariable = (RefNode) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             Expr expr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
-            Stmt assign = JavaDirectUtils.assign(variable.getName(), expr);
+            Stmt refAssign = JavaDirectUtils.refAssign(refVariable, expr);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, assign);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refAssign);
 
             return null;
         }
@@ -691,7 +673,7 @@ public class StatementAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             Continue continueNode = JavaDirectUtils.continueNode();
-            context.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, continueNode);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, continueNode);
 
             return null;
         }
@@ -727,7 +709,6 @@ public class StatementAction {
         allListener.add(new ElseIfListener());
         allListener.add(new ForEnterListener());
         allListener.add(new ForListener());
-        allListener.add(new ForExitListener());
         allListener.add(new ForControlListener());
         allListener.add(new ForInitListener());
         allListener.add(new ForUpdateListener());

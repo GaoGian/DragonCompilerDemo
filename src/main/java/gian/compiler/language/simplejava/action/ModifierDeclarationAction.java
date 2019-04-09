@@ -89,6 +89,8 @@ public class ModifierDeclarationAction {
     public static List<SyntaxDirectedListener> getAllListener() {
         List<SyntaxDirectedListener> allListener = new ArrayList<>();
         allListener.add(new PublicListener());
+        allListener.add(new ProtectedListener());
+        allListener.add(new PrivateListener());
 
         return allListener;
     }
