@@ -1,6 +1,7 @@
 package gian.compiler.language.simplejava.action;
 
 import gian.compiler.language.simplejava.JavaConstants;
+import gian.compiler.language.simplejava.ast.statement.Stmt;
 import gian.compiler.language.simplejava.bean.ClazzConstructor;
 import gian.compiler.language.simplejava.bean.Param;
 import gian.compiler.front.lexical.transform.LexConstants;
@@ -38,7 +39,7 @@ public class ConstructorDeclarationAction {
             String modifier = (String) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
             String constructorName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
             List<Param> paramList = (List<Param>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PARAM_LIST);
-            AstNode code = (AstNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt code = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
             ClazzConstructor constructor = new ClazzConstructor();
             constructor.setPermission(modifier);

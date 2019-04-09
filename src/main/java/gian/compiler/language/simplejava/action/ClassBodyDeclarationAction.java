@@ -96,6 +96,6 @@ public class ClassBodyDeclarationAction {
         allListener.add(new ConstructorDeclarationListener());
         allListener.add(new MethodDeclarationListener());
 
-        return null;
+        return allListener;
     }
 }

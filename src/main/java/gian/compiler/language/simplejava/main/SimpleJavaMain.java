@@ -7,8 +7,14 @@ import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedParser;
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.action.*;
+import gian.compiler.language.simplejava.ast.AstNode;
+import gian.compiler.language.simplejava.ast.statement.Stmt;
 import gian.compiler.language.simplejava.bean.Clazz;
+import gian.compiler.language.simplejava.bean.ClazzConstructor;
+import gian.compiler.language.simplejava.bean.ClazzField;
+import gian.compiler.language.simplejava.bean.ClazzMethod;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +25,77 @@ import java.util.Map;
 public class SimpleJavaMain {
 
     public static void main(String[] args){
+        changeOutput(false);
+
         // 解析目标程序分析语法树
         SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR("SimpleJavaLexical.txt", "SimpleJavaSyntax.txt", "SimpleJavaMath.txt", true);
 
         // 加载语义动作监听器
+        List<SyntaxDirectedListener> simpleJavaDirectListeners = getAllJavaListener();
+
+        // 生成语义式语法树
+        SyntaxTree annotionSyntaxTree = SyntaxDirectedParser.syntaxDirectedParser(syntaxTree, simpleJavaDirectListeners);
+
+        // TODO 获取抽象语法树
+        Map<String, Clazz> clazzMap = (Map<String, Clazz>) annotionSyntaxTree.getSyntaxTreeRoot().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CLAZZ_MAP);
+        for(String className : clazzMap.keySet()){
+            Clazz clazz = clazzMap.get(className);
+            ExecuteClazzAstDirect(clazz);
+        }
+
+    }
+
+    // TODO 根据抽象语法树执行语义动作，生成中间码
+    public static void ExecuteClazzAstDirect(Clazz clazz){
+        String packageName = clazz.getPackageName();
+        List<String> importList = clazz.getImportList();
+        Map<String, String> importMap = clazz.getImportMap();
+        String clazzPermission = clazz.getPermission();
+        String clazzName = clazz.getClazzName();
+        String superType = clazz.getExtendInfo();
+
+        List<ClazzField> fieldList = clazz.getFieldList();
+        List<ClazzConstructor> constructorList = clazz.getConstructorList();
+        List<ClazzMethod> methodList = clazz.getMethodList();
+
+        // 输出类信息
+        System.out.println("package " + packageName);
+        for(String importStr : importList){
+            System.out.println("import " + importStr);
+        }
+        System.out.println(clazzPermission + " class " + clazzName + (superType != null ? " extends " + superType : "") + "{");
+
+        for(ClazzConstructor constructor : constructorList){
+            System.out.println(constructor.toString());
+            // 初始化构造方法时需要初始化实例变量
+            // TODO 实例变量初始化需要放在super方法之后，需要将该结构在生成时挂靠到构造节点上
+            for(ClazzField clazzField : fieldList){
+                Stmt clazzFieldCode = clazzField.getCode();
+                if(clazzFieldCode != null){
+                    clazzField.gen();
+                }
+            }
+
+            Stmt constructorCode = constructor.getCode();
+            if(constructorCode != null) {
+                constructorCode.gen();
+            }
+        }
+
+        for(ClazzMethod method : methodList){
+            System.out.println(method.toString());
+
+            Stmt methodCode = method.getCode();
+            if(methodCode != null){
+                methodCode.gen();
+            }
+        }
+
+        System.out.println("}");
+
+    }
+
+    public static List<SyntaxDirectedListener> getAllJavaListener(){
         List<SyntaxDirectedListener> simpleJavaDirectListeners = new ArrayList<>();
         simpleJavaDirectListeners.addAll(JavaLanguageDirectAction.getAllListener());
         simpleJavaDirectListeners.addAll(PackageDeclarationDirectAction.getAllListener());
@@ -46,21 +119,19 @@ public class SimpleJavaMain {
         simpleJavaDirectListeners.addAll(TermAction.getAllListener());
         simpleJavaDirectListeners.addAll(FactorAction.getAllListener());
 
-        // 生成语义式语法树
-        SyntaxTree annotionSyntaxTree = SyntaxDirectedParser.syntaxDirectedParser(syntaxTree, simpleJavaDirectListeners);
-
-        // TODO 获取抽象语法树
-        Map<String, Clazz> clazzMap = (Map<String, Clazz>) annotionSyntaxTree.getSyntaxTreeRoot().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CLAZZ_MAP);
-        for(String className : clazzMap.keySet()){
-            Clazz clazz = clazzMap.get(className);
-            ExecuteClazzAstDirect(clazz);
-        }
-
+        return simpleJavaDirectListeners;
     }
 
-    // TODO 根据抽象语法树执行语义动作，生成中间码
-    public static void ExecuteClazzAstDirect(Clazz clazz){
-
+    public static void changeOutput(boolean change){
+        if(change) {
+            PrintStream print = null;
+            try {
+                print = new PrintStream("D:\\test.txt");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            System.setOut(print);
+        }
     }
 
 }

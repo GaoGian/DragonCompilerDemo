@@ -1,6 +1,7 @@
 package gian.compiler.language.simplejava.bean;
 
 import gian.compiler.language.simplejava.ast.AstNode;
+import gian.compiler.language.simplejava.ast.statement.Stmt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class ClazzConstructor {
 
     protected List<Param> paramList = new ArrayList<>();
 
-    protected AstNode code;
+    protected Stmt code;
 
     public String getPermission() {
         return permission;
@@ -41,11 +42,11 @@ public class ClazzConstructor {
         this.paramList = paramList;
     }
 
-    public AstNode getCode() {
+    public Stmt getCode() {
         return code;
     }
 
-    public void setCode(AstNode code) {
+    public void setCode(Stmt code) {
         this.code = code;
     }
 }

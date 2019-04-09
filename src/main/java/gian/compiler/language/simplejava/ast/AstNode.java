@@ -1,5 +1,6 @@
 package gian.compiler.language.simplejava.ast;
 
+import gian.compiler.language.simplejava.bean.Variable;
 import gian.compiler.language.simplejava.env.JavaDirectGlobalProperty;
 import gian.compiler.language.simplejava.exception.JavaDirectException;
 
@@ -7,7 +8,7 @@ import gian.compiler.language.simplejava.exception.JavaDirectException;
  * 抽象语法树节点
  * Created by gaojian on 2019/3/31.
  */
-public class AstNode {
+public abstract class AstNode {
 
     public int lexline = 0;
     public int lexindex = 0;
@@ -33,5 +34,7 @@ public class AstNode {
     public void emit(String s){
         System.out.println("\t" + s);
     }
+
+    public abstract Variable gen();
 
 }
