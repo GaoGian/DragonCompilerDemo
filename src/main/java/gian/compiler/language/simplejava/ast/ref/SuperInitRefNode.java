@@ -16,6 +16,7 @@ public class SuperInitRefNode extends RefNode {
 
     public SuperInitRefNode(VariableType type, List<Expr> paramList){
         super(type);
+        this.callName = "super";
         this.paramList = paramList;
     }
 

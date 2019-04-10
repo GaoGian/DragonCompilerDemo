@@ -16,9 +16,9 @@ public class IfElse extends Stmt {
         expr = x;
         stmt1 = s1;
         stmt2 = s2;
-        if(expr.getType() != VariableType.BOOLEAN){
-            expr.error("boolean required in if");
-        }
+//        if(expr.getType() != VariableType.BOOLEAN){
+//            expr.error("boolean required in if");
+//        }
     }
 
     @Override

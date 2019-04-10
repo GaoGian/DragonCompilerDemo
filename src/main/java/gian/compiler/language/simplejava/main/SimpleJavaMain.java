@@ -25,10 +25,10 @@ import java.util.Map;
 public class SimpleJavaMain {
 
     public static void main(String[] args){
-        changeOutput(true);
+        changeOutput(false);
 
         // 解析目标程序分析语法树
-        SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR("SimpleJavaLexical.txt", "SimpleJavaSyntax.txt", "SimpleJavaMath.txt", true);
+        SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR("SimpleJavaLexical.txt", "SimpleJavaSyntax.txt", "SimpleJavaProgram.txt", true);
 
         // 加载语义动作监听器
         List<SyntaxDirectedListener> simpleJavaDirectListeners = getAllJavaListener();
@@ -76,7 +76,7 @@ public class SimpleJavaMain {
             for(ClazzField clazzField : fieldList){
                 Stmt clazzFieldCode = clazzField.getCode();
                 if(clazzFieldCode != null){
-                    clazzField.gen();
+                    clazzFieldCode.gen();
                 }
             }
 
@@ -85,6 +85,8 @@ public class SimpleJavaMain {
                 constructorCode.gen();
             }
         }
+
+        // FIXME 需要区分初始化声明assign和变量assign
 
         for(ClazzMethod method : methodList){
             System.out.println(method.toString());

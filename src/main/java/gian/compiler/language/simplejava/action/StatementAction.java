@@ -133,7 +133,7 @@ public class StatementAction {
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             For forNode = new For();
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.FOR_NODE, forNode);
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FOR_NODE, forNode);
             // 设置最近循环
             JavaDirectGlobalProperty.cycleEnclosingStack.push(forNode);
             
@@ -148,7 +148,7 @@ public class StatementAction {
             Stmt updateStmt = (Stmt) controlNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FOR_UPDATE_CODE);
             Stmt blockStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
-            For forCode = (For) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.FOR_NODE);
+            For forCode = (For) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FOR_NODE);
             forCode.init(initStmt, controlExpr, updateStmt, blockStmt);
 
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, forCode);
@@ -247,7 +247,7 @@ public class StatementAction {
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             While whileNode = new While();
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.WHILE_NODE, whileNode);
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.WHILE_NODE, whileNode);
             // 设置最近循环
             JavaDirectGlobalProperty.cycleEnclosingStack.push(whileNode);
 
@@ -259,7 +259,7 @@ public class StatementAction {
             Expr parExpr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             Stmt stmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
-            While whileNode = (While) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.WHILE_NODE);
+            While whileNode = (While) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.WHILE_NODE);
             whileNode.init(parExpr, stmt);
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, whileNode);
 
@@ -283,7 +283,7 @@ public class StatementAction {
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // TODO 是否要放在 parExpression 之前
             Do doNode = new Do();
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.DO_NODE, doNode);
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.DO_NODE, doNode);
             // 设置最近循环
             JavaDirectGlobalProperty.cycleEnclosingStack.push(doNode);
 
@@ -295,7 +295,7 @@ public class StatementAction {
             Stmt stmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             Expr parExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
-            Do doNode = (Do) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.DO_NODE);
+            Do doNode = (Do) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.DO_NODE);
             doNode.init(stmt, parExpr);
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, doNode);
 
@@ -334,7 +334,7 @@ public class StatementAction {
             Expr expr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             Stmt caseStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
-            Switch switchNode = (Switch) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.SWITCH_NODE);
+            Switch switchNode = (Switch) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.SWITCH_NODE);
             switchNode.init(expr, caseStmt);
             
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, switchNode);
@@ -492,7 +492,7 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Variable result = (Variable) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.EXPR_RESULT);
+            Expr result = (Expr) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.EXPR_RESULT);
             Constant caseConstant = JavaDirectUtils.constant(currentTreeNode.getIdToken());
 
             Expr caseExpr = JavaDirectUtils.rel(result, caseConstant, JavaConstants.JAVA_OPERATOR_EQ);

@@ -134,6 +134,10 @@ public class JavaDirectUtils {
         return new Constant(token.getToken(), new VariableType(token.getToken(), VariableType.getVariableTypeWidth(token.getType().getType())));
     }
 
+    public static New newNode(VariableType type, List<Variable> paramList){
+        return new New(type, paramList);
+    }
+
     public static NewArray newArray(VariableType baseType, VariableArrayType variableArrayType){
         return new NewArray(baseType, variableArrayType);
     }
@@ -153,10 +157,6 @@ public class JavaDirectUtils {
 
     public static MethodRefNode methodRefNode(String callName, List<Expr> paramList){
         return new MethodRefNode(callName, paramList);
-    }
-
-    public static ConstructorRefNode constructorRefNode(String newClassName, List<Expr> paramList){
-        return new ConstructorRefNode(newClassName, paramList);
     }
 
     public static FieldRefNode fieldRefNode(String fieldName){
@@ -181,8 +181,14 @@ public class JavaDirectUtils {
         return new StringJoin(expr1, expr2);
     }
 
-    public static void updateLastRef(RefNode preRefCall, RefNode updateRefNode){
-        getLastRef(preRefCall).getPreRef().setNextRef(updateRefNode);
+    public static RefNode updateLastRef(RefNode preRefCall, RefNode updateRefNode){
+        RefNode lastRef = getLastRef(preRefCall);
+        if(lastRef.getPreRef() != null) {
+            getLastRef(preRefCall).getPreRef().setNextRef(updateRefNode);
+            return preRefCall;
+        }else{
+            return updateRefNode;
+        }
     }
 
     public static void appendRef(RefNode preRefCall, RefNode nextRef){

@@ -15,7 +15,6 @@ import java.util.List;
  */
 public class MethodRefNode extends RefNode {
 
-    public String callName;
     public List<Expr> paramList = new ArrayList<>();
 
     public MethodRefNode(String callName, List<Expr> paramList){

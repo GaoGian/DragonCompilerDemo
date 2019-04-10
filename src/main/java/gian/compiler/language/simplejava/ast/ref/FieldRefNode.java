@@ -16,6 +16,7 @@ public class FieldRefNode extends RefNode {
     public FieldRefNode(String fieldName) {
         // TODO 需要携带类型信息
         super(null);
+        this.callName = fieldName;
         this.fieldName = fieldName;
     }
 

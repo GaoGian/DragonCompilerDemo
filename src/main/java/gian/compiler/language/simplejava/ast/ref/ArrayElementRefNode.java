@@ -13,7 +13,6 @@ import java.util.List;
  */
 public class ArrayElementRefNode extends RefNode {
 
-    public String callName;
     public List<Expr> arrayIndex;
 
     public ArrayElementRefNode(String callName, List<Expr> arrayIndex) {

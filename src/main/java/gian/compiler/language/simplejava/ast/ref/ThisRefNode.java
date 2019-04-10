@@ -12,6 +12,7 @@ public class ThisRefNode extends RefNode {
 
     public ThisRefNode(VariableType type){
         super(type);
+        this.callName = "this";
     }
 
     public Variable execute(Variable preResult){

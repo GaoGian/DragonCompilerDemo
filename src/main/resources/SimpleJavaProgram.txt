@@ -61,7 +61,6 @@ public class SimpleJavaProgram{
         String name = "testSimpleJavaMath";
         SimpleJavaMath javaMath = new SimpleJavaMath(false, name);
         int mathResult = javaMath.mather.add(x, y);
-        SimpleJavaMath tempMather = new SimpleJavaMath(false, name).mather;
         javaMath.mather.add(this.x, y);
         javaMath.mather.add(javaMath.mather.add(x, y), javaMath.mather.add(x, y));
         int result = javaMath.add(x, y);

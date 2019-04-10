@@ -37,7 +37,7 @@ public class SyntaxDirectedParser {
 
     // 深度遍历语法树，执行相关语义动作
     // TODO 上下文环境是否需要按照作用域进行分层？？或者单独设置环境变量
-    private static SyntaxTree.SyntaxTreeNode executeSyntaxTreeDirectAction(SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex,
+    public static SyntaxTree.SyntaxTreeNode executeSyntaxTreeDirectAction(SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex,
                                                      SyntaxDirectedContext context, Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap){
 
         // 生成注释语法分析树节点
@@ -100,7 +100,7 @@ public class SyntaxDirectedParser {
     }
 
     // 匹配语法分析树节点语义动作
-    private static Map<Integer, SyntaxDirectedListener> matchSyntaxTreeNodeDirectAction(SyntaxTree.SyntaxTreeNode syntaxTreeNode, Integer syntaxTreeNodeIndex,
+    public static Map<Integer, SyntaxDirectedListener> matchSyntaxTreeNodeDirectAction(SyntaxTree.SyntaxTreeNode syntaxTreeNode, Integer syntaxTreeNodeIndex,
                                                        List<SyntaxDirectedListener> syntaxDirectedListenerList, Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap){
 
         // TODO 这里暂时不处理增广文法根节点，将增广文法节点的语义动作下移到文法其实节点
@@ -128,7 +128,7 @@ public class SyntaxDirectedParser {
         return syntaxDirectActionMap;
     }
 
-    private static void setDirectedContextInfo(SyntaxDirectedContext context, Integer currentIndex, SyntaxTree.SyntaxTreeNode currentNode){
+    public static void setDirectedContextInfo(SyntaxDirectedContext context, Integer currentIndex, SyntaxTree.SyntaxTreeNode currentNode){
         context.setCurrentNodeIndex(currentIndex);
         context.setCurrentNode(currentNode);
         context.setParentNode(currentNode.getParentNode());

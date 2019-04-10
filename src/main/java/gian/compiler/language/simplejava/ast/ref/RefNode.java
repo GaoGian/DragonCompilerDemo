@@ -56,6 +56,7 @@ public abstract class RefNode extends Expr {
 
     public void setNextRef(RefNode nextRef) {
         this.nextRef = nextRef;
+        nextRef.setPreRef(this);
     }
 
 }

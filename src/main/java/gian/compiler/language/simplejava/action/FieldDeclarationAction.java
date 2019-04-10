@@ -46,7 +46,9 @@ public class FieldDeclarationAction {
             Expr initCode = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
             ClazzField clazzField = JavaDirectUtils.variableDeclarate(modifier, variableId, variableType, null);
-            clazzField.setCode(JavaDirectUtils.assign(variableId, initCode));
+            if(initCode != null) {
+                clazzField.setCode(JavaDirectUtils.assign(variableId, initCode));
+            }
 
             JavaDirectGlobalProperty.fieldList.add(clazzField);
 
