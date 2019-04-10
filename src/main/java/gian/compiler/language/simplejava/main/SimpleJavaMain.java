@@ -87,6 +87,8 @@ public class SimpleJavaMain {
         }
 
         // FIXME 需要区分初始化声明assign和变量assign
+        // FIXME 函数执行前需要将方法参数引入到局部变量中
+        // FIXME 增加this变量引用查找方式（修改AST生成过程），解决循环引用问题
 
         for(ClazzMethod method : methodList){
             System.out.println(method.toString());

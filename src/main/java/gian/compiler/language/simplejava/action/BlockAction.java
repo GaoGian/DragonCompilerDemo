@@ -120,7 +120,7 @@ public class BlockAction{
     public static String product_2 = "blockStatement → statement blockStatement";
     public static class StatementListener extends SyntaxDirectedListener{
         public StatementListener(){
-            this.matchProductTag = product_1;
+            this.matchProductTag = product_2;
             this.matchSymbol = "blockStatement";
             this.matchIndex = 1;
             this.isLeaf = false;
