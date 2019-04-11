@@ -21,7 +21,7 @@ public class Case extends Stmt {
         String lable = newlabel();
         this.emitlabel(lable);
         Variable result = this.expr.gen();
-        this.emit("<if> " + result.getName() + " <eq> <false> <goto> " + after);
+        this.emit("<case> " + result.getName() + " <eq> <false> <goto> " + after);
 
         String lable2 = newlabel();
         this.emitlabel(lable2);

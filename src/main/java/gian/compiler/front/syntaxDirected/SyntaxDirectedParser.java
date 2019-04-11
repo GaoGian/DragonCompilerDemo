@@ -3,6 +3,7 @@ package gian.compiler.front.syntaxDirected;
 import gian.compiler.front.exception.ParseException;
 import gian.compiler.front.syntactic.element.SyntaxSymbol;
 import gian.compiler.front.syntactic.element.SyntaxTree;
+import gian.compiler.language.simplejava.exception.JavaDirectException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,6 +23,8 @@ public class SyntaxDirectedParser {
     public static SyntaxTree syntaxDirectedParser(SyntaxTree syntaxTree, List<SyntaxDirectedListener> syntaxDirectedListenerList){
         // 建立语法树节点和语义动作映射
         Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap = matchSyntaxTreeNodeDirectAction(syntaxTree.getSyntaxTreeRoot(), 0, syntaxDirectedListenerList, new HashMap<>());
+
+        showUnMatchListener(syntaxDirectedListenerList, syntaxDirectActionMap);
 
         // 创建语义分析上下文环境      TODO 设置上下文环境：父节点、兄弟节点，位置信息
         SyntaxDirectedContext context = new SyntaxDirectedContext(syntaxTree);
@@ -139,6 +142,21 @@ public class SyntaxDirectedParser {
             context.setLine(currentNode.getIdToken().getIndex());
         }
 
+    }
+
+    public static void showUnMatchListener(List<SyntaxDirectedListener> syntaxDirectedListenerList, Map<Integer, SyntaxDirectedListener> syntaxDirectActionMap){
+        // 记录未匹配的监听器，方便排查错误
+        List<SyntaxDirectedListener> unMatchListenerList = new ArrayList<>(syntaxDirectedListenerList);
+        for(SyntaxDirectedListener matchListener : syntaxDirectActionMap.values()){
+            unMatchListenerList.remove(matchListener);
+        }
+
+        if(unMatchListenerList.size() > 0){
+            for(SyntaxDirectedListener unMatchListener : unMatchListenerList){
+                System.out.println("unMatchListener : " + unMatchListener.getMatchProductTag() + " | " + unMatchListener.getMatchIndex() + " | " + unMatchListener.getMatchSymbol());
+            }
+//            throw new JavaDirectException("存在未匹配的监听器");
+        }
     }
 
 }

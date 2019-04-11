@@ -292,7 +292,7 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Stmt stmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt stmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             Expr parExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
             Do doNode = (Do) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.DO_NODE);
@@ -311,7 +311,7 @@ public class StatementAction {
         public SwitchListener(){
             this.matchProductTag = product_5;
             this.matchSymbol = "switchBlock";
-            this.matchIndex = 2;
+            this.matchIndex = 4;
             this.isLeaf = false;
         }
 
@@ -321,7 +321,7 @@ public class StatementAction {
             currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.EXPR_RESULT, expr);
 
             Switch switchNode = new Switch();
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.SWITCH_NODE, switchNode);
+            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.SWITCH_NODE, switchNode);
             
             // 设置最近循环
             JavaDirectGlobalProperty.cycleEnclosingStack.push(switchNode);
@@ -334,7 +334,7 @@ public class StatementAction {
             Expr expr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
             Stmt caseStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
 
-            Switch switchNode = (Switch) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.SWITCH_NODE);
+            Switch switchNode = (Switch) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.SWITCH_NODE);
             switchNode.init(expr, caseStmt);
             
             context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, switchNode);

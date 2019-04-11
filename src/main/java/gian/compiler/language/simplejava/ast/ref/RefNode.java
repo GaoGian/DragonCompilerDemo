@@ -27,7 +27,7 @@ public abstract class RefNode extends Expr {
         Variable temp = null;
         while(nextRef != null){
             temp = nextRef.execute(temp);
-            nextRef = this.nextRef;
+            nextRef = nextRef.nextRef;
         }
         return temp;
     }

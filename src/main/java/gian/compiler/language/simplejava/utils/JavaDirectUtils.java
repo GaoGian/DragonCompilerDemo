@@ -12,6 +12,7 @@ import gian.compiler.language.simplejava.exception.JavaDirectException;
 import gian.compiler.language.simplejava.ast.expression.*;
 import gian.compiler.language.simplejava.ast.statement.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -135,6 +136,9 @@ public class JavaDirectUtils {
     }
 
     public static New newNode(VariableType type, List<Variable> paramList){
+        if(paramList == null){
+            paramList = new ArrayList<>();
+        }
         return new New(type, paramList);
     }
 
@@ -156,6 +160,9 @@ public class JavaDirectUtils {
     }
 
     public static MethodRefNode methodRefNode(String callName, List<Expr> paramList){
+        if(paramList == null){
+            paramList = new ArrayList<>();
+        }
         return new MethodRefNode(callName, paramList);
     }
 
@@ -169,6 +176,9 @@ public class JavaDirectUtils {
     }
 
     public static SuperInitRefNode superInitRefNode(SyntaxDirectedContext context, List<Expr> paramList){
+        if(paramList == null){
+            paramList = new ArrayList<>();
+        }
         String extendClazzName = (String) context.getGlobalPropertyMap().get(JavaConstants.EXTEND_INFO);
         return new SuperInitRefNode(new VariableType(extendClazzName, VariableType.getVariableTypeWidth(JavaConstants.VARIABLE_TYPE_CLAZZ)), paramList);
     }

@@ -38,7 +38,7 @@ public class ExpressionAction {
             List<Expr> paramList = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
 
             // TODO 这里由于文法“#变量/方法引用链声明”，因此不确定最后一个引用是否是变量引用，需要根据后续情况进行替换
-            MethodRefNode methodRefNode = JavaDirectUtils.methodRefNode(JavaDirectUtils.getLastRef(refCall).getCallName(), paramList != null ? paramList : new ArrayList<Expr>());
+            MethodRefNode methodRefNode = JavaDirectUtils.methodRefNode(JavaDirectUtils.getLastRef(refCall).getCallName(), paramList);
             refCall = JavaDirectUtils.updateLastRef(refCall, methodRefNode);
 
             currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, refCall);
@@ -47,8 +47,8 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) context.getBrotherNodeList().get(currentIndex - 4).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
 
             return null;
         }
