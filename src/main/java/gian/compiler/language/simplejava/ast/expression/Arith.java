@@ -29,7 +29,7 @@ public class Arith extends Expr {
 
     @Override
     public String code(){
-        return expr1.toString() + " " + expr2.toString();
+        return expr1.toString() + " <" + this.operator + "> " + expr2.toString();
     }
 
 }

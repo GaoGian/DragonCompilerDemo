@@ -45,7 +45,7 @@ public class SimpleJavaMain {
 
     }
 
-    // TODO 根据抽象语法树执行语义动作，生成中间码
+    // 根据抽象语法树执行语义动作，生成中间码
     public static void ExecuteClazzAstDirect(Clazz clazz){
         String packageName = clazz.getPackageName();
         List<String> importList = clazz.getImportList();
@@ -88,7 +88,6 @@ public class SimpleJavaMain {
 
         // FIXME 需要区分初始化声明assign和变量assign
         // FIXME 函数执行前需要将方法参数引入到局部变量中
-        // FIXME 增加this变量引用查找方式（修改AST生成过程），解决循环引用问题
 
         for(ClazzMethod method : methodList){
             System.out.println(method.toString());
