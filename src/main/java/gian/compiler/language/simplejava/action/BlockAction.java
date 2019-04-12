@@ -58,8 +58,8 @@ public class BlockAction{
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Stmt code = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
+            Stmt code = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, code);
             return null;
         }
     }
@@ -102,8 +102,8 @@ public class BlockAction{
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Stmt localVariableDeclStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Stmt blockCode = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt localVariableDeclStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.CODE);
+            Stmt blockCode = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
             Stmt stmt = null;
             if(blockCode != null){
                 stmt = new Seq(localVariableDeclStmt, blockCode);
@@ -111,7 +111,7 @@ public class BlockAction{
                 stmt = localVariableDeclStmt;
             }
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stmt);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, stmt);
 
             return null;
         }
@@ -133,8 +133,8 @@ public class BlockAction{
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Stmt statement = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Stmt blockCode = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt statement = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.CODE);
+            Stmt blockCode = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
             Stmt stmt = null;
             if(blockCode != null){
                 stmt = new Seq(statement, blockCode);
@@ -142,7 +142,7 @@ public class BlockAction{
                 stmt = statement;
             }
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stmt);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, stmt);
             return null;
         }
     }

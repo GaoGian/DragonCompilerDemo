@@ -42,7 +42,11 @@ public class ClazzMethod {
     }
 
     public List<Param> getParamList() {
-        return paramList;
+        if(paramList != null) {
+            return paramList;
+        }else{
+            return new ArrayList<>();
+        }
     }
 
     public void setParamList(List<Param> paramList) {

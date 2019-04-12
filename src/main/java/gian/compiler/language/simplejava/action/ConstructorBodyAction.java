@@ -61,12 +61,12 @@ public class ConstructorBodyAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            SuperInitRefNode superInitRefNode = (SuperInitRefNode) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Stmt stmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            SuperInitRefNode superInitRefNode = (SuperInitRefNode) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.CODE);
+            Stmt stmt = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             Stmt code = JavaDirectUtils.stmts(superInitRefNode, stmt);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, code);
 
             return null;
         }
@@ -109,9 +109,9 @@ public class ConstructorBodyAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            List<Expr> paramList = (List<Expr>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+            List<Expr> paramList = (List<Expr>) currentTreeNode.getSynProperty(JavaConstants.CALL_PARAM_LIST);
             SuperInitRefNode superInitRefNode = JavaDirectUtils.superInitRefNode(context, paramList);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, superInitRefNode);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, superInitRefNode);
 
             return null;
         }
@@ -134,7 +134,7 @@ public class ConstructorBodyAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             SuperInitRefNode superInitRefNode = JavaDirectUtils.superInitRefNode(context, new ArrayList<>());
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, superInitRefNode);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, superInitRefNode);
             return null;
         }
     }

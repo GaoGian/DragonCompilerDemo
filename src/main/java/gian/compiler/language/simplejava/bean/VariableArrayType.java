@@ -33,7 +33,14 @@ public class VariableArrayType extends VariableType {
 
     @Override
     public String toString(){
-        return "[" + size + "]" + elementType.toString();
+        VariableType tempType = this.elementType;
+        StringBuilder str = new StringBuilder();
+        while(tempType instanceof VariableArrayType) {
+            str.append("[]");
+            tempType = ((VariableArrayType) this.elementType).getBaseVariableType();
+        }
+
+        return tempType.getName() + elementType.toString();
     }
 
 }

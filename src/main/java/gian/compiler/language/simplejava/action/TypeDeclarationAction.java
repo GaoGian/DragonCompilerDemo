@@ -219,8 +219,8 @@ public class TypeDeclarationAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Token baseType = (Token) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.VARIABLE_BASE_TYPE, baseType);
+            Token baseType = (Token) context.getParentNode().getInhProperty(JavaConstants.VARIABLE_BASE_TYPE);
+            currentTreeNode.putInhProperty(JavaConstants.VARIABLE_BASE_TYPE, baseType);
 
             return null;
         }
@@ -228,10 +228,10 @@ public class TypeDeclarationAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // TODO 调整数组处理顺序，方便生成数组节点
-            VariableType variableType = (VariableType) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
+            VariableType variableType = (VariableType) currentTreeNode.getSynProperty(JavaConstants.VARIABLE_TYPE);
             // FIXME 单独处理数组声明
             VariableArrayType arrayType = new VariableArrayType(0, variableType);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_TYPE, arrayType);
+            context.getParentNode().putSynProperty(JavaConstants.VARIABLE_TYPE, arrayType);
 
             return null;
         }
@@ -253,9 +253,9 @@ public class TypeDeclarationAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Token baseType = (Token) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.VARIABLE_BASE_TYPE);
+            Token baseType = (Token) context.getParentNode().getInhProperty(JavaConstants.VARIABLE_BASE_TYPE);
             VariableType variableType = new VariableType(baseType.getToken(), VariableType.getVariableTypeWidth(baseType.getType().isRexgexToken() ? baseType.getType().getType() : baseType.getToken()));
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_TYPE, variableType);
+            context.getParentNode().putSynProperty(JavaConstants.VARIABLE_TYPE, variableType);
 
             return null;
         }
@@ -263,12 +263,12 @@ public class TypeDeclarationAction {
 
     private static void setBaseType(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex){
         Token baseType = context.getBrotherNodeList().get(currentIndex - 1).getIdToken();
-        currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.VARIABLE_BASE_TYPE, baseType);
+        currentTreeNode.putInhProperty(JavaConstants.VARIABLE_BASE_TYPE, baseType);
     }
 
     private static String getVariableType(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex){
-        VariableType variableType = (VariableType) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
-        context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.VARIABLE_TYPE, variableType);
+        VariableType variableType = (VariableType) currentTreeNode.getSynProperty(JavaConstants.VARIABLE_TYPE);
+        context.getParentNode().putSynProperty(JavaConstants.VARIABLE_TYPE, variableType);
 
         return null;
     }

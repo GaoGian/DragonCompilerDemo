@@ -31,9 +31,9 @@ public class MethodDeclarationAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            VariableType returnVariableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
+            VariableType returnVariableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 3).getSynProperty(JavaConstants.VARIABLE_TYPE);
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.METHOD_RETURN_TYPE, returnVariableType);
+            currentTreeNode.putInhProperty(JavaConstants.METHOD_RETURN_TYPE, returnVariableType);
 
             JavaDirectUtils.setMethodReturnType(returnVariableType);
 
@@ -43,11 +43,11 @@ public class MethodDeclarationAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
 
-            String modifier = (String) context.getBrotherNodeList().get(currentIndex - 4).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
-            VariableType returnVariableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
+            String modifier = (String) context.getBrotherNodeList().get(currentIndex - 4).getSynProperty(JavaConstants.MODIFIER);
+            VariableType returnVariableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 3).getSynProperty(JavaConstants.VARIABLE_TYPE);
             String methodId = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
-            List<Param> paramList = (List<Param>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PARAM_LIST);
-            Stmt code = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            List<Param> paramList = (List<Param>) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.PARAM_LIST);
+            Stmt code = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             ClazzMethod method = new ClazzMethod();
             method.setPermission(modifier);
@@ -74,7 +74,7 @@ public class MethodDeclarationAction {
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             VariableType voidReturnType = new VariableType(JavaConstants.VARIABLE_TYPE_VOID, VariableType.VOID.getWidth());
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.METHOD_RETURN_TYPE, voidReturnType);
+            currentTreeNode.putInhProperty(JavaConstants.METHOD_RETURN_TYPE, voidReturnType);
 
             return null;
         }
@@ -82,11 +82,11 @@ public class MethodDeclarationAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
 
-            String modifier = (String) context.getBrotherNodeList().get(currentIndex - 4).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
+            String modifier = (String) context.getBrotherNodeList().get(currentIndex - 4).getSynProperty(JavaConstants.MODIFIER);
             VariableType voidReturnType = new VariableType(JavaConstants.VARIABLE_TYPE_VOID, VariableType.VOID.getWidth());
             String methodId = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
-            List<Param> paramList = (List<Param>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PARAM_LIST);
-            Stmt code = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            List<Param> paramList = (List<Param>) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.PARAM_LIST);
+            Stmt code = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             ClazzMethod method = new ClazzMethod();
             method.setPermission(modifier);
@@ -117,8 +117,8 @@ public class MethodDeclarationAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Stmt code = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
+            Stmt code = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, code);
 
             JavaDirectUtils.setMethodReturnType(null);
             return null;

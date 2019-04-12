@@ -40,10 +40,10 @@ public class FieldDeclarationAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
 
-            String modifier = (String) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
-            VariableType variableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
+            String modifier = (String) context.getBrotherNodeList().get(currentIndex - 3).getSynProperty(JavaConstants.MODIFIER);
+            VariableType variableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.VARIABLE_TYPE);
             String variableId = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
-            Expr initCode = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr initCode = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             ClazzField clazzField = JavaDirectUtils.variableDeclarate(modifier, variableId, variableType, null);
             if(initCode != null) {

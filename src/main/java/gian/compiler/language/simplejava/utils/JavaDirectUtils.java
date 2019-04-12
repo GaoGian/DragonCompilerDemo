@@ -1,6 +1,8 @@
 package gian.compiler.language.simplejava.utils;
 
 import gian.compiler.front.lexical.parser.Token;
+import gian.compiler.front.lexical.transform.LexConstants;
+import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.language.simplejava.JavaConstants;
 import gian.compiler.language.simplejava.ast.expression.Constant;
@@ -220,6 +222,11 @@ public class JavaDirectUtils {
 
     public static void setMethodReturnType(VariableType returnVariableType){
         JavaDirectGlobalProperty.methodVariableType = returnVariableType;
+    }
+
+    public static void handUpProperty(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, String propertyName){
+        Object property = currentTreeNode.getSynProperty(propertyName);
+        context.getParentNode().putSynProperty(propertyName, property);
     }
 
     public static void error(String s){

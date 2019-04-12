@@ -35,8 +35,8 @@ public class FormalParametersAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            List<Param> paramList = (List<Param>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PARAM_LIST);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.PARAM_LIST, paramList);
+            List<Param> paramList = (List<Param>) currentTreeNode.getSynProperty(JavaConstants.PARAM_LIST);
+            context.getParentNode().putSynProperty(JavaConstants.PARAM_LIST, paramList);
 
             return null;
         }
@@ -53,21 +53,21 @@ public class FormalParametersAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            VariableType variableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
+            VariableType variableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.VARIABLE_TYPE);
             String paramName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
             Param param = JavaDirectUtils.getParam(paramName, variableType);
             List<Param> paramList = new ArrayList<>();
             paramList.add(param);
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.PARAM_LIST, paramList);
+            currentTreeNode.putInhProperty(JavaConstants.PARAM_LIST, paramList);
 
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            List<Param> paramList = (List<Param>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PARAM_LIST);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.PARAM_LIST, paramList);
+            List<Param> paramList = (List<Param>) currentTreeNode.getSynProperty(JavaConstants.PARAM_LIST);
+            context.getParentNode().putSynProperty(JavaConstants.PARAM_LIST, paramList);
 
             return null;
         }
@@ -84,22 +84,22 @@ public class FormalParametersAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            VariableType variableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.VARIABLE_TYPE);
+            VariableType variableType = (VariableType) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.VARIABLE_TYPE);
             String paramName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
             Param param = JavaDirectUtils.getParam(paramName, variableType);
 
-            List<Param> paramList = (List<Param>) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.PARAM_LIST);
+            List<Param> paramList = (List<Param>) context.getParentNode().getInhProperty(JavaConstants.PARAM_LIST);
             paramList.add(param);
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.PARAM_LIST, paramList);
+            currentTreeNode.putInhProperty(JavaConstants.PARAM_LIST, paramList);
 
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            List<Param> paramList = (List<Param>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PARAM_LIST);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.PARAM_LIST, paramList);
+            List<Param> paramList = (List<Param>) currentTreeNode.getSynProperty(JavaConstants.PARAM_LIST);
+            context.getParentNode().putSynProperty(JavaConstants.PARAM_LIST, paramList);
 
             return null;
         }
@@ -121,8 +121,8 @@ public class FormalParametersAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            List<Param> paramList = (List<Param>) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.PARAM_LIST);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.PARAM_LIST, paramList);
+            List<Param> paramList = (List<Param>) context.getParentNode().getInhProperty(JavaConstants.PARAM_LIST);
+            context.getParentNode().putSynProperty(JavaConstants.PARAM_LIST, paramList);
 
             return null;
         }

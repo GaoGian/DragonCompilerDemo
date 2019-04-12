@@ -37,7 +37,7 @@ public class SimpleJavaMain {
         SyntaxDirectedParser.syntaxDirectedParser(syntaxTree, simpleJavaDirectListeners);
 
         // TODO 获取抽象语法树
-        Map<String, Clazz> clazzMap = (Map<String, Clazz>) syntaxTree.getSyntaxTreeRoot().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CLAZZ_MAP);
+        Map<String, Clazz> clazzMap = (Map<String, Clazz>) syntaxTree.getSyntaxTreeRoot().getSynProperty(JavaConstants.CLAZZ_MAP);
         for(String className : clazzMap.keySet()){
             Clazz clazz = clazzMap.get(className);
             ExecuteClazzAstDirect(clazz);
@@ -70,7 +70,7 @@ public class SimpleJavaMain {
         }
 
         for(ClazzConstructor constructor : constructorList){
-            System.out.println(constructor.toString());
+            System.out.println(constructor.getPermission() + " " + constructor.getConstructorName() + "(" + constructor.getParamList().toString() + ")");
             // 初始化构造方法时需要初始化实例变量
             // TODO 实例变量初始化需要放在super方法之后，需要将该结构在生成时挂靠到构造节点上
             for(ClazzField clazzField : fieldList){
@@ -90,7 +90,7 @@ public class SimpleJavaMain {
         // FIXME 函数执行前需要将方法参数引入到局部变量中
 
         for(ClazzMethod method : methodList){
-            System.out.println(method.toString());
+            System.out.println(method.getPermission() + " " + method.getReturnType().toString() + " " + method.getMethodName() + "(" + method.getParamList().toString() + ")");
 
             Stmt methodCode = method.getCode();
             if(methodCode != null){

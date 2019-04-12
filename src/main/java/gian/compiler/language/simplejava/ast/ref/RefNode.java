@@ -59,4 +59,19 @@ public abstract class RefNode extends Expr {
         this.nextRef.setPreRef(this);
     }
 
+    @Override
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+        RefNode node = this;
+        while(node != null){
+            str.append(node.getCallName());
+            node = node.getNextRef();
+            if(node != null){
+                str.append(".");
+            }
+        }
+
+        return str.toString();
+    }
+
 }

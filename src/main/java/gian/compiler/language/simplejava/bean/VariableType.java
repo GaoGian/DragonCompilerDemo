@@ -57,6 +57,10 @@ public class VariableType {
         this.width = width;
     }
 
+    @Override
+    public String toString(){
+        return this.getName();
+    }
 
     public static Integer getVariableTypeWidth(String typeName){
         if(JavaConstants.VARIABLE_TYPE_INT.equals(typeName)){

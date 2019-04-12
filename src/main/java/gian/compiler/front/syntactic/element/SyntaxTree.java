@@ -173,6 +173,22 @@ public class SyntaxTree {
             this.propertyMap = propertyMap;
         }
 
+        public Object getSynProperty(String propertyName){
+            return this.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(propertyName);
+        }
+
+        public void putSynProperty(String propertyName, Object property){
+            this.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(propertyName, property);
+        }
+
+        public Object getInhProperty(String propertyName){
+            return this.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(propertyName);
+        }
+
+        public void putInhProperty(String propertyName, Object property){
+            this.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(propertyName, property);
+        }
+
         @Override
         public String toString(){
             if(!this.isIdNode || !this.idToken.getType().isRexgexToken()) {

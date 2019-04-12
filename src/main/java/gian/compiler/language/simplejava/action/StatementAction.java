@@ -38,13 +38,13 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr parExpr = (Expr) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Stmt ifStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Stmt elseStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr parExpr = (Expr) context.getBrotherNodeList().get(currentIndex - 3).getSynProperty(JavaConstants.CODE);
+            Stmt ifStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.CODE);
+            Stmt elseStmt = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
             
             Stmt stmt = JavaDirectUtils.ifElseNode(parExpr, ifStmt, elseStmt);
             
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stmt);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, stmt);
             
             return null;
         }
@@ -66,8 +66,8 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Stmt stmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stmt);
+            Stmt stmt = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, stmt);
 
             return null;
         }
@@ -89,13 +89,13 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr parExpr = (Expr) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Stmt ifStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Stmt elseStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr parExpr = (Expr) context.getBrotherNodeList().get(currentIndex - 3).getSynProperty(JavaConstants.CODE);
+            Stmt ifStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.CODE);
+            Stmt elseStmt = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             Stmt stmt = JavaDirectUtils.ifElseNode(parExpr, ifStmt, elseStmt);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stmt);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, stmt);
 
             return null;
         }
@@ -133,7 +133,7 @@ public class StatementAction {
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             For forNode = new For();
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FOR_NODE, forNode);
+            currentTreeNode.putSynProperty(JavaConstants.FOR_NODE, forNode);
             // 设置最近循环
             JavaDirectGlobalProperty.cycleEnclosingStack.push(forNode);
             
@@ -143,15 +143,15 @@ public class StatementAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             SyntaxTree.SyntaxTreeNode controlNode = context.getBrotherNodeList().get(currentIndex - 2);
-            Stmt initStmt = (Stmt) controlNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FOR_INIT_CODE);
-            Expr controlExpr = (Expr) controlNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FOR_CONTROL_CODE);
-            Stmt updateStmt = (Stmt) controlNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FOR_UPDATE_CODE);
-            Stmt blockStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt initStmt = (Stmt) controlNode.getSynProperty(JavaConstants.FOR_INIT_CODE);
+            Expr controlExpr = (Expr) controlNode.getSynProperty(JavaConstants.FOR_CONTROL_CODE);
+            Stmt updateStmt = (Stmt) controlNode.getSynProperty(JavaConstants.FOR_UPDATE_CODE);
+            Stmt blockStmt = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
-            For forCode = (For) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.FOR_NODE);
+            For forCode = (For) currentTreeNode.getSynProperty(JavaConstants.FOR_NODE);
             forCode.init(initStmt, controlExpr, updateStmt, blockStmt);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, forCode);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, forCode);
 
             // 跳出当前循环
             JavaDirectGlobalProperty.cycleEnclosingStack.pop();
@@ -177,13 +177,13 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Stmt initStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 4).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Expr controlExpr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Stmt updateStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt initStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 4).getSynProperty(JavaConstants.CODE);
+            Expr controlExpr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.CODE);
+            Stmt updateStmt = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FOR_INIT_CODE, initStmt);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FOR_CONTROL_CODE, controlExpr);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.FOR_UPDATE_CODE, updateStmt);
+            context.getParentNode().putSynProperty(JavaConstants.FOR_INIT_CODE, initStmt);
+            context.getParentNode().putSynProperty(JavaConstants.FOR_CONTROL_CODE, controlExpr);
+            context.getParentNode().putSynProperty(JavaConstants.FOR_UPDATE_CODE, updateStmt);
 
             return null;
         }
@@ -205,8 +205,8 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Stmt stmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stmt);
+            Stmt stmt = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, stmt);
 
             return null;
         }
@@ -228,8 +228,8 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, expr);
+            Expr expr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, expr);
 
             return null;
         }
@@ -247,7 +247,7 @@ public class StatementAction {
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             While whileNode = new While();
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.WHILE_NODE, whileNode);
+            currentTreeNode.putSynProperty(JavaConstants.WHILE_NODE, whileNode);
             // 设置最近循环
             JavaDirectGlobalProperty.cycleEnclosingStack.push(whileNode);
 
@@ -256,12 +256,12 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr parExpr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Stmt stmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr parExpr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.CODE);
+            Stmt stmt = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
-            While whileNode = (While) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.WHILE_NODE);
+            While whileNode = (While) currentTreeNode.getSynProperty(JavaConstants.WHILE_NODE);
             whileNode.init(parExpr, stmt);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, whileNode);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, whileNode);
 
             // 跳出当前循环
             JavaDirectGlobalProperty.cycleEnclosingStack.pop();
@@ -283,7 +283,7 @@ public class StatementAction {
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // TODO 是否要放在 parExpression 之前
             Do doNode = new Do();
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.DO_NODE, doNode);
+            currentTreeNode.putSynProperty(JavaConstants.DO_NODE, doNode);
             // 设置最近循环
             JavaDirectGlobalProperty.cycleEnclosingStack.push(doNode);
 
@@ -292,12 +292,12 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Stmt stmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Expr parExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt stmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 3).getSynProperty(JavaConstants.CODE);
+            Expr parExpr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
-            Do doNode = (Do) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.DO_NODE);
+            Do doNode = (Do) currentTreeNode.getSynProperty(JavaConstants.DO_NODE);
             doNode.init(stmt, parExpr);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, doNode);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, doNode);
 
             // 跳出当前循环
             JavaDirectGlobalProperty.cycleEnclosingStack.pop();
@@ -317,11 +317,11 @@ public class StatementAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.EXPR_RESULT, expr);
+            Expr expr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.CODE);
+            currentTreeNode.putInhProperty(JavaConstants.EXPR_RESULT, expr);
 
             Switch switchNode = new Switch();
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.SWITCH_NODE, switchNode);
+            currentTreeNode.putSynProperty(JavaConstants.SWITCH_NODE, switchNode);
             
             // 设置最近循环
             JavaDirectGlobalProperty.cycleEnclosingStack.push(switchNode);
@@ -331,13 +331,13 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Stmt caseStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr expr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.CODE);
+            Stmt caseStmt = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
-            Switch switchNode = (Switch) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.SWITCH_NODE);
+            Switch switchNode = (Switch) currentTreeNode.getSynProperty(JavaConstants.SWITCH_NODE);
             switchNode.init(expr, caseStmt);
             
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, switchNode);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, switchNode);
 
             // 跳出当前循环
             JavaDirectGlobalProperty.cycleEnclosingStack.pop();
@@ -358,8 +358,8 @@ public class StatementAction {
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             JavaDirectUtils.nestEnv();
 
-            Expr result = (Expr) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.EXPR_RESULT);
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.EXPR_RESULT, result);
+            Expr result = (Expr) context.getParentNode().getInhProperty(JavaConstants.EXPR_RESULT);
+            currentTreeNode.putInhProperty(JavaConstants.EXPR_RESULT, result);
             return null;
         }
 
@@ -383,8 +383,8 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Stmt caseStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Stmt defaultStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt caseStmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.CODE);
+            Stmt defaultStmt = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
             Stmt code = null;
             if(caseStmt != null && defaultStmt != null) {
                 code = JavaDirectUtils.stmts(caseStmt, defaultStmt);
@@ -395,7 +395,7 @@ public class StatementAction {
             }
 
             if(code != null) {
-                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
+                context.getParentNode().putSynProperty(JavaConstants.CODE, code);
             }
 
             return null;
@@ -432,8 +432,8 @@ public class StatementAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr result = (Expr) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.EXPR_RESULT);
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.EXPR_RESULT, result);
+            Expr result = (Expr) context.getParentNode().getInhProperty(JavaConstants.EXPR_RESULT);
+            currentTreeNode.putInhProperty(JavaConstants.EXPR_RESULT, result);
             return null;
         }
 
@@ -452,17 +452,17 @@ public class StatementAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr result = (Expr) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.EXPR_RESULT);
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.EXPR_RESULT, result);
+            Expr result = (Expr) context.getParentNode().getInhProperty(JavaConstants.EXPR_RESULT);
+            currentTreeNode.putInhProperty(JavaConstants.EXPR_RESULT, result);
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr caseExpr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Stmt stmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr caseExpr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.CODE);
+            Stmt stmt = (Stmt) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.CODE);
             Case caseStmt = JavaDirectUtils.caseNode(caseExpr, stmt);
-            Stmt caseStmts = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Stmt caseStmts = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             Stmt code = null;
             if(caseStmts != null){
@@ -471,7 +471,7 @@ public class StatementAction {
                 code = caseStmt;
             }
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, code);
             return null;
         }
     }
@@ -492,12 +492,12 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr result = (Expr) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.EXPR_RESULT);
+            Expr result = (Expr) context.getParentNode().getInhProperty(JavaConstants.EXPR_RESULT);
             Constant caseConstant = JavaDirectUtils.constant(currentTreeNode.getIdToken());
 
             Expr caseExpr = JavaDirectUtils.rel(result, caseConstant, JavaConstants.JAVA_OPERATOR_EQ);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, caseExpr);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, caseExpr);
 
             return null;
         }
@@ -519,12 +519,12 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr result = (Expr) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.EXPR_RESULT);
+            Expr result = (Expr) context.getParentNode().getInhProperty(JavaConstants.EXPR_RESULT);
             Constant caseConstant = JavaDirectUtils.constant(currentTreeNode.getIdToken());
 
             Expr caseExpr = JavaDirectUtils.rel(result, caseConstant, JavaConstants.JAVA_OPERATOR_EQ);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, caseExpr);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, caseExpr);
 
             return null;
         }
@@ -546,12 +546,12 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr result = (Expr) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.EXPR_RESULT);
+            Expr result = (Expr) context.getParentNode().getInhProperty(JavaConstants.EXPR_RESULT);
             Constant caseConstant = JavaDirectUtils.constant(currentTreeNode.getIdToken());
 
             Expr caseExpr = JavaDirectUtils.rel(result, caseConstant, JavaConstants.JAVA_OPERATOR_EQ);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, caseExpr);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, caseExpr);
 
             return null;
         }
@@ -573,8 +573,8 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Stmt defaultStmt = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, defaultStmt);
+            Stmt defaultStmt = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, defaultStmt);
 
             return null;
         }
@@ -596,12 +596,12 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refVariable = (RefNode) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Expr expr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            RefNode refVariable = (RefNode) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.CODE);
+            Expr expr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             Stmt refAssign = JavaDirectUtils.refAssign(refVariable, expr);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refAssign);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refAssign);
 
             return null;
         }
@@ -623,11 +623,11 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr expr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             Return returnNode = JavaDirectUtils.returnNode(expr);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, returnNode);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, returnNode);
 
             return null;
         }
@@ -650,7 +650,7 @@ public class StatementAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             Break breakNode = JavaDirectUtils.breakNode();
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, breakNode);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, breakNode);
 
             return null;
         }
@@ -673,7 +673,7 @@ public class StatementAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             Continue continueNode = JavaDirectUtils.continueNode();
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, continueNode);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, continueNode);
 
             return null;
         }
@@ -695,8 +695,8 @@ public class StatementAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr code = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, code);
+            Expr code = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, code);
 
             return null;
         }

@@ -34,21 +34,21 @@ public class ExpressionAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) context.getBrotherNodeList().get(currentIndex - 4).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            List<Expr> paramList = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+            RefNode refCall = (RefNode) context.getBrotherNodeList().get(currentIndex - 4).getSynProperty(JavaConstants.CODE);
+            List<Expr> paramList = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.CALL_PARAM_LIST);
 
             // TODO 这里由于文法“#变量/方法引用链声明”，因此不确定最后一个引用是否是变量引用，需要根据后续情况进行替换
             MethodRefNode methodRefNode = JavaDirectUtils.methodRefNode(JavaDirectUtils.getLastRef(refCall).getCallName(), paramList);
             refCall = JavaDirectUtils.updateLastRef(refCall, methodRefNode);
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, refCall);
+            currentTreeNode.putInhProperty(JavaConstants.CODE, refCall);
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -68,15 +68,15 @@ public class ExpressionAction {
             String fieldName = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
             FieldRefNode fieldRefNode = JavaDirectUtils.fieldRefNode(fieldName);
             
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, fieldRefNode);
+            currentTreeNode.putInhProperty(JavaConstants.CODE, fieldRefNode);
 
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -101,15 +101,15 @@ public class ExpressionAction {
 
             thisRefNode.setNextRef(fieldRefNode);
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, thisRefNode);
+            currentTreeNode.putInhProperty(JavaConstants.CODE, thisRefNode);
 
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -126,10 +126,10 @@ public class ExpressionAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
+            RefNode refCall = (RefNode) context.getParentNode().getInhProperty(JavaConstants.CODE);
 
             // 将变量引用替换成数组引元素用
-            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
+            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 3).getSynProperty(JavaConstants.REF_ARRAY_INDEX);
             if(arrayIndex != null){
                 ArrayElementRefNode arrayElementRefNode = JavaDirectUtils.arrayElementRefNode(JavaDirectUtils.getLastRef(refCall).getCallName(), arrayIndex);
                 refCall = JavaDirectUtils.updateLastRef(refCall, arrayElementRefNode);
@@ -141,15 +141,15 @@ public class ExpressionAction {
 
             JavaDirectUtils.appendRef(refCall, fieldRefNode);
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, refCall);
+            currentTreeNode.putInhProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -171,8 +171,8 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) context.getParentNode().getInhProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -195,14 +195,14 @@ public class ExpressionAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             List<Expr> index = new ArrayList<>();
-            List<Expr> subIndex = (List<Expr>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
+            List<Expr> subIndex = (List<Expr>) currentTreeNode.getSynProperty(JavaConstants.REF_ARRAY_INDEX);
             Token indexNum = context.getBrotherNodeList().get(currentIndex - 2).getIdToken();
             index.add(JavaDirectUtils.constant(indexNum));
             if(subIndex != null){
                 index.addAll(subIndex);
             }
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.REF_ARRAY_INDEX, index);
+            context.getParentNode().putSynProperty(JavaConstants.REF_ARRAY_INDEX, index);
 
             return null;
         }
@@ -225,14 +225,14 @@ public class ExpressionAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             List<Expr> index = new ArrayList<>();
-            List<Expr> subIndex = (List<Expr>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
-            Expr indexVariable = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_VARIABLE);
+            List<Expr> subIndex = (List<Expr>) currentTreeNode.getSynProperty(JavaConstants.REF_ARRAY_INDEX);
+            Expr indexVariable = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.REF_VARIABLE);
             index.add(indexVariable);
             if(subIndex != null){
                 index.addAll(subIndex);
             }
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.REF_ARRAY_INDEX, index);
+            context.getParentNode().putSynProperty(JavaConstants.REF_ARRAY_INDEX, index);
 
             return null;
         }
@@ -257,10 +257,10 @@ public class ExpressionAction {
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
 
             String newClassName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
-            List<Variable> paramList = (List<Variable>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+            List<Variable> paramList = (List<Variable>) currentTreeNode.getSynProperty(JavaConstants.CALL_PARAM_LIST);
             New newNode = JavaDirectUtils.newNode(new VariableType(newClassName, VariableType.CLAZZ.getWidth()), paramList);
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, newNode);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, newNode);
 
             return null;
         }
@@ -277,24 +277,24 @@ public class ExpressionAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode preRef = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
+            RefNode preRef = (RefNode) context.getParentNode().getInhProperty(JavaConstants.CODE);
             String callName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
-            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
+            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.REF_ARRAY_INDEX);
             if(arrayIndex != null){
                 JavaDirectUtils.appendRef(preRef, JavaDirectUtils.arrayElementRefNode(callName, arrayIndex));
             }else{
                 JavaDirectUtils.appendRef(preRef, JavaDirectUtils.fieldRefNode(callName));
             }
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, preRef);
+            currentTreeNode.putInhProperty(JavaConstants.CODE, preRef);
 
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -311,21 +311,21 @@ public class ExpressionAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode preRef = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
+            RefNode preRef = (RefNode) context.getParentNode().getInhProperty(JavaConstants.CODE);
             String callName = context.getBrotherNodeList().get(currentIndex - 4).getIdToken().getToken();
-            List<Expr> paramList = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+            List<Expr> paramList = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.CALL_PARAM_LIST);
 
             JavaDirectUtils.appendRef(preRef, JavaDirectUtils.methodRefNode(callName, paramList));
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, preRef);
+            currentTreeNode.putInhProperty(JavaConstants.CODE, preRef);
 
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -347,8 +347,8 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) context.getParentNode().getInhProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refCall);
             return null;
         }
     }
@@ -365,7 +365,7 @@ public class ExpressionAction {
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             String callName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
-            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
+            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.REF_ARRAY_INDEX);
             RefNode refCall = null;
             if(arrayIndex != null){
                 refCall = JavaDirectUtils.arrayElementRefNode(callName, arrayIndex);
@@ -373,15 +373,15 @@ public class ExpressionAction {
                 refCall = JavaDirectUtils.fieldRefNode(callName);
             }
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, refCall);
+            currentTreeNode.putInhProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -401,7 +401,7 @@ public class ExpressionAction {
             RefNode thisRef = JavaDirectUtils.thisRefNode(context);
 
             String callName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
-            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
+            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.REF_ARRAY_INDEX);
 
             if(arrayIndex != null){
                 JavaDirectUtils.appendRef(thisRef, JavaDirectUtils.arrayElementRefNode(callName, arrayIndex));
@@ -409,15 +409,15 @@ public class ExpressionAction {
                 JavaDirectUtils.appendRef(thisRef, JavaDirectUtils.fieldRefNode(callName));
             }
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, thisRef);
+            currentTreeNode.putInhProperty(JavaConstants.CODE, thisRef);
 
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -440,7 +440,7 @@ public class ExpressionAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             RefNode thisRef = JavaDirectUtils.thisRefNode(context);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, thisRef);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, thisRef);
 
             return null;
         }
@@ -457,25 +457,25 @@ public class ExpressionAction {
 
         @Override
         public String enterSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode preRef = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
+            RefNode preRef = (RefNode) context.getParentNode().getInhProperty(JavaConstants.CODE);
 
             String callName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
-            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_ARRAY_INDEX);
+            List<Expr> arrayIndex = (List<Expr>) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.REF_ARRAY_INDEX);
             if(arrayIndex != null){
                 JavaDirectUtils.appendRef(preRef, JavaDirectUtils.arrayElementRefNode(callName, arrayIndex));
             }else{
                 JavaDirectUtils.appendRef(preRef, JavaDirectUtils.fieldRefNode(callName));
             }
 
-            currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).put(JavaConstants.CODE, preRef);
+            currentTreeNode.putInhProperty(JavaConstants.CODE, preRef);
 
             return null;
         }
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -497,8 +497,8 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            RefNode refCall = (RefNode) context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_INH).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refCall);
+            RefNode refCall = (RefNode) context.getParentNode().getInhProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, refCall);
 
             return null;
         }
@@ -520,11 +520,11 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Expr term = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr expr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.CODE);
+            Expr term = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             Expr add = JavaDirectUtils.term(expr, term, JavaConstants.JAVA_OPERATOR_ADD);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, add);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, add);
 
             return null;
         }
@@ -546,11 +546,11 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            Expr term = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr expr = (Expr) context.getBrotherNodeList().get(currentIndex - 2).getSynProperty(JavaConstants.CODE);
+            Expr term = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             Expr reduce = JavaDirectUtils.term(expr, term, JavaConstants.JAVA_OPERATOR_REDUCE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, reduce);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, reduce);
 
             return null;
         }
@@ -572,8 +572,8 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, expr);
+            Expr expr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, expr);
 
             return null;
         }
@@ -599,7 +599,7 @@ public class ExpressionAction {
             Variable variable = JavaDirectUtils.factor(variableName);
 
             Expr incExpr = JavaDirectUtils.term(variable, Constant.DIGIT_ONE, JavaConstants.JAVA_OPERATOR_ADD);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, incExpr);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, incExpr);
 
             return null;
         }
@@ -625,7 +625,7 @@ public class ExpressionAction {
             Variable variable = JavaDirectUtils.factor(variableName);
 
             Expr decExpr = JavaDirectUtils.term(variable, Constant.DIGIT_ONE, JavaConstants.JAVA_OPERATOR_REDUCE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, decExpr);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, decExpr);
 
             return null;
         }
@@ -650,12 +650,12 @@ public class ExpressionAction {
             Token token = context.getBrotherNodeList().get(currentIndex - 1).getIdToken();
             Constant constant = JavaDirectUtils.constant(token);
 
-            Expr nextExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr nextExpr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
             if(nextExpr != null){
                 StringJoin stringJoin = JavaDirectUtils.stringJoin(constant, nextExpr);
-                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stringJoin);
+                context.getParentNode().putSynProperty(JavaConstants.CODE, stringJoin);
             }else{
-                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, constant);
+                context.getParentNode().putSynProperty(JavaConstants.CODE, constant);
             }
 
             return null;
@@ -678,13 +678,13 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr refVariable = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.REF_VARIABLE);
-            Expr nextExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr refVariable = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.REF_VARIABLE);
+            Expr nextExpr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
             if(nextExpr != null){
                 StringJoin stringJoin = JavaDirectUtils.stringJoin(refVariable, nextExpr);
-                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stringJoin);
+                context.getParentNode().putSynProperty(JavaConstants.CODE, stringJoin);
             }else{
-                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, refVariable);
+                context.getParentNode().putSynProperty(JavaConstants.CODE, refVariable);
             }
 
             return null;
@@ -710,12 +710,12 @@ public class ExpressionAction {
             Token number = context.getBrotherNodeList().get(currentIndex - 1).getIdToken();
             Constant constant = JavaDirectUtils.constant(number);
 
-            Expr nextExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr nextExpr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
             if(nextExpr != null){
                 StringJoin stringJoin = JavaDirectUtils.stringJoin(constant, nextExpr);
-                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stringJoin);
+                context.getParentNode().putSynProperty(JavaConstants.CODE, stringJoin);
             }else{
-                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, constant);
+                context.getParentNode().putSynProperty(JavaConstants.CODE, constant);
             }
 
             return null;
@@ -741,12 +741,12 @@ public class ExpressionAction {
             Token digit = context.getBrotherNodeList().get(currentIndex - 1).getIdToken();
             Constant constant = JavaDirectUtils.constant(digit);
 
-            Expr nextExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr nextExpr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
             if(nextExpr != null){
                 StringJoin stringJoin = JavaDirectUtils.stringJoin(constant, nextExpr);
-                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stringJoin);
+                context.getParentNode().putSynProperty(JavaConstants.CODE, stringJoin);
             }else{
-                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, constant);
+                context.getParentNode().putSynProperty(JavaConstants.CODE, constant);
             }
 
             return null;
@@ -772,12 +772,12 @@ public class ExpressionAction {
             Token str = context.getBrotherNodeList().get(currentIndex - 1).getIdToken();
             Constant constant = JavaDirectUtils.constant(str);
 
-            Expr nextExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr nextExpr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
             if(nextExpr != null){
                 StringJoin stringJoin = JavaDirectUtils.stringJoin(constant, nextExpr);
-                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, stringJoin);
+                context.getParentNode().putSynProperty(JavaConstants.CODE, stringJoin);
             }else{
-                context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, constant);
+                context.getParentNode().putSynProperty(JavaConstants.CODE, constant);
             }
 
             return null;
@@ -801,7 +801,7 @@ public class ExpressionAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // 设置code
-            currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, Constant.True);
+            currentTreeNode.getParentNode().putSynProperty(JavaConstants.CODE, Constant.True);
 
             return null;
         }
@@ -824,7 +824,7 @@ public class ExpressionAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // 设置code
-            currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, Constant.False);
+            currentTreeNode.getParentNode().putSynProperty(JavaConstants.CODE, Constant.False);
 
             return null;
         }
@@ -846,8 +846,8 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr1 = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            List<Expr> restParamList = (List<Expr>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+            Expr expr1 = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.CODE);
+            List<Expr> restParamList = (List<Expr>) currentTreeNode.getSynProperty(JavaConstants.CALL_PARAM_LIST);
 
             List<Expr> paramList = new ArrayList<>();
             paramList.add(expr1);
@@ -855,7 +855,7 @@ public class ExpressionAction {
                 paramList.addAll(restParamList);
             }
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CALL_PARAM_LIST, paramList);
+            context.getParentNode().putSynProperty(JavaConstants.CALL_PARAM_LIST, paramList);
 
             return null;
         }
@@ -877,8 +877,8 @@ public class ExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr1 = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            List<Expr> restParamList = (List<Expr>) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CALL_PARAM_LIST);
+            Expr expr1 = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.CODE);
+            List<Expr> restParamList = (List<Expr>) currentTreeNode.getSynProperty(JavaConstants.CALL_PARAM_LIST);
 
             List<Expr> paramList = new ArrayList<>();
             paramList.add(expr1);
@@ -886,7 +886,7 @@ public class ExpressionAction {
                 paramList.addAll(paramList);
             }
 
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CALL_PARAM_LIST, paramList);
+            context.getParentNode().putSynProperty(JavaConstants.CALL_PARAM_LIST, paramList);
 
             return null;
         }

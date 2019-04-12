@@ -40,7 +40,7 @@ public class JavaLanguageDirectAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String packageName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PACKAGE_NAME);
+            String packageName = (String) currentTreeNode.getSynProperty(JavaConstants.PACKAGE_NAME);
             context.getGlobalPropertyMap().put(JavaConstants.PACKAGE_NAME, packageName);
 
             return null;
@@ -91,7 +91,7 @@ public class JavaLanguageDirectAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CLAZZ_MAP, context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP));
+            context.getParentNode().putSynProperty(JavaConstants.CLAZZ_MAP, context.getGlobalPropertyMap().get(JavaConstants.CLAZZ_MAP));
 
             return null;
         }

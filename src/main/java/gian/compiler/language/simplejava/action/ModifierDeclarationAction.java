@@ -32,7 +32,7 @@ public class ModifierDeclarationAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             String modifier = currentTreeNode.getIdToken().getToken();
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.MODIFIER, modifier);
+            context.getParentNode().putSynProperty(JavaConstants.MODIFIER, modifier);
 
             return null;
         }
@@ -56,7 +56,7 @@ public class ModifierDeclarationAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             String modifier = currentTreeNode.getIdToken().getToken();
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.MODIFIER, modifier);
+            context.getParentNode().putSynProperty(JavaConstants.MODIFIER, modifier);
 
             return null;
         }
@@ -80,7 +80,7 @@ public class ModifierDeclarationAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             String modifier = currentTreeNode.getIdToken().getToken();
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.MODIFIER, modifier);
+            context.getParentNode().putSynProperty(JavaConstants.MODIFIER, modifier);
 
             return null;
         }

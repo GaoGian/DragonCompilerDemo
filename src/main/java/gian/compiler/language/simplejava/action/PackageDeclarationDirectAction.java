@@ -33,8 +33,8 @@ public class PackageDeclarationDirectAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String packageName = (String) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.IMPORT_CLAZZ_ALL_NAME);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.PACKAGE_NAME, packageName);
+            String packageName = (String) currentTreeNode.getSynProperty(JavaConstants.IMPORT_CLAZZ_ALL_NAME);
+            context.getParentNode().putSynProperty(JavaConstants.PACKAGE_NAME, packageName);
             context.getGlobalPropertyMap().put(JavaConstants.PACKAGE_NAME, packageName);
 
             return null;

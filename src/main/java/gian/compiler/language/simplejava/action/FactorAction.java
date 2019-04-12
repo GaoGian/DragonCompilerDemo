@@ -37,8 +37,8 @@ public class FactorAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, expr);
+            Expr expr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, expr);
 
             return null;
         }
@@ -65,7 +65,7 @@ public class FactorAction {
             Constant constant = JavaDirectUtils.constant(token);
 
             // 设置code
-            currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, constant);
+            currentTreeNode.getParentNode().putSynProperty(JavaConstants.CODE, constant);
 
             return null;
         }
@@ -92,7 +92,7 @@ public class FactorAction {
             Constant constant = JavaDirectUtils.constant(token);
 
             // 设置code
-            currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, constant);
+            currentTreeNode.getParentNode().putSynProperty(JavaConstants.CODE, constant);
 
             return null;
         }
@@ -116,8 +116,8 @@ public class FactorAction {
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
             // FIXME 需要考虑引用链及数组元素的情况
-            RefNode ref = (RefNode) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            currentTreeNode.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, ref);
+            RefNode ref = (RefNode) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            currentTreeNode.getParentNode().putSynProperty(JavaConstants.CODE, ref);
 
             return null;
         }

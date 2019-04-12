@@ -37,10 +37,10 @@ public class ConstructorDeclarationAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            String modifier = (String) context.getBrotherNodeList().get(currentIndex - 3).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.MODIFIER);
+            String modifier = (String) context.getBrotherNodeList().get(currentIndex - 3).getSynProperty(JavaConstants.MODIFIER);
             String constructorName = context.getBrotherNodeList().get(currentIndex - 2).getIdToken().getToken();
-            List<Param> paramList = (List<Param>) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.PARAM_LIST);
-            Stmt code = (Stmt) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            List<Param> paramList = (List<Param>) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.PARAM_LIST);
+            Stmt code = (Stmt) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             ClazzConstructor constructor = new ClazzConstructor();
             constructor.setPermission(modifier);

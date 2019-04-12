@@ -32,12 +32,12 @@ public class ParExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr1 = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr expr1 = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.CODE);
             String operate = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
-            Expr expr2 = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr expr2 = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             Expr orExpr = JavaDirectUtils.or(expr1, expr2);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, orExpr);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, orExpr);
 
             return null;
         }
@@ -59,8 +59,8 @@ public class ParExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr parExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, parExpr);
+            Expr parExpr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, parExpr);
 
             return null;
         }
@@ -82,12 +82,12 @@ public class ParExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr1 = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr expr1 = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.CODE);
             String operate = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
-            Expr expr2 = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+            Expr expr2 = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
             Expr orExpr = JavaDirectUtils.and(expr1, expr2);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, orExpr);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, orExpr);
 
             return null;
         }
@@ -110,8 +110,8 @@ public class ParExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr parExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, parExpr);
+            Expr parExpr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, parExpr);
 
             return null;
         }
@@ -217,8 +217,8 @@ public class ParExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr parExpr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, parExpr);
+            Expr parExpr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, parExpr);
 
             return null;
         }
@@ -282,20 +282,20 @@ public class ParExpressionAction {
 
         @Override
         public String exitSyntaxSymbol(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex) {
-            Expr expr = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
-            context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, expr);
+            Expr expr = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
+            context.getParentNode().putSynProperty(JavaConstants.CODE, expr);
 
             return null;
         }
     }
 
     public static void setRelExpr(SyntaxDirectedContext context, SyntaxTree.SyntaxTreeNode currentTreeNode, Integer currentIndex){
-        Expr expr1 = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+        Expr expr1 = (Expr) context.getBrotherNodeList().get(currentIndex - 1).getSynProperty(JavaConstants.CODE);
         String operate = context.getBrotherNodeList().get(currentIndex - 1).getIdToken().getToken();
-        Expr expr2 = (Expr) currentTreeNode.getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).get(JavaConstants.CODE);
+        Expr expr2 = (Expr) currentTreeNode.getSynProperty(JavaConstants.CODE);
 
         Expr orExpr = JavaDirectUtils.rel(expr1, expr2, operate);
-        context.getParentNode().getPropertyMap().get(LexConstants.SYNTAX_DIRECT_PROPERTY_SYN).put(JavaConstants.CODE, orExpr);
+        context.getParentNode().putSynProperty(JavaConstants.CODE, orExpr);
     }
 
 
