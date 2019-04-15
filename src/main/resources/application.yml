@@ -6,4 +6,10 @@ spring:
     name: compiler
   thymeleaf:
     prefix: classpath:/templates/
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+
 
