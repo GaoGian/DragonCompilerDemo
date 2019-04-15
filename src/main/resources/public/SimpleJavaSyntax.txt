@@ -1,0 +1,104 @@
+#包名 import包列表 类声明
+javaLanguage → packageDeclaration importDeclaration classDeclaration
+
+#包名
+packageDeclaration → ◀package▶ qualifiedName ◀;▶ | ε
+importDeclaration → ◀import▶ qualifiedName ◀;▶ importDeclaration | ε
+qualifiedName → ◀Identifier▶ IdentifierRepeat
+IdentifierRepeat → ◀.▶ ◀Identifier▶ IdentifierRepeat | ε
+
+#类声明
+classDeclaration → modifierDeclaration ◀class▶ ◀Identifier▶ extendsInfo classBody
+#类继承信息
+extendsInfo → ◀extends▶ ◀Identifier▶ | ε
+
+#权限
+modifierDeclaration → ◀public▶ | ◀protected▶ | ◀private▶
+
+#类体
+classBody → ◀{▶ classBodyDeclaration ◀}▶
+classBodyDeclaration → fieldDeclaration classBodyDeclaration | constructorDeclaration classBodyDeclaration | methodDeclaration classBodyDeclaration | ε
+
+#类属性声明
+fieldDeclaration → modifierDeclaration typeDeclaration ◀Identifier▶ variableInitializer ◀;▶
+
+#变量类型声明（这里拆开写主要是避免和“变量引用产生式”出现移入/规约冲突）
+typeDeclaration → ◀boolean▶ typeComponent | ◀char▶ typeComponent | ◀byte▶ typeComponent | ◀short▶ typeComponent | ◀int▶ typeComponent | ◀long▶ typeComponent | ◀float▶ typeComponent | ◀double▶ typeComponent | ◀Identifier▶ typeComponent
+#数组声明
+typeComponent → ◀[▶ ◀]▶ typeComponent | ε
+
+#构造体声明
+constructorDeclaration → modifierDeclaration ◀Identifier▶ formalParameters constructorBody
+constructorBody → ◀{▶ explicitConstructorInvocation blockStatement ◀}▶
+explicitConstructorInvocation → ◀super▶ ◀(▶ expressionList ◀)▶ ◀;▶ | ε
+
+#方法声明
+methodDeclaration → modifierDeclaration typeDeclaration ◀Identifier▶ formalParameters methodBody | modifierDeclaration ◀void▶ ◀Identifier▶ formalParameters methodBody
+#方法变量声明
+formalParameters → ◀(▶ formalParameterDecls ◀)▶
+formalParameterDecls → typeDeclaration ◀Identifier▶ formalParameterDeclsRest | ε
+formalParameterDeclsRest → ◀,▶ typeDeclaration ◀Identifier▶ formalParameterDeclsRest | ε
+#方法体声明
+methodBody → block
+
+#代码块
+block → ◀{▶ blockStatement ◀}▶
+#代码语句
+blockStatement → localVariableDeclarationStatement ◀;▶ blockStatement | statement blockStatement | ε
+#局部变量声明
+localVariableDeclarationStatement → typeDeclaration ◀Identifier▶ variableInitializer
+#局部变量初始化    TODO 增加数组初始化文法
+variableInitializer → ◀=▶ expression | ◀=▶ ◀new▶ arrayBaseType ◀[▶ ◀Digit▶ ◀]▶ arraySize | ε
+#数组基本数据类型
+arrayBaseType → ◀boolean▶ | ◀char▶ | ◀byte▶ | ◀short▶ | ◀int▶ | ◀long▶ | ◀float▶ | ◀double▶ | ◀Identifier▶
+#数组大小
+arraySize → ◀[▶ ◀Digit▶ ◀]▶ arraySize | ε
+
+#方法语句
+statement → ◀if▶ ◀(▶ parExpression ◀)▶ block elseStatement | ◀for▶ ◀(▶ forControl ◀)▶ block | ◀while▶ ◀(▶ parExpression ◀)▶ block | ◀do▶ block ◀while▶ ◀(▶ parExpression ◀)▶ ◀;▶ | ◀switch▶ ◀(▶ expression ◀)▶ switchBlock | refVariable ◀=▶ expression ◀;▶ | ◀return▶ expression ◀;▶ | ◀break▶ ◀;▶ | ◀continue▶ ◀;▶ | expression ◀;▶
+#else 部分
+elseStatement → ◀else▶ block | ◀else▶ ◀if▶ ◀(▶ parExpression ◀)▶ block elseStatement | ε
+#表达式 (‘|’ 替换成 ‘&#124;’)
+parExpression → expressionTermRest ◀&#124;&#124;▶ expressionTermRest | expressionTermRest
+expressionTermRest → expressionTerm ◀&&▶ expressionTerm | expressionTerm
+expressionTerm → expressionFactor ◀>▶ expressionFactor | expressionFactor ◀>=▶ expressionFactor | expressionFactor ◀<▶ expressionFactor | expressionFactor ◀<=▶ expressionFactor | expressionFactor
+expressionFactor → expression ◀==▶ expression | expression ◀!=▶ expression | expression
+#表达式
+expression → identifierReference ◀(▶ expressionList ◀)▶ methodRefRest | ◀new▶ ◀Identifier▶ ◀(▶ expressionList ◀)▶ | expression ◀+▶ term | expression ◀-▶ term | term | ◀Identifier▶ ◀++▶ | ◀Identifier▶ ◀--▶ | ◀String▶ stringRest | ◀true▶ | ◀false▶
+expressionList → expression expressionListRest | ε
+expressionListRest → ◀,▶ expression expressionListRest | ε
+#字符串
+stringRest → ◀+▶ refVariable stringRest | ◀+▶ ◀Number▶ stringRest | ◀+▶ ◀Digit▶ stringRest | ◀+▶ ◀String▶ stringRest | ε
+
+#方法引用链声明
+methodRefRest → ◀.▶ ◀Identifier▶ arrayRest methodRefRest | ◀.▶ ◀Identifier▶ ◀(▶ expressionList ◀)▶ methodRefRest | ε
+#纯变量引用链声明
+refVariable → ◀Identifier▶ arrayRest targetVariableRest | ◀this▶ ◀.▶ ◀Identifier▶ arrayRest targetVariableRest | ◀this▶
+targetVariableRest → ◀.▶ ◀Identifier▶ arrayRest targetVariableRest | ε
+#变量/方法引用链声明
+identifierReference → ◀Identifier▶ identifierDeclaratorIdRest | ◀this▶ ◀.▶ ◀Identifier▶ identifierDeclaratorIdRest
+identifierDeclaratorIdRest → arrayRest ◀.▶ ◀Identifier▶ identifierDeclaratorIdRest | ε
+arrayRest → ◀[▶ ◀Digit▶ ◀]▶ arrayRest | ◀[▶ refVariable ◀]▶ arrayRest | ε
+
+#计算公式
+#乘除表达式因子
+term → term ◀*▶ factor | term ◀/▶ factor | factor
+factor → ◀(▶ expression ◀)▶ | ◀Number▶ | ◀Digit▶ | refVariable
+
+#for循环条件表达式
+forControl → forInit ◀;▶ parExpression ◀;▶ forUpdate
+forInit → localVariableDeclarationStatement
+forUpdate → expression
+
+#switch
+switchBlock → ◀{▶ switchBlockStatementGroup defaultSwitchLabel ◀}▶
+switchBlockStatementGroup → switchLabel blockStatement switchBlockStatementGroup | ε
+switchLabel → ◀case▶ ◀Digit▶ ◀:▶ | ◀case▶ ◀Number▶ ◀:▶ | ◀case▶ ◀String▶ ◀:▶
+defaultSwitchLabel → ◀default▶ ◀:▶ blockStatement | ε
+
+
+
+
+
+
+
