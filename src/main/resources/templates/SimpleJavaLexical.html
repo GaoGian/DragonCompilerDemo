@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Lexical</title>
+</head>
+<body>
+#词法单元标识格式 → 正则表达式 type名称 是否是正则词法单元 是否是空动作
+
+###关键词
+##写在上方，优先识别
+#类相关
+package → package keyword false false
+import → import keyword false false
+class → class keyword false false
+extends → extends keyword false false
+super → super keyword false false
+this → this keyword false false
+new → new keyword false false
+true → true keyword false false
+false → false keyword false false
+
+#权限相关
+public → public keyword false false
+protected → protected keyword false false
+private → private keyword false false
+static → static keyword false false
+
+#表达式相关
+if → if keyword false false
+else → else keyword false false
+for → for keyword false false
+do → do keyword false false
+while → while keyword false false
+switch → switch keyword false false
+return → return keyword false false
+break → break keyword false false
+continue → continue keyword false false
+case → case keyword false false
+default → default keyword false false
+
+#基本数据类型
+int → int type false false
+long → long type false false
+short → short type false false
+float → float type false false
+double → double type false false
+char → char type false false
+byte → byte type false false
+boolean → boolean type false false
+void → void type false false
+
+##变量写在下方，优先级别在关键词之后
+#变量相关
+Identifier → [A-Za-z]\w* Identifier true false
+Digit → \d+ Digit true false
+Number → \d+(\.\d+)? Number true false
+String → "[^"]*" String true false
+
+#分界符
+{ → \{ separator false false
+} → \} separator false false
+[ → \[ separator false false
+] → \] separator false false
+( → \( separator false false
+) → \) separator false false
+
+#运算符
+= → = operator false false
++ → \+ operator false false
+- → - operator false false
+* → \* operator false false
+/ → / operator false false
+++ → \+\+ operator false false
+-- → -- operator false false
+== → == operator false false
+!= → != operator false false
+> → > operator false false
+< → < operator false false
+>= → >= operator false false
+<= → <= operator false false
+|| → \|\| operator false false
+&& → && operator false false
+
+#标点符号
+. → \. punctuation false false
+, → , punctuation false false
+; → ; punctuation false false
+" → " punctuation false false
+' → ' punctuation false false
+: → : punctuation false false
+
+#空格
+Empty → \s+ empty true true
+</body>
+</html>
+

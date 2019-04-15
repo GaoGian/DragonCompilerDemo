@@ -1,0 +1,2674 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>CompilerResult</title>
+</head>
+<body>
+移入 0
+移入 3
+移入 8
+移入 15
+移入 22
+移入 15
+移入 22
+移入 15
+移入 22
+移入 15
+移入 22
+移入 15
+移入 22
+移入 20
+规约 IdentifierRepeat → ε·, [;]
+GOTO 26
+规约 IdentifierRepeat → . Identifier IdentifierRepeat·, [;]
+GOTO 26
+规约 IdentifierRepeat → . Identifier IdentifierRepeat·, [;]
+GOTO 26
+规约 IdentifierRepeat → . Identifier IdentifierRepeat·, [;]
+GOTO 26
+规约 IdentifierRepeat → . Identifier IdentifierRepeat·, [;]
+GOTO 26
+规约 IdentifierRepeat → . Identifier IdentifierRepeat·, [;]
+GOTO 14
+规约 qualifiedName → Identifier IdentifierRepeat·, [;]
+GOTO 6
+移入 13
+规约 packageDeclaration → package qualifiedName ;·, [private, import, public, protected]
+GOTO 2
+移入 7
+移入 8
+移入 15
+移入 22
+移入 15
+移入 22
+移入 15
+移入 22
+移入 15
+移入 22
+移入 15
+移入 22
+移入 15
+移入 22
+移入 20
+规约 IdentifierRepeat → ε·, [;]
+GOTO 26
+规约 IdentifierRepeat → . Identifier IdentifierRepeat·, [;]
+GOTO 26
+规约 IdentifierRepeat → . Identifier IdentifierRepeat·, [;]
+GOTO 26
+规约 IdentifierRepeat → . Identifier IdentifierRepeat·, [;]
+GOTO 26
+规约 IdentifierRepeat → . Identifier IdentifierRepeat·, [;]
+GOTO 26
+规约 IdentifierRepeat → . Identifier IdentifierRepeat·, [;]
+GOTO 26
+规约 IdentifierRepeat → . Identifier IdentifierRepeat·, [;]
+GOTO 14
+规约 qualifiedName → Identifier IdentifierRepeat·, [;]
+GOTO 12
+移入 21
+移入 10
+规约 importDeclaration → ε·, [private, public, protected]
+GOTO 24
+规约 importDeclaration → import qualifiedName ; importDeclaration·, [private, public, protected]
+GOTO 5
+移入 17
+规约 modifierDeclaration → public·, [class]
+GOTO 16
+移入 23
+移入 25
+移入 29
+规约 extendsInfo → ε·, [{]
+GOTO 27
+移入 32
+移入 34
+规约 modifierDeclaration → public·, [boolean, Identifier, void, byte, double, char, short, float, int, long]
+GOTO 33
+移入 48
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 63
+规约 typeDeclaration → boolean typeComponent·, [Identifier]
+GOTO 47
+移入 57
+移入 81
+移入 104
+规约 expression → false·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 75
+移入 84
+规约 fieldDeclaration → modifierDeclaration typeDeclaration Identifier variableInitializer ;·, [private, public, protected, }]
+GOTO 38
+移入 34
+规约 modifierDeclaration → public·, [boolean, Identifier, void, byte, double, char, short, float, int, long]
+GOTO 33
+移入 42
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 59
+规约 typeDeclaration → Identifier typeComponent·, [Identifier]
+GOTO 47
+移入 57
+移入 81
+移入 97
+移入 110
+移入 194
+移入 229
+规约 expression → false·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 226
+移入 345
+规约 stringRest → ε·, [), +, ,, -]
+GOTO 316
+规约 expression → String stringRest·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 275
+移入 389
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 546
+规约 expression → new Identifier ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 75
+移入 84
+规约 fieldDeclaration → modifierDeclaration typeDeclaration Identifier variableInitializer ;·, [private, public, protected, }]
+GOTO 38
+移入 34
+规约 modifierDeclaration → public·, [boolean, Identifier, void, byte, double, char, short, float, int, long]
+GOTO 33
+移入 48
+移入 68
+移入 76
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 88
+规约 typeComponent → [ ] typeComponent·, [Identifier]
+GOTO 63
+规约 typeDeclaration → boolean typeComponent·, [Identifier]
+GOTO 47
+移入 57
+移入 82
+规约 variableInitializer → ε·, [;]
+GOTO 75
+移入 84
+规约 fieldDeclaration → modifierDeclaration typeDeclaration Identifier variableInitializer ;·, [private, public, protected, }]
+GOTO 38
+移入 34
+规约 modifierDeclaration → public·, [boolean, Identifier, void, byte, double, char, short, float, int, long]
+GOTO 33
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 47
+移入 57
+移入 81
+移入 98
+规约 factor → Digit·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 75
+移入 84
+规约 fieldDeclaration → modifierDeclaration typeDeclaration Identifier variableInitializer ;·, [private, public, protected, }]
+GOTO 38
+移入 34
+规约 modifierDeclaration → public·, [boolean, Identifier, void, byte, double, char, short, float, int, long]
+GOTO 33
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 47
+移入 57
+移入 81
+移入 98
+规约 factor → Digit·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 75
+移入 84
+规约 fieldDeclaration → modifierDeclaration typeDeclaration Identifier variableInitializer ;·, [private, public, protected, }]
+GOTO 38
+移入 34
+规约 modifierDeclaration → public·, [boolean, Identifier, void, byte, double, char, short, float, int, long]
+GOTO 33
+移入 42
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 59
+规约 typeDeclaration → Identifier typeComponent·, [Identifier]
+GOTO 47
+移入 57
+移入 81
+移入 102
+移入 170
+规约 stringRest → ε·, [;, +, -]
+GOTO 156
+规约 expression → String stringRest·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 75
+移入 84
+规约 fieldDeclaration → modifierDeclaration typeDeclaration Identifier variableInitializer ;·, [private, public, protected, }]
+GOTO 38
+移入 34
+规约 modifierDeclaration → public·, [boolean, Identifier, void, byte, double, char, short, float, int, long]
+GOTO 33
+移入 42
+移入 70
+移入 83
+规约 formalParameterDecls → ε·, [)]
+GOTO 80
+移入 92
+规约 formalParameters → ( formalParameterDecls )·, [{]
+GOTO 69
+移入 73
+移入 108
+规约 explicitConstructorInvocation → ε·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 89
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 123
+移入 188
+规约 constructorBody → { explicitConstructorInvocation blockStatement }·, [private, public, protected, }]
+GOTO 79
+规约 constructorDeclaration → modifierDeclaration Identifier formalParameters constructorBody·, [private, public, protected, }]
+GOTO 39
+移入 34
+规约 modifierDeclaration → public·, [boolean, Identifier, void, byte, double, char, short, float, int, long]
+GOTO 33
+移入 42
+移入 70
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 74
+移入 85
+移入 129
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 189
+移入 256
+移入 168
+规约 formalParameterDeclsRest → ε·, [)]
+GOTO 390
+规约 formalParameterDeclsRest → , typeDeclaration Identifier formalParameterDeclsRest·, [)]
+GOTO 128
+规约 formalParameterDecls → typeDeclaration Identifier formalParameterDeclsRest·, [)]
+GOTO 80
+移入 92
+规约 formalParameters → ( formalParameterDecls )·, [{]
+GOTO 69
+移入 73
+移入 108
+规约 explicitConstructorInvocation → ε·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 89
+移入 161
+移入 185
+移入 254
+移入 448
+规约 arrayRest → ε·, [*, ;, +, =, -, ., /]
+GOTO 430
+移入 347
+规约 targetVariableRest → ε·, [*, ;, +, =, -, /]
+GOTO 596
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [*, ;, +, =, -, /]
+GOTO 143
+移入 205
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 234
+规约 refVariable → Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 283
+移入 350
+规约 statement → refVariable = expression ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 161
+移入 185
+移入 254
+移入 448
+规约 arrayRest → ε·, [*, ;, +, =, -, ., /]
+GOTO 430
+移入 347
+规约 targetVariableRest → ε·, [*, ;, +, =, -, /]
+GOTO 596
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [*, ;, +, =, -, /]
+GOTO 143
+移入 205
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 234
+规约 refVariable → Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 283
+移入 350
+规约 statement → refVariable = expression ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 123
+移入 188
+规约 constructorBody → { explicitConstructorInvocation blockStatement }·, [private, public, protected, }]
+GOTO 79
+规约 constructorDeclaration → modifierDeclaration Identifier formalParameters constructorBody·, [private, public, protected, }]
+GOTO 39
+移入 34
+规约 modifierDeclaration → public·, [boolean, Identifier, void, byte, double, char, short, float, int, long]
+GOTO 33
+移入 42
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 59
+规约 typeDeclaration → Identifier typeComponent·, [Identifier]
+GOTO 47
+移入 57
+移入 70
+移入 48
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 63
+规约 typeDeclaration → boolean typeComponent·, [Identifier]
+GOTO 74
+移入 85
+移入 129
+移入 72
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 59
+规约 typeDeclaration → Identifier typeComponent·, [Identifier]
+GOTO 189
+移入 256
+移入 168
+规约 formalParameterDeclsRest → ε·, [)]
+GOTO 390
+规约 formalParameterDeclsRest → , typeDeclaration Identifier formalParameterDeclsRest·, [)]
+GOTO 128
+规约 formalParameterDecls → typeDeclaration Identifier formalParameterDeclsRest·, [)]
+GOTO 80
+移入 92
+规约 formalParameters → ( formalParameterDecls )·, [{]
+GOTO 77
+移入 87
+移入 138
+移入 200
+移入 250
+移入 443
+规约 arrayRest → ε·, [==, &&, ||, <=, ), *, +, -, ., /, !=, <, >, >=]
+GOTO 425
+移入 617
+规约 targetVariableRest → ε·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 595
+规约 refVariable → Identifier arrayRest targetVariableRest·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 297
+规约 factor → refVariable·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 336
+规约 term → factor·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 306
+规约 expression → term·, [==, &&, ||, <=, ), +, !=, <, -, >, >=]
+GOTO 282
+移入 407
+移入 568
+规约 expression → true·, [&&, ||, <=, ), +, <, -, >, >=]
+GOTO 503
+规约 expressionFactor → expression == expression·, [&&, ||, <=, ), <, >, >=]
+GOTO 302
+规约 expressionTerm → expressionFactor·, [&&, ||, )]
+GOTO 301
+规约 expressionTermRest → expressionTerm·, [||, )]
+GOTO 300
+规约 parExpression → expressionTermRest·, [)]
+GOTO 293
+移入 384
+移入 475
+移入 145
+移入 106
+规约 refVariable → this·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 207
+移入 249
+规约 statement → return expression ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 653
+移入 830
+规约 block → { blockStatement }·, [for, do, String, float, while, long, switch, Identifier, Number, else, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 496
+移入 674
+移入 914
+移入 1205
+移入 250
+移入 443
+规约 arrayRest → ε·, [==, &&, ||, <=, ), *, +, -, ., /, !=, <, >, >=]
+GOTO 425
+移入 617
+规约 targetVariableRest → ε·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 595
+规约 refVariable → Identifier arrayRest targetVariableRest·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 297
+规约 factor → refVariable·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 336
+规约 term → factor·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 306
+规约 expression → term·, [==, &&, ||, <=, ), +, !=, <, -, >, >=]
+GOTO 282
+移入 407
+移入 558
+移入 784
+规约 stringRest → ε·, [&&, ||, <=, ), +, <, -, >, >=]
+GOTO 727
+规约 expression → String stringRest·, [&&, ||, <=, ), +, <, -, >, >=]
+GOTO 503
+规约 expressionFactor → expression == expression·, [&&, ||, <=, ), <, >, >=]
+GOTO 302
+规约 expressionTerm → expressionFactor·, [&&, ||, )]
+GOTO 301
+规约 expressionTermRest → expressionTerm·, [||, )]
+GOTO 300
+规约 parExpression → expressionTermRest·, [)]
+GOTO 1623
+移入 2044
+移入 475
+移入 145
+移入 134
+移入 182
+移入 194
+移入 247
+规约 expressionList → ε·, [)]
+GOTO 275
+移入 389
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 546
+规约 expression → new Identifier ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 207
+移入 249
+规约 statement → return expression ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 653
+移入 830
+规约 block → { blockStatement }·, [for, do, String, float, while, long, switch, Identifier, Number, else, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 2452
+移入 674
+移入 474
+移入 145
+移入 134
+移入 182
+移入 194
+移入 211
+规约 factor → Digit·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 211
+规约 factor → Digit·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 275
+移入 389
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 546
+规约 expression → new Identifier ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 207
+移入 249
+规约 statement → return expression ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 654
+移入 829
+规约 block → { blockStatement }·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 863
+规约 elseStatement → else block·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 2942
+规约 elseStatement → else if ( parExpression ) block elseStatement·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 672
+规约 statement → if ( parExpression ) block elseStatement·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 124
+移入 187
+规约 block → { blockStatement }·, [private, public, protected, }]
+GOTO 95
+规约 methodBody → block·, [private, public, protected, }]
+GOTO 93
+规约 methodDeclaration → modifierDeclaration typeDeclaration Identifier formalParameters methodBody·, [private, public, protected, }]
+GOTO 40
+移入 34
+规约 modifierDeclaration → public·, [boolean, Identifier, void, byte, double, char, short, float, int, long]
+GOTO 33
+移入 42
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 59
+规约 typeDeclaration → Identifier typeComponent·, [Identifier]
+GOTO 47
+移入 57
+移入 70
+移入 83
+规约 formalParameterDecls → ε·, [)]
+GOTO 80
+移入 92
+规约 formalParameters → ( formalParameterDecls )·, [{]
+GOTO 77
+移入 87
+移入 139
+移入 199
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 98
+规约 factor → Digit·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 281
+规约 forInit → localVariableDeclarationStatement·, [;]
+GOTO 340
+移入 351
+移入 452
+移入 775
+规约 arrayRest → ε·, [==, &&, ||, <=, *, +, -, ., /, ;, !=, <, >, >=]
+GOTO 736
+移入 1117
+规约 targetVariableRest → ε·, [==, &&, ||, <=, *, +, -, /, ;, !=, <, >, >=]
+GOTO 1064
+规约 refVariable → Identifier arrayRest targetVariableRest·, [==, &&, ||, <=, *, +, -, /, ;, !=, <, >, >=]
+GOTO 521
+规约 factor → refVariable·, [==, &&, ||, <=, *, +, -, /, ;, !=, <, >, >=]
+GOTO 606
+规约 term → factor·, [==, &&, ||, <=, *, +, -, /, ;, !=, <, >, >=]
+GOTO 548
+规约 expression → term·, [==, &&, ||, <=, ;, +, !=, <, -, >, >=]
+GOTO 498
+规约 expressionFactor → expression·, [&&, ||, <=, ;, <, >, >=]
+GOTO 534
+移入 678
+移入 794
+移入 1405
+规约 arrayRest → ε·, [==, &&, ||, *, ;, +, !=, -, ., /]
+GOTO 1346
+移入 1505
+移入 1925
+移入 1405
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 163
+规约 identifierReference → Identifier identifierDeclaratorIdRest·, [(]
+GOTO 964
+移入 1204
+移入 247
+规约 expressionList → ε·, [)]
+GOTO 1531
+移入 2046
+移入 2774
+规约 methodRefRest → ε·, [==, &&, ||, ;, +, !=, -]
+GOTO 2554
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [==, &&, ||, ;, +, !=, -]
+GOTO 867
+规约 expressionFactor → expression·, [&&, ||, ;]
+GOTO 958
+规约 expressionTerm → expressionFactor > expressionFactor·, [&&, ||, ;]
+GOTO 531
+规约 expressionTermRest → expressionTerm·, [||, ;]
+GOTO 529
+规约 parExpression → expressionTermRest·, [;]
+GOTO 518
+移入 621
+移入 111
+移入 223
+规约 expression → Identifier ++·, [), +, -]
+GOTO 866
+规约 forUpdate → expression·, [)]
+GOTO 1110
+规约 forControl → forInit ; parExpression ; forUpdate·, [)]
+GOTO 294
+移入 388
+移入 474
+移入 138
+移入 200
+移入 250
+移入 443
+规约 arrayRest → ε·, [==, &&, ||, <=, ), *, +, -, ., /, !=, <, >, >=]
+GOTO 425
+移入 617
+规约 targetVariableRest → ε·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 595
+规约 refVariable → Identifier arrayRest targetVariableRest·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 297
+规约 factor → refVariable·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 336
+规约 term → factor·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 306
+规约 expression → term·, [==, &&, ||, <=, ), +, !=, <, -, >, >=]
+GOTO 282
+规约 expressionFactor → expression·, [&&, ||, <=, ), <, >, >=]
+GOTO 302
+移入 404
+移入 510
+规约 factor → Digit·, [==, &&, ||, ), *, +, !=, -, /]
+GOTO 607
+规约 term → factor·, [==, &&, ||, ), *, +, !=, -, /]
+GOTO 549
+规约 expression → term·, [==, &&, ||, ), +, !=, -]
+GOTO 499
+规约 expressionFactor → expression·, [&&, ||, )]
+GOTO 538
+规约 expressionTerm → expressionFactor >= expressionFactor·, [&&, ||, )]
+GOTO 301
+规约 expressionTermRest → expressionTerm·, [||, )]
+GOTO 300
+规约 parExpression → expressionTermRest·, [)]
+GOTO 293
+移入 384
+移入 475
+移入 145
+移入 134
+移入 182
+移入 194
+移入 229
+规约 expression → false·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 226
+移入 345
+规约 stringRest → ε·, [), +, ,, -]
+GOTO 316
+规约 expression → String stringRest·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 275
+移入 389
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 546
+规约 expression → new Identifier ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 207
+移入 249
+规约 statement → return expression ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 653
+移入 830
+规约 block → { blockStatement }·, [for, do, String, float, while, long, switch, Identifier, Number, else, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 496
+移入 674
+移入 914
+移入 1205
+移入 250
+移入 443
+规约 arrayRest → ε·, [==, &&, ||, <=, ), *, +, -, ., /, !=, <, >, >=]
+GOTO 425
+移入 617
+规约 targetVariableRest → ε·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 595
+规约 refVariable → Identifier arrayRest targetVariableRest·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 297
+规约 factor → refVariable·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 336
+规约 term → factor·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 306
+规约 expression → term·, [==, &&, ||, <=, ), +, !=, <, -, >, >=]
+GOTO 282
+规约 expressionFactor → expression·, [&&, ||, <=, ), <, >, >=]
+GOTO 302
+移入 404
+移入 510
+规约 factor → Digit·, [==, &&, ||, ), *, +, !=, -, /]
+GOTO 607
+规约 term → factor·, [==, &&, ||, ), *, +, !=, -, /]
+GOTO 549
+规约 expression → term·, [==, &&, ||, ), +, !=, -]
+GOTO 499
+规约 expressionFactor → expression·, [&&, ||, )]
+GOTO 538
+规约 expressionTerm → expressionFactor >= expressionFactor·, [&&, ||, )]
+GOTO 301
+规约 expressionTermRest → expressionTerm·, [||, )]
+GOTO 300
+规约 parExpression → expressionTermRest·, [)]
+GOTO 1623
+移入 2044
+移入 475
+移入 140
+移入 198
+移入 319
+规约 expression → true·, [==, &&, ||, <=, ), +, !=, <, -, >, >=]
+GOTO 282
+规约 expressionFactor → expression·, [&&, ||, <=, ), <, >, >=]
+GOTO 302
+规约 expressionTerm → expressionFactor·, [&&, ||, )]
+GOTO 301
+规约 expressionTermRest → expressionTerm·, [||, )]
+GOTO 300
+规约 parExpression → expressionTermRest·, [)]
+GOTO 292
+移入 387
+移入 474
+移入 140
+移入 198
+移入 250
+移入 443
+规约 arrayRest → ε·, [==, &&, ||, <=, ), *, +, -, ., /, !=, <, >, >=]
+GOTO 425
+移入 617
+规约 targetVariableRest → ε·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 595
+规约 refVariable → Identifier arrayRest targetVariableRest·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 297
+规约 factor → refVariable·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 336
+规约 term → factor·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 306
+规约 expression → term·, [==, &&, ||, <=, ), +, !=, <, -, >, >=]
+GOTO 282
+移入 407
+移入 513
+规约 factor → Digit·, [&&, ||, <=, ), *, +, <, -, >, >=, /]
+GOTO 610
+规约 term → factor·, [&&, ||, <=, ), *, +, <, -, >, >=, /]
+GOTO 552
+规约 expression → term·, [&&, ||, <=, ), +, <, -, >, >=]
+GOTO 503
+规约 expressionFactor → expression == expression·, [&&, ||, <=, ), <, >, >=]
+GOTO 302
+规约 expressionTerm → expressionFactor·, [&&, ||, )]
+GOTO 301
+规约 expressionTermRest → expressionTerm·, [||, )]
+GOTO 300
+规约 parExpression → expressionTermRest·, [)]
+GOTO 292
+移入 387
+移入 474
+移入 141
+移入 186
+移入 142
+移入 196
+移入 162
+移入 184
+移入 255
+移入 244
+规约 arrayRest → ε·, [), *, +, -, ., /]
+GOTO 424
+移入 258
+移入 356
+移入 190
+移入 287
+移入 374
+移入 190
+移入 287
+移入 374
+移入 447
+规约 arrayRest → ε·, [), *, +, -, ., /]
+GOTO 583
+规约 arrayRest → [ Digit ] arrayRest·, [), *, +, -, ., /]
+GOTO 583
+规约 arrayRest → [ Digit ] arrayRest·, [), *, +, -, ., /]
+GOTO 588
+移入 342
+规约 targetVariableRest → ε·, [), *, +, -, /]
+GOTO 756
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [), *, +, -, /]
+GOTO 594
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [), *, +, -, /]
+GOTO 144
+规约 factor → refVariable·, [), *, +, -, /]
+GOTO 165
+规约 term → factor·, [), *, +, -, /]
+GOTO 151
+规约 expression → term·, [), +, -]
+GOTO 285
+移入 383
+移入 473
+移入 773
+移入 908
+移入 1399
+规约 switchLabel → case Digit :·, [for, do, String, float, while, long, switch, default, Identifier, Number, continue, if, case, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 772
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 106
+移入 112
+移入 175
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 325
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 597
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 434
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 864
+移入 1124
+移入 109
+移入 245
+规约 typeComponent → ε·, [Identifier]
+GOTO 59
+规约 typeDeclaration → Identifier typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 106
+移入 112
+移入 175
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 325
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 183
+移入 257
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 431
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 597
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 597
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 434
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 864
+移入 1124
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 106
+移入 112
+移入 175
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 325
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 183
+移入 257
+移入 169
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 334
+规约 identifierReference → this . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 100
+移入 126
+移入 211
+规约 factor → Digit·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 211
+规约 factor → Digit·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 202
+移入 278
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 409
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 864
+移入 1124
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 183
+移入 257
+移入 169
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 163
+规约 identifierReference → Identifier identifierDeclaratorIdRest·, [(]
+GOTO 100
+移入 126
+移入 237
+移入 261
+移入 357
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 589
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 755
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 237
+移入 261
+移入 357
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 589
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 755
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 202
+移入 278
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 409
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 864
+移入 1124
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 183
+移入 257
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 431
+移入 183
+移入 257
+移入 169
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 163
+规约 identifierReference → Identifier identifierDeclaratorIdRest·, [(]
+GOTO 100
+移入 126
+移入 237
+移入 261
+移入 357
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 589
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 755
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 211
+规约 factor → Digit·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 202
+移入 278
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 409
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 864
+移入 1124
+移入 109
+移入 245
+规约 typeComponent → ε·, [Identifier]
+GOTO 59
+规约 typeDeclaration → Identifier typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 183
+移入 257
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 431
+移入 183
+移入 257
+移入 169
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 163
+规约 identifierReference → Identifier identifierDeclaratorIdRest·, [(]
+GOTO 100
+移入 126
+移入 247
+规约 expressionList → ε·, [)]
+GOTO 202
+移入 278
+移入 361
+移入 456
+移入 341
+规约 arrayRest → ε·, [+, ;, -, .]
+GOTO 741
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 974
+规约 methodRefRest → . Identifier arrayRest methodRefRest·, [;, +, -]
+GOTO 409
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 864
+移入 1124
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 183
+移入 257
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 431
+移入 183
+移入 257
+移入 169
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 163
+规约 identifierReference → Identifier identifierDeclaratorIdRest·, [(]
+GOTO 100
+移入 126
+移入 247
+规约 expressionList → ε·, [)]
+GOTO 202
+移入 278
+移入 361
+移入 456
+移入 656
+移入 237
+移入 261
+移入 357
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 589
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 755
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 211
+规约 factor → Digit·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 852
+移入 1216
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 1689
+规约 methodRefRest → . Identifier ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 409
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 864
+移入 1124
+移入 943
+移入 1122
+规约 statement → break ;·, [for, do, String, float, while, long, switch, default, Identifier, Number, continue, if, case, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 865
+移入 1121
+规约 blockStatement → ε·, [default, }, case]
+GOTO 1192
+规约 blockStatement → statement blockStatement·, [default, }, case]
+GOTO 1508
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [default, }, case]
+GOTO 1508
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [default, }, case]
+GOTO 1508
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [default, }, case]
+GOTO 1508
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [default, }, case]
+GOTO 1508
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [default, }, case]
+GOTO 1508
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [default, }, case]
+GOTO 1508
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [default, }, case]
+GOTO 834
+移入 773
+移入 908
+移入 1399
+规约 switchLabel → case Digit :·, [for, do, String, float, while, long, switch, default, Identifier, Number, continue, if, case, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 772
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 106
+移入 112
+移入 175
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 325
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 597
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 434
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 864
+移入 1124
+移入 943
+移入 1122
+规约 statement → break ;·, [for, do, String, float, while, long, switch, default, Identifier, Number, continue, if, case, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 865
+移入 1121
+规约 blockStatement → ε·, [default, }, case]
+GOTO 1192
+规约 blockStatement → statement blockStatement·, [default, }, case]
+GOTO 1508
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [default, }, case]
+GOTO 834
+移入 781
+规约 switchBlockStatementGroup → ε·, [default, }]
+GOTO 1397
+规约 switchBlockStatementGroup → switchLabel blockStatement switchBlockStatementGroup·, [default, }]
+GOTO 1397
+规约 switchBlockStatementGroup → switchLabel blockStatement switchBlockStatementGroup·, [default, }]
+GOTO 771
+移入 1112
+移入 1400
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 106
+移入 112
+移入 175
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 325
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 597
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 434
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 130
+移入 172
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 270
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [}]
+GOTO 1509
+规约 defaultSwitchLabel → default : blockStatement·, [}]
+GOTO 1111
+移入 1164
+规约 switchBlock → { switchBlockStatementGroup defaultSwitchLabel }·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 520
+规约 statement → switch ( expression ) switchBlock·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 271
+移入 369
+规约 block → { blockStatement }·, [while]
+GOTO 204
+移入 295
+移入 380
+移入 250
+移入 443
+规约 arrayRest → ε·, [==, &&, ||, <=, ), *, +, -, ., /, !=, <, >, >=]
+GOTO 425
+移入 617
+规约 targetVariableRest → ε·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 595
+规约 refVariable → Identifier arrayRest targetVariableRest·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 297
+规约 factor → refVariable·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 336
+规约 term → factor·, [==, &&, ||, <=, ), *, +, -, /, !=, <, >, >=]
+GOTO 306
+规约 expression → term·, [==, &&, ||, <=, ), +, !=, <, -, >, >=]
+GOTO 282
+规约 expressionFactor → expression·, [&&, ||, <=, ), <, >, >=]
+GOTO 302
+移入 405
+移入 510
+规约 factor → Digit·, [==, &&, ||, ), *, +, !=, -, /]
+GOTO 607
+规约 term → factor·, [==, &&, ||, ), *, +, !=, -, /]
+GOTO 549
+规约 expression → term·, [==, &&, ||, ), +, !=, -]
+GOTO 499
+规约 expressionFactor → expression·, [&&, ||, )]
+GOTO 536
+规约 expressionTerm → expressionFactor < expressionFactor·, [&&, ||, )]
+GOTO 301
+规约 expressionTermRest → expressionTerm·, [||, )]
+GOTO 300
+规约 parExpression → expressionTermRest·, [)]
+GOTO 519
+移入 663
+移入 790
+规约 statement → do block while ( parExpression ) ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 654
+移入 829
+规约 block → { blockStatement }·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 495
+规约 statement → while ( parExpression ) block·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 654
+移入 829
+规约 block → { blockStatement }·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 495
+规约 statement → while ( parExpression ) block·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 653
+移入 830
+规约 block → { blockStatement }·, [for, do, String, float, while, long, switch, Identifier, Number, else, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 2452
+移入 674
+移入 474
+移入 147
+移入 173
+规约 statement → continue ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 654
+移入 829
+规约 block → { blockStatement }·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 863
+规约 elseStatement → else block·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 2942
+规约 elseStatement → else if ( parExpression ) block elseStatement·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 672
+规约 statement → if ( parExpression ) block elseStatement·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 654
+移入 829
+规约 block → { blockStatement }·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 497
+规约 statement → for ( forControl ) block·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 145
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 183
+移入 257
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 431
+移入 183
+移入 257
+移入 169
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 163
+规约 identifierReference → Identifier identifierDeclaratorIdRest·, [(]
+GOTO 100
+移入 126
+移入 247
+规约 expressionList → ε·, [)]
+GOTO 202
+移入 278
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 409
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 207
+移入 249
+规约 statement → return expression ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 124
+移入 187
+规约 block → { blockStatement }·, [private, public, protected, }]
+GOTO 95
+规约 methodBody → block·, [private, public, protected, }]
+GOTO 93
+规约 methodDeclaration → modifierDeclaration typeDeclaration Identifier formalParameters methodBody·, [private, public, protected, }]
+GOTO 40
+移入 34
+规约 modifierDeclaration → public·, [boolean, Identifier, void, byte, double, char, short, float, int, long]
+GOTO 33
+移入 56
+移入 58
+移入 70
+移入 83
+规约 formalParameterDecls → ε·, [)]
+GOTO 80
+移入 92
+规约 formalParameters → ( formalParameterDecls )·, [{]
+GOTO 78
+移入 87
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 98
+规约 factor → Digit·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 130
+移入 172
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 98
+规约 factor → Digit·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 130
+移入 172
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 98
+规约 factor → Digit·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 130
+移入 172
+移入 109
+移入 245
+规约 typeComponent → ε·, [Identifier]
+GOTO 59
+规约 typeDeclaration → Identifier typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 102
+移入 170
+规约 stringRest → ε·, [;, +, -]
+GOTO 156
+规约 expression → String stringRest·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 130
+移入 172
+移入 109
+移入 245
+规约 typeComponent → ε·, [Identifier]
+GOTO 59
+规约 typeDeclaration → Identifier typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 97
+移入 110
+移入 194
+移入 229
+规约 expression → false·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 180
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 327
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 435
+规约 refVariable → Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 275
+移入 389
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 546
+规约 expression → new Identifier ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 130
+移入 172
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 183
+移入 257
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 431
+移入 183
+移入 257
+移入 169
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 163
+规约 identifierReference → Identifier identifierDeclaratorIdRest·, [(]
+GOTO 100
+移入 126
+移入 180
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 327
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 435
+规约 refVariable → Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 180
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 327
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 435
+规约 refVariable → Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 202
+移入 278
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 409
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 130
+移入 172
+移入 109
+移入 245
+规约 arrayRest → ε·, [*, ;, +, =, -, ., /]
+GOTO 233
+移入 262
+移入 354
+移入 615
+规约 arrayRest → ε·, [*, ;, +, =, -, ., /]
+GOTO 586
+移入 262
+移入 354
+移入 615
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 163
+规约 identifierReference → Identifier identifierDeclaratorIdRest·, [(]
+GOTO 100
+移入 126
+移入 237
+移入 261
+移入 357
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 589
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 755
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 180
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 327
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 435
+规约 refVariable → Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 202
+移入 278
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 409
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 132
+移入 174
+规约 statement → expression ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 109
+移入 245
+规约 arrayRest → ε·, [*, ;, +, =, -, ., /]
+GOTO 233
+移入 262
+移入 354
+移入 615
+规约 arrayRest → ε·, [*, ;, +, =, -, ., /]
+GOTO 586
+移入 262
+移入 354
+移入 615
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 163
+规约 identifierReference → Identifier identifierDeclaratorIdRest·, [(]
+GOTO 100
+移入 126
+移入 180
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 327
+移入 367
+移入 455
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 740
+移入 367
+移入 455
+移入 346
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 163
+规约 identifierReference → Identifier identifierDeclaratorIdRest·, [(]
+GOTO 216
+移入 273
+移入 180
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 327
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 435
+规约 refVariable → Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 180
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 327
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 435
+规约 refVariable → Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 382
+移入 493
+移入 779
+规约 methodRefRest → ε·, [), +, ,, -]
+GOTO 699
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 180
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 327
+移入 367
+移入 455
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 740
+移入 367
+移入 455
+移入 346
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 163
+规约 identifierReference → Identifier identifierDeclaratorIdRest·, [(]
+GOTO 216
+移入 273
+移入 180
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 327
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 435
+规约 refVariable → Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 180
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 327
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 435
+规约 refVariable → Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 382
+移入 493
+移入 779
+规约 methodRefRest → ε·, [), +, ,, -]
+GOTO 699
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 202
+移入 278
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 409
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 132
+移入 174
+规约 statement → expression ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 183
+移入 257
+移入 169
+规约 identifierDeclaratorIdRest → ε·, [(]
+GOTO 438
+规约 identifierDeclaratorIdRest → arrayRest . Identifier identifierDeclaratorIdRest·, [(]
+GOTO 163
+规约 identifierReference → Identifier identifierDeclaratorIdRest·, [(]
+GOTO 100
+移入 126
+移入 180
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 327
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 435
+规约 refVariable → Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 208
+移入 280
+移入 180
+移入 346
+规约 arrayRest → ε·, [), *, +, ,, -, ., /]
+GOTO 327
+移入 450
+规约 targetVariableRest → ε·, [), *, +, ,, -, /]
+GOTO 435
+规约 refVariable → Identifier arrayRest targetVariableRest·, [), *, +, ,, -, /]
+GOTO 214
+规约 factor → refVariable·, [), *, +, ,, -, /]
+GOTO 241
+规约 term → factor·, [), *, +, ,, -, /]
+GOTO 221
+规约 expression → term·, [), +, ,, -]
+GOTO 391
+移入 343
+规约 expressionListRest → ε·, [)]
+GOTO 575
+规约 expressionListRest → , expression expressionListRest·, [)]
+GOTO 321
+规约 expressionList → expression expressionListRest·, [)]
+GOTO 202
+移入 278
+移入 444
+规约 methodRefRest → ε·, [;, +, -]
+GOTO 409
+规约 expression → identifierReference ( expressionList ) methodRefRest·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 130
+移入 172
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 106
+移入 112
+移入 175
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 325
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 597
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 434
+规约 refVariable → this . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 130
+移入 172
+移入 52
+移入 71
+规约 typeComponent → ε·, [Identifier]
+GOTO 67
+规约 typeDeclaration → int typeComponent·, [Identifier]
+GOTO 113
+移入 176
+移入 81
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 597
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 234
+规约 refVariable → Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 96
+移入 149
+移入 177
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 326
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 234
+规约 refVariable → Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 220
+规约 expression → expression + term·, [;, +, -]
+GOTO 96
+规约 variableInitializer → = expression·, [;]
+GOTO 264
+规约 localVariableDeclarationStatement → typeDeclaration Identifier variableInitializer·, [;]
+GOTO 130
+移入 172
+移入 109
+移入 245
+规约 arrayRest → ε·, [*, ;, +, =, -, ., /]
+GOTO 233
+移入 262
+移入 354
+移入 372
+移入 291
+移入 375
+移入 372
+移入 291
+移入 375
+移入 614
+规约 arrayRest → ε·, [*, ;, +, =, -, ., /]
+GOTO 585
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, =, -, ., /]
+GOTO 585
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, =, -, ., /]
+GOTO 586
+移入 347
+规约 targetVariableRest → ε·, [*, ;, +, =, -, /]
+GOTO 760
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, =, -, /]
+GOTO 330
+规约 refVariable → Identifier arrayRest targetVariableRest·, [*, ;, +, =, -, /]
+GOTO 143
+移入 205
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 597
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 234
+规约 refVariable → Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 283
+移入 350
+规约 statement → refVariable = expression ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 109
+移入 245
+规约 arrayRest → ε·, [*, ;, +, =, -, ., /]
+GOTO 233
+移入 262
+移入 354
+移入 372
+移入 291
+移入 375
+移入 372
+移入 291
+移入 375
+移入 614
+规约 arrayRest → ε·, [*, ;, +, =, -, ., /]
+GOTO 585
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, =, -, ., /]
+GOTO 585
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, =, -, ., /]
+GOTO 586
+移入 347
+规约 targetVariableRest → ε·, [*, ;, +, =, -, /]
+GOTO 760
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, =, -, /]
+GOTO 330
+规约 refVariable → Identifier arrayRest targetVariableRest·, [*, ;, +, =, -, /]
+GOTO 143
+移入 205
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 597
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 234
+规约 refVariable → Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+移入 164
+移入 177
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 326
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 234
+规约 refVariable → Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 242
+规约 term → term * factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 283
+移入 350
+规约 statement → refVariable = expression ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 109
+移入 245
+规约 arrayRest → ε·, [*, ;, +, =, -, ., /]
+GOTO 233
+移入 262
+移入 354
+移入 372
+移入 291
+移入 375
+移入 372
+移入 291
+移入 375
+移入 614
+规约 arrayRest → ε·, [*, ;, +, =, -, ., /]
+GOTO 585
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, =, -, ., /]
+GOTO 585
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, =, -, ., /]
+GOTO 586
+移入 347
+规约 targetVariableRest → ε·, [*, ;, +, =, -, /]
+GOTO 760
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, =, -, /]
+GOTO 330
+规约 refVariable → Identifier arrayRest targetVariableRest·, [*, ;, +, =, -, /]
+GOTO 143
+移入 205
+移入 86
+移入 169
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 160
+移入 183
+移入 257
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 431
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 597
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 234
+规约 refVariable → Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 107
+规约 term → factor·, [*, ;, +, -, /]
+GOTO 101
+移入 164
+移入 177
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 326
+移入 363
+移入 459
+移入 122
+移入 212
+移入 268
+移入 122
+移入 212
+移入 268
+移入 344
+规约 arrayRest → ε·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 429
+规约 arrayRest → [ Digit ] arrayRest·, [*, ;, +, -, ., /]
+GOTO 743
+移入 246
+规约 targetVariableRest → ε·, [*, ;, +, -, /]
+GOTO 597
+规约 targetVariableRest → . Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 234
+规约 refVariable → Identifier arrayRest targetVariableRest·, [*, ;, +, -, /]
+GOTO 99
+规约 factor → refVariable·, [*, ;, +, -, /]
+GOTO 242
+规约 term → term * factor·, [*, ;, +, -, /]
+GOTO 101
+规约 expression → term·, [;, +, -]
+GOTO 283
+移入 350
+规约 statement → refVariable = expression ;·, [for, do, String, float, while, long, switch, Identifier, Number, continue, if, new, Digit, break, byte, double, this, (, false, int, boolean, char, true, short, }, return]
+GOTO 131
+移入 167
+规约 blockStatement → ε·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 270
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [}]
+GOTO 270
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [}]
+GOTO 270
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 193
+规约 blockStatement → statement blockStatement·, [}]
+GOTO 270
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [}]
+GOTO 270
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [}]
+GOTO 270
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [}]
+GOTO 270
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [}]
+GOTO 270
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [}]
+GOTO 270
+规约 blockStatement → localVariableDeclarationStatement ; blockStatement·, [}]
+GOTO 124
+移入 187
+规约 block → { blockStatement }·, [private, public, protected, }]
+GOTO 95
+规约 methodBody → block·, [private, public, protected, }]
+GOTO 94
+规约 methodDeclaration → modifierDeclaration void Identifier formalParameters methodBody·, [private, public, protected, }]
+GOTO 40
+移入 41
+规约 classBodyDeclaration → ε·, [}]
+GOTO 45
+规约 classBodyDeclaration → methodDeclaration classBodyDeclaration·, [}]
+GOTO 45
+规约 classBodyDeclaration → methodDeclaration classBodyDeclaration·, [}]
+GOTO 45
+规约 classBodyDeclaration → methodDeclaration classBodyDeclaration·, [}]
+GOTO 44
+规约 classBodyDeclaration → constructorDeclaration classBodyDeclaration·, [}]
+GOTO 44
+规约 classBodyDeclaration → constructorDeclaration classBodyDeclaration·, [}]
+GOTO 43
+规约 classBodyDeclaration → fieldDeclaration classBodyDeclaration·, [}]
+GOTO 43
+规约 classBodyDeclaration → fieldDeclaration classBodyDeclaration·, [}]
+GOTO 43
+规约 classBodyDeclaration → fieldDeclaration classBodyDeclaration·, [}]
+GOTO 43
+规约 classBodyDeclaration → fieldDeclaration classBodyDeclaration·, [}]
+GOTO 43
+规约 classBodyDeclaration → fieldDeclaration classBodyDeclaration·, [}]
+GOTO 43
+规约 classBodyDeclaration → fieldDeclaration classBodyDeclaration·, [}]
+GOTO 37
+移入 46
+规约 classBody → { classBodyDeclaration }·, [$]
+GOTO 31
+规约 classDeclaration → modifierDeclaration class Identifier extendsInfo classBody·, [$]
+GOTO 11
+规约 javaLanguage → packageDeclaration importDeclaration classDeclaration·, [$]
+GOTO 1
+接收
+</body>
+</html>
+
+
+
+
+
+
+
