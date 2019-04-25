@@ -918,6 +918,10 @@ public class SyntacticLRParser {
                                 }
                                 for(String lookforward : emptyLookforwardSet){
                                     // TODO 只有不在shiftSymbol可移入符号的向前看符号，才可以进行空产生式移入，避免出现移入/空产生式移入冲突
+
+                                    // FIXME 2019-04-25 需要调整将空产生式移入操作，应该改成直接移入空产生式文法符号（只有其他项集不能移入的情况下，不在shiftSymbol的情况，才会有专门的空产生式项集），需要修改 moveItemCollection 生成方式
+                                    // FIXME 2019-04-25 如果只考虑不在shiftSymbol的时候才移入空产生式的话，会漏掉一部分移入情况（两个产生式一个可以普通移入，一个是空产生式移入）
+
                                     if(!shiftSymbol.contains(lookforward)) {
                                         SyntaxSymbol lookforwardSymbol = new SyntaxSymbol(lookforward, true);
                                         setPredictAction(predictLRMap, itemCollection, LexConstants.SYNTAX_LR_ACTION, lookforwardSymbol, actionInfo);
