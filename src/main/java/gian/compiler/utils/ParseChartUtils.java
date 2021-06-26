@@ -20,7 +20,7 @@ public class ParseChartUtils {
     static {
         PrintStream print = null;
         try {
-            print = new PrintStream("E:\\test.txt");
+            print = new PrintStream("D:\\test.txt");
         } catch (Exception e) {
             e.printStackTrace();
         }
