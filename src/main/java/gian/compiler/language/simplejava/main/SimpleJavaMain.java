@@ -25,7 +25,7 @@ import java.util.Map;
 public class SimpleJavaMain {
 
     public static void main(String[] args){
-        changeOutput(false);
+        changeOutput(true);
 
         // 解析目标程序分析语法树
         SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR("SimpleJavaLexical.txt", "SimpleJavaSyntax.txt", "SimpleJavaProgram.txt", true);

@@ -1,4 +1,4 @@
-package gian.compiler.utils;
+package utils;
 
 import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.front.lexical.transform.LexConstants;
@@ -456,7 +456,7 @@ public class ParseChartUtils {
 
         @Override
         public String toString(){
-            return "{source:'" + this.source + "',target:'" + this.target + "',label:{normal:{show:true,formatter: '" + this.label.replace("\\", "\\\\") + "'}},lineStyle:{normal:{curveness:0.3}}},";
+            return "{source:'" + this.source + "',target:'" + this.target + "',label:{normal:{show:true,formatter: '" + this.label.replace("\\", "\\\\") + (this.source.equals(this.target) ? "_hasCy:" + this.source.equals(this.target) : "") + "'}},lineStyle:{normal:{curveness:0.3}}},";
         }
 
         @Override

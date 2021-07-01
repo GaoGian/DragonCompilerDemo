@@ -9,9 +9,8 @@ import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedParser;
 import gian.compiler.language.simplejava.main.SimpleJavaMain;
-import gian.compiler.utils.ParseChartUtils;
+import utils.ParseChartUtils;
 import gian.compiler.utils.ParseUtils;
-import lex.test.LexUtils;
 import org.junit.Test;
 
 import java.util.*;

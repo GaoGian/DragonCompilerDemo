@@ -1,16 +1,11 @@
-import gian.compiler.front.lexical.parser.LexExpression;
 import gian.compiler.front.lexical.parser.LexicalParser;
 import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.SyntacticLRParser;
 import gian.compiler.front.syntactic.SyntacticLLParser;
-import gian.compiler.front.syntactic.element.Item;
-import gian.compiler.front.syntactic.element.ItemCollection;
-import gian.compiler.front.syntactic.element.SyntaxProduct;
-import gian.compiler.front.syntactic.element.SyntaxSymbol;
-import gian.compiler.utils.ParseChartUtils;
+import gian.compiler.front.syntactic.element.*;
+import utils.ParseChartUtils;
 import gian.compiler.utils.ParseUtils;
-import lex.test.LexUtils;
 import org.junit.Test;
 
 import java.util.*;
@@ -517,9 +512,9 @@ public class SyntaxTest {
     public void testSLRPredictMap(){
         List<Token> tokens = new ArrayList<>();
         tokens.add(new Token("id", TestLexExpression.ID));
-        tokens.add(new Token("*", TestLexExpression.OPERATOR));
-        tokens.add(new Token("id", TestLexExpression.ID));
         tokens.add(new Token("+", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token("*", TestLexExpression.OPERATOR));
         tokens.add(new Token("id", TestLexExpression.ID));
         tokens.add(new Token(LexConstants.SYNTAX_END, TestLexExpression.END));
 
@@ -527,6 +522,24 @@ public class SyntaxTest {
         syntaxs.add("E → E + T | T ");
         syntaxs.add("T → T * F | F ");
         syntaxs.add("F → ( E ) | id ");
+
+        /**
+         * 代码
+         * a + b * c
+         *
+         * 文法
+         * E → V + F
+         * F → V * V | V
+         * V → id
+         *
+         * 自顶向下语法分析
+         * E -> V + F
+         *   -> id + F
+         *   -> id + V * V
+         *   -> id + id * V
+         *   -> id + id * id
+         *
+         */
 
         List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
@@ -634,10 +647,24 @@ public class SyntaxTest {
     public void testLRItemCollection1(){
 
         // 读取文法文件
-        List<String> syntaxs = ParseUtils.getFile("syntaxContentFile.txt", true);
+//        List<String> syntaxs = ParseUtils.getFile("syntaxContentFile.txt", true);
+//
+//        // 解析目标语言文件生成词法单元数据
+//        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), TestLexExpression.expressions);
 
-        // 解析目标语言文件生成词法单元数据
-        List<Token> tokens = LexicalParser.parser(ParseUtils.getFile("compilerCode.txt", true), TestLexExpression.expressions);
+
+        List<Token> tokens = new ArrayList<>();
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token("+", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token("*", TestLexExpression.OPERATOR));
+        tokens.add(new Token("id", TestLexExpression.ID));
+        tokens.add(new Token(LexConstants.SYNTAX_END, TestLexExpression.END));
+
+        List<String> syntaxs = new ArrayList<>();
+        syntaxs.add("E → E + T | T ");
+        syntaxs.add("T → T * F | F ");
+        syntaxs.add("F → ( E ) | id ");
 
         List<SyntaxSymbol> syntaxSymbols = ParseUtils.parseSyntaxSymbol(syntaxs);
 
@@ -655,7 +682,8 @@ public class SyntaxTest {
         ParseChartUtils.outputLRPredictMap(predictLRMap);
 
         System.out.println("------------------------------LRPredictMap----------------------------------");
-        SyntacticLRParser.syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
+        SyntaxTree syntaxTree = SyntacticLRParser.syntaxParseLR(allLRItemCollectionMap.get(0), tokens, predictLRMap);
+        ParseChartUtils.outputUniversalTreeEchart(new ParseChartUtils.UniversalTreeNode(syntaxTree.getSyntaxTreeRoot(), SyntaxDirectedTest.getDirectTreeMatcher(), true), 100, 100);
     }
 
     /**

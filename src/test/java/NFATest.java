@@ -2,7 +2,7 @@ import com.alibaba.fastjson.JSON;
 import gian.compiler.front.lexical.parser.LexExpression;
 import gian.compiler.front.lexical.parser.LexicalParser;
 import gian.compiler.front.lexical.parser.Token;
-import gian.compiler.utils.ParseChartUtils;
+import utils.ParseChartUtils;
 import gian.compiler.utils.ParseUtils;
 import lex.test.LexUtils;
 import gian.compiler.front.lexical.transform.regex.LexAutomatonTransformer;

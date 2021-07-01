@@ -1,4 +1,3 @@
-import gian.compiler.front.lexical.parser.LexExpression;
 import gian.compiler.front.lexical.parser.Token;
 import gian.compiler.front.lexical.transform.LexConstants;
 import gian.compiler.front.syntactic.SyntacticLRParser;
@@ -7,8 +6,7 @@ import gian.compiler.front.syntactic.element.SyntaxTree;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedContext;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedListener;
 import gian.compiler.front.syntaxDirected.SyntaxDirectedParser;
-import gian.compiler.utils.ParseChartUtils;
-import lex.test.LexUtils;
+import utils.ParseChartUtils;
 import org.junit.Test;
 
 import java.util.*;

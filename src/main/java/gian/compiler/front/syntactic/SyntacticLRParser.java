@@ -726,12 +726,17 @@ public class SyntacticLRParser {
                         }
 
                         if(reduceItemMap.get(product).get(0) == null){
-                            Item newItem = new Item(product, 0, lookSymbolSet);
+                            Item newItem = new Item(product, 0, Sets.newHashSet(lookSymbolSet));
                             reduceItemMap.get(product).put(0, newItem);
 
                             // 加入新项
                             itemCollection.getItemList().add(newItem);
                         }else{
+                            // 如果产生式是自己，就不需要加向前看字符了
+                            if(product.equals(item.getSyntaxProduct())){
+                                continue;
+                            }
+
                             // 合并lookforward集合
                             reduceItemMap.get(product).get(0).getLookForwardSymbolSet().addAll(lookSymbolSet);
                         }
