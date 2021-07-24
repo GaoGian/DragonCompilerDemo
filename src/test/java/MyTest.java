@@ -3,6 +3,9 @@ import gian.compiler.front.syntactic.element.SyntaxSymbol;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import jdk.nashorn.internal.objects.Global;
 import jdk.nashorn.internal.runtime.ScriptObject;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.assertj.core.util.Lists;
 import org.junit.Test;
 
 import javax.script.*;
@@ -327,6 +330,184 @@ public class MyTest {
 
 /***********************************************************JSEngine***************************************************************/
 
+
+    public static void main(String[] args){
+        String helloWorld = "hello world";
+        int a = 1;
+        int b = 2;
+        int result = a - b;
+        boolean b_result = (a >= result);
+        System.out.println(helloWorld + " " + result + " " + b_result);
+    }
+
+    @Test
+    public void test111(){
+
+        // int类型关键字正则表达式
+        String type_regex = "int";
+        // identifier变量名正则表达式
+        String identifier_regex = "identifier";
+
+        // 目标解析代码
+        String program = "int identifier = 1 + 2;";
+
+        // 当前需要识别的字符串
+        String input = "";
+        // 读入字符流
+        for(char c : program.toCharArray()){
+            if(c == ' '){continue;}
+            // 拼接字符串
+            input += String.valueOf(c);
+            // 识别字符串
+            if(Pattern.matches(type_regex, input)){
+                System.out.println("识别出int类型关键字: " + input);
+                input = "";
+            }else if(Pattern.matches(identifier_regex, input)){
+                System.out.println("识别出identifier变量名: " + input);
+                input = "";
+            }
+        }
+
+    }
+
+    @Test
+    public void testRegexParse(){
+        List<Metacharacter> metaLists = Lists.newArrayList();   // 存放解析后的正则表达式元字符
+        String identifier_regex = "[abc]\\w*";               // identifier变量名正则表达式
+        char[] targetInput = identifier_regex.toCharArray();
+        /** 递归解析所有正则表达式元字符 **/
+        for(int index=0; index<targetInput.length; index++){
+            Metacharacter meta = genMetacharacter(targetInput, index);
+            index += meta.getMeta().length();
+            metaLists.add(meta);
+        }
+    }
+    private Metacharacter genMetacharacter(char[] targetInput, int index){
+        // 识别普通单个字符,例如 a、b、c、d
+        if(targetInput[index] == 'a' || targetInput[index] == 'b' || targetInput[index] == 'c'){
+            CharMetacharacter charMeta = genCharMetacharacter(targetInput, index);
+            return charMeta;
+        }
+        // 识别元字符，例如 [ABC]
+        else if(targetInput[index] == '['){
+            UnitMetacharacter unitMeta = genUnitMetacharacter(targetInput, index);
+            return unitMeta;
+        }
+        // 识别转义字符，例如 \w  \n
+        else if(targetInput[index] == '\\'){
+            TransformMetacharacter transformMeta = genTransformMetacharacter(targetInput, index);
+            return transformMeta;
+        }
+        // 识别控制流字符，例如 ? * + |
+        else if(targetInput[index] == '*' || targetInput[index] == '+' || targetInput[index] == '|'){
+            ControlMetacharacter controlMeta = genControlMetacharacter(targetInput, index);
+            return controlMeta;
+        }
+        throw new RuntimeException("genMetacharacter error, match regex fail");
+    }
+
+    // 识别单个普通字符
+    private CharMetacharacter genCharMetacharacter(char[] targetInput, int index){
+        char c = targetInput[index];
+        return new CharMetacharacter(String.valueOf(c));
+    }
+    // 识别元字符
+    private UnitMetacharacter genUnitMetacharacter(char[] targetInput, int index){
+        List<Metacharacter> childMetas = Lists.newArrayList();
+        for(int i=index; i<targetInput.length; i++){
+            if(targetInput[i] == '['){
+                continue;
+            }else if(targetInput[i] == ']'){
+                // 说明元字符识别完成
+                break;
+            }
+            /** 可能包含其他正则表达式，需要循环递归处理 **/
+            Metacharacter chileMeta = genMetacharacter(targetInput, index);
+            i += chileMeta.getMeta().length();
+            childMetas.add(chileMeta);
+        }
+        return new UnitMetacharacter(childMetas);
+    }
+    // 识别转义字符
+    private TransformMetacharacter genTransformMetacharacter(char[] targetInput, int index){
+        String meta = String.valueOf(targetInput[index]) + String.valueOf(targetInput[index+1]);
+        return new TransformMetacharacter(meta);
+    }
+    // 识别控制流字符
+    private ControlMetacharacter genControlMetacharacter(char[] targetInput, int index){
+        return new ControlMetacharacter(String.valueOf(targetInput[index]));
+    }
+
+    abstract class Metacharacter{
+        abstract String getMeta();
+        abstract boolean match(char input);
+    }
+    @Data @AllArgsConstructor
+    class CharMetacharacter extends Metacharacter{
+        // 匹配单个普通字符,例如 a、b、c、d
+        String meta;
+        public boolean match(char input){
+            return meta.equals(String.valueOf(input));
+        }
+    }
+    @Data @AllArgsConstructor
+    class UnitMetacharacter extends Metacharacter{
+        // 元字符[....]，例如 [ABC]
+        List<Metacharacter> childMetas = Lists.newArrayList();
+        public boolean match(char input){
+            for(Metacharacter childMeta : childMetas){
+                // 只要有一个匹配就可以
+                if(childMeta.match(input)){
+                    return true;
+                }
+            }
+            return false;
+        }
+        public String getMeta(){
+            String meta = "";
+            for(Metacharacter childMeta : childMetas){
+                meta += childMeta.getMeta();
+            }
+            return meta;
+        }
+    }
+    @Data @AllArgsConstructor
+    class TransformMetacharacter extends Metacharacter{
+        // 转义字符，例如 \w  \n
+        String meta;
+        public boolean match(char input){
+            // 各种转义处理
+            if(meta.equals("\\w")){
+                return (input >= 65 && input <= 90) || (input >= 97 && input <= 122);
+            }else{
+                //其他转义处理.........
+            }
+            return false;
+        }
+    }
+    @Data @AllArgsConstructor
+    class ControlMetacharacter extends Metacharacter{
+        // 控制流字符，例如 ? * + |
+        String meta;
+        public boolean match(char input){
+            return meta.equals(String.valueOf(input));
+        }
+    }
+
+    // 优先级
+    public static int priority(Metacharacter meta) {
+        String pattern = meta.getMeta();
+        switch (pattern) {
+            case "*":
+            case "+":
+            case "?":
+                return 7;
+            case "|":
+                return 3;
+            default:
+                return 7;
+        }
+    }
 
 }
 
