@@ -509,6 +509,63 @@ public class MyTest {
         }
     }
 
+
+    @Test
+    public void testLexParse(){
+        // 已经构建好的自动机（状态转换图）
+        List<TranCell> tranCells = new ArrayList<>();
+        // 目标解析代码
+        String content = ".........";
+        char[] inputArray = content.toCharArray();
+        // 识别出得词法单元
+        List<Token> tokens = Lists.newArrayList();
+        // 上一次匹配位置
+        int lastIndex = 0;
+        // 根据当前输入可以匹配的状态机
+        List<TranCell> tranAableCell = Lists.newArrayList(tranCells);
+        for(int i=0; i<inputArray.length; i++){
+            char input = inputArray[i];
+            // 遍历所有自动机，排除不匹配的选项
+            for(TranCell tranCell : tranAableCell){
+                // 根据当前输入进行状态迁移，如果不能迁移则移除
+                if(!tranCell.tranState(input)){
+                    tranAableCell.remove(tranCell);
+                }
+            }
+            // 判断是否识别成功
+            if(tranAableCell.size() == 1
+                    && tranAableCell.get(0).matchComplete()){
+                // 识别的词法单元
+                Token token = new Token(content.substring(lastIndex, i), tranAableCell.get(0).getType());
+                // 重新
+                tranAableCell = Lists.newArrayList(tranCells);
+                lastIndex = i;
+            }
+        }
+
+    }
+
+
+    class TranCell{
+        boolean tranState(char input){
+            return true;
+        }
+
+        boolean matchComplete(){
+            return true;
+        }
+
+        String getType(){
+            return "";
+        }
+    }
+
+    @AllArgsConstructor
+    class Token{
+        private String content;
+        private String type;
+    }
+
 }
 
 
