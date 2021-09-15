@@ -560,11 +560,96 @@ public class MyTest {
         }
     }
 
+    @Data
     @AllArgsConstructor
     class Token{
         private String content;
         private String type;
     }
+
+
+
+    // 当前输入词法单元
+    Token token = null;
+
+    public Node stmt(){
+        // 读入词法单元
+        read();
+        switch (token.content) {
+            // 识别到while语句
+            case "while" :
+                return whilecycle();
+            // 识别到while语句
+            case "if" :
+                return ifcycle();
+            // 识别到其他语句
+            case "..." :
+                // other();
+        }
+
+        return null;
+    }
+
+
+    public WhileCycleNode whilecycle(){
+        ExprNode exprNode = null;
+        Node stmtNode = null;
+        match("while"); match("(");
+        // 识别条件表达式
+        exprNode = expr();
+        match(")"); match("{");
+        // 识别方法体语句
+        stmtNode = stmt();
+        match("}");
+
+        WhileCycleNode whileCycleNode =
+                new WhileCycleNode(exprNode, stmtNode);
+
+        return whileCycleNode;
+    }
+
+    public IfCycleNode ifcycle(){
+        return new IfCycleNode();
+    }
+
+    public ExprNode expr(){
+        // ....
+        return new ExprNode();
+    }
+
+    public boolean match(String target){
+        if(target.equals(token.getContent())){
+            read();
+            return true;
+        }else{
+            throw new RuntimeException();
+        }
+    }
+
+    // 读入下一个词法单元
+    public void read(){
+        //token = next;
+    }
+
+    class Node{
+
+    }
+
+    @Data
+    @AllArgsConstructor
+    class WhileCycleNode extends Node{
+        private ExprNode exprNode;
+        private Node stmtNode;
+    }
+
+    class IfCycleNode extends Node{
+
+    }
+
+    class ExprNode extends Node{
+
+    }
+
 
 }
 
