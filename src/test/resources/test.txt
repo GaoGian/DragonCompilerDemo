@@ -1,0 +1,26 @@
+
+
+program → stmts
+
+stmts → stmt stmts | ε
+
+stmt → expr | whilecycle
+
+expr → type id = num ; | type id = method ( id ) ; | id --
+
+whilecycle → while ( expr ) { stmts }
+
+
+
+expr → type id = num ; | type id = method ( id ) ;
+
+
+expr → type id = exprRest ;
+exprRest → id arith
+arith → add | sub | methodParam
+add → + id
+sub → - id
+methodParam → ( id )
+
+
+

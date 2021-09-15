@@ -579,12 +579,13 @@ public class MyTest {
             // 识别到while语句
             case "while" :
                 return whilecycle();
+            // 识别到表达式语句
+            case "id" :
+                return expr();
             // 识别到while语句
             case "if" :
                 return ifcycle();
-            // 识别到其他语句
-            case "..." :
-                // other();
+            // ...其他情况
         }
 
         return null;
